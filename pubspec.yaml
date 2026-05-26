@@ -31,37 +31,79 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
+  # iOS-style icon set, used via the CupertinoIcons class.
   cupertino_icons: ^1.0.8
+
+  # State management: BLoC/Cubit pattern (BlocProvider, BlocBuilder, BlocListener).
   flutter_bloc: ^9.1.1
+
+  # Declarative routing with deep-linking and auth-redirect support.
+  # Pairs with go_router_builder for typed routes.
   go_router: ^17.2.3
+
+  # Material/Cupertino/Widgets localization delegates required by the
+  # i18n pipeline (generate: true + ARB files under lib/l10n/).
   flutter_localizations:
     sdk: flutter
+
+  # Locale-aware formatting (dates, numbers, plurals) and runtime backing
+  # for the generated AppLocalizations class.
   intl: any
+
+  # DI annotations (@injectable, @singleton, @module) — drives registration
+  # codegen on top of get_it via injectable_generator.
   injectable: ^3.0.0
+
+  # Service-locator container that holds the DI graph injectable generates.
   get_it: ^9.2.1
+
+  # Type-safe HTTP client: annotate an abstract class, codegen produces a
+  # Dio-backed implementation (used by the auth remote data source).
   retrofit: ^4.9.2
+
+  # Underlying HTTP transport for retrofit; interceptors, timeouts, and
+  # error mapping live here.
   dio: ^5.9.2
+
+  # Runtime annotations (@JsonSerializable, @JsonKey) consumed by
+  # json_serializable to generate fromJson/toJson.
   json_annotation: ^4.12.0
+
+  # Runtime annotations (@freezed) consumed by freezed to generate
+  # immutable data classes and sealed unions (used by auth models).
   freezed_annotation: ^3.1.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  # The "flutter_lints" package below contains a set of recommended lints to
-  # encourage good coding practices. The lint set provided by the package is
-  # activated in the `analysis_options.yaml` file located at the root of your
-  # package. See that file for information about deactivating specific lint
-  # rules and activating additional ones.
+  # Recommended lint set, activated via analysis_options.yaml.
   flutter_lints: ^6.0.0
+
+  # Codegen for typed route classes (TypedGoRoute) — strongly-typed navigation.
   go_router_builder: ^4.3.0
+
+  # Codegen driver. Runs every generator below.
+  # Run: dart run build_runner build --delete-conflicting-outputs
   build_runner: ^2.15.0
+
+  # CI guard: fails the build if generated files are stale
+  # (i.e. someone forgot to re-run build_runner).
   build_verify: ^3.1.1
+
+  # Generates configureDependencies() registration code for get_it
+  # from @injectable annotations.
   injectable_generator: ^3.0.2
+
+  # Generates the concrete API client implementation from
+  # retrofit-annotated abstract classes.
   retrofit_generator: ^10.2.6
+
+  # Generates fromJson/toJson from @JsonSerializable annotations.
   json_serializable: ^6.14.0
+
+  # Generates immutable classes, copyWith, equality, and union/sealed
+  # variants from @freezed annotations.
   freezed: ^3.2.5
 
 # For information on the generic Dart part of this file, see the
