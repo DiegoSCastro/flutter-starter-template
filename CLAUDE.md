@@ -33,6 +33,10 @@ VS Code launch configs in `.vscode/launch.json` cover Debug / Profile / Release 
 
 `analysis_options.yaml` extends `package:flutter_lints/flutter.yaml`. Project-specific rule overrides go under `linter.rules` in that file.
 
+## Dart MCP server
+
+The Dart/Flutter MCP server is wired up in `.mcp.json` at project scope, launched via `fvm dart mcp-server` so it uses the pinned SDK. Claude Code prompts to approve project-scoped MCP servers on first open of the repo. Exposes tools for `analyze_files`, `dart_fix`, `dart_format`, `pub` / `pub_dev_search`, `run_tests`, `hot_reload` / `hot_restart`, `launch_app`, `widget_inspector`, runtime-error introspection, and more — prefer these over shelling out to `fvm flutter <subcommand>` when an MCP tool covers the task. Full feature list: `fvm dart mcp-server --help`.
+
 ## Agent skills
 
 Official task-playbook skills from `flutter/skills` and `dart-lang/skills` are vendored under `.agents/skills/` (hash-pinned via `skills-lock.json`). Compatible agents auto-discover them. To refresh against upstream:
