@@ -81,6 +81,19 @@ dependencies:
   # "Open" action).
   url_launcher: ^6.3.2
 
+  # Embedded NoSQL object database. Backs the local-only bookmarks store —
+  # entities are annotated with @Entity() and queried via the generated
+  # objectbox.g.dart bindings.
+  objectbox: ^5.3.2
+
+  # Native ObjectBox runtime libraries bundled into the iOS/Android app.
+  # On first build, an install script downloads the per-platform binaries.
+  objectbox_flutter_libs: ^5.3.2
+
+  # Provides the platform-appropriate application documents directory used
+  # by ObjectBox to locate its store file on device.
+  path_provider: ^2.1.5
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -113,6 +126,10 @@ dev_dependencies:
   # Generates immutable classes, copyWith, equality, and union/sealed
   # variants from @freezed annotations.
   freezed: ^3.2.5
+
+  # Generates the ObjectBox binding (lib/objectbox.g.dart) and schema
+  # (lib/objectbox-model.json) from @Entity-annotated classes.
+  objectbox_generator: ^5.3.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

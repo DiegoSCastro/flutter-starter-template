@@ -1,92 +1,88 @@
-import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/error/failure.dart';
 import '../../../../core/utils/result.dart';
 import '../../domain/entities/bookmark.dart';
 import '../../domain/repositories/bookmarks_repository.dart';
-import '../datasources/bookmarks_remote_data_source.dart';
-import '../models/bookmark_request.dart';
+import '../local/bookmarks_local_data_source.dart';
 
 @LazySingleton(as: BookmarksRepository)
 class BookmarksRepositoryImpl implements BookmarksRepository {
-  BookmarksRepositoryImpl(this._remote);
+  BookmarksRepositoryImpl(this._local);
 
-  final BookmarksRemoteDataSource _remote;
+  final BookmarksLocalDataSource _local;
 
   @override
   Future<Result<List<Bookmark>>> list() async {
-    try {
-      final dtos = await _remote.list();
-      return Ok(dtos.map((d) => d.toDomain()).toList(growable: false));
-    } on DioException catch (e) {
-      return Err(_map(e));
-    }
+    final rows = await _local.listAll();
+    return Ok(rows.map((e) => e.toDomain()).toList(growable: false));
   }
 
   @override
   Future<Result<Bookmark>> get(String id) async {
-    try {
-      final dto = await _remote.get(id);
-      return Ok(dto.toDomain());
-    } on DioException catch (e) {
-      return Err(_map(e));
+    final intId = int.tryParse(id);
+    if (intId == null) return const Err(NotFoundFailure('Bookmark not found.'));
+    final entity = await _local.getById(intId);
+    if (entity == null) {
+      return const Err(NotFoundFailure('Bookmark not found.'));
     }
+    return Ok(entity.toDomain());
   }
 
   @override
   Future<Result<Bookmark>> create(BookmarkInput input) async {
-    try {
-      final dto = await _remote.create(_toRequest(input));
-      return Ok(dto.toDomain());
-    } on DioException catch (e) {
-      return Err(_map(e));
+    if (input.title.trim().isEmpty) {
+      return const Err(ValidationFailure('Title is required.'));
     }
+    if (input.url.trim().isEmpty) {
+      return const Err(ValidationFailure('URL is required.'));
+    }
+    final entity = await _local.create(_normalize(input));
+    return Ok(entity.toDomain());
   }
 
   @override
   Future<Result<Bookmark>> update(String id, BookmarkInput input) async {
-    try {
-      final dto = await _remote.update(id, _toRequest(input));
-      return Ok(dto.toDomain());
-    } on DioException catch (e) {
-      return Err(_map(e));
+    final intId = int.tryParse(id);
+    if (intId == null) return const Err(NotFoundFailure('Bookmark not found.'));
+    if (input.title.trim().isEmpty) {
+      return const Err(ValidationFailure('Title is required.'));
     }
+    if (input.url.trim().isEmpty) {
+      return const Err(ValidationFailure('URL is required.'));
+    }
+    final entity = await _local.update(intId, _normalize(input));
+    if (entity == null) {
+      return const Err(NotFoundFailure('Bookmark not found.'));
+    }
+    return Ok(entity.toDomain());
   }
 
   @override
   Future<Result<void>> delete(String id) async {
-    try {
-      await _remote.delete(id);
-      return const Ok(null);
-    } on DioException catch (e) {
-      return Err(_map(e));
+    final intId = int.tryParse(id);
+    if (intId == null) return const Err(NotFoundFailure('Bookmark not found.'));
+    final removed = await _local.delete(intId);
+    if (!removed) {
+      return const Err(NotFoundFailure('Bookmark not found.'));
     }
+    return const Ok(null);
   }
 
-  BookmarkRequest _toRequest(BookmarkInput input) => BookmarkRequest(
-        title: input.title,
-        url: input.url,
-        description: input.description,
-        tags: input.tags,
-      );
-
-  Failure _map(DioException e) {
-    switch (e.response?.statusCode) {
-      case 400:
-        return ValidationFailure(_extractMessage(e.response?.data) ?? 'Invalid input.');
-      case 404:
-        return const NotFoundFailure('Bookmark not found.');
-      default:
-        return UnknownFailure(e.message ?? 'Network error');
+  /// Trim + dedupe tags so storage matches what the server used to do.
+  BookmarkInput _normalize(BookmarkInput input) {
+    final seen = <String>{};
+    final tags = <String>[];
+    for (final raw in input.tags) {
+      final t = raw.trim();
+      if (t.isEmpty || !seen.add(t)) continue;
+      tags.add(t);
     }
-  }
-
-  String? _extractMessage(Object? body) {
-    if (body is Map<String, dynamic>) {
-      final message = body['message'];
-      if (message is String) return message;
-    }
-    return null;
+    return BookmarkInput(
+      title: input.title.trim(),
+      url: input.url.trim(),
+      description: input.description.trim(),
+      tags: tags,
+    );
   }
 }
