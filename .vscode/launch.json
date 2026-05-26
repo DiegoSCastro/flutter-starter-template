@@ -6,9 +6,9 @@
       "request": "launch",
       "type": "dart",
       "program": "lib/main.dart",
-      "args": [
-        "--verbose"
-      ]
+      // "args": [
+      //   "--verbose"
+      // ]
     },
     {
       "name": "flutter_starter_template (Profile Mode)",
