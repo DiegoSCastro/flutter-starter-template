@@ -5,7 +5,7 @@ import '../../domain/entities/auth_user.dart';
 part 'auth_user_dto.freezed.dart';
 part 'auth_user_dto.g.dart';
 
-@freezed
+@Freezed(copyWith: false, equal: false)
 abstract class AuthUserDto with _$AuthUserDto {
   const AuthUserDto._();
 

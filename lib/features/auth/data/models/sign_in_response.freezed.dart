@@ -16,24 +16,12 @@ T _$identity<T>(T value) => value;
 mixin _$SignInResponse {
 
  AuthUserDto get user; String get token;
-/// Create a copy of SignInResponse
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$SignInResponseCopyWith<SignInResponse> get copyWith => _$SignInResponseCopyWithImpl<SignInResponse>(this as SignInResponse, _$identity);
 
   /// Serializes this SignInResponse to a JSON map.
   Map<String, dynamic> toJson();
 
 
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SignInResponse&&(identical(other.user, user) || other.user == user)&&(identical(other.token, token) || other.token == token));
-}
 
-@JsonKey(includeFromJson: false, includeToJson: false)
-@override
-int get hashCode => Object.hash(runtimeType,user,token);
 
 @override
 String toString() {
@@ -43,46 +31,7 @@ String toString() {
 
 }
 
-/// @nodoc
-abstract mixin class $SignInResponseCopyWith<$Res>  {
-  factory $SignInResponseCopyWith(SignInResponse value, $Res Function(SignInResponse) _then) = _$SignInResponseCopyWithImpl;
-@useResult
-$Res call({
- AuthUserDto user, String token
-});
 
-
-$AuthUserDtoCopyWith<$Res> get user;
-
-}
-/// @nodoc
-class _$SignInResponseCopyWithImpl<$Res>
-    implements $SignInResponseCopyWith<$Res> {
-  _$SignInResponseCopyWithImpl(this._self, this._then);
-
-  final SignInResponse _self;
-  final $Res Function(SignInResponse) _then;
-
-/// Create a copy of SignInResponse
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? user = null,Object? token = null,}) {
-  return _then(_self.copyWith(
-user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
-as AuthUserDto,token: null == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
-as String,
-  ));
-}
-/// Create a copy of SignInResponse
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$AuthUserDtoCopyWith<$Res> get user {
-  
-  return $AuthUserDtoCopyWith<$Res>(_self.user, (value) {
-    return _then(_self.copyWith(user: value));
-  });
-}
-}
 
 
 /// Adds pattern-matching-related methods to [SignInResponse].
@@ -225,25 +174,13 @@ class _SignInResponse implements SignInResponse {
 @override final  AuthUserDto user;
 @override final  String token;
 
-/// Create a copy of SignInResponse
-/// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$SignInResponseCopyWith<_SignInResponse> get copyWith => __$SignInResponseCopyWithImpl<_SignInResponse>(this, _$identity);
 
 @override
 Map<String, dynamic> toJson() {
   return _$SignInResponseToJson(this, );
 }
 
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SignInResponse&&(identical(other.user, user) || other.user == user)&&(identical(other.token, token) || other.token == token));
-}
 
-@JsonKey(includeFromJson: false, includeToJson: false)
-@override
-int get hashCode => Object.hash(runtimeType,user,token);
 
 @override
 String toString() {
@@ -253,46 +190,7 @@ String toString() {
 
 }
 
-/// @nodoc
-abstract mixin class _$SignInResponseCopyWith<$Res> implements $SignInResponseCopyWith<$Res> {
-  factory _$SignInResponseCopyWith(_SignInResponse value, $Res Function(_SignInResponse) _then) = __$SignInResponseCopyWithImpl;
-@override @useResult
-$Res call({
- AuthUserDto user, String token
-});
 
 
-@override $AuthUserDtoCopyWith<$Res> get user;
-
-}
-/// @nodoc
-class __$SignInResponseCopyWithImpl<$Res>
-    implements _$SignInResponseCopyWith<$Res> {
-  __$SignInResponseCopyWithImpl(this._self, this._then);
-
-  final _SignInResponse _self;
-  final $Res Function(_SignInResponse) _then;
-
-/// Create a copy of SignInResponse
-/// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? user = null,Object? token = null,}) {
-  return _then(_SignInResponse(
-user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
-as AuthUserDto,token: null == token ? _self.token : token // ignore: cast_nullable_to_non_nullable
-as String,
-  ));
-}
-
-/// Create a copy of SignInResponse
-/// with the given fields replaced by the non-null parameter values.
-@override
-@pragma('vm:prefer-inline')
-$AuthUserDtoCopyWith<$Res> get user {
-  
-  return $AuthUserDtoCopyWith<$Res>(_self.user, (value) {
-    return _then(_self.copyWith(user: value));
-  });
-}
-}
 
 // dart format on

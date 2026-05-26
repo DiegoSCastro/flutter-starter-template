@@ -16,24 +16,12 @@ T _$identity<T>(T value) => value;
 mixin _$SignInRequest {
 
  String get username; String get password;
-/// Create a copy of SignInRequest
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$SignInRequestCopyWith<SignInRequest> get copyWith => _$SignInRequestCopyWithImpl<SignInRequest>(this as SignInRequest, _$identity);
 
   /// Serializes this SignInRequest to a JSON map.
   Map<String, dynamic> toJson();
 
 
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SignInRequest&&(identical(other.username, username) || other.username == username)&&(identical(other.password, password) || other.password == password));
-}
 
-@JsonKey(includeFromJson: false, includeToJson: false)
-@override
-int get hashCode => Object.hash(runtimeType,username,password);
 
 @override
 String toString() {
@@ -43,37 +31,7 @@ String toString() {
 
 }
 
-/// @nodoc
-abstract mixin class $SignInRequestCopyWith<$Res>  {
-  factory $SignInRequestCopyWith(SignInRequest value, $Res Function(SignInRequest) _then) = _$SignInRequestCopyWithImpl;
-@useResult
-$Res call({
- String username, String password
-});
 
-
-
-
-}
-/// @nodoc
-class _$SignInRequestCopyWithImpl<$Res>
-    implements $SignInRequestCopyWith<$Res> {
-  _$SignInRequestCopyWithImpl(this._self, this._then);
-
-  final SignInRequest _self;
-  final $Res Function(SignInRequest) _then;
-
-/// Create a copy of SignInRequest
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? username = null,Object? password = null,}) {
-  return _then(_self.copyWith(
-username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
-as String,password: null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
-as String,
-  ));
-}
-
-}
 
 
 /// Adds pattern-matching-related methods to [SignInRequest].
@@ -216,25 +174,13 @@ class _SignInRequest implements SignInRequest {
 @override final  String username;
 @override final  String password;
 
-/// Create a copy of SignInRequest
-/// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$SignInRequestCopyWith<_SignInRequest> get copyWith => __$SignInRequestCopyWithImpl<_SignInRequest>(this, _$identity);
 
 @override
 Map<String, dynamic> toJson() {
   return _$SignInRequestToJson(this, );
 }
 
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SignInRequest&&(identical(other.username, username) || other.username == username)&&(identical(other.password, password) || other.password == password));
-}
 
-@JsonKey(includeFromJson: false, includeToJson: false)
-@override
-int get hashCode => Object.hash(runtimeType,username,password);
 
 @override
 String toString() {
@@ -244,37 +190,7 @@ String toString() {
 
 }
 
-/// @nodoc
-abstract mixin class _$SignInRequestCopyWith<$Res> implements $SignInRequestCopyWith<$Res> {
-  factory _$SignInRequestCopyWith(_SignInRequest value, $Res Function(_SignInRequest) _then) = __$SignInRequestCopyWithImpl;
-@override @useResult
-$Res call({
- String username, String password
-});
 
 
-
-
-}
-/// @nodoc
-class __$SignInRequestCopyWithImpl<$Res>
-    implements _$SignInRequestCopyWith<$Res> {
-  __$SignInRequestCopyWithImpl(this._self, this._then);
-
-  final _SignInRequest _self;
-  final $Res Function(_SignInRequest) _then;
-
-/// Create a copy of SignInRequest
-/// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? username = null,Object? password = null,}) {
-  return _then(_SignInRequest(
-username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
-as String,password: null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
-as String,
-  ));
-}
-
-
-}
 
 // dart format on
