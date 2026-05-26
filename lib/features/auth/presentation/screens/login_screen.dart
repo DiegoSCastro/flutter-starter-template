@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../viewmodels/auth_viewmodel.dart';
+import '../cubit/auth_cubit.dart';
+import '../cubit/auth_state.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key, required this.viewModel});
-
-  final AuthViewModel viewModel;
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -25,10 +25,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
-    await widget.viewModel.signIn(
-      username: _usernameController.text.trim(),
-      password: _passwordController.text,
-    );
+    await context.read<AuthCubit>().signIn(
+          username: _usernameController.text.trim(),
+          password: _passwordController.text,
+        );
   }
 
   @override
@@ -41,9 +41,11 @@ class _LoginScreenState extends State<LoginScreen> {
           constraints: const BoxConstraints(maxWidth: 360),
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(24),
-            child: ListenableBuilder(
-              listenable: widget.viewModel,
-              builder: (context, _) {
+            child: BlocBuilder<AuthCubit, AuthState>(
+              builder: (context, state) {
+                final isSubmitting = state is AuthSubmitting;
+                final errorMessage =
+                    state is AuthFailure ? state.message : null;
                 return Form(
                   key: _formKey,
                   child: Column(
@@ -82,19 +84,18 @@ class _LoginScreenState extends State<LoginScreen> {
                             ? 'Required'
                             : null,
                       ),
-                      if (widget.viewModel.errorMessage != null) ...[
+                      if (errorMessage != null) ...[
                         const SizedBox(height: 12),
                         Text(
-                          widget.viewModel.errorMessage!,
+                          errorMessage,
                           style: TextStyle(color: theme.colorScheme.error),
                           textAlign: TextAlign.center,
                         ),
                       ],
                       const SizedBox(height: 24),
                       FilledButton(
-                        onPressed:
-                            widget.viewModel.isSubmitting ? null : _submit,
-                        child: widget.viewModel.isSubmitting
+                        onPressed: isSubmitting ? null : _submit,
+                        child: isSubmitting
                             ? const SizedBox(
                                 height: 18,
                                 width: 18,

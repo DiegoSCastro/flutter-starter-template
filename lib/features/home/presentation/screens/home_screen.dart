@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../auth/presentation/viewmodels/auth_viewmodel.dart';
+import '../../../auth/domain/entities/auth_user.dart';
+import '../../../auth/presentation/cubit/auth_cubit.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key, required this.viewModel});
+  const HomeScreen({super.key, required this.user});
 
-  final AuthViewModel viewModel;
+  final AuthUser user;
 
   @override
   Widget build(BuildContext context) {
-    final user = viewModel.user;
     final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
@@ -19,7 +20,7 @@ class HomeScreen extends StatelessWidget {
           IconButton(
             tooltip: 'Sign out',
             icon: const Icon(Icons.logout),
-            onPressed: viewModel.signOut,
+            onPressed: () => context.read<AuthCubit>().signOut(),
           ),
         ],
       ),
@@ -40,7 +41,7 @@ class HomeScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               Text(
-                'Welcome, ${user?.username ?? 'guest'}!',
+                'Welcome, ${user.username}!',
                 style: theme.textTheme.headlineSmall,
                 textAlign: TextAlign.center,
               ),
