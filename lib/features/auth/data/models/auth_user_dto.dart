@@ -1,20 +1,21 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../domain/entities/auth_user.dart';
 
+part 'auth_user_dto.freezed.dart';
 part 'auth_user_dto.g.dart';
 
-@JsonSerializable()
-class AuthUserDto {
-  const AuthUserDto({required this.id, required this.username});
+@freezed
+abstract class AuthUserDto with _$AuthUserDto {
+  const AuthUserDto._();
+
+  const factory AuthUserDto({
+    required String id,
+    required String username,
+  }) = _AuthUserDto;
 
   factory AuthUserDto.fromJson(Map<String, dynamic> json) =>
       _$AuthUserDtoFromJson(json);
-
-  final String id;
-  final String username;
-
-  Map<String, dynamic> toJson() => _$AuthUserDtoToJson(this);
 
   AuthUser toDomain() => AuthUser(id: id, username: username);
 }

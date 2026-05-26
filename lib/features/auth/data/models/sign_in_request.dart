@@ -1,13 +1,15 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'sign_in_request.freezed.dart';
 part 'sign_in_request.g.dart';
 
-@JsonSerializable(createFactory: false)
-class SignInRequest {
-  const SignInRequest({required this.username, required this.password});
+@freezed
+abstract class SignInRequest with _$SignInRequest {
+  const factory SignInRequest({
+    required String username,
+    required String password,
+  }) = _SignInRequest;
 
-  final String username;
-  final String password;
-
-  Map<String, dynamic> toJson() => _$SignInRequestToJson(this);
+  factory SignInRequest.fromJson(Map<String, dynamic> json) =>
+      _$SignInRequestFromJson(json);
 }

@@ -1,0 +1,4 @@
+global_options:
+  freezed:freezed:
+    runs_before:
+      - retrofit_generator:retrofit_generator
