@@ -9,8 +9,13 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:dio/dio.dart' as _i361;
+import 'package:flutter_starter_template/core/network/network_module.dart'
+    as _i173;
 import 'package:flutter_starter_template/features/auth/data/datasources/auth_local_data_source.dart'
     as _i297;
+import 'package:flutter_starter_template/features/auth/data/datasources/auth_remote_data_source.dart'
+    as _i87;
 import 'package:flutter_starter_template/features/auth/data/repositories/auth_repository_impl.dart'
     as _i1028;
 import 'package:flutter_starter_template/features/auth/domain/repositories/auth_repository.dart'
@@ -31,11 +36,21 @@ extension GetItInjectableX on _i174.GetIt {
     _i526.EnvironmentFilter? environmentFilter,
   }) {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
+    final networkModule = _$NetworkModule();
     gh.lazySingleton<_i297.AuthLocalDataSource>(
       () => _i297.InMemoryAuthDataSource(),
     );
+    gh.lazySingleton<_i361.Dio>(
+      () => networkModule.provideDio(gh<_i297.AuthLocalDataSource>()),
+    );
+    gh.lazySingleton<_i87.AuthRemoteDataSource>(
+      () => networkModule.provideAuthRemoteDataSource(gh<_i361.Dio>()),
+    );
     gh.lazySingleton<_i987.AuthRepository>(
-      () => _i1028.AuthRepositoryImpl(gh<_i297.AuthLocalDataSource>()),
+      () => _i1028.AuthRepositoryImpl(
+        gh<_i87.AuthRemoteDataSource>(),
+        gh<_i297.AuthLocalDataSource>(),
+      ),
     );
     gh.factory<_i1001.SignIn>(() => _i1001.SignIn(gh<_i987.AuthRepository>()));
     gh.factory<_i926.SignOut>(() => _i926.SignOut(gh<_i987.AuthRepository>()));
@@ -48,3 +63,5 @@ extension GetItInjectableX on _i174.GetIt {
     return this;
   }
 }
+
+class _$NetworkModule extends _i173.NetworkModule {}
