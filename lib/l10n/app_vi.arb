@@ -1,0 +1,16 @@
+{
+  "@@locale": "vi",
+  "appTitle": "Flutter Starter",
+  "loginAppBarTitle": "Đăng nhập",
+  "loginHeadline": "Chào mừng trở lại",
+  "loginUsernameLabel": "Tên đăng nhập",
+  "loginPasswordLabel": "Mật khẩu",
+  "loginSubmit": "Đăng nhập",
+  "fieldRequired": "Bắt buộc",
+  "errorInvalidCredentials": "Vui lòng nhập tên đăng nhập và mật khẩu.",
+  "errorUnknown": "Đã xảy ra lỗi.",
+  "homeAppBarTitle": "Trang chủ",
+  "homeSignOutTooltip": "Đăng xuất",
+  "homeWelcome": "Chào, {username}!",
+  "homeSignedInBody": "Bạn đã đăng nhập."
+}

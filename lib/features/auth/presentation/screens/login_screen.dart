@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/error/failure.dart';
+import '../../../../l10n/app_localizations.dart';
 import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
 
@@ -31,11 +33,18 @@ class _LoginScreenState extends State<LoginScreen> {
         );
   }
 
+  String _localizeFailure(AppLocalizations l, Failure failure) =>
+      switch (failure) {
+        InvalidCredentialsFailure() => l.errorInvalidCredentials,
+        _ => l.errorUnknown,
+      };
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l = AppLocalizations.of(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('Sign in')),
+      appBar: AppBar(title: Text(l.loginAppBarTitle)),
       body: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 360),
@@ -44,44 +53,45 @@ class _LoginScreenState extends State<LoginScreen> {
             child: BlocBuilder<AuthCubit, AuthState>(
               builder: (context, state) {
                 final isSubmitting = state is AuthSubmitting;
-                final errorMessage =
-                    state is AuthFailure ? state.message : null;
+                final errorMessage = state is AuthFailure
+                    ? _localizeFailure(l, state.failure)
+                    : null;
                 return Form(
                   key: _formKey,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Text(
-                        'Welcome back',
+                        l.loginHeadline,
                         textAlign: TextAlign.center,
                         style: theme.textTheme.headlineSmall,
                       ),
                       const SizedBox(height: 24),
                       TextFormField(
                         controller: _usernameController,
-                        decoration: const InputDecoration(
-                          labelText: 'Username',
-                          border: OutlineInputBorder(),
+                        decoration: InputDecoration(
+                          labelText: l.loginUsernameLabel,
+                          border: const OutlineInputBorder(),
                         ),
                         textInputAction: TextInputAction.next,
                         autofillHints: const [AutofillHints.username],
                         validator: (value) =>
                             (value == null || value.trim().isEmpty)
-                                ? 'Required'
+                                ? l.fieldRequired
                                 : null,
                       ),
                       const SizedBox(height: 16),
                       TextFormField(
                         controller: _passwordController,
-                        decoration: const InputDecoration(
-                          labelText: 'Password',
-                          border: OutlineInputBorder(),
+                        decoration: InputDecoration(
+                          labelText: l.loginPasswordLabel,
+                          border: const OutlineInputBorder(),
                         ),
                         obscureText: true,
                         autofillHints: const [AutofillHints.password],
                         onFieldSubmitted: (_) => _submit(),
                         validator: (value) => (value == null || value.isEmpty)
-                            ? 'Required'
+                            ? l.fieldRequired
                             : null,
                       ),
                       if (errorMessage != null) ...[
@@ -101,7 +111,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 width: 18,
                                 child: CircularProgressIndicator(strokeWidth: 2),
                               )
-                            : const Text('Sign in'),
+                            : Text(l.loginSubmit),
                       ),
                     ],
                   ),

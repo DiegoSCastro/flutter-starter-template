@@ -26,7 +26,7 @@ class AuthCubit extends Cubit<AuthState> {
       case Ok(value: final user):
         emit(AuthAuthenticated(user));
       case Err(failure: final failure):
-        emit(AuthFailure(failure.message));
+        emit(AuthFailure(failure));
     }
   }
 

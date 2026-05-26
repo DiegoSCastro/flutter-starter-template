@@ -1,0 +1,24 @@
+{
+  "@@locale": "en",
+  "appTitle": "Flutter Starter",
+  "loginAppBarTitle": "Sign in",
+  "loginHeadline": "Welcome back",
+  "loginUsernameLabel": "Username",
+  "loginPasswordLabel": "Password",
+  "loginSubmit": "Sign in",
+  "fieldRequired": "Required",
+  "errorInvalidCredentials": "Please enter a username and password.",
+  "errorUnknown": "Something went wrong.",
+  "homeAppBarTitle": "Home",
+  "homeSignOutTooltip": "Sign out",
+  "homeWelcome": "Welcome, {username}!",
+  "@homeWelcome": {
+    "placeholders": {
+      "username": {
+        "type": "String",
+        "example": "alice"
+      }
+    }
+  },
+  "homeSignedInBody": "You are signed in."
+}

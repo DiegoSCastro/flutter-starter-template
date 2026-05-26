@@ -1,3 +1,4 @@
+import '../../../../core/error/failure.dart';
 import '../../domain/entities/auth_user.dart';
 
 /// State surface for [AuthCubit]. Pattern-match exhaustively at call sites.
@@ -19,6 +20,6 @@ final class AuthAuthenticated extends AuthState {
 }
 
 final class AuthFailure extends AuthState {
-  const AuthFailure(this.message);
-  final String message;
+  const AuthFailure(this.failure);
+  final Failure failure;
 }

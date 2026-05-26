@@ -8,6 +8,7 @@ import '../features/auth/data/repositories/auth_repository_impl.dart';
 import '../features/auth/domain/usecases/sign_in.dart';
 import '../features/auth/domain/usecases/sign_out.dart';
 import '../features/auth/presentation/cubit/auth_cubit.dart';
+import '../l10n/app_localizations.dart';
 import 'router.dart';
 
 class App extends StatefulWidget {
@@ -44,9 +45,11 @@ class _AppState extends State<App> {
     return BlocProvider.value(
       value: _authCubit,
       child: MaterialApp.router(
-        title: 'Flutter Starter',
+        onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
         theme: AppTheme.light(),
         darkTheme: AppTheme.dark(),
+        localizationsDelegates: AppLocalizations.localizationsDelegates,
+        supportedLocales: AppLocalizations.supportedLocales,
         routerConfig: _router,
       ),
     );
