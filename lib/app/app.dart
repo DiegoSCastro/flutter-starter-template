@@ -24,6 +24,7 @@ class _AppState extends State<App> {
     super.initState();
     _authCubit = getIt<AuthCubit>();
     _router = buildRouter(_authCubit);
+    _authCubit.restoreSession();
   }
 
   @override

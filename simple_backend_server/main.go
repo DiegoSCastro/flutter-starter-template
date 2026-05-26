@@ -16,6 +16,12 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
+	"github.com/golang-jwt/jwt/v5"
+)
+
+const (
+	accessTokenTTL  = 15 * time.Minute
+	refreshTokenTTL = 30 * 24 * time.Hour
 )
 
 type user struct {
@@ -28,9 +34,15 @@ type signInRequest struct {
 	Password string `json:"password"`
 }
 
-type signInResponse struct {
-	User  user   `json:"user"`
-	Token string `json:"token"`
+type tokenPair struct {
+	User         user   `json:"user"`
+	AccessToken  string `json:"access_token"`
+	RefreshToken string `json:"refresh_token"`
+	ExpiresIn    int64  `json:"expires_in"`
+}
+
+type refreshRequest struct {
+	RefreshToken string `json:"refresh_token"`
 }
 
 type errorResponse struct {
@@ -38,36 +50,56 @@ type errorResponse struct {
 	Message string `json:"message"`
 }
 
-type sessionStore struct {
-	mu       sync.RWMutex
-	byToken  map[string]user
+type refreshEntry struct {
+	user      user
+	expiresAt time.Time
 }
 
-func newSessionStore() *sessionStore {
-	return &sessionStore{byToken: make(map[string]user)}
+type refreshStore struct {
+	mu      sync.Mutex
+	entries map[string]refreshEntry
 }
 
-func (s *sessionStore) create(u user) (string, error) {
+func newRefreshStore() *refreshStore {
+	return &refreshStore{entries: make(map[string]refreshEntry)}
+}
+
+func (s *refreshStore) issue(u user) (string, error) {
 	token, err := randomToken()
 	if err != nil {
 		return "", err
 	}
 	s.mu.Lock()
-	s.byToken[token] = u
+	s.entries[token] = refreshEntry{user: u, expiresAt: time.Now().Add(refreshTokenTTL)}
 	s.mu.Unlock()
 	return token, nil
 }
 
-func (s *sessionStore) get(token string) (user, bool) {
-	s.mu.RLock()
-	defer s.mu.RUnlock()
-	u, ok := s.byToken[token]
-	return u, ok
+// rotate consumes the supplied refresh token and, if still valid, returns the
+// associated user and a freshly issued refresh token. The old token is always
+// invalidated, even when expired, to prevent reuse.
+func (s *refreshStore) rotate(token string) (user, string, error) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	entry, ok := s.entries[token]
+	delete(s.entries, token)
+	if !ok {
+		return user{}, "", errors.New("refresh token is not recognized")
+	}
+	if time.Now().After(entry.expiresAt) {
+		return user{}, "", errors.New("refresh token is expired")
+	}
+	newToken, err := randomToken()
+	if err != nil {
+		return user{}, "", err
+	}
+	s.entries[newToken] = refreshEntry{user: entry.user, expiresAt: time.Now().Add(refreshTokenTTL)}
+	return entry.user, newToken, nil
 }
 
-func (s *sessionStore) revoke(token string) {
+func (s *refreshStore) revoke(token string) {
 	s.mu.Lock()
-	delete(s.byToken, token)
+	delete(s.entries, token)
 	s.mu.Unlock()
 }
 
@@ -79,13 +111,61 @@ func randomToken() (string, error) {
 	return hex.EncodeToString(buf), nil
 }
 
+type jwtIssuer struct {
+	secret []byte
+}
+
+func newJWTIssuer(secret []byte) *jwtIssuer {
+	return &jwtIssuer{secret: secret}
+}
+
+type accessClaims struct {
+	Username string `json:"username"`
+	jwt.RegisteredClaims
+}
+
+func (j *jwtIssuer) sign(u user) (string, error) {
+	now := time.Now()
+	claims := accessClaims{
+		Username: u.Username,
+		RegisteredClaims: jwt.RegisteredClaims{
+			Subject:   u.ID,
+			IssuedAt:  jwt.NewNumericDate(now),
+			ExpiresAt: jwt.NewNumericDate(now.Add(accessTokenTTL)),
+		},
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString(j.secret)
+}
+
+func (j *jwtIssuer) parse(raw string) (user, error) {
+	claims := &accessClaims{}
+	_, err := jwt.ParseWithClaims(raw, claims, func(t *jwt.Token) (any, error) {
+		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, errors.New("unexpected signing method")
+		}
+		return j.secret, nil
+	})
+	if err != nil {
+		return user{}, err
+	}
+	return user{ID: claims.Subject, Username: claims.Username}, nil
+}
+
 func main() {
 	addr := os.Getenv("ADDR")
 	if addr == "" {
 		addr = ":8080"
 	}
 
-	sessions := newSessionStore()
+	secret := []byte(os.Getenv("JWT_SECRET"))
+	if len(secret) == 0 {
+		log.Print("warning: JWT_SECRET not set, using insecure dev default")
+		secret = []byte("dev-only-secret-do-not-use-in-prod")
+	}
+
+	issuer := newJWTIssuer(secret)
+	refreshes := newRefreshStore()
 
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID)
@@ -106,9 +186,10 @@ func main() {
 	})
 
 	r.Route("/api/auth", func(r chi.Router) {
-		r.Post("/sign-in", signInHandler(sessions))
-		r.Post("/sign-out", authMiddleware(sessions, signOutHandler(sessions)))
-		r.Get("/me", authMiddleware(sessions, meHandler()))
+		r.Post("/sign-in", signInHandler(issuer, refreshes))
+		r.Post("/refresh", refreshHandler(issuer, refreshes))
+		r.Post("/sign-out", signOutHandler(refreshes))
+		r.Get("/me", authMiddleware(issuer, meHandler()))
 	})
 
 	log.Printf("listening on %s", addr)
@@ -117,7 +198,7 @@ func main() {
 	}
 }
 
-func signInHandler(sessions *sessionStore) http.HandlerFunc {
+func signInHandler(issuer *jwtIssuer, refreshes *refreshStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req signInRequest
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -133,19 +214,65 @@ func signInHandler(sessions *sessionStore) http.HandlerFunc {
 			ID:       "fake-" + req.Username,
 			Username: req.Username,
 		}
-		token, err := sessions.create(u)
+		pair, err := issueTokens(issuer, refreshes, u)
 		if err != nil {
-			writeError(w, http.StatusInternalServerError, "token_error", "Failed to issue session token.")
+			writeError(w, http.StatusInternalServerError, "token_error", "Failed to issue tokens.")
 			return
 		}
-		writeJSON(w, http.StatusOK, signInResponse{User: u, Token: token})
+		writeJSON(w, http.StatusOK, pair)
 	}
 }
 
-func signOutHandler(sessions *sessionStore) http.HandlerFunc {
+func refreshHandler(issuer *jwtIssuer, refreshes *refreshStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		token, _ := tokenFromHeader(r)
-		sessions.revoke(token)
+		var req refreshRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil || strings.TrimSpace(req.RefreshToken) == "" {
+			writeError(w, http.StatusBadRequest, "invalid_body", "refresh_token is required.")
+			return
+		}
+		u, newRefresh, err := refreshes.rotate(req.RefreshToken)
+		if err != nil {
+			writeError(w, http.StatusUnauthorized, "invalid_refresh", err.Error())
+			return
+		}
+		access, err := issuer.sign(u)
+		if err != nil {
+			writeError(w, http.StatusInternalServerError, "token_error", "Failed to issue access token.")
+			return
+		}
+		writeJSON(w, http.StatusOK, tokenPair{
+			User:         u,
+			AccessToken:  access,
+			RefreshToken: newRefresh,
+			ExpiresIn:    int64(accessTokenTTL.Seconds()),
+		})
+	}
+}
+
+func issueTokens(issuer *jwtIssuer, refreshes *refreshStore, u user) (tokenPair, error) {
+	access, err := issuer.sign(u)
+	if err != nil {
+		return tokenPair{}, err
+	}
+	refresh, err := refreshes.issue(u)
+	if err != nil {
+		return tokenPair{}, err
+	}
+	return tokenPair{
+		User:         u,
+		AccessToken:  access,
+		RefreshToken: refresh,
+		ExpiresIn:    int64(accessTokenTTL.Seconds()),
+	}, nil
+}
+
+func signOutHandler(refreshes *refreshStore) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var req refreshRequest
+		_ = json.NewDecoder(r.Body).Decode(&req)
+		if strings.TrimSpace(req.RefreshToken) != "" {
+			refreshes.revoke(req.RefreshToken)
+		}
 		w.WriteHeader(http.StatusNoContent)
 	}
 }
@@ -165,16 +292,16 @@ func meHandler() http.HandlerFunc {
 	}
 }
 
-func authMiddleware(sessions *sessionStore, next http.HandlerFunc) http.HandlerFunc {
+func authMiddleware(issuer *jwtIssuer, next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		token, err := tokenFromHeader(r)
 		if err != nil {
 			writeError(w, http.StatusUnauthorized, "unauthenticated", err.Error())
 			return
 		}
-		u, ok := sessions.get(token)
-		if !ok {
-			writeError(w, http.StatusUnauthorized, "unauthenticated", "Session token is not recognized.")
+		u, err := issuer.parse(token)
+		if err != nil {
+			writeError(w, http.StatusUnauthorized, "unauthenticated", "Access token is invalid or expired.")
 			return
 		}
 		ctx := context.WithValue(r.Context(), userCtxKey, u)

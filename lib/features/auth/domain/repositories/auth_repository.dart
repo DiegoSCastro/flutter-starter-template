@@ -9,5 +9,9 @@ abstract interface class AuthRepository {
 
   Future<Result<void>> signOut();
 
+  /// Loads any persisted session and attempts to refresh its access token.
+  /// Returns `Ok(user)` if a valid session can be restored, otherwise `Err`.
+  Future<Result<AuthUser>> restoreSession();
+
   AuthUser? get currentUser;
 }

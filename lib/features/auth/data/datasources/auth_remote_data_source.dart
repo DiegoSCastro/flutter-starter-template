@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
+import '../models/refresh_token_request.dart';
 import '../models/sign_in_request.dart';
 import '../models/sign_in_response.dart';
 
@@ -15,5 +16,5 @@ abstract class AuthRemoteDataSource {
   Future<SignInResponse> signIn(@Body() SignInRequest body);
 
   @POST('/api/auth/sign-out')
-  Future<void> signOut();
+  Future<void> signOut(@Body() RefreshTokenRequest body);
 }

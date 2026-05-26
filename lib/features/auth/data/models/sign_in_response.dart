@@ -9,7 +9,9 @@ part 'sign_in_response.g.dart';
 abstract class SignInResponse with _$SignInResponse {
   const factory SignInResponse({
     required AuthUserDto user,
-    required String token,
+    @JsonKey(name: 'access_token') required String accessToken,
+    @JsonKey(name: 'refresh_token') required String refreshToken,
+    @JsonKey(name: 'expires_in') required int expiresIn,
   }) = _SignInResponse;
 
   factory SignInResponse.fromJson(Map<String, dynamic> json) =>

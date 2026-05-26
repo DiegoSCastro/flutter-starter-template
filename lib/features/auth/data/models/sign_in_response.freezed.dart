@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SignInResponse {
 
- AuthUserDto get user; String get token;
+ AuthUserDto get user;@JsonKey(name: 'access_token') String get accessToken;@JsonKey(name: 'refresh_token') String get refreshToken;@JsonKey(name: 'expires_in') int get expiresIn;
 
   /// Serializes this SignInResponse to a JSON map.
   Map<String, dynamic> toJson();
@@ -25,7 +25,7 @@ mixin _$SignInResponse {
 
 @override
 String toString() {
-  return 'SignInResponse(user: $user, token: $token)';
+  return 'SignInResponse(user: $user, accessToken: $accessToken, refreshToken: $refreshToken, expiresIn: $expiresIn)';
 }
 
 
@@ -112,10 +112,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( AuthUserDto user,  String token)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( AuthUserDto user, @JsonKey(name: 'access_token')  String accessToken, @JsonKey(name: 'refresh_token')  String refreshToken, @JsonKey(name: 'expires_in')  int expiresIn)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SignInResponse() when $default != null:
-return $default(_that.user,_that.token);case _:
+return $default(_that.user,_that.accessToken,_that.refreshToken,_that.expiresIn);case _:
   return orElse();
 
 }
@@ -133,10 +133,10 @@ return $default(_that.user,_that.token);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( AuthUserDto user,  String token)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( AuthUserDto user, @JsonKey(name: 'access_token')  String accessToken, @JsonKey(name: 'refresh_token')  String refreshToken, @JsonKey(name: 'expires_in')  int expiresIn)  $default,) {final _that = this;
 switch (_that) {
 case _SignInResponse():
-return $default(_that.user,_that.token);case _:
+return $default(_that.user,_that.accessToken,_that.refreshToken,_that.expiresIn);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -153,10 +153,10 @@ return $default(_that.user,_that.token);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( AuthUserDto user,  String token)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( AuthUserDto user, @JsonKey(name: 'access_token')  String accessToken, @JsonKey(name: 'refresh_token')  String refreshToken, @JsonKey(name: 'expires_in')  int expiresIn)?  $default,) {final _that = this;
 switch (_that) {
 case _SignInResponse() when $default != null:
-return $default(_that.user,_that.token);case _:
+return $default(_that.user,_that.accessToken,_that.refreshToken,_that.expiresIn);case _:
   return null;
 
 }
@@ -168,11 +168,13 @@ return $default(_that.user,_that.token);case _:
 @JsonSerializable()
 
 class _SignInResponse implements SignInResponse {
-  const _SignInResponse({required this.user, required this.token});
+  const _SignInResponse({required this.user, @JsonKey(name: 'access_token') required this.accessToken, @JsonKey(name: 'refresh_token') required this.refreshToken, @JsonKey(name: 'expires_in') required this.expiresIn});
   factory _SignInResponse.fromJson(Map<String, dynamic> json) => _$SignInResponseFromJson(json);
 
 @override final  AuthUserDto user;
-@override final  String token;
+@override@JsonKey(name: 'access_token') final  String accessToken;
+@override@JsonKey(name: 'refresh_token') final  String refreshToken;
+@override@JsonKey(name: 'expires_in') final  int expiresIn;
 
 
 @override
@@ -184,7 +186,7 @@ Map<String, dynamic> toJson() {
 
 @override
 String toString() {
-  return 'SignInResponse(user: $user, token: $token)';
+  return 'SignInResponse(user: $user, accessToken: $accessToken, refreshToken: $refreshToken, expiresIn: $expiresIn)';
 }
 
 

@@ -2,19 +2,22 @@ import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/error/failure.dart';
+import '../../../../core/network/token_refresher.dart';
 import '../../../../core/utils/result.dart';
 import '../../domain/entities/auth_user.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../datasources/auth_local_data_source.dart';
 import '../datasources/auth_remote_data_source.dart';
+import '../models/refresh_token_request.dart';
 import '../models/sign_in_request.dart';
 
 @LazySingleton(as: AuthRepository)
 class AuthRepositoryImpl implements AuthRepository {
-  AuthRepositoryImpl(this._remote, this._local);
+  AuthRepositoryImpl(this._remote, this._local, this._refresher);
 
   final AuthRemoteDataSource _remote;
   final AuthLocalDataSource _local;
+  final TokenRefresher _refresher;
 
   @override
   AuthUser? get currentUser => _local.currentUser;
@@ -34,7 +37,11 @@ class AuthRepositoryImpl implements AuthRepository {
         SignInRequest(username: username, password: password),
       );
       final user = response.user.toDomain();
-      _local.setSession(user: user, token: response.token);
+      await _local.setSession(
+        user: user,
+        accessToken: response.accessToken,
+        refreshToken: response.refreshToken,
+      );
       return Ok(user);
     } on DioException catch (e) {
       return Err(_mapDioError(e));
@@ -43,14 +50,32 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<Result<void>> signOut() async {
-    try {
-      await _remote.signOut();
-    } on DioException {
-      // Best-effort: drop the local session even if the server call fails so
-      // the user isn't stuck signed in after a network blip.
+    final refreshToken = _local.refreshToken;
+    if (refreshToken != null) {
+      try {
+        await _remote.signOut(RefreshTokenRequest(refreshToken: refreshToken));
+      } on DioException {
+        // Best-effort: drop the local session even if the server call fails so
+        // the user isn't stuck signed in after a network blip.
+      }
     }
-    _local.clearSession();
+    await _local.clearSession();
     return const Ok(null);
+  }
+
+  @override
+  Future<Result<AuthUser>> restoreSession() async {
+    await _local.load();
+    final user = _local.currentUser;
+    final refreshToken = _local.refreshToken;
+    if (user == null || refreshToken == null) {
+      return const Err(UnknownFailure('No persisted session.'));
+    }
+    final refreshed = await _refresher.refresh();
+    if (!refreshed) {
+      return const Err(UnknownFailure('Session expired.'));
+    }
+    return Ok(user);
   }
 
   Failure _mapDioError(DioException e) {

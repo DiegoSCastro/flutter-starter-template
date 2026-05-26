@@ -73,6 +73,10 @@ dependencies:
   # immutable data classes and sealed unions (used by auth models).
   freezed_annotation: ^3.1.0
 
+  # Encrypted persistent storage for the auth session (access + refresh
+  # tokens). Keychain on iOS, EncryptedSharedPreferences/Keystore on Android.
+  flutter_secure_storage: ^10.3.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
