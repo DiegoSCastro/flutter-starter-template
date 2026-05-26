@@ -9,3 +9,7 @@ sealed class Failure {
 class UnknownFailure extends Failure {
   const UnknownFailure([super.message = 'Unknown error']);
 }
+
+class InvalidCredentialsFailure extends Failure {
+  const InvalidCredentialsFailure([super.message = 'Invalid credentials']);
+}
