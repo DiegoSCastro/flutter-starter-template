@@ -33,6 +33,17 @@ VS Code launch configs in `.vscode/launch.json` cover Debug / Profile / Release 
 
 `analysis_options.yaml` extends `package:flutter_lints/flutter.yaml`. Project-specific rule overrides go under `linter.rules` in that file.
 
+## Agent skills
+
+Official task-playbook skills from `flutter/skills` and `dart-lang/skills` are vendored under `.agents/skills/` (hash-pinned via `skills-lock.json`). Compatible agents auto-discover them. To refresh against upstream:
+
+```bash
+npx skills add flutter/skills --skill '*' --agent universal
+npx skills add dart-lang/skills --skill '*' --agent universal
+```
+
+When a task matches a skill name (e.g. setting up routing → `flutter-setup-declarative-routing`, JSON serialization → `flutter-implement-json-serialization`, adding tests → `flutter-add-widget-test` / `dart-add-unit-test`), invoke the skill rather than improvising — it encodes the team's preferred workflow.
+
 ---
 
 # Flutter coding rules
