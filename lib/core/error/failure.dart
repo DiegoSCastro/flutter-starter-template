@@ -13,3 +13,11 @@ class UnknownFailure extends Failure {
 class InvalidCredentialsFailure extends Failure {
   const InvalidCredentialsFailure([super.message = 'Invalid credentials']);
 }
+
+class NotFoundFailure extends Failure {
+  const NotFoundFailure([super.message = 'Not found']);
+}
+
+class ValidationFailure extends Failure {
+  const ValidationFailure([super.message = 'Invalid input']);
+}

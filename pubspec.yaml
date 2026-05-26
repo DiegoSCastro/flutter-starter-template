@@ -77,6 +77,10 @@ dependencies:
   # tokens). Keychain on iOS, EncryptedSharedPreferences/Keystore on Android.
   flutter_secure_storage: ^10.3.0
 
+  # Launches URLs in the system browser (used by the bookmarks feature's
+  # "Open" action).
+  url_launcher: ^6.3.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

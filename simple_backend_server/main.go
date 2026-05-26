@@ -166,6 +166,7 @@ func main() {
 
 	issuer := newJWTIssuer(secret)
 	refreshes := newRefreshStore()
+	bookmarks := newBookmarkStore()
 
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID)
@@ -191,6 +192,8 @@ func main() {
 		r.Post("/sign-out", signOutHandler(refreshes))
 		r.Get("/me", authMiddleware(issuer, meHandler()))
 	})
+
+	registerBookmarkRoutes(r, issuer, bookmarks)
 
 	log.Printf("listening on %s", addr)
 	if err := http.ListenAndServe(addr, r); err != nil {

@@ -3,6 +3,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../features/auth/data/datasources/auth_local_data_source.dart';
 import '../../features/auth/data/datasources/auth_remote_data_source.dart';
+import '../../features/bookmarks/data/datasources/bookmarks_remote_data_source.dart';
 import 'auth_interceptor.dart';
 import 'token_refresher.dart';
 
@@ -36,4 +37,8 @@ abstract class NetworkModule {
   @lazySingleton
   AuthRemoteDataSource provideAuthRemoteDataSource(Dio dio) =>
       AuthRemoteDataSource(dio);
+
+  @lazySingleton
+  BookmarksRemoteDataSource provideBookmarksRemoteDataSource(Dio dio) =>
+      BookmarksRemoteDataSource(dio);
 }

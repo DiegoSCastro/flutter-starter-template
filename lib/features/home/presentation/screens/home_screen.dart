@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
@@ -53,6 +54,12 @@ class HomeScreen extends StatelessWidget {
                   Text(
                     l.homeSignedInBody,
                     style: theme.textTheme.bodyMedium,
+                  ),
+                  const SizedBox(height: 24),
+                  FilledButton.icon(
+                    onPressed: () => context.push('/bookmarks'),
+                    icon: const Icon(Icons.bookmark_outline),
+                    label: const Text('My bookmarks'),
                   ),
                 ],
               );
