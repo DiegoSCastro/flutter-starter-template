@@ -1,25 +1,15 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+
 import '../../../../core/error/failure.dart';
 import '../../domain/entities/auth_user.dart';
 
-/// State surface for [AuthCubit]. Pattern-match exhaustively at call sites.
-sealed class AuthState {
-  const AuthState();
-}
+part 'auth_state.freezed.dart';
 
-final class AuthInitial extends AuthState {
-  const AuthInitial();
-}
-
-final class AuthSubmitting extends AuthState {
-  const AuthSubmitting();
-}
-
-final class AuthAuthenticated extends AuthState {
-  const AuthAuthenticated(this.user);
-  final AuthUser user;
-}
-
-final class AuthFailure extends AuthState {
-  const AuthFailure(this.failure);
-  final Failure failure;
+/// State surface for `AuthCubit`. Pattern-match exhaustively at call sites.
+@freezed
+sealed class AuthState with _$AuthState {
+  const factory AuthState.initial() = AuthInitial;
+  const factory AuthState.submitting() = AuthSubmitting;
+  const factory AuthState.authenticated(AuthUser user) = AuthAuthenticated;
+  const factory AuthState.failure(Failure failure) = AuthFailure;
 }

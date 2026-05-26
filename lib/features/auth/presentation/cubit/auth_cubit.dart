@@ -11,7 +11,7 @@ class AuthCubit extends Cubit<AuthState> {
   AuthCubit({required SignIn signIn, required SignOut signOut})
       : _signIn = signIn,
         _signOut = signOut,
-        super(const AuthInitial());
+        super(const AuthState.initial());
 
   final SignIn _signIn;
   final SignOut _signOut;
@@ -21,21 +21,21 @@ class AuthCubit extends Cubit<AuthState> {
     required String password,
   }) async {
     if (state is AuthSubmitting) return;
-    emit(const AuthSubmitting());
+    emit(const AuthState.submitting());
 
     final result = await _signIn(username: username, password: password);
     switch (result) {
       case Ok(value: final user):
-        emit(AuthAuthenticated(user));
+        emit(AuthState.authenticated(user));
       case Err(failure: final failure):
-        emit(AuthFailure(failure));
+        emit(AuthState.failure(failure));
     }
   }
 
   Future<void> signOut() async {
     final result = await _signOut();
     if (result is Ok<void>) {
-      emit(const AuthInitial());
+      emit(const AuthState.initial());
     }
   }
 }
