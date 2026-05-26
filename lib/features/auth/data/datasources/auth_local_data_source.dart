@@ -1,3 +1,5 @@
+import 'package:injectable/injectable.dart';
+
 import '../../domain/entities/auth_user.dart';
 
 /// Source of truth for the fake authentication session. Persists only in
@@ -7,6 +9,7 @@ abstract interface class AuthLocalDataSource {
   void setCurrentUser(AuthUser? user);
 }
 
+@LazySingleton(as: AuthLocalDataSource)
 class InMemoryAuthDataSource implements AuthLocalDataSource {
   AuthUser? _user;
 

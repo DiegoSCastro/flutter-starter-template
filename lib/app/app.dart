@@ -2,11 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../core/di/injection.dart';
 import '../core/theme/app_theme.dart';
-import '../features/auth/data/datasources/auth_local_data_source.dart';
-import '../features/auth/data/repositories/auth_repository_impl.dart';
-import '../features/auth/domain/usecases/sign_in.dart';
-import '../features/auth/domain/usecases/sign_out.dart';
 import '../features/auth/presentation/cubit/auth_cubit.dart';
 import '../l10n/app_localizations.dart';
 import 'router.dart';
@@ -25,18 +22,13 @@ class _AppState extends State<App> {
   @override
   void initState() {
     super.initState();
-    final repository = AuthRepositoryImpl(InMemoryAuthDataSource());
-    _authCubit = AuthCubit(
-      signIn: SignIn(repository),
-      signOut: SignOut(repository),
-    );
+    _authCubit = getIt<AuthCubit>();
     _router = buildRouter(_authCubit);
   }
 
   @override
   void dispose() {
     _router.dispose();
-    _authCubit.close();
     super.dispose();
   }
 
