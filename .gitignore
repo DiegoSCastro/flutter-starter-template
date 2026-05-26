@@ -1,3 +1,67 @@
+# https://dart.dev/guides/libraries/private-files
 
-# FVM Version Cache
+# -------------------------------------------------------------------------
+# Flutter/Dart
+# -------------------------------------------------------------------------
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+
+# -------------------------------------------------------------------------
+# Android (in addition to android/.gitignore)
+# -------------------------------------------------------------------------
+android/app/local.properties
+android/key.properties
+android/app/src/main/res/values/strings.xml
+android/app/src/main/res/values/google-services.json
+android/app/google-services.json
+android/flutter_sdk_path_relative.properties
+android/app/crashlytics-build.properties
+*.keystore
+*.jks
+
+# -------------------------------------------------------------------------
+# iOS/macOS (in addition to ios/.gitignore)
+# -------------------------------------------------------------------------
+ios/Flutter/Generated.xcconfig
+ios/Flutter/flutter_export_environment.sh
+ios/Flutter/App.framework
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Pods/
+ios/.symlinks/
+macos/Flutter/GeneratedXCConfig.xcconfig
+macos/Flutter/flutter_export_environment.sh
+macos/Flutter/ephemeral/
+macos/Pods/
+macos/.symlinks/
+
+# -------------------------------------------------------------------------
+# IDEs & Editors
+# -------------------------------------------------------------------------
+# IntelliJ IDEA / Android Studio
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+
+# -------------------------------------------------------------------------
+# System Files
+# -------------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+
+# -------------------------------------------------------------------------
+# FVM (Flutter Version Manager)
+# -------------------------------------------------------------------------
 .fvm/
