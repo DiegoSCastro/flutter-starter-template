@@ -151,8 +151,18 @@ Firebase is initialized in `lib/main.dart` with Crashlytics fatal error reportin
 | Auth | JWT (access + refresh) |
 | Theming | Material 3 + Google Fonts (Inter) |
 | i18n | flutter_localizations + intl |
+| Icons | cupertino_icons |
+| Assets | flutter_svg, flutter_gen_runner |
 | Notifications | flutter_local_notifications |
-| Firebase | firebase_core, firebase_crashlytics, firebase_analytics |
+| Firebase | firebase_core, firebase_crashlytics, firebase_analytics, firebase_messaging |
+| Animations | flutter_animate |
+| Haptics | HapticFeedback (Flutter Services) |
+| Connectivity | connectivity_plus |
+| Storage | path_provider, shared_preferences |
+| Device info | package_info_plus |
+| URL launching | url_launcher |
+| UUID | uuid |
+| Splash screen | splashscreen |
 | Backend | Go + chi/v5 + golang-jwt/v5 |
 
 ## 📝 Code Generation
