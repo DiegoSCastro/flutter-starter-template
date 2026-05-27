@@ -94,24 +94,78 @@ class BookmarkEditRoute extends GoRouteData with $BookmarkEditRoute {
       BookmarkFormScreen(id: id);
 }
 
+/// Tracks deep-link targets and splash-screen completion so the redirect can
+/// capture cold-start URIs and replay them after auth resolves.
+class DeepLinkState {
+  String? pendingRedirect;
+  bool splashCompleted = false;
+}
+
+/// Singleton accessor set by [buildRouterWithDeepLink] so the splash screen
+/// can reach the instance without constructor plumbing.
+DeepLinkState? _deepLinkStateInstance;
+
+/// Public getter for the splash screen to read [DeepLinkState.splashCompleted].
+DeepLinkState get deepLinkState => _deepLinkStateInstance!;
+
 /// Builds the app router and wires auth redirects to [cubit] state changes.
-GoRouter buildRouter(AuthCubit cubit) {
-  return GoRouter(
-    initialLocation: const SplashRoute().location,
+///
+/// Returns both the router and the deep-link state so callers can hold a
+/// reference, while the splash screen accesses it via [deepLinkState].
+({GoRouter router, DeepLinkState deepLink}) buildRouterWithDeepLink(
+  AuthCubit cubit,
+) {
+  final deepLink = DeepLinkState();
+  _deepLinkStateInstance = deepLink;
+
+  final router = GoRouter(
+    // No initialLocation — GoRouter resolves the platform deep-link URI on
+    // cold start and the redirect below captures it before sending the user
+    // through splash / auth.
     routes: $appRoutes,
     refreshListenable: _CubitListenable(cubit.stream),
     redirect: (context, state) {
-      // Splash owns its own redirect — it awaits restoreSession then routes.
-      // Skipping here prevents AuthInitial from bouncing splash to /login.
-      if (state.matchedLocation == const SplashRoute().location) return null;
+      final location = state.matchedLocation;
+      final auth = cubit.state;
 
-      final isAuthenticated = cubit.state is AuthAuthenticated;
-      final loggingIn = state.matchedLocation == const LoginRoute().location;
-      if (!isAuthenticated && !loggingIn) return const LoginRoute().location;
-      if (isAuthenticated && loggingIn) return const HomeRoute().location;
+      // ── Phase 1: Before splash completes ──
+      // Intercept every navigation until restoreSession runs.  The splash
+      // screen sets splashCompleted = true after restore finishes.
+      if (auth is AuthInitial && !deepLink.splashCompleted) {
+        // Already on splash — let it run.
+        if (location == '/splash') return null;
+        // Any other location (deep link or default '/') — capture and
+        // send through splash first.
+        deepLink.pendingRedirect = state.uri.toString();
+        return '/splash';
+      }
+
+      // ── Phase 2: Unauthenticated ──
+      // Splash completed with no session, or user signed out.
+      if (auth is AuthInitial || auth is AuthFailure) {
+        if (location == '/login') return null;
+        deepLink.pendingRedirect ??= state.uri.toString();
+        return '/login';
+      }
+
+      // ── Phase 3: Authenticated ──
+      if (auth is AuthAuthenticated) {
+        // Leaving splash or login — restore the captured deep link.
+        if (location == '/splash' || location == '/login') {
+          final target = deepLink.pendingRedirect;
+          deepLink.pendingRedirect = null;
+          return target ?? '/';
+        }
+        // Already on a valid, protected route — allow it.
+        return null;
+      }
+
+      // AuthSubmitting — don't interfere.
       return null;
     },
   );
+
+  return (router: router, deepLink: deepLink);
 }
 
 /// Adapts a [Stream] to the [Listenable] contract GoRouter needs for

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:splashscreen/splashscreen.dart' as pkg;
 
+import '../../../../app/router.dart';
 import '../../../../core/build_context_extensions.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
-import '../../../auth/presentation/cubit/auth_state.dart';
 
 part '../widgets/splash_widgets.dart';
 
@@ -35,8 +35,8 @@ class _SplashScreenState extends State<SplashScreen> {
       Future<void>.delayed(SplashScreen._minDisplay),
     ]);
     if (!mounted) return;
-    final next = cubit.state is AuthAuthenticated ? '/' : '/login';
-    context.go(next);
+    deepLinkState.splashCompleted = true;
+    context.go('/');
   }
 
   @override

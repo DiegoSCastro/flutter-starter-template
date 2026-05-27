@@ -34,7 +34,8 @@ class _AppState extends State<App> {
     super.initState();
     _authCubit = getIt<AuthCubit>();
     _themeCubit = getIt<ThemeCubit>();
-    _router = buildRouter(_authCubit);
+    final result = buildRouterWithDeepLink(_authCubit);
+    _router = result.router;
     _sync = getIt<BookmarksSyncService>();
     _authSub = _authCubit.stream.listen(_onAuthChanged);
     // Session restoration is driven by SplashScreen so it can gate routing

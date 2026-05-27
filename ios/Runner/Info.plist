@@ -49,6 +49,8 @@
 	</dict>
 	<key>FirebaseCrashlyticsCollectionEnabled</key>
 	<true/>
+	<key>FlutterDeepLinkingEnabled</key>
+	<true/>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
