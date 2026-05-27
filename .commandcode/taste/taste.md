@@ -1,12 +1,7 @@
 # Flutter Packages
 See [flutter-packages/taste.md](flutter-packages/taste.md)
 # Architecture
-- Structure the project using clean architecture layers (data, domain, presentation). Confidence: 0.70
-- Use BLoC pattern for view model layer. Confidence: 0.70
-- Use freezed for cubit/bloc state classes. Confidence: 0.70
-- Implement offline-first architecture pattern. Confidence: 0.65
-- Implement JWT authentication. Confidence: 0.65
-
+See [architecture/taste.md](architecture/taste.md)
 # Backend
 - Use Go with go-chi router for backend server. Confidence: 0.65
 

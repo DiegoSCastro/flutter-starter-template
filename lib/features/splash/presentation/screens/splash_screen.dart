@@ -6,6 +6,8 @@ import '../../../../core/build_context_extensions.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
 
+part '../widgets/splash_widgets.dart';
+
 /// Bootstrap screen shown while [AuthCubit.restoreSession] runs.
 ///
 /// Owns the post-restore redirect: routes to `/` on success, `/login`
@@ -57,12 +59,4 @@ class _SplashScreenState extends State<SplashScreen> {
       styleTextUnderTheLoader: TextStyle(color: context.colorScheme.onSurface),
     );
   }
-}
-
-/// Safety net — only reached if `seconds` elapses before [_bootstrap] navigates.
-class _SplashFallback extends StatelessWidget {
-  const _SplashFallback();
-
-  @override
-  Widget build(BuildContext context) => const Scaffold();
 }
