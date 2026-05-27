@@ -1,0 +1,66 @@
+import 'package:flutter_starter_template/core/error/failure.dart';
+import 'package:flutter_starter_template/core/utils/result.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+void main() {
+  group('Ok', () {
+    test('holds the provided value', () {
+      const result = Ok(42);
+      expect(result.value, 42);
+    });
+
+    test('supports null value', () {
+      const result = Ok<int?>(null);
+      expect(result.value, isNull);
+    });
+
+    test('supports string value', () {
+      const result = Ok('hello');
+      expect(result.value, 'hello');
+    });
+  });
+
+  group('Err', () {
+    test('holds the provided failure', () {
+      const failure = UnknownFailure('something broke');
+      const result = Err<int>(failure);
+      expect(result.failure, same(failure));
+    });
+
+    test('holds InvalidCredentialsFailure', () {
+      const failure = InvalidCredentialsFailure();
+      const result = Err<String>(failure);
+      expect(result.failure.message, 'Invalid credentials');
+    });
+  });
+
+  group('Result exhaustiveness', () {
+    test('Ok is Result', () {
+      const result = Ok(1);
+      expect(result, isA<Result<int>>());
+    });
+
+    test('Err is Result', () {
+      const result = Err<int>(const UnknownFailure());
+      expect(result, isA<Result<int>>());
+    });
+
+    test('pattern matching on Result', () {
+      Result<int> result = const Ok(10);
+      final value = switch (result) {
+        Ok(:final value) => value,
+        Err(:final failure) => -1,
+      };
+      expect(value, 10);
+    });
+
+    test('pattern matching on Err', () {
+      Result<int> result = const Err<int>(UnknownFailure());
+      final value = switch (result) {
+        Ok(:final value) => value,
+        Err(:final failure) => -1,
+      };
+      expect(value, -1);
+    });
+  });
+}
