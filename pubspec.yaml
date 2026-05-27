@@ -124,6 +124,7 @@ dependencies:
   # Firebase Crashlytics — real-time crash reporting for both Dart and
   # native (Android/iOS) stack traces.
   firebase_crashlytics: ^5.2.2
+  firebase_analytics: ^12.4.1
 
 dev_dependencies:
   flutter_test:
