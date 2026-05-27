@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import '../core/di/injection.dart';
 import '../core/theme/app_theme.dart';
 import '../core/theme/theme_cubit.dart';
+import '../core/theme/theme_state.dart';
 import '../features/auth/presentation/cubit/auth_cubit.dart';
 import '../features/auth/presentation/cubit/auth_state.dart';
 import '../features/bookmarks/data/sync/bookmarks_sync_service.dart';
@@ -62,12 +63,12 @@ class _AppState extends State<App> {
         BlocProvider.value(value: _authCubit),
         BlocProvider.value(value: _themeCubit),
       ],
-      child: BlocBuilder<ThemeCubit, ThemeMode>(
-        builder: (context, themeMode) => MaterialApp.router(
+      child: BlocBuilder<ThemeCubit, ThemeState>(
+        builder: (context, themeState) => MaterialApp.router(
           onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
-          theme: AppTheme.light(),
-          darkTheme: AppTheme.dark(),
-          themeMode: themeMode,
+          theme: AppTheme.light(scheme: themeState.scheme),
+          darkTheme: AppTheme.dark(scheme: themeState.scheme),
+          themeMode: themeState.mode,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
           routerConfig: _router,

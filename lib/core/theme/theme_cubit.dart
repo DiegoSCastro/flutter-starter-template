@@ -1,37 +1,52 @@
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const _kThemeModeKey = 'app.theme_mode';
+import 'theme_state.dart';
 
-/// Holds the active [ThemeMode] and persists user overrides so the choice
-/// survives app restarts. Defaults to [ThemeMode.system] on first launch.
+const _kThemeModeKey = 'app.theme_mode';
+const _kThemeSchemeKey = 'app.theme_scheme';
+
 @lazySingleton
-class ThemeCubit extends Cubit<ThemeMode> {
+class ThemeCubit extends Cubit<ThemeState> {
   ThemeCubit(this._prefs) : super(_readInitial(_prefs));
 
   final SharedPreferences _prefs;
 
-  static ThemeMode _readInitial(SharedPreferences prefs) {
-    final raw = prefs.getString(_kThemeModeKey);
-    return ThemeMode.values
-        .firstWhere((m) => m.name == raw, orElse: () => ThemeMode.system);
+  static ThemeState _readInitial(SharedPreferences prefs) {
+    final modeRaw = prefs.getString(_kThemeModeKey);
+    final mode = ThemeMode.values.firstWhere(
+      (m) => m.name == modeRaw,
+      orElse: () => ThemeMode.system,
+    );
+
+    final schemeRaw = prefs.getString(_kThemeSchemeKey);
+    final scheme = FlexScheme.values.firstWhere(
+      (s) => s.name == schemeRaw,
+      orElse: () => ThemeState.defaultScheme,
+    );
+
+    return ThemeState(mode: mode, scheme: scheme);
   }
 
   Future<void> setMode(ThemeMode mode) async {
-    if (mode == state) return;
-    emit(mode);
-    await _prefs.setString(_kThemeModeKey, mode.name);
+    if (mode == state.mode) return;
+    final next = state.copyWith(mode: mode);
+    await _persistAndEmit(next);
   }
 
-  Future<void> toggle() async {
-    final next = switch (state) {
-      ThemeMode.light => ThemeMode.dark,
-      ThemeMode.dark => ThemeMode.system,
-      ThemeMode.system => ThemeMode.light,
-    };
-    await setMode(next);
+  Future<void> setScheme(FlexScheme scheme) async {
+    if (scheme == state.scheme) return;
+    final next = state.copyWith(scheme: scheme);
+    await _persistAndEmit(next);
+  }
+
+  Future<void> _persistAndEmit(ThemeState next) async {
+    emit(next);
+    await _prefs.setString(_kThemeModeKey, next.mode.name);
+    await _prefs.setString(_kThemeSchemeKey, next.scheme.name);
   }
 }
 
