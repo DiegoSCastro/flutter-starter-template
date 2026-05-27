@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/injection.dart';
+import '../../data/sync/bookmarks_sync_service.dart';
 import '../cubit/bookmarks_list_cubit.dart';
 import '../cubit/bookmarks_list_state.dart';
 
@@ -52,6 +53,12 @@ class _BookmarksListViewState extends State<_BookmarksListView> {
       appBar: AppBar(
         backgroundColor: theme.colorScheme.inversePrimary,
         title: const Text('Bookmarks'),
+        actions: [
+          BlocBuilder<BookmarksListCubit, BookmarksListState>(
+            buildWhen: (a, b) => a.syncStatus != b.syncStatus,
+            builder: (context, state) => _SyncStatusIcon(status: state.syncStatus),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => context.push('/bookmarks/new'),
@@ -113,6 +120,15 @@ class _BookmarksListViewState extends State<_BookmarksListView> {
                         onDismissed: (_) =>
                             context.read<BookmarksListCubit>().delete(b.id),
                         child: ListTile(
+                          leading: b.isPendingSync
+                              ? Tooltip(
+                                  message: 'Not yet synced',
+                                  child: Icon(
+                                    Icons.cloud_off,
+                                    color: theme.colorScheme.outline,
+                                  ),
+                                )
+                              : null,
                           title: Text(
                             b.title,
                             maxLines: 1,
@@ -178,6 +194,38 @@ class _EmptyView extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class _SyncStatusIcon extends StatelessWidget {
+  const _SyncStatusIcon({required this.status});
+
+  final BookmarksSyncStatus status;
+
+  @override
+  Widget build(BuildContext context) {
+    return switch (status) {
+      BookmarksSyncStatus.syncing => const Padding(
+          padding: EdgeInsets.only(right: 12),
+          child: SizedBox(
+            width: 18,
+            height: 18,
+            child: Center(
+              child: SizedBox(
+                width: 16,
+                height: 16,
+                child: CircularProgressIndicator(strokeWidth: 2),
+              ),
+            ),
+          ),
+        ),
+      BookmarksSyncStatus.error => IconButton(
+          tooltip: 'Sync failed — tap to retry',
+          icon: const Icon(Icons.cloud_off),
+          onPressed: () => getIt<BookmarksSyncService>().sync(),
+        ),
+      BookmarksSyncStatus.idle => const SizedBox.shrink(),
+    };
   }
 }
 

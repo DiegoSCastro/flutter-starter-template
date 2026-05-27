@@ -7,6 +7,7 @@ class Bookmark {
     required this.tags,
     required this.createdAt,
     required this.updatedAt,
+    this.isPendingSync = false,
   });
 
   final String id;
@@ -16,4 +17,8 @@ class Bookmark {
   final List<String> tags;
   final DateTime createdAt;
   final DateTime updatedAt;
+
+  /// `true` when this bookmark has local changes that haven't been pushed
+  /// to the server yet. UI surfaces a badge for these.
+  final bool isPendingSync;
 }

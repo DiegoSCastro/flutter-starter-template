@@ -1,18 +1,34 @@
 import 'package:injectable/injectable.dart' hide Order;
 
-import '../../../../objectbox.g.dart';
-import '../../domain/repositories/bookmarks_repository.dart';
+import '../../../../objectbox.g.dart' hide SyncState;
 import 'bookmark_entity.dart';
 
-/// ObjectBox-backed CRUD for bookmarks. All operations are synchronous on
-/// the ObjectBox side; wrapped in `Future` to match the repository contract
-/// and to leave room for async backends later.
+/// ObjectBox-backed CRUD + sync helpers. All operations are synchronous on
+/// the ObjectBox side; wrapped in `Future` to keep the repository contract
+/// async-friendly.
+///
+/// Identity at this layer is the string [BookmarkEntity.uuid]. The integer
+/// `id` is an internal ObjectBox PK that callers never see.
 abstract interface class BookmarksLocalDataSource {
+  /// All non-tombstoned bookmarks, newest-first.
+  Future<List<BookmarkEntity>> listVisible();
+
+  /// Includes tombstoned (pendingDelete) rows. Used by the sync service.
   Future<List<BookmarkEntity>> listAll();
-  Future<BookmarkEntity?> getById(int id);
-  Future<BookmarkEntity> create(BookmarkInput input);
-  Future<BookmarkEntity?> update(int id, BookmarkInput input);
-  Future<bool> delete(int id);
+
+  Future<BookmarkEntity?> getByUuid(String uuid);
+
+  /// Rows with any non-synced state, ordered by [BookmarkEntity.updatedAt].
+  Future<List<BookmarkEntity>> listPending();
+
+  /// Inserts a new row in [SyncState.pendingCreate].
+  Future<BookmarkEntity> putNew(BookmarkEntity entity);
+
+  /// Persists changes to an existing row. Caller owns sync state changes.
+  Future<void> put(BookmarkEntity entity);
+
+  /// Hard-removes by internal PK. Used after a successful pendingDelete push.
+  Future<void> hardDelete(int pk);
 }
 
 @LazySingleton(as: BookmarksLocalDataSource)
@@ -20,6 +36,20 @@ class ObjectBoxBookmarksDataSource implements BookmarksLocalDataSource {
   ObjectBoxBookmarksDataSource(Store store) : _box = store.box<BookmarkEntity>();
 
   final Box<BookmarkEntity> _box;
+
+  @override
+  Future<List<BookmarkEntity>> listVisible() async {
+    final query = _box
+        .query(BookmarkEntity_.syncStateCode
+            .notEquals(SyncState.pendingDelete.code))
+        .order(BookmarkEntity_.createdAt, flags: Order.descending)
+        .build();
+    try {
+      return query.find();
+    } finally {
+      query.close();
+    }
+  }
 
   @override
   Future<List<BookmarkEntity>> listAll() async {
@@ -35,24 +65,41 @@ class ObjectBoxBookmarksDataSource implements BookmarksLocalDataSource {
   }
 
   @override
-  Future<BookmarkEntity?> getById(int id) async => _box.get(id);
+  Future<BookmarkEntity?> getByUuid(String uuid) async {
+    final query = _box.query(BookmarkEntity_.uuid.equals(uuid)).build();
+    try {
+      return query.findFirst();
+    } finally {
+      query.close();
+    }
+  }
 
   @override
-  Future<BookmarkEntity> create(BookmarkInput input) async {
-    final entity = BookmarkEntity.fromInput(input, now: DateTime.now().toUtc());
+  Future<List<BookmarkEntity>> listPending() async {
+    final query = _box
+        .query(BookmarkEntity_.syncStateCode.notEquals(SyncState.synced.code))
+        .order(BookmarkEntity_.updatedAt)
+        .build();
+    try {
+      return query.find();
+    } finally {
+      query.close();
+    }
+  }
+
+  @override
+  Future<BookmarkEntity> putNew(BookmarkEntity entity) async {
     _box.put(entity);
     return entity;
   }
 
   @override
-  Future<BookmarkEntity?> update(int id, BookmarkInput input) async {
-    final existing = _box.get(id);
-    if (existing == null) return null;
-    existing.applyInput(input, now: DateTime.now().toUtc());
-    _box.put(existing);
-    return existing;
+  Future<void> put(BookmarkEntity entity) async {
+    _box.put(entity);
   }
 
   @override
-  Future<bool> delete(int id) async => _box.remove(id);
+  Future<void> hardDelete(int pk) async {
+    _box.remove(pk);
+  }
 }

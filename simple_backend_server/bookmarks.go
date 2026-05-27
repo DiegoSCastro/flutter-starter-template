@@ -24,6 +24,10 @@ type bookmark struct {
 }
 
 type bookmarkRequest struct {
+	// Optional client-provided ID. When non-empty on POST, the server uses
+	// it instead of generating one, so offline-first clients can mint stable
+	// IDs locally. Ignored on PUT (path id wins).
+	ID          string   `json:"id,omitempty"`
 	Title       string   `json:"title"`
 	URL         string   `json:"url"`
 	Description string   `json:"description"`
@@ -64,10 +68,18 @@ func (s *bookmarkStore) getOwned(id, ownerID string) (bookmark, bool) {
 	return b, true
 }
 
+// errBookmarkConflict is returned when a client-provided ID collides with an
+// existing bookmark, so the handler can map it to HTTP 409.
+var errBookmarkConflict = errors.New("bookmark with this id already exists")
+
 func (s *bookmarkStore) create(ownerID string, req bookmarkRequest) (bookmark, error) {
-	id, err := randomToken()
-	if err != nil {
-		return bookmark{}, err
+	id := strings.TrimSpace(req.ID)
+	if id == "" {
+		generated, err := randomToken()
+		if err != nil {
+			return bookmark{}, err
+		}
+		id = generated
 	}
 	now := time.Now().UTC()
 	b := bookmark{
@@ -81,8 +93,11 @@ func (s *bookmarkStore) create(ownerID string, req bookmarkRequest) (bookmark, e
 		UpdatedAt:   now,
 	}
 	s.mu.Lock()
+	defer s.mu.Unlock()
+	if _, exists := s.items[id]; exists {
+		return bookmark{}, errBookmarkConflict
+	}
 	s.items[id] = b
-	s.mu.Unlock()
 	return b, nil
 }
 
@@ -199,6 +214,10 @@ func createBookmarkHandler(store *bookmarkStore) http.HandlerFunc {
 			return
 		}
 		b, err := store.create(u.ID, req)
+		if errors.Is(err, errBookmarkConflict) {
+			writeError(w, http.StatusConflict, "conflict", "Bookmark with this id already exists.")
+			return
+		}
 		if err != nil {
 			writeError(w, http.StatusInternalServerError, "create_failed", "Failed to create bookmark.")
 			return

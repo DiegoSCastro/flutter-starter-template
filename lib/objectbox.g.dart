@@ -22,7 +22,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
     id: const obx_int.IdUid(1, 8542772984841996240),
     name: 'BookmarkEntity',
-    lastPropertyId: const obx_int.IdUid(7, 5892767454409296107),
+    lastPropertyId: const obx_int.IdUid(10, 5606715827893123261),
     flags: 0,
     properties: <obx_int.ModelProperty>[
       obx_int.ModelProperty(
@@ -65,6 +65,25 @@ final _entities = <obx_int.ModelEntity>[
         id: const obx_int.IdUid(7, 5892767454409296107),
         name: 'updatedAt',
         type: 12,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(8, 2736399224269339936),
+        name: 'uuid',
+        type: 9,
+        flags: 2080,
+        indexId: const obx_int.IdUid(1, 1205513408758410617),
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(9, 5777725754888659017),
+        name: 'serverUpdatedAt',
+        type: 12,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(10, 5606715827893123261),
+        name: 'syncStateCode',
+        type: 6,
         flags: 0,
       ),
     ],
@@ -117,7 +136,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
     generatorVersion: obx_int.GeneratorVersion.v2025_12_16,
     entities: _entities,
     lastEntityId: const obx_int.IdUid(1, 8542772984841996240),
-    lastIndexId: const obx_int.IdUid(0, 0),
+    lastIndexId: const obx_int.IdUid(1, 1205513408758410617),
     lastRelationId: const obx_int.IdUid(0, 0),
     lastSequenceId: const obx_int.IdUid(0, 0),
     retiredEntityUids: const [],
@@ -145,7 +164,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final tagsOffset = fbb.writeList(
           object.tags.map(fbb.writeString).toList(growable: false),
         );
-        fbb.startTable(8);
+        final uuidOffset = fbb.writeString(object.uuid);
+        fbb.startTable(11);
         fbb.addInt64(0, object.id);
         fbb.addOffset(1, titleOffset);
         fbb.addOffset(2, urlOffset);
@@ -153,18 +173,34 @@ obx_int.ModelDefinition getObjectBoxModel() {
         fbb.addOffset(4, tagsOffset);
         fbb.addInt64(5, object.createdAt.microsecondsSinceEpoch * 1000);
         fbb.addInt64(6, object.updatedAt.microsecondsSinceEpoch * 1000);
+        fbb.addOffset(7, uuidOffset);
+        fbb.addInt64(
+          8,
+          object.serverUpdatedAt == null
+              ? null
+              : object.serverUpdatedAt!.microsecondsSinceEpoch * 1000,
+        );
+        fbb.addInt64(9, object.syncStateCode);
         fbb.finish(fbb.endTable());
         return object.id;
       },
       objectFromFB: (obx.Store store, ByteData fbData) {
         final buffer = fb.BufferContext(fbData);
         final rootOffset = buffer.derefObject(0);
+        final serverUpdatedAtValue = const fb.Int64Reader().vTableGetNullable(
+          buffer,
+          rootOffset,
+          20,
+        );
         final idParam = const fb.Int64Reader().vTableGet(
           buffer,
           rootOffset,
           4,
           0,
         );
+        final uuidParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGet(buffer, rootOffset, 18, '');
         final titleParam = const fb.StringReader(
           asciiOptimization: true,
         ).vTableGet(buffer, rootOffset, 6, '');
@@ -188,14 +224,29 @@ obx_int.ModelDefinition getObjectBoxModel() {
               .round(),
           isUtc: true,
         );
+        final serverUpdatedAtParam = serverUpdatedAtValue == null
+            ? null
+            : DateTime.fromMicrosecondsSinceEpoch(
+                (serverUpdatedAtValue / 1000).round(),
+                isUtc: true,
+              );
+        final syncStateCodeParam = const fb.Int64Reader().vTableGet(
+          buffer,
+          rootOffset,
+          22,
+          0,
+        );
         final object = BookmarkEntity(
           id: idParam,
+          uuid: uuidParam,
           title: titleParam,
           url: urlParam,
           description: descriptionParam,
           tags: tagsParam,
           createdAt: createdAtParam,
           updatedAt: updatedAtParam,
+          serverUpdatedAt: serverUpdatedAtParam,
+          syncStateCode: syncStateCodeParam,
         );
 
         return object;
@@ -241,5 +292,20 @@ class BookmarkEntity_ {
   /// See [BookmarkEntity.updatedAt].
   static final updatedAt = obx.QueryDateNanoProperty<BookmarkEntity>(
     _entities[0].properties[6],
+  );
+
+  /// See [BookmarkEntity.uuid].
+  static final uuid = obx.QueryStringProperty<BookmarkEntity>(
+    _entities[0].properties[7],
+  );
+
+  /// See [BookmarkEntity.serverUpdatedAt].
+  static final serverUpdatedAt = obx.QueryDateNanoProperty<BookmarkEntity>(
+    _entities[0].properties[8],
+  );
+
+  /// See [BookmarkEntity.syncStateCode].
+  static final syncStateCode = obx.QueryIntegerProperty<BookmarkEntity>(
+    _entities[0].properties[9],
   );
 }

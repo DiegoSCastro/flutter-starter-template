@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:8542772984841996240",
-      "lastPropertyId": "7:5892767454409296107",
+      "lastPropertyId": "10:5606715827893123261",
       "name": "BookmarkEntity",
       "properties": [
         {
@@ -43,13 +43,30 @@
           "id": "7:5892767454409296107",
           "name": "updatedAt",
           "type": 12
+        },
+        {
+          "id": "8:2736399224269339936",
+          "name": "uuid",
+          "indexId": "1:1205513408758410617",
+          "type": 9,
+          "flags": 2080
+        },
+        {
+          "id": "9:5777725754888659017",
+          "name": "serverUpdatedAt",
+          "type": 12
+        },
+        {
+          "id": "10:5606715827893123261",
+          "name": "syncStateCode",
+          "type": 6
         }
       ],
       "relations": []
     }
   ],
   "lastEntityId": "1:8542772984841996240",
-  "lastIndexId": "0:0",
+  "lastIndexId": "1:1205513408758410617",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",
   "modelVersion": 5,

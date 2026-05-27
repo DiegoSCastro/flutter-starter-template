@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -5,6 +7,8 @@ import 'package:go_router/go_router.dart';
 import '../core/di/injection.dart';
 import '../core/theme/app_theme.dart';
 import '../features/auth/presentation/cubit/auth_cubit.dart';
+import '../features/auth/presentation/cubit/auth_state.dart';
+import '../features/bookmarks/data/sync/bookmarks_sync_service.dart';
 import '../l10n/app_localizations.dart';
 import 'router.dart';
 
@@ -18,17 +22,31 @@ class App extends StatefulWidget {
 class _AppState extends State<App> {
   late final AuthCubit _authCubit;
   late final GoRouter _router;
+  late final BookmarksSyncService _sync;
+  StreamSubscription<AuthState>? _authSub;
 
   @override
   void initState() {
     super.initState();
     _authCubit = getIt<AuthCubit>();
     _router = buildRouter(_authCubit);
+    _sync = getIt<BookmarksSyncService>();
+    _authSub = _authCubit.stream.listen(_onAuthChanged);
     _authCubit.restoreSession();
+  }
+
+  void _onAuthChanged(AuthState state) {
+    if (state is AuthAuthenticated) {
+      _sync.start();
+    } else {
+      _sync.stop();
+    }
   }
 
   @override
   void dispose() {
+    _authSub?.cancel();
+    _sync.stop();
     _router.dispose();
     super.dispose();
   }
