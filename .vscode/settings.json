@@ -1,6 +1,16 @@
 {
   "dart.flutterSdkPath": ".fvm/versions/3.44.0",
   "cSpell.words": [
-    "usecases"
+    "antigravityrules",
+    "commandcode",
+    "cupertino",
+    "flutterfire",
+    "fvmrc",
+    "mocktail",
+    "objectbox",
+    "podspec",
+    "splashscreen",
+    "usecases",
+    "xcconfig"
   ]
 }
