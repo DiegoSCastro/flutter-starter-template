@@ -98,6 +98,10 @@ dependencies:
   # stable id locally and the server accepts it on POST /api/bookmarks.
   uuid: ^4.5.3
 
+  # Interactive carousel / image slider widget with auto-play and
+  # customisable transitions.
+  carousel_slider: ^5.1.2
+
   # Reactive online/offline detection. The sync service subscribes and
   # drains pending mutations when connectivity is restored.
   connectivity_plus: ^7.1.1
