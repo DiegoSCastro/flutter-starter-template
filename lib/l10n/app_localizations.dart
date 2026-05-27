@@ -187,6 +187,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No bookmarks yet. Tap + to add one.'**
   String get homeNoBookmarks;
+
+  /// No description provided for @homeStatsTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total'**
+  String get homeStatsTotal;
+
+  /// No description provided for @homeStatsRecent.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent'**
+  String get homeStatsRecent;
+
+  /// No description provided for @homeStatsTags.
+  ///
+  /// In en, this message translates to:
+  /// **'Tags'**
+  String get homeStatsTags;
 }
 
 class _AppLocalizationsDelegate

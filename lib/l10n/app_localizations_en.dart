@@ -54,4 +54,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeNoBookmarks => 'No bookmarks yet. Tap + to add one.';
+
+  @override
+  String get homeStatsTotal => 'Total';
+
+  @override
+  String get homeStatsRecent => 'Recent';
+
+  @override
+  String get homeStatsTags => 'Tags';
 }

@@ -55,4 +55,13 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get homeNoBookmarks => 'Chưa có bookmark nào. Nhấn + để thêm.';
+
+  @override
+  String get homeStatsTotal => 'Total';
+
+  @override
+  String get homeStatsRecent => 'Recent';
+
+  @override
+  String get homeStatsTags => 'Tags';
 }

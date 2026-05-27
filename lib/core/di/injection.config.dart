@@ -66,11 +66,13 @@ import 'package:flutter_starter_template/features/bookmarks/domain/usecases/list
 import 'package:flutter_starter_template/features/bookmarks/domain/usecases/update_bookmark.dart'
     as _i412;
 import 'package:flutter_starter_template/features/bookmarks/presentation/cubit/bookmark_detail/bookmark_detail_cubit.dart'
-    as _i242;
+    as _i368;
 import 'package:flutter_starter_template/features/bookmarks/presentation/cubit/bookmark_form/bookmark_form_cubit.dart'
-    as _i947;
+    as _i885;
 import 'package:flutter_starter_template/features/bookmarks/presentation/cubit/bookmarks_list/bookmarks_list_cubit.dart'
-    as _i241;
+    as _i230;
+import 'package:flutter_starter_template/features/home/presentation/cubit/home_cubit.dart'
+    as _i1034;
 import 'package:flutter_starter_template/objectbox.g.dart' as _i831;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
@@ -206,21 +208,27 @@ extension GetItInjectableX on _i174.GetIt {
         restoreSession: gh<_i271.RestoreSession>(),
       ),
     );
-    gh.lazySingleton<_i241.BookmarksListCubit>(
-      () => _i241.BookmarksListCubit(
+    gh.lazySingleton<_i230.BookmarksListCubit>(
+      () => _i230.BookmarksListCubit(
         gh<_i568.ListBookmarks>(),
         gh<_i244.DeleteBookmark>(),
         gh<_i539.BookmarksSyncService>(),
       ),
     );
-    gh.factory<_i242.BookmarkDetailCubit>(
-      () => _i242.BookmarkDetailCubit(
+    gh.factory<_i368.BookmarkDetailCubit>(
+      () => _i368.BookmarkDetailCubit(
         gh<_i690.GetBookmark>(),
         gh<_i244.DeleteBookmark>(),
       ),
     );
-    gh.factory<_i947.BookmarkFormCubit>(
-      () => _i947.BookmarkFormCubit(
+    gh.lazySingleton<_i1034.HomeCubit>(
+      () => _i1034.HomeCubit(
+        gh<_i867.AuthCubit>(),
+        gh<_i230.BookmarksListCubit>(),
+      ),
+    );
+    gh.factory<_i885.BookmarkFormCubit>(
+      () => _i885.BookmarkFormCubit(
         gh<_i690.GetBookmark>(),
         gh<_i632.CreateBookmark>(),
         gh<_i412.UpdateBookmark>(),

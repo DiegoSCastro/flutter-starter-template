@@ -22,5 +22,8 @@
   },
   "homeSignedInBody": "You are signed in.",
   "homeRecentBookmarks": "Recent Bookmarks",
-  "homeNoBookmarks": "No bookmarks yet. Tap + to add one."
+  "homeNoBookmarks": "No bookmarks yet. Tap + to add one.",
+  "homeStatsTotal": "Total",
+  "homeStatsRecent": "Recent",
+  "homeStatsTags": "Tags"
 }
