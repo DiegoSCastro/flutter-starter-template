@@ -5,9 +5,8 @@ import 'package:flutter_starter_template/core/theme/theme_cubit.dart';
 import 'package:flutter_starter_template/core/theme/theme_state.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-class MockSharedPreferences extends Mock implements SharedPreferences {}
+import '../../test_utils.dart';
 
 void main() {
   late MockSharedPreferences mockPrefs;

@@ -1,31 +1,16 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_starter_template/core/error/failure.dart';
 import 'package:flutter_starter_template/core/utils/result.dart';
-import 'package:flutter_starter_template/features/bookmarks/domain/entities/bookmark.dart';
-import 'package:flutter_starter_template/features/bookmarks/domain/usecases/delete_bookmark.dart';
-import 'package:flutter_starter_template/features/bookmarks/domain/usecases/get_bookmark.dart';
 import 'package:flutter_starter_template/features/bookmarks/presentation/cubit/bookmark_detail_cubit.dart';
 import 'package:flutter_starter_template/features/bookmarks/presentation/cubit/bookmark_detail_state.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockGetBookmark extends Mock implements GetBookmark {}
-
-class MockDeleteBookmark extends Mock implements DeleteBookmark {}
+import '../../../test_utils.dart';
 
 void main() {
   late MockGetBookmark mockGet;
   late MockDeleteBookmark mockDelete;
-
-  final testBookmark = Bookmark(
-    id: '1',
-    title: 'Flutter',
-    url: 'https://flutter.dev',
-    description: 'Flutter website',
-    tags: ['dev'],
-    createdAt: DateTime(2025, 1, 1),
-    updatedAt: DateTime(2025, 1, 1),
-  );
 
   setUp(() {
     mockGet = MockGetBookmark();

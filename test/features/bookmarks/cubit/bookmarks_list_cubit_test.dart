@@ -4,46 +4,18 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_starter_template/core/error/failure.dart';
 import 'package:flutter_starter_template/core/utils/result.dart';
 import 'package:flutter_starter_template/features/bookmarks/data/sync/bookmarks_sync_service.dart';
-import 'package:flutter_starter_template/features/bookmarks/domain/entities/bookmark.dart';
-import 'package:flutter_starter_template/features/bookmarks/domain/repositories/bookmarks_repository.dart';
-import 'package:flutter_starter_template/features/bookmarks/domain/usecases/delete_bookmark.dart';
-import 'package:flutter_starter_template/features/bookmarks/domain/usecases/list_bookmarks.dart';
 import 'package:flutter_starter_template/features/bookmarks/presentation/cubit/bookmarks_list_cubit.dart';
 import 'package:flutter_starter_template/features/bookmarks/presentation/cubit/bookmarks_list_state.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockListBookmarks extends Mock implements ListBookmarks {}
-
-class MockDeleteBookmark extends Mock implements DeleteBookmark {}
-
-class MockBookmarksSyncService extends Mock implements BookmarksSyncService {}
+import '../../../test_utils.dart';
 
 void main() {
   late MockListBookmarks mockList;
   late MockDeleteBookmark mockDelete;
   late MockBookmarksSyncService mockSync;
   late StreamController<BookmarksSyncStatus> statusController;
-
-  final testBookmark = Bookmark(
-    id: '1',
-    title: 'Flutter',
-    url: 'https://flutter.dev',
-    description: 'Flutter website',
-    tags: ['dev'],
-    createdAt: DateTime(2025, 1, 1),
-    updatedAt: DateTime(2025, 1, 1),
-  );
-
-  final testBookmark2 = Bookmark(
-    id: '2',
-    title: 'Dart',
-    url: 'https://dart.dev',
-    description: 'Dart website',
-    tags: ['lang'],
-    createdAt: DateTime(2025, 1, 2),
-    updatedAt: DateTime(2025, 1, 2),
-  );
 
   setUp(() {
     mockList = MockListBookmarks();

@@ -15,3 +15,6 @@ See [flutter-packages/taste.md](flutter-packages/taste.md)
 - Support light and dark mode theming. Confidence: 0.70
 - Follow Flutter.dev AI rules and agent skills guidelines. Confidence: 0.65
 - Use Flutter flavors with --dart-define for environment configuration. Confidence: 0.50
+
+# Testing
+- Extract shared mock/fake classes and test utilities (e.g., MockSignIn, FakeBookmarkInput, registerFallbackValue calls) into reusable test helper files to avoid repeating setup across test files. Confidence: 0.70

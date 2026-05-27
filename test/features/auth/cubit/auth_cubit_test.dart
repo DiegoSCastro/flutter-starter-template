@@ -1,29 +1,19 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_starter_template/core/error/failure.dart';
 import 'package:flutter_starter_template/core/utils/result.dart';
-import 'package:flutter_starter_template/features/auth/domain/usecases/restore_session.dart';
-import 'package:flutter_starter_template/features/auth/domain/usecases/sign_in.dart';
-import 'package:flutter_starter_template/features/auth/domain/usecases/sign_out.dart';
 import 'package:flutter_starter_template/features/auth/domain/entities/auth_user.dart';
 import 'package:flutter_starter_template/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:flutter_starter_template/features/auth/presentation/cubit/auth_state.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockSignIn extends Mock implements SignIn {}
-
-class MockSignOut extends Mock implements SignOut {}
-
-class MockRestoreSession extends Mock implements RestoreSession {}
+import '../../../test_utils.dart';
 
 void main() {
   late MockSignIn mockSignIn;
   late MockSignOut mockSignOut;
   late MockRestoreSession mockRestoreSession;
   late AuthCubit cubit;
-
-  const testUser = AuthUser(id: 'user-1', username: 'alice');
-  const testFailure = UnknownFailure('Something went wrong');
 
   setUp(() {
     mockSignIn = MockSignIn();

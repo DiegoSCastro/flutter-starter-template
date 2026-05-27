@@ -1,38 +1,17 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_starter_template/core/error/failure.dart';
 import 'package:flutter_starter_template/core/utils/result.dart';
-import 'package:flutter_starter_template/features/bookmarks/domain/entities/bookmark.dart';
-import 'package:flutter_starter_template/features/bookmarks/domain/repositories/bookmarks_repository.dart';
-import 'package:flutter_starter_template/features/bookmarks/domain/usecases/create_bookmark.dart';
-import 'package:flutter_starter_template/features/bookmarks/domain/usecases/get_bookmark.dart';
-import 'package:flutter_starter_template/features/bookmarks/domain/usecases/update_bookmark.dart';
 import 'package:flutter_starter_template/features/bookmarks/presentation/cubit/bookmark_form_cubit.dart';
 import 'package:flutter_starter_template/features/bookmarks/presentation/cubit/bookmark_form_state.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockGetBookmark extends Mock implements GetBookmark {}
-
-class MockCreateBookmark extends Mock implements CreateBookmark {}
-
-class MockUpdateBookmark extends Mock implements UpdateBookmark {}
-
-class FakeBookmarkInput extends Fake implements BookmarkInput {}
+import '../../../test_utils.dart';
 
 void main() {
   late MockGetBookmark mockGet;
   late MockCreateBookmark mockCreate;
   late MockUpdateBookmark mockUpdate;
-
-  final testBookmark = Bookmark(
-    id: '1',
-    title: 'Flutter',
-    url: 'https://flutter.dev',
-    description: 'Flutter website',
-    tags: ['dev'],
-    createdAt: DateTime(2025, 1, 1),
-    updatedAt: DateTime(2025, 1, 1),
-  );
 
   setUpAll(() {
     registerFallbackValue(FakeBookmarkInput());
