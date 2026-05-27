@@ -35,7 +35,8 @@ class _AppState extends State<App> {
     _router = buildRouter(_authCubit);
     _sync = getIt<BookmarksSyncService>();
     _authSub = _authCubit.stream.listen(_onAuthChanged);
-    _authCubit.restoreSession();
+    // Session restoration is driven by SplashScreen so it can gate routing
+    // on completion instead of racing the redirect.
   }
 
   void _onAuthChanged(AuthState state) {

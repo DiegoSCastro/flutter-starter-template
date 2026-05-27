@@ -11,8 +11,18 @@ import '../features/bookmarks/presentation/screens/bookmark_form_screen.dart';
 import '../features/bookmarks/presentation/screens/bookmarks_list_screen.dart';
 import '../features/home/presentation/screens/home_screen.dart';
 import '../features/profile/presentation/screens/profile_screen.dart';
+import '../features/splash/presentation/screens/splash_screen.dart';
 
 part 'router.g.dart';
+
+@TypedGoRoute<SplashRoute>(path: '/splash')
+class SplashRoute extends GoRouteData with $SplashRoute {
+  const SplashRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      const SplashScreen();
+}
 
 @TypedGoRoute<HomeRoute>(path: '/')
 class HomeRoute extends GoRouteData with $HomeRoute {
@@ -87,10 +97,14 @@ class BookmarkEditRoute extends GoRouteData with $BookmarkEditRoute {
 /// Builds the app router and wires auth redirects to [cubit] state changes.
 GoRouter buildRouter(AuthCubit cubit) {
   return GoRouter(
-    initialLocation: const HomeRoute().location,
+    initialLocation: const SplashRoute().location,
     routes: $appRoutes,
     refreshListenable: _CubitListenable(cubit.stream),
     redirect: (context, state) {
+      // Splash owns its own redirect — it awaits restoreSession then routes.
+      // Skipping here prevents AuthInitial from bouncing splash to /login.
+      if (state.matchedLocation == const SplashRoute().location) return null;
+
       final isAuthenticated = cubit.state is AuthAuthenticated;
       final loggingIn = state.matchedLocation == const LoginRoute().location;
       if (!isAuthenticated && !loggingIn) return const LoginRoute().location;
