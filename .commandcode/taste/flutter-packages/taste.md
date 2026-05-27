@@ -9,3 +9,4 @@
 - Use freezed ^3.2.5 for immutable model code generation. Confidence: 0.70
 - Use objectbox ^5.3.2 for local database. Confidence: 0.70
 - Use firebase_core for Firebase platform initialization when integrating any Firebase services. Confidence: 0.65
+- Use squadron ^7.4.3 for isolate/concurrency service implementation. Confidence: 0.70
