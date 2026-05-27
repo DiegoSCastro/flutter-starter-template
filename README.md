@@ -1,174 +1,219 @@
-# Flutter Starter Template
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://img.shields.io/badge/Flutter-3.44+-02569B?style=for-the-badge&logo=flutter&logoColor=white">
+    <img alt="Flutter" src="https://img.shields.io/badge/Flutter-3.44+-02569B?style=for-the-badge&logo=flutter&logoColor=white">
+  </picture>
+  <a href="https://github.com/your-org/flutter-starter-template/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-green?style=for-the-badge"></a>
+  <a href="https://lucistudio.com"><img alt="Luci" src="https://img.shields.io/badge/built_by-Luci_Studio-FF6B6B?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxyZWN0IHg9IjMiIHk9IjMiIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgcng9IjIiIHJ5PSIyIi8+PGNpcmNsZSBjeD0iOSIgY3k9IjkiIHI9IjIiLz48bGluZSB4MT0iMTIuMSIgeTE9IjkuMSIgeDI9IjE1IiB5Mj0iMTUiLz48L3N2Zz4="></a>
+</p>
 
-A production-ready Flutter starter template built by [Luci](https://lucistudio.com). Batteries included: Clean Architecture, offline-first sync, JWT auth, Firebase, i18n, theming, and a companion Go backend — everything you need to ship fast.
+<h1 align="center">
+  <br>
+  <img src="https://img.shields.io/badge/🚀-Flutter_Starter_Template-02569B?style=flat-square&labelColor=121212" alt="Logo">
+  <br>
+</h1>
 
-## ✨ Features
+<p align="center">
+  <i>A production‑ready Flutter foundation with Clean Architecture,<br>offline‑first sync, JWT auth, Firebase, and a companion Go backend.</i>
+</p>
 
-- **Clean Architecture** — data, domain, and presentation layers with dependency inversion
-- **BLoC state management** — Cubit pattern with freezed sealed state unions
-- **Offline-first bookmarks** — local ObjectBox writes, bidirectional sync on reconnect, share, and link previews
-- **JWT authentication** — access + refresh tokens, auto-refresh interceptor, secure storage
-- **Declarative routing & deep linking** — go_router with typed routes, auth redirect guards, Universal Links (iOS) and App Links (Android)
-- **Dark / light / system theming** — Material 3, FlexColorScheme, Google Fonts (Inter)
-- **Localization** — ARB-based i18n with English and Vietnamese
-- **Firebase** — Crashlytics for crash reporting, Analytics for usage tracking
-- **Local notifications** — on-device scheduling and display
-- **Dependency injection** — get_it + injectable with code generation
-- **REST networking** — Retrofit + Dio with typed API clients
-- **Go backend** — companion server with chi router, JWT issuer, bookmark CRUD
+<br>
 
-## 🏗 Architecture
+---
+
+<br>
+
+## ✨ What's Inside
+
+|                           |                            |
+|---------------------------|----------------------------|
+| 🏛 **Clean Architecture** | Data / domain / presentation layers with full dependency inversion |
+| 🧩 **BLoC + Freezed**     | Cubit pattern with sealed state unions and exhaustive `when` |
+| 📶 **Offline‑First**      | ObjectBox local writes → bidirectional sync on reconnect → share → link previews |
+| 🔐 **JWT Auth**           | Access + refresh tokens, auto‑refresh interceptor, secure storage |
+| 🧭 **Declarative Routing**| `go_router` with typed routes, auth guards, Universal Links & App Links |
+| 🎨 **Theming**            | Material 3, `FlexColorScheme`, Google Fonts (Inter), true black OLED dark mode |
+| 🌐 **i18n**               | ARB‑based localization — English + Vietnamese out of the box |
+| 🔥 **Firebase**           | Crashlytics, Analytics, Messaging — all wired up |
+| 🔔 **Notifications**      | On‑device scheduling + tap‑to‑navigate |
+| 💉 **DI**                 | `get_it` + `injectable` code‑gen — zero manual wiring |
+| 📡 **REST**               | `Retrofit` + `Dio` typed clients with auth interceptor |
+| ⚙️ **Go Backend**         | Companion server — `chi/v5`, JWT issuer, bookmark CRUD |
+
+<br>
+
+---
+
+<br>
+
+## 🧬 Architecture
 
 ```
 lib/
-├── main.dart                    # Entry point: DI, Firebase, run App
-├── app/                         # App shell + routing
-│   ├── app.dart                 # MaterialApp.router with providers
-│   └── router.dart              # TypedGoRoute + auth redirect
-├── core/                        # Cross-cutting concerns
-│   ├── di/                      # get_it + injectable
-│   ├── error/                   # Failure hierarchy
-│   ├── network/                 # Dio clients, auth interceptor, token refresh
-│   ├── notifications/           # flutter_local_notifications
-│   ├── theme/                   # ThemeCubit + light/dark ThemeData
-│   ├── utils/                   # Result<T> type
-│   └── widgets/                 # Reusable UI components
-├── features/                    # Vertical feature slices
-│   ├── auth/                    # Sign-in, sign-out, session restore
-│   ├── bookmarks/               # CRUD, offline sync, list/detail/form screens
-│   ├── home/                    # Welcome screen
-│   ├── profile/                 # User info, theme toggle, notifications
-│   └── splash/                  # Session restoration gate
-├── gen/                         # flutter_gen asset references
-└── l10n/                        # ARB translation files
+├── main.dart                         # Entry: DI → Firebase → runApp
+├── app/
+│   ├── app.dart                      # MaterialApp.router + providers
+│   └── router.dart                   # TypedGoRoute + auth redirect
+├── core/
+│   ├── di/                           # get_it + injectable
+│   ├── error/                        # Failure hierarchy
+│   ├── network/                      # Dio clients, auth interceptor, token refresh
+│   ├── notifications/                # flutter_local_notifications
+│   ├── theme/                        # ThemeCubit + light/dark ThemeData
+│   ├── utils/                        # Result<T> type
+│   └── widgets/                      # Reusable UI components
+├── features/
+│   ├── auth/                         # Sign-in, sign-out, session restore
+│   ├── bookmarks/                    # CRUD, offline sync, list/detail/form
+│   ├── home/                         # Welcome screen
+│   ├── profile/                      # User info, theme toggle, notifications
+│   └── splash/                       # Session restoration gate
+├── gen/                              # flutter_gen asset references
+└── l10n/                             # ARB translation files
 ```
 
-Each feature follows Clean Architecture:
+<details>
+<summary><b>📁 Feature Slice (Clean Architecture)</b></summary>
+<br>
 
 ```
 feature/
 ├── data/
-│   ├── datasources/    # Remote (Retrofit) + local (ObjectBox / secure storage)
-│   ├── models/         # Freezed DTOs with toDomain() mappers
-│   └── repositories/   # Concrete implementations
+│   ├── datasources/        Remote (Retrofit) + Local (ObjectBox / secure storage)
+│   ├── models/             Freezed DTOs with toDomain() mappers
+│   └── repositories/       Concrete implementations
 ├── domain/
-│   ├── entities/       # Pure Dart classes, no framework dependencies
-│   ├── repositories/   # Abstract interfaces
-│   └── usecases/       # Single-purpose injectable classes
+│   ├── entities/           Pure Dart classes — zero framework deps
+│   ├── repositories/       Abstract interfaces
+│   └── usecases/           Single‑purpose, injectable
 └── presentation/
-    ├── cubit/          # Cubit + freezed state
-    └── screens/        # Stateless/Stateful widgets
+    ├── cubit/              Cubit + freezed state
+    └── screens/            Stateless/Stateful widgets
 ```
 
-## 🚀 Getting Started
+</details>
 
-### Prerequisites
+<br>
 
-- Flutter SDK ≥ 3.44 (managed via [FVM](https://fvm.app/) — see `.fvmrc`)
-- Go ≥ 1.25 (for the backend server)
+---
 
-### Setup
+<br>
+
+## 🚀 Quick Start
+
+### 📋 Prerequisites
+
+| Tool    | Version | Notes |
+|---------|---------|-------|
+| Flutter | ≥ 3.44  | Managed via [FVM](https://fvm.app/) — see `.fvmrc` |
+| Go      | ≥ 1.25  | Backend server |
+
+### ⚡ Install & Generate
 
 ```bash
-# Clone the repo
 git clone https://github.com/your-org/flutter-starter-template.git
 cd flutter-starter-template
 
-# Install Flutter dependencies
 flutter pub get
-
-# Generate code (routes, DI, models, assets, ObjectBox)
 dart run build_runner build --delete-conflicting-outputs
 ```
 
-### Run the backend
+### 🖥 Start Backend
 
 ```bash
 cd simple_backend_server
-go run .
-# Server starts on http://localhost:8080
+go run .                    # → http://localhost:8080
 ```
 
-Endpoints:
+| Method   | Endpoint                   | Description               |
+|----------|----------------------------|---------------------------|
+| `GET`    | `/health`                  | Health check              |
+| `POST`   | `/api/auth/sign-in`        | Sign in                   |
+| `POST`   | `/api/auth/refresh`        | Refresh access token      |
+| `POST`   | `/api/auth/sign-out`       | Revoke refresh token      |
+| `GET`    | `/api/auth/me`             | Current user              |
+| `GET`    | `/api/bookmarks`           | List bookmarks            |
+| `POST`   | `/api/bookmarks`           | Create bookmark           |
+| `GET`    | `/api/bookmarks/:id`       | Get bookmark              |
+| `PUT`    | `/api/bookmarks/:id`       | Update bookmark           |
+| `DELETE` | `/api/bookmarks/:id`       | Delete bookmark           |
 
-| Method | Path | Description |
-|--------|------|-------------|
-| `GET` | `/health` | Health check |
-| `POST` | `/api/auth/sign-in` | Sign in (any username + password) |
-| `POST` | `/api/auth/refresh` | Refresh access token |
-| `POST` | `/api/auth/sign-out` | Revoke refresh token |
-| `GET` | `/api/auth/me` | Get current user |
-| `GET` | `/api/bookmarks` | List bookmarks |
-| `POST` | `/api/bookmarks` | Create bookmark |
-| `GET` | `/api/bookmarks/:id` | Get bookmark |
-| `PUT` | `/api/bookmarks/:id` | Update bookmark |
-| `DELETE` | `/api/bookmarks/:id` | Delete bookmark |
+> 💡 **Tip** — Any username + password works during development.
 
-### Run the app
+### 📱 Launch App
 
 ```bash
 flutter run
 ```
 
-The app targets `http://localhost:8080` for API calls. Log in with any username and password — the backend accepts anything during development.
+<br>
 
-## 🔥 Firebase Setup
+---
 
-Firebase is pre-configured for Crashlytics and Analytics. To connect your own Firebase project:
+<br>
 
-1. Create a project in the [Firebase Console](https://console.firebase.google.com/)
-2. Install the FlutterFire CLI:
+## 🔥 Firebase
+
+Crashlytics + Analytics + Messaging — pre‑configured and ready to connect.
 
 ```bash
 dart pub global activate flutterfire_cli
+flutterfire configure                          # → lib/firebase_options.dart
 ```
 
-3. Configure Firebase for your platforms:
+Drop these into your project:
+- `android/app/google-services.json`
+- `ios/Runner/GoogleService-Info.plist`
+
+Firebase initializes in `lib/main.dart` with Crashlytics fatal‑error reporting on both Flutter and platform threads.
+
+<br>
+
+---
+
+<br>
+
+## 🍦 Flavors & Environment
+
+Three build flavors driven by `--dart-define` with typed runtime config:
+
+| Flavor    | Android App ID                                      |
+|-----------|-----------------------------------------------------|
+| `dev`     | `com.lucistudio.flutter_starter_template.dev`       |
+| `staging` | `com.lucistudio.flutter_starter_template.staging`   |
+| `prod`    | `com.lucistudio.flutter_starter_template`           |
 
 ```bash
-flutterfire configure
-```
-
-This auto-generates `lib/firebase_options.dart` with your project credentials. The existing file contains placeholder values — replace it with the generated output.
-
-4. Drop platform config files into your project:
-   - `android/app/google-services.json`
-   - `ios/Runner/GoogleService-Info.plist`
-
-Firebase is initialized in `lib/main.dart` with Crashlytics fatal error reporting wired up for both Flutter and platform-level errors.
-
-## 🏷 Flavors & Environment
-
-The project supports three flavors via `--dart-define`:
-
-| Flavor | Android app ID | Description |
-|--------|---------------|-------------|
-| `dev` | `com.lucistudio.flutter_starter_template.dev` | Development build, local API |
-| `staging` | `com.lucistudio.flutter_starter_template.staging` | Pre-production testing |
-| `prod` | `com.lucistudio.flutter_starter_template` | Production release |
-
-Environment-specific config lives in `env/{dev,staging,prod}.json`. Build with:
-
-```bash
-fvm flutter run --flavor dev --dart-define-from-file=env/dev.json
+fvm flutter run --flavor dev     --dart-define-from-file=env/dev.json
 fvm flutter run --flavor staging --dart-define-from-file=env/staging.json
-fvm flutter run --flavor prod --dart-define-from-file=env/prod.json
+fvm flutter run --flavor prod    --dart-define-from-file=env/prod.json
 ```
 
-The `EnvConfig` singleton (`lib/core/config/env_config.dart`) reads these at runtime via `String.fromEnvironment`, providing typed accessors for the API base URL, Firebase project IDs, and flavor name.
+`EnvConfig` (`lib/core/config/env_config.dart`) surfaces API base URL, Firebase project IDs, and flavor name from `String.fromEnvironment` at startup.
+
+<br>
+
+---
+
+<br>
 
 ## 🔗 Deep Linking
 
-The app supports Universal Links (iOS) and App Links (Android). A `DeepLinkState` holder stores the platform-provided URI through splash and auth, replaying it once the session is restored or the user signs in.
+Universal Links (iOS) + App Links (Android) with a `DeepLinkState` holder that replays deferred links post‑auth.
 
-**Configured files:**
-- `android/app/src/main/AndroidManifest.xml` — App Links intent filter
-- `ios/Runner/Info.plist` — `FlutterDeepLinkingEnabled`
-- `ios/Runner/Runner*.entitlements` — `applinks:` associated domains
+<details>
+<summary><b>📁 Config files to update</b></summary>
+<br>
 
-**To enable:** Replace `yourdomain.com` with your actual domain in all six files and host the verification files on your server:
+| Platform  | File                                    |
+|-----------|-----------------------------------------|
+| Android   | `android/app/src/main/AndroidManifest.xml` |
+| iOS       | `ios/Runner/Info.plist`                 |
+| iOS       | `ios/Runner/Runner*.entitlements`       |
 
-**`https://yourdomain.com/.well-known/apple-app-site-association`:**
+Replace `yourdomain.com` with your actual domain, then host these on your server:
+
+**`/.well-known/apple-app-site-association`**
 ```json
 {
   "applinks": {
@@ -181,7 +226,7 @@ The app supports Universal Links (iOS) and App Links (Android). A `DeepLinkState
 }
 ```
 
-**`https://yourdomain.com/.well-known/assetlinks.json`:**
+**`/.well-known/assetlinks.json`**
 ```json
 [{
   "relation": ["delegate_permission/common.handle_all_urls"],
@@ -193,130 +238,171 @@ The app supports Universal Links (iOS) and App Links (Android). A `DeepLinkState
 }]
 ```
 
-## 🔧 Reusable Core Widgets
+</details>
 
-All shared UI components live in `lib/core/widgets/`:
+<br>
 
-| Widget | Description |
-|--------|-------------|
-| `AppScaffold` | App bar, dark/light-aware background, optional connectivity banner |
-| `AppButton` | Themed button with loading state, expand, and icon support |
-| `AppTextField` | Text field with label, prefix icon, validation, autofill hints |
-| `AppCarousel` | Carousel slider wrapper with auto-play and dot indicators |
-| `AppLinkPreview` | Rich link preview card (image, title, description) via `flutter_link_previewer` |
-| `AppAnimatedText` | Typewriter and fade text animations via `animated_text_kit` |
-| `AppLoading` | Centered loading spinner |
-| `AppEmptyView` | Empty state with icon and message |
-| `AppErrorView` | Error state with icon, message, and retry action |
+---
 
-## 📤 Share
+<br>
 
-Bookmarks can be shared via the system share sheet. `ShareService` wraps `share_plus` with `SharePlus.share()` — see `lib/core/share/share_service.dart`. The share button on the bookmark detail screen (`bookmark_detail_widgets.dart`) and list swipe action (`bookmarks_list_widgets.dart`) both delegate to it.
+## 🧩 Core Widgets
 
-## 🧱 Tech Stack
+All shared components in `lib/core/widgets/`:
 
-| Category | Package |
-|----------|---------|
-| State management | flutter_bloc (Cubit) |
-| Routing | go_router + go_router_builder |
-| DI | get_it + injectable |
-| Networking | Dio + Retrofit |
-| Code generation | build_runner, freezed, json_serializable, retrofit_generator, injectable_generator, go_router_builder, flutter_gen_runner, objectbox_generator, build_verify |
-| Local database | ObjectBox (`objectbox`, `objectbox_flutter_libs`) |
-| Secure storage | flutter_secure_storage |
-| Auth | JWT (access + refresh) |
-| Theming | Material 3 + Google Fonts (Inter) + `flex_color_scheme` |
-| i18n | flutter_localizations + intl |
-| Icons | cupertino_icons |
-| Assets | flutter_svg, flutter_gen_runner |
-| Carousel | `carousel_slider` |
-| Notifications | flutter_local_notifications |
-| Firebase | firebase_core, firebase_crashlytics, firebase_analytics, firebase_messaging |
-| Animations | flutter_animate, `animated_text_kit` |
-| Haptics | HapticFeedback (Flutter Services) |
-| Connectivity | connectivity_plus |
-| Storage | path_provider, shared_preferences |
-| Device info | package_info_plus |
-| URL launching | url_launcher |
-| Share | share_plus |
-| Link preview | flutter_link_previewer |
-| UUID | uuid |
-| Splash screen | splashscreen |
-| Testing | `mocktail`, `bloc_test` |
-| Backend | Go + chi/v5 + golang-jwt/v5 + cors |
+| Widget              | Purpose                                                          |
+|---------------------|------------------------------------------------------------------|
+| `AppScaffold`       | Themed shell — app bar, connectivity banner                      |
+| `AppButton`         | Loading state, expand‑to‑fill, leading icon                      |
+| `AppTextField`      | Label, prefix icon, validation, autofill hints                   |
+| `AppCarousel`       | Auto‑play slider with dot indicators                             |
+| `AppLinkPreview`    | Rich card — image, title, description                            |
+| `AppAnimatedText`   | Typewriter + fade text animations                                |
+| `AppLoading`        | Centered spinner                                                 |
+| `AppEmptyView`      | Empty‑state placeholder — icon + message                         |
+| `AppErrorView`      | Error state — icon + message + retry                             |
 
-## 📝 Code Generation
+<br>
 
-This project relies heavily on code generation. Run after any model, route, or DI change:
+---
+
+<br>
+
+## 🧰 Tech Stack
+
+| Layer              | Packages                                                                                           |
+|--------------------|----------------------------------------------------------------------------------------------------|
+| **State**          | `flutter_bloc` (Cubit)                                                                             |
+| **Routing**        | `go_router` · `go_router_builder`                                                                  |
+| **DI**             | `get_it` · `injectable`                                                                            |
+| **Networking**     | `Dio` · `Retrofit`                                                                                 |
+| **Code Gen**       | `build_runner` · `freezed` · `json_serializable` · `retrofit_generator` · `injectable_generator` · `go_router_builder` · `flutter_gen_runner` · `objectbox_generator` |
+| **Local DB**       | `ObjectBox` (`objectbox` · `objectbox_flutter_libs`)                                               |
+| **Secure Storage** | `flutter_secure_storage`                                                                           |
+| **Auth**           | JWT — access + refresh tokens                                                                      |
+| **Theming**        | Material 3 · `flex_color_scheme` · Google Fonts (Inter)                                            |
+| **i18n**           | `flutter_localizations` · `intl`                                                                   |
+| **Icons**          | `cupertino_icons`                                                                                  |
+| **Assets**         | `flutter_svg` · `flutter_gen_runner`                                                               |
+| **Carousel**       | `carousel_slider`                                                                                  |
+| **Notifications**  | `flutter_local_notifications`                                                                      |
+| **Firebase**       | `firebase_core` · `firebase_crashlytics` · `firebase_analytics` · `firebase_messaging`             |
+| **Animations**     | `flutter_animate` · `animated_text_kit`                                                            |
+| **Haptics**        | `HapticFeedback` (Flutter Services)                                                                |
+| **Connectivity**   | `connectivity_plus`                                                                                |
+| **Storage**        | `path_provider` · `shared_preferences`                                                             |
+| **Device Info**    | `package_info_plus`                                                                                |
+| **URL**            | `url_launcher`                                                                                     |
+| **Share**          | `share_plus`                                                                                       |
+| **Link Preview**   | `flutter_link_previewer`                                                                           |
+| **UUID**           | `uuid`                                                                                             |
+| **Splash**         | `splashscreen`                                                                                     |
+| **Testing**        | `mocktail` · `bloc_test`                                                                           |
+| **Backend**        | Go — `chi/v5` · `golang-jwt/v5` · `cors`                                                          |
+
+<br>
+
+---
+
+<br>
+
+## 🤖 AI‑Native Workflow
+
+This project is built for AI‑assisted development with **Command Code**, Claude Code, and Antigravity.
+
+### 🎯 Command Code — Taste & Plans
+
+Learned project preferences in `.commandcode/taste/` auto‑guide every agent:
+
+| Domain               | Convention                                                  |
+|----------------------|-------------------------------------------------------------|
+| Flutter Packages     | Package selection preferences                               |
+| Architecture         | Layered architecture, feature‑slice conventions             |
+| Backend              | Go + `go-chi` router                                        |
+| Flutter Setup        | l10n · light/dark theming · `--dart-define` flavors         |
+| Documentation        | Include Command Code alongside other AI tools in rules      |
+| Testing              | Extract shared mocks/fakes into reusable test helpers       |
+
+Architectural plans live in `.commandcode/plans/`.
+
+### 🧪 Dart MCP Server
+
+A project‑scoped MCP server in `.mcp.json` runs via `fvm dart mcp-server` — giving agents direct access to static analysis, formatting, package management, tests, and runtime diagnostics.
+
+### 📜 Rules Files
+
+| Tool            | File                        |
+|-----------------|-----------------------------|
+| Command Code    | `.commandcode/taste/`       |
+| Command Code    | `.commandcode/plans/`       |
+| Claude Code     | `CLAUDE.md`                 |
+| Antigravity     | `.antigravityrules`         |
+
+### 🛠 Agent Skills
+
+Official playbooks from `flutter/skills` and `dart-lang/skills` are vendored in `.agents/skills/` and pinned in `skills-lock.json`.
+
+<details>
+<summary><b>🦋 Flutter Skills</b> (10)</summary>
+<br>
+
+| Skill                                   | Focus                            |
+|-----------------------------------------|----------------------------------|
+| `flutter-setup-declarative-routing`     | `go_router` + typed routes       |
+| `flutter-implement-json-serialization`  | `fromJson` / `toJson`            |
+| `flutter-add-widget-test`               | `WidgetTester` component tests   |
+| `flutter-add-widget-preview`            | Interactive widget previews      |
+| `flutter-add-integration-test`          | `integration_test`               |
+| `flutter-apply-architecture-best-practices` | UI / Logic / Data layers     |
+| `flutter-build-responsive-layout`       | `LayoutBuilder` · `MediaQuery`   |
+| `flutter-fix-layout-issues`             | Overflow · unbounded constraints |
+| `flutter-setup-localization`            | `intl` + ARB                     |
+| `flutter-use-http-package`              | REST API integration             |
+
+</details>
+
+<details>
+<summary><b>🎯 Dart Skills</b> (9)</summary>
+<br>
+
+| Skill                                | Focus                                  |
+|--------------------------------------|----------------------------------------|
+| `dart-add-unit-test`                 | `package:test` unit tests              |
+| `dart-run-static-analysis`           | `dart analyze` + `dart fix`            |
+| `dart-fix-runtime-errors`            | Stack trace diagnostics                |
+| `dart-generate-test-mocks`           | `mockito` + `build_runner`             |
+| `dart-collect-coverage`              | LCOV coverage reports                  |
+| `dart-build-cli-app`                 | CLI entrypoints · exit codes           |
+| `dart-resolve-package-conflicts`     | `pub get` conflict resolution          |
+| `dart-migrate-to-checks-package`     | `matcher` → `checks` migration         |
+| `dart-use-pattern-matching`          | Switch expressions · pattern matching  |
+
+</details>
+
+<br>
+
+---
+
+<br>
+
+## 🔄 Code Generation
 
 ```bash
 fvm dart run build_runner build --delete-conflicting-outputs
 ```
 
-Generated files are git-tracked for convenience (something to consider if your team prefers otherwise).
+Generated files are tracked in git — adjust `.gitignore` if your team prefers otherwise.
 
-## 🤖 AI & Agent Tooling
-
-This project is optimized for AI-assisted development with Command Code, featuring pre-configured rules, MCP tools, taste preferences, and playbook skills.
-
-### ⚙️ Version Pinning with FVM
-Flutter and Dart SDK versions are pinned via [FVM](https://fvm.app/) in `.fvmrc`. Always prefix Flutter/Dart commands with `fvm`:
-```bash
-fvm flutter <command>
-fvm dart <command>
-```
-
-### ✨ Command Code — Taste & Plans
-Learned project preferences are stored in `.commandcode/taste/` and automatically guide AI agents to follow project conventions:
-- **Flutter Packages** — package selection preferences
-- **Architecture** — layered architecture, feature-slice conventions
-- **Backend** — Go with go-chi router
-- **Flutter Setup** — l10n, light/dark theming, flavors with `--dart-define`
-- **Testing** — shared mock/fake extraction into reusable test helpers
-
-Architectural plans and design documents are maintained in `.commandcode/plans/`.
-
-### 🧩 Dart MCP Server
-A project-scoped Dart/Flutter MCP server is configured in `.mcp.json`. It runs via `fvm dart mcp-server` and provides agents with tools for static analysis, code formatting, package management, test execution, and runtime diagnostics.
-
-### 📝 AI Rules & Context
-Custom instructions help AI tools understand coding guidelines, architecture, and project rules:
-- **Command Code**: Taste preferences in `.commandcode/taste/`, plans in `.commandcode/plans/`
-- **Claude Code**: Guidelines in `CLAUDE.md`
-- **Antigravity**: Custom guidelines in `.antigravityrules`
-
-### 🛠 Agent Skills
-Official task-playbooks from `flutter/skills` and `dart-lang/skills` are vendored under `.agents/skills/` and pinned in `skills-lock.json`. These encode standardized workflows for common development tasks:
-
-**Flutter skills:**
-- `flutter-setup-declarative-routing` — go_router with typed routes
-- `flutter-implement-json-serialization` — fromJson/toJson model classes
-- `flutter-add-widget-test` — WidgetTester component tests
-- `flutter-add-widget-preview` — interactive widget previews
-- `flutter-add-integration-test` — Flutter Driver / integration_test
-- `flutter-apply-architecture-best-practices` — layered UI/Logic/Data
-- `flutter-build-responsive-layout` — LayoutBuilder, MediaQuery
-- `flutter-fix-layout-issues` — overflow, unbounded constraints
-- `flutter-setup-localization` — intl + ARB setup
-- `flutter-use-http-package` — REST API integration
-
-**Dart skills:**
-- `dart-add-unit-test` — package:test unit tests
-- `dart-run-static-analysis` — dart analyze + dart fix
-- `dart-fix-runtime-errors` — stack trace diagnostics
-- `dart-generate-test-mocks` — mockito + build_runner
-- `dart-collect-coverage` — LCOV coverage reports
-- `dart-build-cli-app` — CLI entrypoints and exit codes
-- `dart-resolve-package-conflicts` — pub get conflict resolution
-- `dart-migrate-to-checks-package` — matcher → checks migration
-- `dart-use-pattern-matching` — switch expressions and pattern matching
-
-Agents auto-discover and execute these playbooks to ensure consistent implementation patterns.
-
-## 📄 License
-
-MIT — see [LICENSE](LICENSE) for details.
+<br>
 
 ---
 
-Made with ❤️ by [Luci](https://lucistudio.com)
+<br>
+
+<p align="center">
+  <sub>Made with ❤️ by <a href="https://lucistudio.com">Luci Studio</a></sub>
+  <br><br>
+  <a href="https://github.com/your-org/flutter-starter-template/blob/main/LICENSE">
+    <img alt="MIT" src="https://img.shields.io/badge/license-MIT-brightgreen?style=flat-square">
+  </a>
+</p>
