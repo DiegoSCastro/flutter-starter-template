@@ -58,16 +58,19 @@ class _Body extends StatelessWidget {
                       ),
                     ).animateScale(delay: 100.ms),
                     const SizedBox(height: 16),
-                    Text(
-                      l.homeWelcome(username),
-                      style: theme.textTheme.headlineSmall,
+                    AppAnimatedText(
+                      text: l.homeWelcome(username),
+                      type: AppAnimatedTextType.typewriter,
+                      textStyle: theme.textTheme.headlineSmall,
                       textAlign: TextAlign.center,
-                    ).animateSlideDown(delay: 200.ms),
+                    ),
                     const SizedBox(height: 8),
-                    Text(
-                      l.homeSignedInBody,
-                      style: theme.textTheme.bodyMedium,
-                    ).animateFadeIn(delay: 300.ms),
+                    AppAnimatedText(
+                      text: l.homeSignedInBody,
+                      type: AppAnimatedTextType.fade,
+                      textStyle: theme.textTheme.bodyMedium,
+                      textAlign: TextAlign.center,
+                    ),
                   ],
                 );
               },

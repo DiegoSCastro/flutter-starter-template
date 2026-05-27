@@ -13,3 +13,4 @@
 - Use flutter_animate ^4.5.2 for animation. Confidence: 0.85
 - Create reusable core animation extension methods (e.g., on Widget) to avoid repeating common .animate() chains across screens. Confidence: 0.70
 - Use flex_color_scheme ^8.4.0 for theme/color scheme. Confidence: 0.65
+- Use animated_text_kit ^4.3.0 for animated text. Wrap AnimatedTextKit in reusable core widgets (e.g., AppTypewriterText, AppFadeText) to avoid repeating configuration across screens. Confidence: 0.70

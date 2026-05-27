@@ -139,6 +139,9 @@ dependencies:
   # exposed as extensions on Widget.
   flutter_animate: ^4.5.2
 
+  # Pre-built animated text widgets (typewriter, fade, scale, colorize, etc.)
+  animated_text_kit: ^4.3.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

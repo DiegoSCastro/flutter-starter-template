@@ -1,3 +1,4 @@
+export 'app_animated_text.dart';
 export 'app_button.dart';
 export 'app_carousel.dart';
 export 'app_empty_view.dart';
