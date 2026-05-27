@@ -9,7 +9,7 @@ A production-ready Flutter starter template built by [Luci](https://lucistudio.c
 - **Offline-first bookmarks** — local ObjectBox writes, bidirectional sync on reconnect
 - **JWT authentication** — access + refresh tokens, auto-refresh interceptor, secure storage
 - **Declarative routing** — go_router with typed routes, auth redirect guards
-- **Dark / light / system theming** — Material 3, ColorScheme.fromSeed, Google Fonts (Inter)
+- **Dark / light / system theming** — Material 3, FlexColorScheme, Google Fonts (Inter)
 - **Localization** — ARB-based i18n with English and Vietnamese
 - **Firebase** — Crashlytics for crash reporting, Analytics for usage tracking
 - **Local notifications** — on-device scheduling and display
@@ -145,17 +145,18 @@ Firebase is initialized in `lib/main.dart` with Crashlytics fatal error reportin
 | Routing | go_router + go_router_builder |
 | DI | get_it + injectable |
 | Networking | Dio + Retrofit |
-| Code generation | freezed, json_serializable, retrofit_generator, injectable_generator, go_router_builder, flutter_gen_runner, objectbox_generator |
-| Local database | ObjectBox |
+| Code generation | build_runner, freezed, json_serializable, retrofit_generator, injectable_generator, go_router_builder, flutter_gen_runner, objectbox_generator, build_verify |
+| Local database | ObjectBox (`objectbox`, `objectbox_flutter_libs`) |
 | Secure storage | flutter_secure_storage |
 | Auth | JWT (access + refresh) |
-| Theming | Material 3 + Google Fonts (Inter) |
+| Theming | Material 3 + Google Fonts (Inter) + `flex_color_scheme` |
 | i18n | flutter_localizations + intl |
 | Icons | cupertino_icons |
 | Assets | flutter_svg, flutter_gen_runner |
+| Carousel | `carousel_slider` |
 | Notifications | flutter_local_notifications |
 | Firebase | firebase_core, firebase_crashlytics, firebase_analytics, firebase_messaging |
-| Animations | flutter_animate |
+| Animations | flutter_animate, `animated_text_kit` |
 | Haptics | HapticFeedback (Flutter Services) |
 | Connectivity | connectivity_plus |
 | Storage | path_provider, shared_preferences |
@@ -163,7 +164,8 @@ Firebase is initialized in `lib/main.dart` with Crashlytics fatal error reportin
 | URL launching | url_launcher |
 | UUID | uuid |
 | Splash screen | splashscreen |
-| Backend | Go + chi/v5 + golang-jwt/v5 |
+| Testing | `mocktail`, `bloc_test` |
+| Backend | Go + chi/v5 + golang-jwt/v5 + cors |
 
 ## 📝 Code Generation
 
