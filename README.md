@@ -6,9 +6,9 @@ A production-ready Flutter starter template built by [Luci](https://lucistudio.c
 
 - **Clean Architecture** — data, domain, and presentation layers with dependency inversion
 - **BLoC state management** — Cubit pattern with freezed sealed state unions
-- **Offline-first bookmarks** — local ObjectBox writes, bidirectional sync on reconnect
+- **Offline-first bookmarks** — local ObjectBox writes, bidirectional sync on reconnect, share, and link previews
 - **JWT authentication** — access + refresh tokens, auto-refresh interceptor, secure storage
-- **Declarative routing** — go_router with typed routes, auth redirect guards
+- **Declarative routing & deep linking** — go_router with typed routes, auth redirect guards, Universal Links (iOS) and App Links (Android)
 - **Dark / light / system theming** — Material 3, FlexColorScheme, Google Fonts (Inter)
 - **Localization** — ARB-based i18n with English and Vietnamese
 - **Firebase** — Crashlytics for crash reporting, Analytics for usage tracking
@@ -64,7 +64,7 @@ feature/
 
 ### Prerequisites
 
-- Flutter SDK ≥ 3.27 (managed via [FVM](https://fvm.app/) — see `.fvm/fvm_config.json`)
+- Flutter SDK ≥ 3.44 (managed via [FVM](https://fvm.app/) — see `.fvmrc`)
 - Go ≥ 1.25 (for the backend server)
 
 ### Setup
@@ -137,6 +137,82 @@ This auto-generates `lib/firebase_options.dart` with your project credentials. T
 
 Firebase is initialized in `lib/main.dart` with Crashlytics fatal error reporting wired up for both Flutter and platform-level errors.
 
+## 🏷 Flavors & Environment
+
+The project supports three flavors via `--dart-define`:
+
+| Flavor | Android app ID | Description |
+|--------|---------------|-------------|
+| `dev` | `com.lucistudio.flutter_starter_template.dev` | Development build, local API |
+| `staging` | `com.lucistudio.flutter_starter_template.staging` | Pre-production testing |
+| `prod` | `com.lucistudio.flutter_starter_template` | Production release |
+
+Environment-specific config lives in `env/{dev,staging,prod}.json`. Build with:
+
+```bash
+fvm flutter run --flavor dev --dart-define-from-file=env/dev.json
+fvm flutter run --flavor staging --dart-define-from-file=env/staging.json
+fvm flutter run --flavor prod --dart-define-from-file=env/prod.json
+```
+
+The `EnvConfig` singleton (`lib/core/config/env_config.dart`) reads these at runtime via `String.fromEnvironment`, providing typed accessors for the API base URL, Firebase project IDs, and flavor name.
+
+## 🔗 Deep Linking
+
+The app supports Universal Links (iOS) and App Links (Android). A `DeepLinkState` holder stores the platform-provided URI through splash and auth, replaying it once the session is restored or the user signs in.
+
+**Configured files:**
+- `android/app/src/main/AndroidManifest.xml` — App Links intent filter
+- `ios/Runner/Info.plist` — `FlutterDeepLinkingEnabled`
+- `ios/Runner/Runner*.entitlements` — `applinks:` associated domains
+
+**To enable:** Replace `yourdomain.com` with your actual domain in all six files and host the verification files on your server:
+
+**`https://yourdomain.com/.well-known/apple-app-site-association`:**
+```json
+{
+  "applinks": {
+    "apps": [],
+    "details": [{
+      "appIDs": ["TEAM_ID.com.luci-studio.flutterStarterTemplate"],
+      "paths": ["*"]
+    }]
+  }
+}
+```
+
+**`https://yourdomain.com/.well-known/assetlinks.json`:**
+```json
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "com.lucistudio.flutter_starter_template",
+    "sha256_cert_fingerprints": ["YOUR_SHA256"]
+  }
+}]
+```
+
+## 🔧 Reusable Core Widgets
+
+All shared UI components live in `lib/core/widgets/`:
+
+| Widget | Description |
+|--------|-------------|
+| `AppScaffold` | App bar, dark/light-aware background, optional connectivity banner |
+| `AppButton` | Themed button with loading state, expand, and icon support |
+| `AppTextField` | Text field with label, prefix icon, validation, autofill hints |
+| `AppCarousel` | Carousel slider wrapper with auto-play and dot indicators |
+| `AppLinkPreview` | Rich link preview card (image, title, description) via `flutter_link_previewer` |
+| `AppAnimatedText` | Typewriter and fade text animations via `animated_text_kit` |
+| `AppLoading` | Centered loading spinner |
+| `AppEmptyView` | Empty state with icon and message |
+| `AppErrorView` | Error state with icon, message, and retry action |
+
+## 📤 Share
+
+Bookmarks can be shared via the system share sheet. `ShareService` wraps `share_plus` with `SharePlus.share()` — see `lib/core/share/share_service.dart`. The share button on the bookmark detail screen (`bookmark_detail_widgets.dart`) and list swipe action (`bookmarks_list_widgets.dart`) both delegate to it.
+
 ## 🧱 Tech Stack
 
 | Category | Package |
@@ -162,6 +238,8 @@ Firebase is initialized in `lib/main.dart` with Crashlytics fatal error reportin
 | Storage | path_provider, shared_preferences |
 | Device info | package_info_plus |
 | URL launching | url_launcher |
+| Share | share_plus |
+| Link preview | flutter_link_previewer |
 | UUID | uuid |
 | Splash screen | splashscreen |
 | Testing | `mocktail`, `bloc_test` |
