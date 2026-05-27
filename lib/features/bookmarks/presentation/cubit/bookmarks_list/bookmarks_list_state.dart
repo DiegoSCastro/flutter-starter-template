@@ -1,8 +1,8 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../../../core/error/failure.dart';
-import '../../data/sync/bookmarks_sync_service.dart';
-import '../../domain/entities/bookmark.dart';
+import '../../../../../core/error/failure.dart';
+import '../../../data/sync/bookmarks_sync_service.dart';
+import '../../../domain/entities/bookmark.dart';
 
 part 'bookmarks_list_state.freezed.dart';
 

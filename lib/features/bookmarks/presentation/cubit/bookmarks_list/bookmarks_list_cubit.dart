@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/utils/result.dart';
-import '../../data/sync/bookmarks_sync_service.dart';
-import '../../domain/usecases/delete_bookmark.dart';
-import '../../domain/usecases/list_bookmarks.dart';
+import '../../../../../core/utils/result.dart';
+import '../../../data/sync/bookmarks_sync_service.dart';
+import '../../../domain/usecases/delete_bookmark.dart';
+import '../../../domain/usecases/list_bookmarks.dart';
 import 'bookmarks_list_state.dart';
 
 @lazySingleton

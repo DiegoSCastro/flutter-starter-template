@@ -65,11 +65,11 @@ import 'package:flutter_starter_template/features/bookmarks/domain/usecases/list
     as _i568;
 import 'package:flutter_starter_template/features/bookmarks/domain/usecases/update_bookmark.dart'
     as _i412;
-import 'package:flutter_starter_template/features/bookmarks/presentation/cubit/bookmark_detail_cubit.dart'
+import 'package:flutter_starter_template/features/bookmarks/presentation/cubit/bookmark_detail/bookmark_detail_cubit.dart'
     as _i242;
-import 'package:flutter_starter_template/features/bookmarks/presentation/cubit/bookmark_form_cubit.dart'
+import 'package:flutter_starter_template/features/bookmarks/presentation/cubit/bookmark_form/bookmark_form_cubit.dart'
     as _i947;
-import 'package:flutter_starter_template/features/bookmarks/presentation/cubit/bookmarks_list_cubit.dart'
+import 'package:flutter_starter_template/features/bookmarks/presentation/cubit/bookmarks_list/bookmarks_list_cubit.dart'
     as _i241;
 import 'package:flutter_starter_template/objectbox.g.dart' as _i831;
 import 'package:get_it/get_it.dart' as _i174;

@@ -8,9 +8,9 @@ import '../../../../core/build_context_extensions.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../domain/entities/bookmark.dart';
-import '../cubit/bookmark_detail_cubit.dart';
-import '../cubit/bookmark_detail_state.dart';
-import '../cubit/bookmarks_list_cubit.dart';
+import '../cubit/bookmark_detail/bookmark_detail_cubit.dart';
+import '../cubit/bookmark_detail/bookmark_detail_state.dart';
+import '../cubit/bookmarks_list/bookmarks_list_cubit.dart';
 
 part '../widgets/bookmark_detail_widgets.dart';
 

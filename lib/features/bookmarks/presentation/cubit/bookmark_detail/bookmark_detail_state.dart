@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../../../core/error/failure.dart';
-import '../../domain/entities/bookmark.dart';
+import '../../../../../core/error/failure.dart';
+import '../../../domain/entities/bookmark.dart';
 
 part 'bookmark_detail_state.freezed.dart';
 

@@ -9,8 +9,8 @@ import '../../../../core/widgets/widgets.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
 import '../../../bookmarks/domain/entities/bookmark.dart';
-import '../../../bookmarks/presentation/cubit/bookmarks_list_cubit.dart';
-import '../../../bookmarks/presentation/cubit/bookmarks_list_state.dart';
+import '../../../bookmarks/presentation/cubit/bookmarks_list/bookmarks_list_cubit.dart';
+import '../../../bookmarks/presentation/cubit/bookmarks_list/bookmarks_list_state.dart';
 
 part '../widgets/home_widgets.dart';
 

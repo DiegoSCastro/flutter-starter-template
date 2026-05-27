@@ -1,8 +1,8 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_starter_template/core/error/failure.dart';
 import 'package:flutter_starter_template/core/utils/result.dart';
-import 'package:flutter_starter_template/features/bookmarks/presentation/cubit/bookmark_detail_cubit.dart';
-import 'package:flutter_starter_template/features/bookmarks/presentation/cubit/bookmark_detail_state.dart';
+import 'package:flutter_starter_template/features/bookmarks/presentation/cubit/bookmark_detail/bookmark_detail_cubit.dart';
+import 'package:flutter_starter_template/features/bookmarks/presentation/cubit/bookmark_detail/bookmark_detail_state.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 

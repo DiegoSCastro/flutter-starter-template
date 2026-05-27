@@ -1,11 +1,11 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/utils/result.dart';
-import '../../domain/repositories/bookmarks_repository.dart';
-import '../../domain/usecases/create_bookmark.dart';
-import '../../domain/usecases/get_bookmark.dart';
-import '../../domain/usecases/update_bookmark.dart';
+import '../../../../../core/utils/result.dart';
+import '../../../domain/repositories/bookmarks_repository.dart';
+import '../../../domain/usecases/create_bookmark.dart';
+import '../../../domain/usecases/get_bookmark.dart';
+import '../../../domain/usecases/update_bookmark.dart';
 import 'bookmark_form_state.dart';
 
 @injectable

@@ -5,9 +5,9 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/animation/widget_animations.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/widgets/widgets.dart';
-import '../cubit/bookmark_form_cubit.dart';
-import '../cubit/bookmark_form_state.dart';
-import '../cubit/bookmarks_list_cubit.dart';
+import '../cubit/bookmark_form/bookmark_form_cubit.dart';
+import '../cubit/bookmark_form/bookmark_form_state.dart';
+import '../cubit/bookmarks_list/bookmarks_list_cubit.dart';
 
 part '../widgets/bookmark_form_widgets.dart';
 

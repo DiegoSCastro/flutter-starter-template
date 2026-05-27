@@ -1,9 +1,9 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/utils/result.dart';
-import '../../domain/usecases/delete_bookmark.dart';
-import '../../domain/usecases/get_bookmark.dart';
+import '../../../../../core/utils/result.dart';
+import '../../../domain/usecases/delete_bookmark.dart';
+import '../../../domain/usecases/get_bookmark.dart';
 import 'bookmark_detail_state.dart';
 
 @injectable
