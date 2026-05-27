@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 
 import '../core/di/injection.dart';
 import '../core/theme/app_theme.dart';
+import '../core/theme/theme_cubit.dart';
 import '../features/auth/presentation/cubit/auth_cubit.dart';
 import '../features/auth/presentation/cubit/auth_state.dart';
 import '../features/bookmarks/data/sync/bookmarks_sync_service.dart';
@@ -21,6 +22,7 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   late final AuthCubit _authCubit;
+  late final ThemeCubit _themeCubit;
   late final GoRouter _router;
   late final BookmarksSyncService _sync;
   StreamSubscription<AuthState>? _authSub;
@@ -29,6 +31,7 @@ class _AppState extends State<App> {
   void initState() {
     super.initState();
     _authCubit = getIt<AuthCubit>();
+    _themeCubit = getIt<ThemeCubit>();
     _router = buildRouter(_authCubit);
     _sync = getIt<BookmarksSyncService>();
     _authSub = _authCubit.stream.listen(_onAuthChanged);
@@ -53,15 +56,21 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider.value(
-      value: _authCubit,
-      child: MaterialApp.router(
-        onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
-        theme: AppTheme.light(),
-        darkTheme: AppTheme.dark(),
-        localizationsDelegates: AppLocalizations.localizationsDelegates,
-        supportedLocales: AppLocalizations.supportedLocales,
-        routerConfig: _router,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider.value(value: _authCubit),
+        BlocProvider.value(value: _themeCubit),
+      ],
+      child: BlocBuilder<ThemeCubit, ThemeMode>(
+        builder: (context, themeMode) => MaterialApp.router(
+          onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
+          theme: AppTheme.light(),
+          darkTheme: AppTheme.dark(),
+          themeMode: themeMode,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          supportedLocales: AppLocalizations.supportedLocales,
+          routerConfig: _router,
+        ),
       ),
     );
   }

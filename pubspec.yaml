@@ -102,6 +102,7 @@ dependencies:
   # drains pending mutations when connectivity is restored.
   connectivity_plus: ^7.1.1
   google_fonts: ^8.1.0
+  shared_preferences: ^2.5.5
 
 dev_dependencies:
   flutter_test:

@@ -16,6 +16,7 @@ import 'package:flutter_starter_template/core/network/network_module.dart'
     as _i173;
 import 'package:flutter_starter_template/core/network/token_refresher.dart'
     as _i665;
+import 'package:flutter_starter_template/core/theme/theme_cubit.dart' as _i848;
 import 'package:flutter_starter_template/features/auth/data/datasources/auth_local_data_source.dart'
     as _i297;
 import 'package:flutter_starter_template/features/auth/data/datasources/auth_remote_data_source.dart'
@@ -63,6 +64,7 @@ import 'package:flutter_starter_template/features/bookmarks/presentation/cubit/b
 import 'package:flutter_starter_template/objectbox.g.dart' as _i831;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
+import 'package:shared_preferences/shared_preferences.dart' as _i460;
 import 'package:uuid/uuid.dart' as _i706;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -72,10 +74,15 @@ extension GetItInjectableX on _i174.GetIt {
     _i526.EnvironmentFilter? environmentFilter,
   }) async {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
+    final sharedPreferencesModule = _$SharedPreferencesModule();
     final objectBoxModule = _$ObjectBoxModule();
     final secureStorageModule = _$SecureStorageModule();
     final pluginsModule = _$PluginsModule();
     final networkModule = _$NetworkModule();
+    await gh.factoryAsync<_i460.SharedPreferences>(
+      () => sharedPreferencesModule.provideSharedPreferences(),
+      preResolve: true,
+    );
     await gh.singletonAsync<_i319.ObjectBox>(
       () => objectBoxModule.provideObjectBox(),
       preResolve: true,
@@ -93,6 +100,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i361.Dio>(
       () => networkModule.providePlainDio(),
       instanceName: 'plain',
+    );
+    gh.lazySingleton<_i848.ThemeCubit>(
+      () => _i848.ThemeCubit(gh<_i460.SharedPreferences>()),
     );
     gh.lazySingleton<_i665.TokenRefresher>(
       () => _i665.TokenRefresher(
@@ -189,6 +199,8 @@ extension GetItInjectableX on _i174.GetIt {
     return this;
   }
 }
+
+class _$SharedPreferencesModule extends _i848.SharedPreferencesModule {}
 
 class _$ObjectBoxModule extends _i319.ObjectBoxModule {}
 

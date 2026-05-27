@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/theme/theme_cubit.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
@@ -18,6 +19,7 @@ class HomeScreen extends StatelessWidget {
         backgroundColor: theme.colorScheme.inversePrimary,
         title: Text(l.homeAppBarTitle),
         actions: [
+          const _ThemeToggleButton(),
           IconButton(
             tooltip: l.homeSignOutTooltip,
             icon: const Icon(Icons.logout),
@@ -67,6 +69,28 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class _ThemeToggleButton extends StatelessWidget {
+  const _ThemeToggleButton();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ThemeCubit, ThemeMode>(
+      builder: (context, mode) {
+        final (icon, tooltip) = switch (mode) {
+          ThemeMode.light => (Icons.light_mode, 'Light theme'),
+          ThemeMode.dark => (Icons.dark_mode, 'Dark theme'),
+          ThemeMode.system => (Icons.brightness_auto, 'System theme'),
+        };
+        return IconButton(
+          tooltip: tooltip,
+          icon: Icon(icon),
+          onPressed: () => context.read<ThemeCubit>().toggle(),
+        );
+      },
     );
   }
 }
