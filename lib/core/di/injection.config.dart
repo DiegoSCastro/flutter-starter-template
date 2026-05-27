@@ -14,6 +14,7 @@ import 'package:dio/dio.dart' as _i361;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart'
     as _i163;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
+import 'package:flutter_starter_template/core/config/env_config.dart' as _i689;
 import 'package:flutter_starter_template/core/network/network_module.dart'
     as _i173;
 import 'package:flutter_starter_template/core/network/token_refresher.dart'
@@ -90,6 +91,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => sharedPreferencesModule.provideSharedPreferences(),
       preResolve: true,
     );
+    gh.singleton<_i689.EnvConfig>(() => const _i689.EnvConfig());
     await gh.singletonAsync<_i319.ObjectBox>(
       () => objectBoxModule.provideObjectBox(),
       preResolve: true,
@@ -107,10 +109,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i297.AuthLocalDataSource>(
       () => _i297.SecureStorageAuthDataSource(gh<_i558.FlutterSecureStorage>()),
     );
-    gh.lazySingleton<_i361.Dio>(
-      () => networkModule.providePlainDio(),
-      instanceName: 'plain',
-    );
     gh.lazySingleton<_i848.ThemeCubit>(
       () => _i848.ThemeCubit(gh<_i460.SharedPreferences>()),
     );
@@ -119,22 +117,27 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i163.FlutterLocalNotificationsPlugin>(),
       ),
     );
+    gh.singleton<_i831.Store>(
+      () => objectBoxModule.provideStore(gh<_i319.ObjectBox>()),
+    );
+    gh.lazySingleton<_i361.Dio>(
+      () => networkModule.providePlainDio(gh<_i689.EnvConfig>()),
+      instanceName: 'plain',
+    );
+    gh.lazySingleton<_i724.BookmarksLocalDataSource>(
+      () => _i724.ObjectBoxBookmarksDataSource(gh<_i831.Store>()),
+    );
     gh.lazySingleton<_i665.TokenRefresher>(
       () => _i665.TokenRefresher(
         gh<_i297.AuthLocalDataSource>(),
         gh<_i361.Dio>(instanceName: 'plain'),
       ),
     );
-    gh.singleton<_i831.Store>(
-      () => objectBoxModule.provideStore(gh<_i319.ObjectBox>()),
-    );
-    gh.lazySingleton<_i724.BookmarksLocalDataSource>(
-      () => _i724.ObjectBoxBookmarksDataSource(gh<_i831.Store>()),
-    );
     gh.lazySingleton<_i361.Dio>(
       () => networkModule.provideDio(
         gh<_i297.AuthLocalDataSource>(),
         gh<_i665.TokenRefresher>(),
+        gh<_i689.EnvConfig>(),
       ),
     );
     gh.lazySingleton<_i87.AuthRemoteDataSource>(

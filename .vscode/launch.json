@@ -2,27 +2,56 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "flutter_starter_template (Debug Mode)",
+      "name": "Dev (Debug)",
       "request": "launch",
       "type": "dart",
       "program": "lib/main.dart",
-      // "args": [
-      //   "--verbose"
-      // ]
+      "args": [
+        "--dart-define-from-file",
+        "env/dev.json"
+      ]
     },
     {
-      "name": "flutter_starter_template (Profile Mode)",
+      "name": "Staging (Debug)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "args": [
+        "--dart-define-from-file",
+        "env/staging.json"
+      ]
+    },
+    {
+      "name": "Prod (Debug)",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "args": [
+        "--dart-define-from-file",
+        "env/prod.json"
+      ]
+    },
+    {
+      "name": "Dev (Profile)",
       "request": "launch",
       "type": "dart",
       "flutterMode": "profile",
-      "program": "lib/main.dart"
+      "program": "lib/main.dart",
+      "args": [
+        "--dart-define-from-file",
+        "env/dev.json"
+      ]
     },
     {
-      "name": "flutter_starter_template (Release Mode)",
+      "name": "Prod (Release)",
       "request": "launch",
       "type": "dart",
       "flutterMode": "release",
-      "program": "lib/main.dart"
+      "program": "lib/main.dart",
+      "args": [
+        "--dart-define-from-file",
+        "env/prod.json"
+      ]
     }
   ]
 }

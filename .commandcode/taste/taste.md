@@ -14,3 +14,4 @@ See [flutter-packages/taste.md](flutter-packages/taste.md)
 - Set up l10n (localization) for the app. Confidence: 0.70
 - Support light and dark mode theming. Confidence: 0.70
 - Follow Flutter.dev AI rules and agent skills guidelines. Confidence: 0.65
+- Use Flutter flavors with --dart-define for environment configuration. Confidence: 0.50
