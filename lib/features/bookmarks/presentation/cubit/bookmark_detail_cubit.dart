@@ -9,7 +9,7 @@ import 'bookmark_detail_state.dart';
 @injectable
 class BookmarkDetailCubit extends Cubit<BookmarkDetailState> {
   BookmarkDetailCubit(this._get, this._delete)
-      : super(const BookmarkDetailState.loading());
+    : super(const BookmarkDetailState.loading());
 
   final GetBookmark _get;
   final DeleteBookmark _delete;

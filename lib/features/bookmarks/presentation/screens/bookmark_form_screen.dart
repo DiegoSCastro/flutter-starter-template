@@ -73,9 +73,9 @@ class _BookmarkFormViewState extends State<_BookmarkFormView> {
           }
           if (state.status == BookmarkFormStatus.idle &&
               state.failure != null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.failure!.message)),
-            );
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text(state.failure!.message)));
           }
         },
         builder: (context, state) {
@@ -121,16 +121,14 @@ class _BookmarkFormViewState extends State<_BookmarkFormView> {
                     label: 'Description (optional)',
                     minLines: 2,
                     maxLines: 4,
-                    onChanged:
-                        context.read<BookmarkFormCubit>().setDescription,
+                    onChanged: context.read<BookmarkFormCubit>().setDescription,
                   ).animateSlideLeft(delay: 100.ms),
                   const SizedBox(height: 12),
                   AppTextField(
                     controller: _tags,
                     label: 'Tags',
                     hint: 'comma, separated, values',
-                    onChanged:
-                        context.read<BookmarkFormCubit>().setTagsFromCsv,
+                    onChanged: context.read<BookmarkFormCubit>().setTagsFromCsv,
                   ).animateSlideLeft(delay: 150.ms),
                   const SizedBox(height: 24),
                   AppButton(

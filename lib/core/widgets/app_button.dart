@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../build_context_extensions.dart';
+
 enum AppButtonVariant { primary, tonal, outlined, text }
 
 enum AppButtonSize { small, medium, large }
@@ -34,11 +36,11 @@ class AppButton extends StatelessWidget {
     final effectiveOnPressed = isLoading
         ? null
         : onPressed != null
-            ? () {
-                HapticFeedback.lightImpact();
-                onPressed!();
-              }
-            : null;
+        ? () {
+            HapticFeedback.lightImpact();
+            onPressed!();
+          }
+        : null;
     final child = isLoading
         ? SizedBox(
             width: _spinnerSize,
@@ -51,73 +53,83 @@ class AppButton extends StatelessWidget {
         : Text(label);
 
     final button = switch (variant) {
-      AppButtonVariant.primary => icon == null || isLoading
-          ? FilledButton(
-              onPressed: effectiveOnPressed,
-              style: _style(),
-              child: child,
-            )
-          : FilledButton.icon(
-              onPressed: effectiveOnPressed,
-              style: _style(),
-              icon: Icon(icon),
-              label: Text(label),
-            ),
-      AppButtonVariant.tonal => icon == null || isLoading
-          ? FilledButton.tonal(
-              onPressed: effectiveOnPressed,
-              style: _style(),
-              child: child,
-            )
-          : FilledButton.tonalIcon(
-              onPressed: effectiveOnPressed,
-              style: _style(),
-              icon: Icon(icon),
-              label: Text(label),
-            ),
-      AppButtonVariant.outlined => icon == null || isLoading
-          ? OutlinedButton(
-              onPressed: effectiveOnPressed,
-              style: _style(),
-              child: child,
-            )
-          : OutlinedButton.icon(
-              onPressed: effectiveOnPressed,
-              style: _style(),
-              icon: Icon(icon),
-              label: Text(label),
-            ),
-      AppButtonVariant.text => icon == null || isLoading
-          ? TextButton(
-              onPressed: effectiveOnPressed,
-              style: _style(),
-              child: child,
-            )
-          : TextButton.icon(
-              onPressed: effectiveOnPressed,
-              style: _style(),
-              icon: Icon(icon),
-              label: Text(label),
-            ),
+      AppButtonVariant.primary =>
+        icon == null || isLoading
+            ? FilledButton(
+                onPressed: effectiveOnPressed,
+                style: _style(),
+                child: child,
+              )
+            : FilledButton.icon(
+                onPressed: effectiveOnPressed,
+                style: _style(),
+                icon: Icon(icon),
+                label: Text(label),
+              ),
+      AppButtonVariant.tonal =>
+        icon == null || isLoading
+            ? FilledButton.tonal(
+                onPressed: effectiveOnPressed,
+                style: _style(),
+                child: child,
+              )
+            : FilledButton.tonalIcon(
+                onPressed: effectiveOnPressed,
+                style: _style(),
+                icon: Icon(icon),
+                label: Text(label),
+              ),
+      AppButtonVariant.outlined =>
+        icon == null || isLoading
+            ? OutlinedButton(
+                onPressed: effectiveOnPressed,
+                style: _style(),
+                child: child,
+              )
+            : OutlinedButton.icon(
+                onPressed: effectiveOnPressed,
+                style: _style(),
+                icon: Icon(icon),
+                label: Text(label),
+              ),
+      AppButtonVariant.text =>
+        icon == null || isLoading
+            ? TextButton(
+                onPressed: effectiveOnPressed,
+                style: _style(),
+                child: child,
+              )
+            : TextButton.icon(
+                onPressed: effectiveOnPressed,
+                style: _style(),
+                icon: Icon(icon),
+                label: Text(label),
+              ),
     };
 
     return expand ? SizedBox(width: double.infinity, child: button) : button;
   }
 
   double get _spinnerSize => switch (size) {
-        AppButtonSize.small => 14,
-        AppButtonSize.medium => 18,
-        AppButtonSize.large => 20,
-      };
+    AppButtonSize.small => 14,
+    AppButtonSize.medium => 18,
+    AppButtonSize.large => 20,
+  };
 
   ButtonStyle _style() {
     final padding = switch (size) {
-      AppButtonSize.small =>
-        const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      AppButtonSize.medium =>
-        const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-      AppButtonSize.large =>
-        const EdgeInsets.symmetric(horizontal: 24, vertical: 18),
+      AppButtonSize.small => const EdgeInsets.symmetric(
+        horizontal: 12,
+        vertical: 8,
+      ),
+      AppButtonSize.medium => const EdgeInsets.symmetric(
+        horizontal: 20,
+        vertical: 14,
+      ),
+      AppButtonSize.large => const EdgeInsets.symmetric(
+        horizontal: 24,
+        vertical: 18,
+      ),
     };
     return ButtonStyle(
       padding: WidgetStatePropertyAll(padding),
@@ -132,11 +144,11 @@ class AppButton extends StatelessWidget {
   }
 
   Color _spinnerColor(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
     return switch (variant) {
-      AppButtonVariant.primary => scheme.onPrimary,
-      AppButtonVariant.tonal => scheme.onSecondaryContainer,
-      AppButtonVariant.outlined || AppButtonVariant.text => scheme.primary,
+      AppButtonVariant.primary => context.colorScheme.onPrimary,
+      AppButtonVariant.tonal => context.colorScheme.onSecondaryContainer,
+      AppButtonVariant.outlined ||
+      AppButtonVariant.text => context.colorScheme.primary,
     };
   }
 }

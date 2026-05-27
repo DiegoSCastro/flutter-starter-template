@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/animation/widget_animations.dart';
+import '../../../../core/build_context_extensions.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../domain/entities/bookmark.dart';
@@ -61,11 +62,12 @@ class _BookmarkDetailView extends StatelessWidget {
           return switch (state) {
             BookmarkDetailLoading() => const AppLoading(),
             BookmarkDetailFailure(:final failure) => AppErrorView(
-                message: failure.message,
-                onRetry: () => context.read<BookmarkDetailCubit>().load(id),
-              ),
-            BookmarkDetailReady(:final bookmark) =>
-              _DetailBody(bookmark: bookmark),
+              message: failure.message,
+              onRetry: () => context.read<BookmarkDetailCubit>().load(id),
+            ),
+            BookmarkDetailReady(:final bookmark) => _DetailBody(
+              bookmark: bookmark,
+            ),
           };
         },
       ),
@@ -109,29 +111,32 @@ class _DetailBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(bookmark.title, style: theme.textTheme.headlineSmall)
-              .animateSlideDown(),
+          Text(
+            bookmark.title,
+            style: context.textTheme.headlineSmall,
+          ).animateSlideDown(),
           const SizedBox(height: 8),
           InkWell(
             onTap: () => _openUrl(context, bookmark.url),
             child: Text(
               bookmark.url,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.primary,
+              style: context.textTheme.bodyMedium?.copyWith(
+                color: context.colorScheme.primary,
                 decoration: TextDecoration.underline,
               ),
             ),
           ).animateFadeIn(delay: 100.ms),
           if (bookmark.description.isNotEmpty) ...[
             const SizedBox(height: 16),
-            Text(bookmark.description, style: theme.textTheme.bodyMedium)
-                .animateFadeIn(delay: 200.ms),
+            Text(
+              bookmark.description,
+              style: context.textTheme.bodyMedium,
+            ).animateFadeIn(delay: 200.ms),
           ],
           if (bookmark.tags.isNotEmpty) ...[
             const SizedBox(height: 16),
@@ -172,6 +177,8 @@ class _DetailBody extends StatelessWidget {
   }
 
   void _toast(BuildContext context, String message) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 }

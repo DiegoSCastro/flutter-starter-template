@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/animation/widget_animations.dart';
+import '../../../../core/build_context_extensions.dart';
 import '../../../../core/error/failure.dart';
 import '../../../../core/widgets/widgets.dart';
-import '../../../../l10n/app_localizations.dart';
 import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
 
@@ -29,24 +29,21 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
-    await context.read<AuthCubit>().signIn(
-          username: _usernameController.text.trim(),
-          password: _passwordController.text,
-        );
+    await context.auth.signIn(
+      username: _usernameController.text.trim(),
+      password: _passwordController.text,
+    );
   }
 
-  String _localizeFailure(AppLocalizations l, Failure failure) =>
-      switch (failure) {
-        InvalidCredentialsFailure() => l.errorInvalidCredentials,
-        _ => l.errorUnknown,
-      };
+  String _localizeFailure(Failure failure) => switch (failure) {
+    InvalidCredentialsFailure() => context.l10n.errorInvalidCredentials,
+    _ => context.l10n.errorUnknown,
+  };
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final l = AppLocalizations.of(context);
     return AppScaffold(
-      title: l.loginAppBarTitle,
+      title: context.l10n.loginAppBarTitle,
       padding: EdgeInsets.zero,
       body: Center(
         child: ConstrainedBox(
@@ -57,7 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
               builder: (context, state) {
                 final isSubmitting = state is AuthSubmitting;
                 final errorMessage = state is AuthFailure
-                    ? _localizeFailure(l, state.failure)
+                    ? _localizeFailure(state.failure)
                     : null;
                 return Form(
                   key: _formKey,
@@ -65,45 +62,45 @@ class _LoginScreenState extends State<LoginScreen> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Text(
-                        l.loginHeadline,
+                        context.l10n.loginHeadline,
                         textAlign: TextAlign.center,
-                        style: theme.textTheme.headlineSmall,
+                        style: context.textTheme.headlineSmall,
                       ).animateSlideDown(),
                       const SizedBox(height: 24),
                       AppTextField(
                         controller: _usernameController,
-                        label: l.loginUsernameLabel,
+                        label: context.l10n.loginUsernameLabel,
                         prefixIcon: Icons.person_outline,
                         textInputAction: TextInputAction.next,
                         autofillHints: const [AutofillHints.username],
                         validator: (value) =>
                             (value == null || value.trim().isEmpty)
-                                ? l.fieldRequired
-                                : null,
+                            ? context.l10n.fieldRequired
+                            : null,
                       ).animateSlideLeft(delay: 100.ms),
                       const SizedBox(height: 16),
                       AppTextField(
                         controller: _passwordController,
-                        label: l.loginPasswordLabel,
+                        label: context.l10n.loginPasswordLabel,
                         prefixIcon: Icons.lock_outline,
                         obscureText: true,
                         autofillHints: const [AutofillHints.password],
                         onSubmitted: (_) => _submit(),
                         validator: (value) => (value == null || value.isEmpty)
-                            ? l.fieldRequired
+                            ? context.l10n.fieldRequired
                             : null,
                       ).animateSlideLeft(delay: 200.ms),
                       if (errorMessage != null) ...[
                         const SizedBox(height: 12),
                         Text(
                           errorMessage,
-                          style: TextStyle(color: theme.colorScheme.error),
+                          style: TextStyle(color: context.colorScheme.error),
                           textAlign: TextAlign.center,
                         ).animateShake(),
                       ],
                       const SizedBox(height: 24),
                       AppButton(
-                        label: l.loginSubmit,
+                        label: context.l10n.loginSubmit,
                         onPressed: _submit,
                         isLoading: isSubmitting,
                         expand: true,
@@ -119,4 +116,3 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
-

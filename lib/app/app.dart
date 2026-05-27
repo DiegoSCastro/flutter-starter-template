@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../core/build_context_extensions.dart';
 import '../core/di/injection.dart';
 import '../core/theme/app_theme.dart';
 import '../core/theme/theme_cubit.dart';
@@ -65,7 +66,7 @@ class _AppState extends State<App> {
       ],
       child: BlocBuilder<ThemeCubit, ThemeState>(
         builder: (context, themeState) => MaterialApp.router(
-          onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
+          onGenerateTitle: (context) => context.l10n.appTitle,
           theme: AppTheme.light(scheme: themeState.scheme),
           darkTheme: AppTheme.dark(scheme: themeState.scheme),
           themeMode: themeState.mode,

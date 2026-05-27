@@ -11,7 +11,7 @@ import 'bookmark_form_state.dart';
 @injectable
 class BookmarkFormCubit extends Cubit<BookmarkFormState> {
   BookmarkFormCubit(this._get, this._create, this._update)
-      : super(const BookmarkFormState());
+    : super(const BookmarkFormState());
 
   final GetBookmark _get;
   final CreateBookmark _create;
@@ -28,19 +28,23 @@ class BookmarkFormCubit extends Cubit<BookmarkFormState> {
     final result = await _get(id);
     switch (result) {
       case Ok(value: final b):
-        emit(BookmarkFormState(
-          id: b.id,
-          status: BookmarkFormStatus.idle,
-          title: b.title,
-          url: b.url,
-          description: b.description,
-          tags: List.of(b.tags),
-        ));
+        emit(
+          BookmarkFormState(
+            id: b.id,
+            status: BookmarkFormStatus.idle,
+            title: b.title,
+            url: b.url,
+            description: b.description,
+            tags: List.of(b.tags),
+          ),
+        );
       case Err(failure: final failure):
-        emit(state.copyWith(
-          status: BookmarkFormStatus.loadFailed,
-          failure: failure,
-        ));
+        emit(
+          state.copyWith(
+            status: BookmarkFormStatus.loadFailed,
+            failure: failure,
+          ),
+        );
     }
   }
 
@@ -76,10 +80,7 @@ class BookmarkFormCubit extends Cubit<BookmarkFormState> {
         emit(state.copyWith(status: BookmarkFormStatus.submitted));
         return true;
       case Err(failure: final failure):
-        emit(state.copyWith(
-          status: BookmarkFormStatus.idle,
-          failure: failure,
-        ));
+        emit(state.copyWith(status: BookmarkFormStatus.idle, failure: failure));
         return false;
     }
   }

@@ -21,9 +21,9 @@ class AppScaffold extends StatelessWidget {
     this.backgroundColor,
     this.resizeToAvoidBottomInset,
   }) : assert(
-          appBar == null || title == null,
-          'Provide either `title` or a custom `appBar`, not both.',
-        );
+         appBar == null || title == null,
+         'Provide either `title` or a custom `appBar`, not both.',
+       );
 
   final Widget body;
   final String? title;
@@ -47,13 +47,10 @@ class AppScaffold extends StatelessWidget {
     return Scaffold(
       backgroundColor: backgroundColor,
       resizeToAvoidBottomInset: resizeToAvoidBottomInset,
-      appBar: appBar ??
+      appBar:
+          appBar ??
           (title != null
-              ? AppBar(
-                  title: Text(title!),
-                  leading: leading,
-                  actions: actions,
-                )
+              ? AppBar(title: Text(title!), leading: leading, actions: actions)
               : null),
       drawer: drawer,
       floatingActionButton: floatingActionButton,
@@ -62,10 +59,7 @@ class AppScaffold extends StatelessWidget {
         children: [
           content,
           if (isLoading)
-            const ColoredBox(
-              color: Color(0x66000000),
-              child: AppLoading(),
-            ),
+            const ColoredBox(color: Color(0x66000000), child: AppLoading()),
         ],
       ),
     );

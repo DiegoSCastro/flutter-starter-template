@@ -11,10 +11,7 @@ typedef OnNotificationTap = void Function(Map<String, dynamic>? data);
 
 @singleton
 class FirebaseMessagingService {
-  FirebaseMessagingService(
-    this._localNotifications,
-    this._messaging,
-  );
+  FirebaseMessagingService(this._localNotifications, this._messaging);
 
   final NotificationsService _localNotifications;
   final FirebaseMessaging _messaging;

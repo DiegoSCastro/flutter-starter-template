@@ -20,8 +20,7 @@ class TokenRefresher {
   /// pair. Returns `true` on success (storage is updated) or `false` on any
   /// failure (storage is cleared so the UI can route to sign-in).
   Future<bool> refresh() {
-    return _inflight ??= _run()
-      ..whenComplete(() => _inflight = null);
+    return _inflight ??= _run()..whenComplete(() => _inflight = null);
   }
 
   Future<bool> _run() async {

@@ -9,11 +9,11 @@ import 'auth_interceptor.dart';
 import 'token_refresher.dart';
 
 BaseOptions _baseOptions(String baseUrl) => BaseOptions(
-      baseUrl: baseUrl,
-      connectTimeout: const Duration(seconds: 10),
-      receiveTimeout: const Duration(seconds: 10),
-      contentType: 'application/json',
-    );
+  baseUrl: baseUrl,
+  connectTimeout: const Duration(seconds: 10),
+  receiveTimeout: const Duration(seconds: 10),
+  contentType: 'application/json',
+);
 
 @module
 abstract class NetworkModule {
@@ -26,7 +26,11 @@ abstract class NetworkModule {
   /// Authenticated Dio used by the rest of the app: attaches the Bearer token
   /// and, on 401, transparently refreshes once and retries the request.
   @lazySingleton
-  Dio provideDio(AuthLocalDataSource session, TokenRefresher refresher, EnvConfig env) {
+  Dio provideDio(
+    AuthLocalDataSource session,
+    TokenRefresher refresher,
+    EnvConfig env,
+  ) {
     final dio = Dio(_baseOptions(env.apiBaseUrl));
     dio.interceptors.add(AuthInterceptor(session, refresher, dio));
     return dio;

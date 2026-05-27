@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/animation/widget_animations.dart';
+import '../../../../core/build_context_extensions.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/widgets/widgets.dart';
-import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
 import '../../../bookmarks/domain/entities/bookmark.dart';
@@ -29,10 +29,8 @@ class _Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final l = AppLocalizations.of(context);
     return AppScaffold(
-      title: l.homeAppBarTitle,
+      title: context.l10n.homeAppBarTitle,
       actions: const [_ProfileAvatarButton()],
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(24),
@@ -50,25 +48,25 @@ class _Body extends StatelessWidget {
                   children: [
                     CircleAvatar(
                       radius: 40,
-                      backgroundColor: theme.colorScheme.primaryContainer,
+                      backgroundColor: context.colorScheme.primaryContainer,
                       child: Icon(
                         Icons.person,
                         size: 40,
-                        color: theme.colorScheme.onPrimaryContainer,
+                        color: context.colorScheme.onPrimaryContainer,
                       ),
                     ).animateScale(delay: 100.ms),
                     const SizedBox(height: 16),
                     AppAnimatedText(
-                      text: l.homeWelcome(username),
+                      text: context.l10n.homeWelcome(username),
                       type: AppAnimatedTextType.typewriter,
-                      textStyle: theme.textTheme.headlineSmall,
+                      textStyle: context.textTheme.headlineSmall,
                       textAlign: TextAlign.center,
                     ),
                     const SizedBox(height: 8),
                     AppAnimatedText(
-                      text: l.homeSignedInBody,
+                      text: context.l10n.homeSignedInBody,
                       type: AppAnimatedTextType.fade,
-                      textStyle: theme.textTheme.bodyMedium,
+                      textStyle: context.textTheme.bodyMedium,
                       textAlign: TextAlign.center,
                     ),
                   ],
@@ -97,8 +95,6 @@ class _RecentBookmarksSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final l = AppLocalizations.of(context);
     return BlocBuilder<BookmarksListCubit, BookmarksListState>(
       builder: (context, state) {
         if (state.isLoading && state.items.isEmpty) {
@@ -107,9 +103,9 @@ class _RecentBookmarksSection extends StatelessWidget {
         final recent = state.items.take(3).toList();
         if (recent.isEmpty) {
           return Text(
-            l.homeNoBookmarks,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.onSurface.withValues(alpha: 0.6),
+            context.l10n.homeNoBookmarks,
+            style: context.textTheme.bodyMedium?.copyWith(
+              color: context.colorScheme.onSurface.withValues(alpha: 0.6),
             ),
           ).animateFadeIn(delay: animationDelay);
         }
@@ -119,8 +115,8 @@ class _RecentBookmarksSection extends StatelessWidget {
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                l.homeRecentBookmarks,
-                style: theme.textTheme.titleMedium?.copyWith(
+                context.l10n.homeRecentBookmarks,
+                style: context.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -147,7 +143,6 @@ class _BookmarkCarouselCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Card(
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -161,7 +156,7 @@ class _BookmarkCarouselCard extends StatelessWidget {
             children: [
               Text(
                 bookmark.title,
-                style: theme.textTheme.titleMedium?.copyWith(
+                style: context.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
                 maxLines: 1,
@@ -170,8 +165,8 @@ class _BookmarkCarouselCard extends StatelessWidget {
               const SizedBox(height: 6),
               Text(
                 bookmark.url,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: theme.colorScheme.primary,
+                style: context.textTheme.bodySmall?.copyWith(
+                  color: context.colorScheme.primary,
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -182,8 +177,8 @@ class _BookmarkCarouselCard extends StatelessWidget {
                   bookmark.description.isNotEmpty
                       ? bookmark.description
                       : 'No description',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurface.withValues(alpha: 0.7),
+                  style: context.textTheme.bodySmall?.copyWith(
+                    color: context.colorScheme.onSurface.withValues(alpha: 0.7),
                   ),
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
@@ -201,13 +196,13 @@ class _BookmarkCarouselCard extends StatelessWidget {
                         vertical: 2,
                       ),
                       decoration: BoxDecoration(
-                        color: theme.colorScheme.secondaryContainer,
+                        color: context.colorScheme.secondaryContainer,
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
                         tag,
-                        style: theme.textTheme.labelSmall?.copyWith(
-                          color: theme.colorScheme.onSecondaryContainer,
+                        style: context.textTheme.labelSmall?.copyWith(
+                          color: context.colorScheme.onSecondaryContainer,
                         ),
                       ),
                     );
@@ -227,7 +222,6 @@ class _ProfileAvatarButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return BlocBuilder<AuthCubit, AuthState>(
       builder: (context, state) {
         final username = state is AuthAuthenticated ? state.user.username : '';
@@ -239,11 +233,11 @@ class _ProfileAvatarButton extends StatelessWidget {
             onPressed: () => context.push('/profile'),
             icon: CircleAvatar(
               radius: 16,
-              backgroundColor: theme.colorScheme.primaryContainer,
+              backgroundColor: context.colorScheme.primaryContainer,
               child: Text(
                 initial,
-                style: theme.textTheme.labelLarge?.copyWith(
-                  color: theme.colorScheme.onPrimaryContainer,
+                style: context.textTheme.labelLarge?.copyWith(
+                  color: context.colorScheme.onPrimaryContainer,
                 ),
               ),
             ),

@@ -9,10 +9,8 @@ part 'auth_user_dto.g.dart';
 abstract class AuthUserDto with _$AuthUserDto {
   const AuthUserDto._();
 
-  const factory AuthUserDto({
-    required String id,
-    required String username,
-  }) = _AuthUserDto;
+  const factory AuthUserDto({required String id, required String username}) =
+      _AuthUserDto;
 
   factory AuthUserDto.fromJson(Map<String, dynamic> json) =>
       _$AuthUserDtoFromJson(json);

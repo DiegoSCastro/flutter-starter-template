@@ -18,7 +18,10 @@ abstract class BookmarksRemoteDataSource {
   Future<BookmarkDto> create(@Body() BookmarkRequest body);
 
   @PUT('/api/bookmarks/{id}')
-  Future<BookmarkDto> update(@Path('id') String id, @Body() BookmarkRequest body);
+  Future<BookmarkDto> update(
+    @Path('id') String id,
+    @Body() BookmarkRequest body,
+  );
 
   @DELETE('/api/bookmarks/{id}')
   Future<void> delete(@Path('id') String id);

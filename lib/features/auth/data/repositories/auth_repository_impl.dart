@@ -81,8 +81,8 @@ class AuthRepositoryImpl implements AuthRepository {
   Failure _mapDioError(DioException e) {
     final status = e.response?.statusCode;
     if (status == 401) {
-      final message = _extractMessage(e.response?.data) ??
-          'Invalid username or password.';
+      final message =
+          _extractMessage(e.response?.data) ?? 'Invalid username or password.';
       return InvalidCredentialsFailure(message);
     }
     return UnknownFailure(e.message ?? 'Network error');

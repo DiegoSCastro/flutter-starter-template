@@ -53,7 +53,9 @@ class BookmarksSyncService {
   /// Begin reacting to connectivity changes and run an initial sync. Idempotent.
   Future<void> start() async {
     if (_connectivitySub != null) return;
-    _connectivitySub = _connectivity.onConnectivityChanged.listen(_onConnectivity);
+    _connectivitySub = _connectivity.onConnectivityChanged.listen(
+      _onConnectivity,
+    );
     final initial = await _connectivity.checkConnectivity();
     _wasOnline = _hasNetwork(initial);
     unawaited(sync());
@@ -78,8 +80,7 @@ class BookmarksSyncService {
 
   /// Public trigger. Concurrent callers share the in-flight future.
   Future<void> sync() {
-    return _inflight ??= _run()
-      ..whenComplete(() => _inflight = null);
+    return _inflight ??= _run()..whenComplete(() => _inflight = null);
   }
 
   Future<void> _run() async {
@@ -107,13 +108,15 @@ class BookmarksSyncService {
     for (final row in pending) {
       switch (row.syncState) {
         case SyncState.pendingCreate:
-          final dto = await _remote.create(BookmarkRequest(
-            id: row.uuid,
-            title: row.title,
-            url: row.url,
-            description: row.description,
-            tags: row.tags,
-          ));
+          final dto = await _remote.create(
+            BookmarkRequest(
+              id: row.uuid,
+              title: row.title,
+              url: row.url,
+              description: row.description,
+              tags: row.tags,
+            ),
+          );
           row
             ..syncState = SyncState.synced
             ..serverUpdatedAt = dto.updatedAt;
@@ -158,17 +161,19 @@ class BookmarksSyncService {
     for (final dto in serverList) {
       final local = localByUuid[dto.id];
       if (local == null) {
-        await _local.put(BookmarkEntity(
-          uuid: dto.id,
-          title: dto.title,
-          url: dto.url,
-          description: dto.description,
-          tags: List.of(dto.tags),
-          createdAt: dto.createdAt,
-          updatedAt: dto.updatedAt,
-          serverUpdatedAt: dto.updatedAt,
-          syncStateCode: SyncState.synced.code,
-        ));
+        await _local.put(
+          BookmarkEntity(
+            uuid: dto.id,
+            title: dto.title,
+            url: dto.url,
+            description: dto.description,
+            tags: List.of(dto.tags),
+            createdAt: dto.createdAt,
+            updatedAt: dto.updatedAt,
+            serverUpdatedAt: dto.updatedAt,
+            syncStateCode: SyncState.synced.code,
+          ),
+        );
         continue;
       }
       // Don't clobber rows the user has touched since the last sync.

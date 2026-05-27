@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/animation/widget_animations.dart';
+import '../../../../core/build_context_extensions.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../data/sync/bookmarks_sync_service.dart';
@@ -50,7 +51,6 @@ class _BookmarksListViewState extends State<_BookmarksListView> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return AppScaffold(
       title: 'Bookmarks',
       padding: EdgeInsets.zero,
@@ -112,12 +112,12 @@ class _BookmarksListViewState extends State<_BookmarksListView> {
                         key: ValueKey(b.id),
                         direction: DismissDirection.endToStart,
                         background: Container(
-                          color: theme.colorScheme.errorContainer,
+                          color: context.colorScheme.errorContainer,
                           alignment: Alignment.centerRight,
                           padding: const EdgeInsets.symmetric(horizontal: 24),
                           child: Icon(
                             Icons.delete,
-                            color: theme.colorScheme.onErrorContainer,
+                            color: context.colorScheme.onErrorContainer,
                           ),
                         ),
                         confirmDismiss: (_) => _confirmDelete(context, b.title),
@@ -129,7 +129,7 @@ class _BookmarksListViewState extends State<_BookmarksListView> {
                                   message: 'Not yet synced',
                                   child: Icon(
                                     Icons.cloud_off,
-                                    color: theme.colorScheme.outline,
+                                    color: context.colorScheme.outline,
                                   ),
                                 )
                               : null,
@@ -191,24 +191,24 @@ class _SyncStatusIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return switch (status) {
       BookmarksSyncStatus.syncing => const Padding(
-          padding: EdgeInsets.only(right: 12),
-          child: SizedBox(
-            width: 18,
-            height: 18,
-            child: Center(
-              child: SizedBox(
-                width: 16,
-                height: 16,
-                child: CircularProgressIndicator(strokeWidth: 2),
-              ),
+        padding: EdgeInsets.only(right: 12),
+        child: SizedBox(
+          width: 18,
+          height: 18,
+          child: Center(
+            child: SizedBox(
+              width: 16,
+              height: 16,
+              child: CircularProgressIndicator(strokeWidth: 2),
             ),
           ),
         ),
+      ),
       BookmarksSyncStatus.error => IconButton(
-          tooltip: 'Sync failed — tap to retry',
-          icon: const Icon(Icons.cloud_off),
-          onPressed: () => getIt<BookmarksSyncService>().sync(),
-        ),
+        tooltip: 'Sync failed — tap to retry',
+        icon: const Icon(Icons.cloud_off),
+        onPressed: () => getIt<BookmarksSyncService>().sync(),
+      ),
       BookmarksSyncStatus.idle => const SizedBox.shrink(),
     };
   }

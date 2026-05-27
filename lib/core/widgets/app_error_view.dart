@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../build_context_extensions.dart';
+
 /// Full-screen error placeholder with an icon, message, and optional retry.
 class AppErrorView extends StatelessWidget {
   const AppErrorView({
@@ -20,7 +22,6 @@ class AppErrorView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final effectiveOnRetry = onRetry != null
         ? () {
             HapticFeedback.lightImpact();
@@ -33,19 +34,19 @@ class AppErrorView extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 56, color: theme.colorScheme.error),
+            Icon(icon, size: 56, color: context.colorScheme.error),
             const SizedBox(height: 16),
             if (title != null) ...[
               Text(
                 title!,
-                style: theme.textTheme.titleLarge,
+                style: context.textTheme.titleLarge,
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 8),
             ],
             Text(
               message,
-              style: theme.textTheme.bodyMedium,
+              style: context.textTheme.bodyMedium,
               textAlign: TextAlign.center,
             ),
             if (onRetry != null) ...[

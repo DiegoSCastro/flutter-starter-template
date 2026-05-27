@@ -21,20 +21,20 @@ class DefaultFirebaseOptions {
   static final _env = const EnvConfig();
 
   static FirebaseOptions get android => FirebaseOptions(
-        apiKey: _env.androidApiKey,
-        appId: _env.androidAppId,
-        messagingSenderId: _env.androidMessagingSenderId,
-        projectId: _env.androidProjectId,
-        storageBucket: _env.androidStorageBucket,
-      );
+    apiKey: _env.androidApiKey,
+    appId: _env.androidAppId,
+    messagingSenderId: _env.androidMessagingSenderId,
+    projectId: _env.androidProjectId,
+    storageBucket: _env.androidStorageBucket,
+  );
 
   static FirebaseOptions get ios => FirebaseOptions(
-        apiKey: _env.iosApiKey,
-        appId: _env.iosAppId,
-        messagingSenderId: _env.iosMessagingSenderId,
-        projectId: _env.iosProjectId,
-        storageBucket: _env.iosStorageBucket,
-        iosClientId: _env.iosClientId,
-        iosBundleId: _env.iosBundleId,
-      );
+    apiKey: _env.iosApiKey,
+    appId: _env.iosAppId,
+    messagingSenderId: _env.iosMessagingSenderId,
+    projectId: _env.iosProjectId,
+    storageBucket: _env.iosStorageBucket,
+    iosClientId: _env.iosClientId,
+    iosBundleId: _env.iosBundleId,
+  );
 }

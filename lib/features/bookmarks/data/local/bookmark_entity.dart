@@ -82,15 +82,15 @@ class BookmarkEntity {
   set syncState(SyncState value) => syncStateCode = value.code;
 
   Bookmark toDomain() => Bookmark(
-        id: uuid,
-        title: title,
-        url: url,
-        description: description,
-        tags: List.unmodifiable(tags),
-        createdAt: createdAt,
-        updatedAt: updatedAt,
-        isPendingSync: syncState.isPending,
-      );
+    id: uuid,
+    title: title,
+    url: url,
+    description: description,
+    tags: List.unmodifiable(tags),
+    createdAt: createdAt,
+    updatedAt: updatedAt,
+    isPendingSync: syncState.isPending,
+  );
 
   /// Mutates this entity from a [BookmarkInput] for create/update flows.
   /// Bumps `updatedAt`; leaves `createdAt` alone so updates preserve it.

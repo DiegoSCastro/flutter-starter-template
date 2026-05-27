@@ -33,15 +33,17 @@ abstract interface class BookmarksLocalDataSource {
 
 @LazySingleton(as: BookmarksLocalDataSource)
 class ObjectBoxBookmarksDataSource implements BookmarksLocalDataSource {
-  ObjectBoxBookmarksDataSource(Store store) : _box = store.box<BookmarkEntity>();
+  ObjectBoxBookmarksDataSource(Store store)
+    : _box = store.box<BookmarkEntity>();
 
   final Box<BookmarkEntity> _box;
 
   @override
   Future<List<BookmarkEntity>> listVisible() async {
     final query = _box
-        .query(BookmarkEntity_.syncStateCode
-            .notEquals(SyncState.pendingDelete.code))
+        .query(
+          BookmarkEntity_.syncStateCode.notEquals(SyncState.pendingDelete.code),
+        )
         .order(BookmarkEntity_.createdAt, flags: Order.descending)
         .build();
     try {

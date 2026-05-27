@@ -22,10 +22,12 @@ abstract class BookmarksListState with _$BookmarksListState {
   List<Bookmark> get visibleItems {
     if (query.trim().isEmpty) return items;
     final needle = query.toLowerCase();
-    return items.where((b) {
-      if (b.title.toLowerCase().contains(needle)) return true;
-      if (b.url.toLowerCase().contains(needle)) return true;
-      return b.tags.any((t) => t.toLowerCase().contains(needle));
-    }).toList(growable: false);
+    return items
+        .where((b) {
+          if (b.title.toLowerCase().contains(needle)) return true;
+          if (b.url.toLowerCase().contains(needle)) return true;
+          return b.tags.any((t) => t.toLowerCase().contains(needle));
+        })
+        .toList(growable: false);
   }
 }

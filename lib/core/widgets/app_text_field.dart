@@ -33,9 +33,9 @@ class AppTextField extends StatelessWidget {
     this.focusNode,
     this.autofillHints,
   }) : assert(
-          controller == null || initialValue == null,
-          'Provide either `controller` or `initialValue`, not both.',
-        );
+         controller == null || initialValue == null,
+         'Provide either `controller` or `initialValue`, not both.',
+       );
 
   final TextEditingController? controller;
   final String? initialValue;

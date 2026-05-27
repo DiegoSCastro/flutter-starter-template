@@ -12,7 +12,7 @@ import 'bookmarks_list_state.dart';
 @lazySingleton
 class BookmarksListCubit extends Cubit<BookmarksListState> {
   BookmarksListCubit(this._list, this._delete, this._sync)
-      : super(const BookmarksListState()) {
+    : super(const BookmarksListState()) {
     // Reload local data after every sync cycle so server-side changes
     // appear without the user pulling-to-refresh.
     _syncSub = _sync.statusStream.listen(_onSyncStatus);
@@ -64,9 +64,11 @@ class BookmarksListCubit extends Cubit<BookmarksListState> {
   /// tombstone locally + queues the server call).
   Future<void> delete(String id) async {
     final previous = state.items;
-    emit(state.copyWith(
-      items: previous.where((b) => b.id != id).toList(growable: false),
-    ));
+    emit(
+      state.copyWith(
+        items: previous.where((b) => b.id != id).toList(growable: false),
+      ),
+    );
     final result = await _delete(id);
     if (result is Err) {
       emit(state.copyWith(items: previous));

@@ -19,11 +19,11 @@ class NotificationsService {
   /// Must match what's registered in [init] before posting.
   static const AndroidNotificationChannel _defaultChannel =
       AndroidNotificationChannel(
-    'default_channel',
-    'General',
-    description: 'General app notifications',
-    importance: Importance.defaultImportance,
-  );
+        'default_channel',
+        'General',
+        description: 'General app notifications',
+        importance: Importance.defaultImportance,
+      );
 
   bool _initialized = false;
 
@@ -45,7 +45,8 @@ class NotificationsService {
     await _plugin.initialize(settings: initSettings);
     await _plugin
         .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin>()
+          AndroidFlutterLocalNotificationsPlugin
+        >()
         ?.createNotificationChannel(_defaultChannel);
     _initialized = true;
   }
@@ -58,14 +59,16 @@ class NotificationsService {
     if (Platform.isIOS || Platform.isMacOS) {
       final granted = await _plugin
           .resolvePlatformSpecificImplementation<
-              IOSFlutterLocalNotificationsPlugin>()
+            IOSFlutterLocalNotificationsPlugin
+          >()
           ?.requestPermissions(alert: true, badge: true, sound: true);
       return granted ?? false;
     }
     if (Platform.isAndroid) {
       final granted = await _plugin
           .resolvePlatformSpecificImplementation<
-              AndroidFlutterLocalNotificationsPlugin>()
+            AndroidFlutterLocalNotificationsPlugin
+          >()
           ?.requestNotificationsPermission();
       return granted ?? false;
     }

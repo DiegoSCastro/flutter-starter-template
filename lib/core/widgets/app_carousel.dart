@@ -1,6 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
+import '../build_context_extensions.dart';
+
 final class AppCarousel extends StatefulWidget {
   const AppCarousel({
     super.key,
@@ -34,8 +36,6 @@ class _AppCarouselState extends State<AppCarousel> {
 
   @override
   Widget build(BuildContext context) {
-    final scheme = Theme.of(context).colorScheme;
-
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -68,8 +68,8 @@ class _AppCarouselState extends State<AppCarousel> {
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(4),
                   color: isActive
-                      ? scheme.primary
-                      : scheme.onSurface.withValues(alpha: 0.3),
+                      ? context.colorScheme.primary
+                      : context.colorScheme.onSurface.withValues(alpha: 0.3),
                 ),
               );
             }),

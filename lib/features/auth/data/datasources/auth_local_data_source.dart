@@ -63,7 +63,10 @@ class SecureStorageAuthDataSource implements AuthLocalDataSource {
     final userJson = values[_kUserKey];
     if (userJson != null) {
       final map = jsonDecode(userJson) as Map<String, dynamic>;
-      _user = AuthUser(id: map['id'] as String, username: map['username'] as String);
+      _user = AuthUser(
+        id: map['id'] as String,
+        username: map['username'] as String,
+      );
     }
     _loaded = true;
   }

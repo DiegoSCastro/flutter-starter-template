@@ -13,10 +13,10 @@ class AuthCubit extends Cubit<AuthState> {
     required SignIn signIn,
     required SignOut signOut,
     required RestoreSession restoreSession,
-  })  : _signIn = signIn,
-        _signOut = signOut,
-        _restoreSession = restoreSession,
-        super(const AuthState.initial());
+  }) : _signIn = signIn,
+       _signOut = signOut,
+       _restoreSession = restoreSession,
+       super(const AuthState.initial());
 
   final SignIn _signIn;
   final SignOut _signOut;

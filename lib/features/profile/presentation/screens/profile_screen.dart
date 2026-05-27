@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 import '../../../../core/animation/widget_animations.dart';
+import '../../../../core/build_context_extensions.dart';
 import '../../../../core/theme/theme_cubit.dart';
 import '../../../../core/theme/theme_state.dart';
 import '../../../../core/widgets/widgets.dart';
@@ -200,7 +201,6 @@ class _ColorSchemeSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return BlocBuilder<ThemeCubit, ThemeState>(
       builder: (context, state) {
         return Padding(
@@ -211,7 +211,7 @@ class _ColorSchemeSelector extends StatelessWidget {
             children: _schemes.map((scheme) {
               final isActive = scheme == state.scheme;
               return GestureDetector(
-                onTap: () => context.read<ThemeCubit>().setScheme(scheme),
+                onTap: () => context.themeCubit.setScheme(scheme),
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
                   width: 40,
@@ -220,8 +220,8 @@ class _ColorSchemeSelector extends StatelessWidget {
                     shape: BoxShape.circle,
                     border: Border.all(
                       color: isActive
-                          ? theme.colorScheme.primary
-                          : theme.colorScheme.outline.withValues(alpha: 0.3),
+                          ? context.colorScheme.primary
+                          : context.colorScheme.outline.withValues(alpha: 0.3),
                       width: isActive ? 3 : 1.5,
                     ),
                   ),
