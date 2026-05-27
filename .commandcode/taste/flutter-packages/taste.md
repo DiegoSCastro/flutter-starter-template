@@ -1,0 +1,10 @@
+# Flutter Packages
+- Use flutter_gen_runner ^5.14.1 for asset code generation. Confidence: 0.70
+- Use flutter_svg ^2.3.0 for icon rendering. Confidence: 0.70
+- Use google_fonts for text theme configuration. Confidence: 0.70
+- Use flutter_bloc ^9.1.1 for state management with BLoC pattern. Confidence: 0.70
+- Use go_router_builder ^4.3.0 for navigation and route generation. Confidence: 0.70
+- Use injectable ^3.0.0 for dependency injection. Confidence: 0.70
+- Use retrofit ^4.9.2 for API client generation. Confidence: 0.70
+- Use freezed ^3.2.5 for immutable model code generation. Confidence: 0.70
+- Use objectbox ^5.3.2 for local database. Confidence: 0.70
