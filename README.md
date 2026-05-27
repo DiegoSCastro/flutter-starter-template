@@ -172,10 +172,68 @@ Firebase is initialized in `lib/main.dart` with Crashlytics fatal error reportin
 This project relies heavily on code generation. Run after any model, route, or DI change:
 
 ```bash
-dart run build_runner build --delete-conflicting-outputs
+fvm dart run build_runner build --delete-conflicting-outputs
 ```
 
 Generated files are git-tracked for convenience (something to consider if your team prefers otherwise).
+
+## 🤖 AI & Agent Tooling
+
+This project is optimized for AI-assisted development with Command Code, featuring pre-configured rules, MCP tools, taste preferences, and playbook skills.
+
+### ⚙️ Version Pinning with FVM
+Flutter and Dart SDK versions are pinned via [FVM](https://fvm.app/) in `.fvmrc`. Always prefix Flutter/Dart commands with `fvm`:
+```bash
+fvm flutter <command>
+fvm dart <command>
+```
+
+### ✨ Command Code — Taste & Plans
+Learned project preferences are stored in `.commandcode/taste/` and automatically guide AI agents to follow project conventions:
+- **Flutter Packages** — package selection preferences
+- **Architecture** — layered architecture, feature-slice conventions
+- **Backend** — Go with go-chi router
+- **Flutter Setup** — l10n, light/dark theming, flavors with `--dart-define`
+- **Testing** — shared mock/fake extraction into reusable test helpers
+
+Architectural plans and design documents are maintained in `.commandcode/plans/`.
+
+### 🧩 Dart MCP Server
+A project-scoped Dart/Flutter MCP server is configured in `.mcp.json`. It runs via `fvm dart mcp-server` and provides agents with tools for static analysis, code formatting, package management, test execution, and runtime diagnostics.
+
+### 📝 AI Rules & Context
+Custom instructions help AI tools understand coding guidelines, architecture, and project rules:
+- **Command Code**: Taste preferences in `.commandcode/taste/`, plans in `.commandcode/plans/`
+- **Claude Code**: Guidelines in `CLAUDE.md`
+- **Antigravity**: Custom guidelines in `.antigravityrules`
+
+### 🛠 Agent Skills
+Official task-playbooks from `flutter/skills` and `dart-lang/skills` are vendored under `.agents/skills/` and pinned in `skills-lock.json`. These encode standardized workflows for common development tasks:
+
+**Flutter skills:**
+- `flutter-setup-declarative-routing` — go_router with typed routes
+- `flutter-implement-json-serialization` — fromJson/toJson model classes
+- `flutter-add-widget-test` — WidgetTester component tests
+- `flutter-add-widget-preview` — interactive widget previews
+- `flutter-add-integration-test` — Flutter Driver / integration_test
+- `flutter-apply-architecture-best-practices` — layered UI/Logic/Data
+- `flutter-build-responsive-layout` — LayoutBuilder, MediaQuery
+- `flutter-fix-layout-issues` — overflow, unbounded constraints
+- `flutter-setup-localization` — intl + ARB setup
+- `flutter-use-http-package` — REST API integration
+
+**Dart skills:**
+- `dart-add-unit-test` — package:test unit tests
+- `dart-run-static-analysis` — dart analyze + dart fix
+- `dart-fix-runtime-errors` — stack trace diagnostics
+- `dart-generate-test-mocks` — mockito + build_runner
+- `dart-collect-coverage` — LCOV coverage reports
+- `dart-build-cli-app` — CLI entrypoints and exit codes
+- `dart-resolve-package-conflicts` — pub get conflict resolution
+- `dart-migrate-to-checks-package` — matcher → checks migration
+- `dart-use-pattern-matching` — switch expressions and pattern matching
+
+Agents auto-discover and execute these playbooks to ensure consistent implementation patterns.
 
 ## 📄 License
 
