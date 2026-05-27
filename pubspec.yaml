@@ -118,6 +118,13 @@ dependencies:
   # at runtime on iOS and on Android 13+.
   flutter_local_notifications: ^21.0.0
 
+  # Firebase platform initialization — required by every Firebase plugin.
+  firebase_core: ^4.9.0
+
+  # Firebase Crashlytics — real-time crash reporting for both Dart and
+  # native (Android/iOS) stack traces.
+  firebase_crashlytics: ^5.2.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
