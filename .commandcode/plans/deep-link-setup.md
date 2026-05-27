@@ -19,13 +19,13 @@ The current `GoRouter` uses `initialLocation: '/splash'` and the `SplashScreen` 
 
 ### Redirect flow
 
-| Scenario | Redirect behavior |
-|---|---|
-| Cold start, deep link, has session | Store deep link → splash → `/` (post-restore) → restore pending deep link |
-| Cold start, deep link, no session | Store deep link → splash → `/login` → after login → restore pending deep link |
-| Normal cold start, has session | Store `/` → splash → `/` (post-restore) → restore `/` |
-| Normal cold start, no session | Store `/` → splash → `/login` → after login → restore `/` |
-| Warm start (backgrounded), deep link | Direct navigation if authenticated; store + redirect to login if not |
+| Scenario                             | Redirect behavior                                                             |
+| ------------------------------------ | ----------------------------------------------------------------------------- |
+| Cold start, deep link, has session   | Store deep link → splash → `/` (post-restore) → restore pending deep link     |
+| Cold start, deep link, no session    | Store deep link → splash → `/login` → after login → restore pending deep link |
+| Normal cold start, has session       | Store `/` → splash → `/` (post-restore) → restore `/`                         |
+| Normal cold start, no session        | Store `/` → splash → `/login` → after login → restore `/`                     |
+| Warm start (backgrounded), deep link | Direct navigation if authenticated; store + redirect to login if not          |
 
 ---
 

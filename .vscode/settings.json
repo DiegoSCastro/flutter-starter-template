@@ -2,16 +2,27 @@
   "dart.flutterSdkPath": ".fvm/versions/3.44.0",
   "cSpell.words": [
     "antigravityrules",
+    "applinks",
+    "backgrounded",
+    "BROWSABLE",
+    "codegen",
+    "colour",
     "commandcode",
     "cupertino",
+    "customisable",
     "flutterfire",
     "fvmrc",
     "lucistudio",
     "mocktail",
     "objectbox",
+    "openurl",
     "podspec",
+    "Schyler",
+    "simctl",
     "splashscreen",
     "usecases",
-    "xcconfig"
+    "xcconfig",
+    "xcrun",
+    "yourdomain"
   ]
 }
