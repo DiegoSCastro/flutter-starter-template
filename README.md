@@ -308,7 +308,7 @@ All shared components in `lib/core/widgets/`:
 
 ## 🤖 AI‑Native Workflow
 
-This project is built for AI‑assisted development with **Command Code**, Claude Code, and Antigravity.
+This project is built for AI‑assisted development with **Command Code**, Claude Code, Codex, and Antigravity.
 
 ### 🎯 Command Code — Taste & Plans
 
@@ -325,9 +325,14 @@ Learned project preferences in `.commandcode/taste/` auto‑guide every agent:
 
 Architectural plans live in `.commandcode/plans/`.
 
-### 🧪 Dart MCP Server
+### 🧪 MCP Servers
 
-A project‑scoped MCP server in `.mcp.json` runs via `fvm dart mcp-server` — giving agents direct access to static analysis, formatting, package management, tests, and runtime diagnostics.
+Project‑scoped MCP servers in `.mcp.json` give agents direct access to:
+
+| Server      | Command                                        | Purpose                                      |
+|-------------|------------------------------------------------|----------------------------------------------|
+| `dart`      | `fvm dart mcp-server`                          | Static analysis, formatting, packages, tests |
+| `codegraph` | `codegraph serve --mcp --path <project-root>` | Symbol search, callers/callees, code context |
 
 ### 📜 Rules Files
 
@@ -335,6 +340,7 @@ A project‑scoped MCP server in `.mcp.json` runs via `fvm dart mcp-server` — 
 |-----------------|-----------------------------|
 | Command Code    | `.commandcode/taste/`       |
 | Command Code    | `.commandcode/plans/`       |
+| Codex           | `AGENTS.md`                 |
 | Claude Code     | `CLAUDE.md`                 |
 | Antigravity     | `.antigravityrules`         |
 

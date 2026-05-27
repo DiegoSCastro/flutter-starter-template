@@ -1,5 +1,16 @@
 {
   "mcpServers": {
+    "codegraph": {
+      "type": "stdio",
+      "command": "codegraph",
+      "args": [
+        "serve",
+        "--mcp",
+        "--path",
+        "/Users/trunglaptieu/development/projects/flutter-starter-template"
+      ],
+      "env": {}
+    },
     "dart": {
       "type": "stdio",
       "command": "fvm",
