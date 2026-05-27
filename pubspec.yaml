@@ -113,6 +113,11 @@ dependencies:
   # restores the persisted session, before routing to /login or /home.
   splashscreen: ^2.0.0
 
+  # Cross-platform local (on-device) notifications. Used to schedule and
+  # display notifications without a push backend; permissions are requested
+  # at runtime on iOS and on Android 13+.
+  flutter_local_notifications: ^21.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

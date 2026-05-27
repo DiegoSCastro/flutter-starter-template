@@ -11,11 +11,17 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:connectivity_plus/connectivity_plus.dart' as _i895;
 import 'package:dio/dio.dart' as _i361;
+import 'package:flutter_local_notifications/flutter_local_notifications.dart'
+    as _i163;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
 import 'package:flutter_starter_template/core/network/network_module.dart'
     as _i173;
 import 'package:flutter_starter_template/core/network/token_refresher.dart'
     as _i665;
+import 'package:flutter_starter_template/core/notifications/notifications_module.dart'
+    as _i146;
+import 'package:flutter_starter_template/core/notifications/notifications_service.dart'
+    as _i332;
 import 'package:flutter_starter_template/core/theme/theme_cubit.dart' as _i848;
 import 'package:flutter_starter_template/features/auth/data/datasources/auth_local_data_source.dart'
     as _i297;
@@ -76,6 +82,7 @@ extension GetItInjectableX on _i174.GetIt {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final sharedPreferencesModule = _$SharedPreferencesModule();
     final objectBoxModule = _$ObjectBoxModule();
+    final notificationsModule = _$NotificationsModule();
     final secureStorageModule = _$SecureStorageModule();
     final pluginsModule = _$PluginsModule();
     final networkModule = _$NetworkModule();
@@ -86,6 +93,9 @@ extension GetItInjectableX on _i174.GetIt {
     await gh.singletonAsync<_i319.ObjectBox>(
       () => objectBoxModule.provideObjectBox(),
       preResolve: true,
+    );
+    gh.lazySingleton<_i163.FlutterLocalNotificationsPlugin>(
+      () => notificationsModule.providePlugin(),
     );
     gh.lazySingleton<_i558.FlutterSecureStorage>(
       () => secureStorageModule.provideSecureStorage(),
@@ -103,6 +113,11 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i848.ThemeCubit>(
       () => _i848.ThemeCubit(gh<_i460.SharedPreferences>()),
+    );
+    gh.lazySingleton<_i332.NotificationsService>(
+      () => _i332.NotificationsService(
+        gh<_i163.FlutterLocalNotificationsPlugin>(),
+      ),
     );
     gh.lazySingleton<_i665.TokenRefresher>(
       () => _i665.TokenRefresher(
@@ -203,6 +218,8 @@ extension GetItInjectableX on _i174.GetIt {
 class _$SharedPreferencesModule extends _i848.SharedPreferencesModule {}
 
 class _$ObjectBoxModule extends _i319.ObjectBoxModule {}
+
+class _$NotificationsModule extends _i146.NotificationsModule {}
 
 class _$SecureStorageModule extends _i297.SecureStorageModule {}
 
