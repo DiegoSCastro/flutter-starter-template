@@ -102,52 +102,54 @@ class _BookmarksListViewState extends State<_BookmarksListView> {
                 }
                 return RefreshIndicator(
                   onRefresh: () => context.read<BookmarksListCubit>().load(),
-                  child: ListView.separated(
-                    itemCount: visible.length,
-                    separatorBuilder: (_, _) => const Divider(height: 1),
-                    itemBuilder: (context, index) {
-                      final b = visible[index];
-                      return Dismissible(
-                        key: ValueKey(b.id),
-                        direction: DismissDirection.endToStart,
-                        background: Container(
-                          color: context.colorScheme.errorContainer,
-                          alignment: Alignment.centerRight,
-                          padding: const EdgeInsets.symmetric(horizontal: 24),
-                          child: Icon(
-                            Icons.delete,
-                            color: context.colorScheme.onErrorContainer,
+                  child: AppSlidableAutoCloseGroup(
+                    child: ListView.separated(
+                      itemCount: visible.length,
+                      separatorBuilder: (_, _) => const Divider(height: 1),
+                      itemBuilder: (context, index) {
+                        final b = visible[index];
+                        return AppSlidable(
+                          key: ValueKey(b.id),
+                          groupTag: 'bookmarks',
+                          endActions: [
+                            AppSlidableAction.delete(
+                              onPressed: (_) async {
+                                final shouldDelete = await _confirmDelete(
+                                  context,
+                                  b.title,
+                                );
+                                if (!shouldDelete || !context.mounted) return;
+                                context.read<BookmarksListCubit>().delete(b.id);
+                              },
+                            ),
+                          ],
+                          child: ListTile(
+                            leading: b.isPendingSync
+                                ? Tooltip(
+                                    message: 'Not yet synced',
+                                    child: Icon(
+                                      Icons.cloud_off,
+                                      color: context.colorScheme.outline,
+                                    ),
+                                  )
+                                : null,
+                            title: Text(
+                              b.title,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            subtitle: Text(
+                              b.url,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                            trailing: const Icon(Icons.chevron_right),
+                            onTap: () => context.push('/bookmarks/${b.id}'),
+                            onLongPress: () => _showItemMenu(context, b),
                           ),
-                        ),
-                        confirmDismiss: (_) => _confirmDelete(context, b.title),
-                        onDismissed: (_) =>
-                            context.read<BookmarksListCubit>().delete(b.id),
-                        child: ListTile(
-                          leading: b.isPendingSync
-                              ? Tooltip(
-                                  message: 'Not yet synced',
-                                  child: Icon(
-                                    Icons.cloud_off,
-                                    color: context.colorScheme.outline,
-                                  ),
-                                )
-                              : null,
-                          title: Text(
-                            b.title,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          subtitle: Text(
-                            b.url,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          trailing: const Icon(Icons.chevron_right),
-                          onTap: () => context.push('/bookmarks/${b.id}'),
-                          onLongPress: () => _showItemMenu(context, b),
-                        ),
-                      ).animateStaggerItem(index);
-                    },
+                        ).animateStaggerItem(index);
+                      },
+                    ),
                   ),
                 );
               },

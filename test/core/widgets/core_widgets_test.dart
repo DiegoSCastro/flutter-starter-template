@@ -4,7 +4,9 @@ import 'package:flutter_starter_template/core/widgets/app_empty_view.dart';
 import 'package:flutter_starter_template/core/widgets/app_error_view.dart';
 import 'package:flutter_starter_template/core/widgets/app_loading.dart';
 import 'package:flutter_starter_template/core/widgets/app_scaffold.dart';
+import 'package:flutter_starter_template/core/widgets/app_slidable.dart';
 import 'package:flutter_starter_template/core/widgets/app_text_field.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Widget materialApp(Widget child) {
@@ -21,7 +23,9 @@ void main() {
     });
 
     testWidgets('shows label when provided', (tester) async {
-      await tester.pumpWidget(materialApp(const AppLoading(label: 'Loading...')));
+      await tester.pumpWidget(
+        materialApp(const AppLoading(label: 'Loading...')),
+      );
 
       expect(find.text('Loading...'), findsOneWidget);
     });
@@ -58,10 +62,7 @@ void main() {
     testWidgets('renders custom icon', (tester) async {
       await tester.pumpWidget(
         materialApp(
-          const AppEmptyView(
-            message: 'Empty',
-            icon: Icons.search_off,
-          ),
+          const AppEmptyView(message: 'Empty', icon: Icons.search_off),
         ),
       );
 
@@ -73,10 +74,7 @@ void main() {
         materialApp(
           AppEmptyView(
             message: 'Empty',
-            action: ElevatedButton(
-              onPressed: () {},
-              child: const Text('Add'),
-            ),
+            action: ElevatedButton(onPressed: () {}, child: const Text('Add')),
           ),
         ),
       );
@@ -87,9 +85,7 @@ void main() {
 
   group('AppErrorView', () {
     testWidgets('renders message and default icon', (tester) async {
-      await tester.pumpWidget(
-        materialApp(const AppErrorView(message: 'Oops')),
-      );
+      await tester.pumpWidget(materialApp(const AppErrorView(message: 'Oops')));
 
       expect(find.text('Oops'), findsOneWidget);
       expect(find.byIcon(Icons.error_outline), findsOneWidget);
@@ -97,20 +93,18 @@ void main() {
 
     testWidgets('renders title when provided', (tester) async {
       await tester.pumpWidget(
-        materialApp(
-          const AppErrorView(message: 'Oops', title: 'Error'),
-        ),
+        materialApp(const AppErrorView(message: 'Oops', title: 'Error')),
       );
 
       expect(find.text('Error'), findsOneWidget);
       expect(find.text('Oops'), findsOneWidget);
     });
 
-    testWidgets('renders retry button when onRetry is provided', (tester) async {
+    testWidgets('renders retry button when onRetry is provided', (
+      tester,
+    ) async {
       await tester.pumpWidget(
-        materialApp(
-          AppErrorView(message: 'Oops', onRetry: () {}),
-        ),
+        materialApp(AppErrorView(message: 'Oops', onRetry: () {})),
       );
 
       expect(find.text('Retry'), findsOneWidget);
@@ -147,11 +141,7 @@ void main() {
   group('AppScaffold', () {
     testWidgets('renders body inside SafeArea with padding', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          home: AppScaffold(
-            body: const Text('Content'),
-          ),
-        ),
+        MaterialApp(home: AppScaffold(body: const Text('Content'))),
       );
 
       expect(find.text('Content'), findsOneWidget);
@@ -161,10 +151,7 @@ void main() {
     testWidgets('renders AppBar when title is provided', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: AppScaffold(
-            title: 'Test Screen',
-            body: const Text('Content'),
-          ),
+          home: AppScaffold(title: 'Test Screen', body: const Text('Content')),
         ),
       );
 
@@ -187,10 +174,7 @@ void main() {
     testWidgets('shows loading overlay when isLoading is true', (tester) async {
       await tester.pumpWidget(
         MaterialApp(
-          home: AppScaffold(
-            body: const Text('Content'),
-            isLoading: true,
-          ),
+          home: AppScaffold(body: const Text('Content'), isLoading: true),
         ),
       );
 
@@ -211,6 +195,49 @@ void main() {
       );
 
       expect(find.byType(FloatingActionButton), findsOneWidget);
+    });
+  });
+
+  group('AppSlidable', () {
+    testWidgets('renders child and end action', (tester) async {
+      await tester.pumpWidget(
+        materialApp(
+          const AppSlidable(
+            endActions: [AppSlidableAction.delete(onPressed: null)],
+            child: ListTile(title: Text('Bookmark')),
+          ),
+        ),
+      );
+
+      expect(find.text('Bookmark'), findsOneWidget);
+      expect(find.byType(Slidable), findsOneWidget);
+
+      await tester.drag(find.text('Bookmark'), const Offset(-300, 0));
+      await tester.pumpAndSettle();
+
+      final action = tester.widget<SlidableAction>(find.byType(SlidableAction));
+      expect(action.label, 'Delete');
+      expect(action.icon, Icons.delete_outline);
+    });
+
+    testWidgets('fires action callback', (tester) async {
+      var tapped = false;
+      await tester.pumpWidget(
+        materialApp(
+          AppSlidable(
+            endActions: [
+              AppSlidableAction.delete(onPressed: (_) => tapped = true),
+            ],
+            child: const ListTile(title: Text('Bookmark')),
+          ),
+        ),
+      );
+
+      await tester.drag(find.text('Bookmark'), const Offset(-300, 0));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byType(SlidableAction));
+
+      expect(tapped, isTrue);
     });
   });
 
@@ -235,10 +262,7 @@ void main() {
     testWidgets('renders prefix icon', (tester) async {
       await tester.pumpWidget(
         materialApp(
-          const AppTextField(
-            label: 'Email',
-            prefixIcon: Icons.email_outlined,
-          ),
+          const AppTextField(label: 'Email', prefixIcon: Icons.email_outlined),
         ),
       );
 
@@ -263,9 +287,7 @@ void main() {
     testWidgets('calls onChanged when text changes', (tester) async {
       var changedValue = '';
       await tester.pumpWidget(
-        materialApp(
-          AppTextField(onChanged: (v) => changedValue = v),
-        ),
+        materialApp(AppTextField(onChanged: (v) => changedValue = v)),
       );
 
       await tester.enterText(find.byType(TextFormField), 'test');
@@ -273,9 +295,7 @@ void main() {
     });
 
     testWidgets('is disabled when enabled is false', (tester) async {
-      await tester.pumpWidget(
-        materialApp(const AppTextField(enabled: false)),
-      );
+      await tester.pumpWidget(materialApp(const AppTextField(enabled: false)));
 
       final field = tester.widget<TextFormField>(find.byType(TextFormField));
       expect(field.enabled, isFalse);
@@ -286,9 +306,7 @@ void main() {
     group('primary variant', () {
       testWidgets('renders label', (tester) async {
         await tester.pumpWidget(
-          materialApp(
-            AppButton(label: 'Save', onPressed: () {}),
-          ),
+          materialApp(AppButton(label: 'Save', onPressed: () {})),
         );
 
         expect(find.text('Save'), findsOneWidget);
@@ -298,16 +316,16 @@ void main() {
       testWidgets('fires onPressed callback', (tester) async {
         var tapped = false;
         await tester.pumpWidget(
-          materialApp(
-            AppButton(label: 'Save', onPressed: () => tapped = true),
-          ),
+          materialApp(AppButton(label: 'Save', onPressed: () => tapped = true)),
         );
 
         await tester.tap(find.text('Save'));
         expect(tapped, isTrue);
       });
 
-      testWidgets('shows CircularProgressIndicator when loading', (tester) async {
+      testWidgets('shows CircularProgressIndicator when loading', (
+        tester,
+      ) async {
         await tester.pumpWidget(
           materialApp(
             const AppButton(label: 'Save', onPressed: null, isLoading: true),
@@ -320,11 +338,7 @@ void main() {
       testWidgets('renders icon button when icon provided', (tester) async {
         await tester.pumpWidget(
           materialApp(
-            AppButton(
-              label: 'Save',
-              onPressed: () {},
-              icon: Icons.save,
-            ),
+            AppButton(label: 'Save', onPressed: () {}, icon: Icons.save),
           ),
         );
 
@@ -334,9 +348,7 @@ void main() {
 
       testWidgets('does nothing when onPressed is null', (tester) async {
         await tester.pumpWidget(
-          materialApp(
-            const AppButton(label: 'Save', onPressed: null),
-          ),
+          materialApp(const AppButton(label: 'Save', onPressed: null)),
         );
 
         // Button should render but be disabled
@@ -360,7 +372,9 @@ void main() {
         expect(find.text('Cancel'), findsOneWidget);
       });
 
-      testWidgets('renders FilledButton.tonalIcon when icon provided', (tester) async {
+      testWidgets('renders FilledButton.tonalIcon when icon provided', (
+        tester,
+      ) async {
         await tester.pumpWidget(
           materialApp(
             AppButton(
@@ -440,9 +454,7 @@ void main() {
 
     testWidgets('expand fills width', (tester) async {
       await tester.pumpWidget(
-        materialApp(
-          AppButton(label: 'Full', onPressed: () {}, expand: true),
-        ),
+        materialApp(AppButton(label: 'Full', onPressed: () {}, expand: true)),
       );
 
       final button = tester.widget<SizedBox>(find.byType(SizedBox));

@@ -144,6 +144,9 @@ dependencies:
   share_plus: ^13.1.0
   flutter_link_previewer: ^4.2.0
 
+  # Swipe actions for list rows, wrapped by AppSlidable.
+  flutter_slidable: ^4.0.3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

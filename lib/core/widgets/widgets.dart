@@ -6,4 +6,5 @@ export 'app_error_view.dart';
 export 'app_link_preview.dart';
 export 'app_loading.dart';
 export 'app_scaffold.dart';
+export 'app_slidable.dart';
 export 'app_text_field.dart';
