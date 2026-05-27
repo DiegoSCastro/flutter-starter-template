@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/injection.dart';
+import '../../../../core/widgets/widgets.dart';
 import '../cubit/bookmark_form_cubit.dart';
 import '../cubit/bookmark_form_state.dart';
 import '../cubit/bookmarks_list_cubit.dart';
@@ -59,12 +60,9 @@ class _BookmarkFormViewState extends State<_BookmarkFormView> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: theme.colorScheme.inversePrimary,
-        title: Text(widget.isEditing ? 'Edit bookmark' : 'New bookmark'),
-      ),
+    return AppScaffold(
+      title: widget.isEditing ? 'Edit bookmark' : 'New bookmark',
+      padding: EdgeInsets.zero,
       body: BlocConsumer<BookmarkFormCubit, BookmarkFormState>(
         listenWhen: (prev, curr) => prev.status != curr.status,
         listener: (context, state) {
@@ -81,17 +79,11 @@ class _BookmarkFormViewState extends State<_BookmarkFormView> {
         },
         builder: (context, state) {
           if (state.status == BookmarkFormStatus.loading) {
-            return const Center(child: CircularProgressIndicator());
+            return const AppLoading();
           }
           if (state.status == BookmarkFormStatus.loadFailed) {
-            return Center(
-              child: Padding(
-                padding: const EdgeInsets.all(24),
-                child: Text(
-                  state.failure?.message ?? 'Failed to load bookmark.',
-                  textAlign: TextAlign.center,
-                ),
-              ),
+            return AppErrorView(
+              message: state.failure?.message ?? 'Failed to load bookmark.',
             );
           }
           _hydrateFromState(state);
@@ -103,12 +95,9 @@ class _BookmarkFormViewState extends State<_BookmarkFormView> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  TextFormField(
+                  AppTextField(
                     controller: _title,
-                    decoration: const InputDecoration(
-                      labelText: 'Title',
-                      border: OutlineInputBorder(),
-                    ),
+                    label: 'Title',
                     textInputAction: TextInputAction.next,
                     validator: (v) => (v == null || v.trim().isEmpty)
                         ? 'Title is required'
@@ -116,58 +105,41 @@ class _BookmarkFormViewState extends State<_BookmarkFormView> {
                     onChanged: context.read<BookmarkFormCubit>().setTitle,
                   ),
                   const SizedBox(height: 12),
-                  TextFormField(
+                  AppTextField(
                     controller: _url,
-                    decoration: const InputDecoration(
-                      labelText: 'URL',
-                      hintText: 'https://example.com',
-                      border: OutlineInputBorder(),
-                    ),
+                    label: 'URL',
+                    hint: 'https://example.com',
                     keyboardType: TextInputType.url,
                     textInputAction: TextInputAction.next,
                     validator: _validateUrl,
                     onChanged: context.read<BookmarkFormCubit>().setUrl,
                   ),
                   const SizedBox(height: 12),
-                  TextFormField(
+                  AppTextField(
                     controller: _description,
-                    decoration: const InputDecoration(
-                      labelText: 'Description (optional)',
-                      border: OutlineInputBorder(),
-                    ),
+                    label: 'Description (optional)',
                     minLines: 2,
                     maxLines: 4,
                     onChanged:
                         context.read<BookmarkFormCubit>().setDescription,
                   ),
                   const SizedBox(height: 12),
-                  TextFormField(
+                  AppTextField(
                     controller: _tags,
-                    decoration: const InputDecoration(
-                      labelText: 'Tags',
-                      hintText: 'comma, separated, values',
-                      border: OutlineInputBorder(),
-                    ),
+                    label: 'Tags',
+                    hint: 'comma, separated, values',
                     onChanged:
                         context.read<BookmarkFormCubit>().setTagsFromCsv,
                   ),
                   const SizedBox(height: 24),
-                  FilledButton(
-                    onPressed: isSubmitting
-                        ? null
-                        : () {
-                            if (_formKey.currentState?.validate() != true) {
-                              return;
-                            }
-                            context.read<BookmarkFormCubit>().submit();
-                          },
-                    child: isSubmitting
-                        ? const SizedBox(
-                            width: 18,
-                            height: 18,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : Text(widget.isEditing ? 'Save' : 'Create'),
+                  AppButton(
+                    label: widget.isEditing ? 'Save' : 'Create',
+                    isLoading: isSubmitting,
+                    expand: true,
+                    onPressed: () {
+                      if (_formKey.currentState?.validate() != true) return;
+                      context.read<BookmarkFormCubit>().submit();
+                    },
                   ),
                 ],
               ),

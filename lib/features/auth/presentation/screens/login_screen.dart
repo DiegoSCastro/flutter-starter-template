@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/error/failure.dart';
+import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../cubit/auth_cubit.dart';
 import '../cubit/auth_state.dart';
@@ -43,8 +44,9 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final l = AppLocalizations.of(context);
-    return Scaffold(
-      appBar: AppBar(title: Text(l.loginAppBarTitle)),
+    return AppScaffold(
+      title: l.loginAppBarTitle,
+      padding: EdgeInsets.zero,
       body: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 360),
@@ -67,12 +69,10 @@ class _LoginScreenState extends State<LoginScreen> {
                         style: theme.textTheme.headlineSmall,
                       ),
                       const SizedBox(height: 24),
-                      TextFormField(
+                      AppTextField(
                         controller: _usernameController,
-                        decoration: InputDecoration(
-                          labelText: l.loginUsernameLabel,
-                          border: const OutlineInputBorder(),
-                        ),
+                        label: l.loginUsernameLabel,
+                        prefixIcon: Icons.person_outline,
                         textInputAction: TextInputAction.next,
                         autofillHints: const [AutofillHints.username],
                         validator: (value) =>
@@ -81,15 +81,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                 : null,
                       ),
                       const SizedBox(height: 16),
-                      TextFormField(
+                      AppTextField(
                         controller: _passwordController,
-                        decoration: InputDecoration(
-                          labelText: l.loginPasswordLabel,
-                          border: const OutlineInputBorder(),
-                        ),
+                        label: l.loginPasswordLabel,
+                        prefixIcon: Icons.lock_outline,
                         obscureText: true,
                         autofillHints: const [AutofillHints.password],
-                        onFieldSubmitted: (_) => _submit(),
+                        onSubmitted: (_) => _submit(),
                         validator: (value) => (value == null || value.isEmpty)
                             ? l.fieldRequired
                             : null,
@@ -103,15 +101,11 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ],
                       const SizedBox(height: 24),
-                      FilledButton(
-                        onPressed: isSubmitting ? null : _submit,
-                        child: isSubmitting
-                            ? const SizedBox(
-                                height: 18,
-                                width: 18,
-                                child: CircularProgressIndicator(strokeWidth: 2),
-                              )
-                            : Text(l.loginSubmit),
+                      AppButton(
+                        label: l.loginSubmit,
+                        onPressed: _submit,
+                        isLoading: isSubmitting,
+                        expand: true,
                       ),
                     ],
                   ),
@@ -124,3 +118,4 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 }
+

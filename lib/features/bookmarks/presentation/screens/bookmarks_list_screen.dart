@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/di/injection.dart';
+import '../../../../core/widgets/widgets.dart';
 import '../../data/sync/bookmarks_sync_service.dart';
 import '../cubit/bookmarks_list_cubit.dart';
 import '../cubit/bookmarks_list_state.dart';
@@ -49,17 +50,16 @@ class _BookmarksListViewState extends State<_BookmarksListView> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: theme.colorScheme.inversePrimary,
-        title: const Text('Bookmarks'),
-        actions: [
-          BlocBuilder<BookmarksListCubit, BookmarksListState>(
-            buildWhen: (a, b) => a.syncStatus != b.syncStatus,
-            builder: (context, state) => _SyncStatusIcon(status: state.syncStatus),
-          ),
-        ],
-      ),
+    return AppScaffold(
+      title: 'Bookmarks',
+      padding: EdgeInsets.zero,
+      actions: [
+        BlocBuilder<BookmarksListCubit, BookmarksListState>(
+          buildWhen: (a, b) => a.syncStatus != b.syncStatus,
+          builder: (context, state) =>
+              _SyncStatusIcon(status: state.syncStatus),
+        ),
+      ],
       floatingActionButton: FloatingActionButton(
         onPressed: () => context.push('/bookmarks/new'),
         child: const Icon(Icons.add),
@@ -68,14 +68,10 @@ class _BookmarksListViewState extends State<_BookmarksListView> {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-            child: TextField(
+            child: AppTextField(
               controller: _searchController,
-              decoration: const InputDecoration(
-                prefixIcon: Icon(Icons.search),
-                hintText: 'Search title, URL, or tag',
-                border: OutlineInputBorder(),
-                isDense: true,
-              ),
+              hint: 'Search title, URL, or tag',
+              prefixIcon: Icons.search,
               onChanged: _onSearchChanged,
             ),
           ),
@@ -83,18 +79,25 @@ class _BookmarksListViewState extends State<_BookmarksListView> {
             child: BlocBuilder<BookmarksListCubit, BookmarksListState>(
               builder: (context, state) {
                 if (state.isLoading && state.items.isEmpty) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const AppLoading();
                 }
                 if (state.failure != null && state.items.isEmpty) {
-                  return _ErrorView(
+                  return AppErrorView(
                     message: state.failure!.message,
                     onRetry: () => context.read<BookmarksListCubit>().load(),
                   );
                 }
                 final visible = state.visibleItems;
                 if (visible.isEmpty) {
-                  return _EmptyView(
-                    isFiltered: state.query.trim().isNotEmpty,
+                  final isFiltered = state.query.trim().isNotEmpty;
+                  return AppEmptyView(
+                    icon: isFiltered
+                        ? Icons.search_off
+                        : Icons.bookmark_outline,
+                    title: isFiltered ? 'No matches' : 'No bookmarks yet',
+                    message: isFiltered
+                        ? 'No bookmarks match your search.'
+                        : 'Tap + to add your first bookmark.',
                   );
                 }
                 return RefreshIndicator(
@@ -161,39 +164,20 @@ class _BookmarksListViewState extends State<_BookmarksListView> {
             title: const Text('Delete bookmark?'),
             content: Text('"$title" will be removed.'),
             actions: [
-              TextButton(
+              AppButton(
+                label: 'Cancel',
+                variant: AppButtonVariant.text,
                 onPressed: () => Navigator.of(ctx).pop(false),
-                child: const Text('Cancel'),
               ),
-              FilledButton.tonal(
+              AppButton(
+                label: 'Delete',
+                variant: AppButtonVariant.tonal,
                 onPressed: () => Navigator.of(ctx).pop(true),
-                child: const Text('Delete'),
               ),
             ],
           ),
         ) ??
         false;
-  }
-}
-
-class _EmptyView extends StatelessWidget {
-  const _EmptyView({required this.isFiltered});
-
-  final bool isFiltered;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Text(
-          isFiltered
-              ? 'No bookmarks match your search.'
-              : 'No bookmarks yet. Tap + to add one.',
-          textAlign: TextAlign.center,
-        ),
-      ),
-    );
   }
 }
 
@@ -226,29 +210,5 @@ class _SyncStatusIcon extends StatelessWidget {
         ),
       BookmarksSyncStatus.idle => const SizedBox.shrink(),
     };
-  }
-}
-
-class _ErrorView extends StatelessWidget {
-  const _ErrorView({required this.message, required this.onRetry});
-
-  final String message;
-  final VoidCallback onRetry;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(message, textAlign: TextAlign.center),
-            const SizedBox(height: 12),
-            FilledButton(onPressed: onRetry, child: const Text('Retry')),
-          ],
-        ),
-      ),
-    );
   }
 }

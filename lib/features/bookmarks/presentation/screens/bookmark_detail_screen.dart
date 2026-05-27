@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/di/injection.dart';
+import '../../../../core/widgets/widgets.dart';
 import '../../domain/entities/bookmark.dart';
 import '../cubit/bookmark_detail_cubit.dart';
 import '../cubit/bookmark_detail_state.dart';
@@ -30,45 +31,40 @@ class _BookmarkDetailView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: theme.colorScheme.inversePrimary,
-        title: const Text('Bookmark'),
-        actions: [
-          BlocBuilder<BookmarkDetailCubit, BookmarkDetailState>(
-            builder: (context, state) {
-              if (state is! BookmarkDetailReady) return const SizedBox.shrink();
-              return Row(
-                children: [
-                  IconButton(
-                    tooltip: 'Edit',
-                    icon: const Icon(Icons.edit),
-                    onPressed: () => context.push('/bookmarks/$id/edit'),
-                  ),
-                  IconButton(
-                    tooltip: 'Delete',
-                    icon: const Icon(Icons.delete_outline),
-                    onPressed: () => _confirmAndDelete(context, state.bookmark),
-                  ),
-                ],
-              );
-            },
-          ),
-        ],
-      ),
+    return AppScaffold(
+      title: 'Bookmark',
+      padding: EdgeInsets.zero,
+      actions: [
+        BlocBuilder<BookmarkDetailCubit, BookmarkDetailState>(
+          builder: (context, state) {
+            if (state is! BookmarkDetailReady) return const SizedBox.shrink();
+            return Row(
+              children: [
+                IconButton(
+                  tooltip: 'Edit',
+                  icon: const Icon(Icons.edit),
+                  onPressed: () => context.push('/bookmarks/$id/edit'),
+                ),
+                IconButton(
+                  tooltip: 'Delete',
+                  icon: const Icon(Icons.delete_outline),
+                  onPressed: () => _confirmAndDelete(context, state.bookmark),
+                ),
+              ],
+            );
+          },
+        ),
+      ],
       body: BlocBuilder<BookmarkDetailCubit, BookmarkDetailState>(
         builder: (context, state) {
           return switch (state) {
-            BookmarkDetailLoading() =>
-              const Center(child: CircularProgressIndicator()),
-            BookmarkDetailFailure(:final failure) => Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(24),
-                  child: Text(failure.message, textAlign: TextAlign.center),
-                ),
+            BookmarkDetailLoading() => const AppLoading(),
+            BookmarkDetailFailure(:final failure) => AppErrorView(
+                message: failure.message,
+                onRetry: () => context.read<BookmarkDetailCubit>().load(id),
               ),
-            BookmarkDetailReady(:final bookmark) => _DetailBody(bookmark: bookmark),
+            BookmarkDetailReady(:final bookmark) =>
+              _DetailBody(bookmark: bookmark),
           };
         },
       ),
@@ -82,13 +78,15 @@ class _BookmarkDetailView extends StatelessWidget {
         title: const Text('Delete bookmark?'),
         content: Text('"${b.title}" will be removed.'),
         actions: [
-          TextButton(
+          AppButton(
+            label: 'Cancel',
+            variant: AppButtonVariant.text,
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('Cancel'),
           ),
-          FilledButton.tonal(
+          AppButton(
+            label: 'Delete',
+            variant: AppButtonVariant.tonal,
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('Delete'),
           ),
         ],
       ),
@@ -143,10 +141,11 @@ class _DetailBody extends StatelessWidget {
             ),
           ],
           const SizedBox(height: 24),
-          FilledButton.icon(
+          AppButton(
+            label: 'Open URL',
+            icon: Icons.open_in_new,
+            expand: true,
             onPressed: () => _openUrl(context, bookmark.url),
-            icon: const Icon(Icons.open_in_new),
-            label: const Text('Open URL'),
           ),
         ],
       ),

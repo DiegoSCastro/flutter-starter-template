@@ -31,6 +31,7 @@ class AppTextField extends StatelessWidget {
     this.onSubmitted,
     this.onTap,
     this.focusNode,
+    this.autofillHints,
   }) : assert(
           controller == null || initialValue == null,
           'Provide either `controller` or `initialValue`, not both.',
@@ -60,6 +61,7 @@ class AppTextField extends StatelessWidget {
   final ValueChanged<String>? onSubmitted;
   final VoidCallback? onTap;
   final FocusNode? focusNode;
+  final Iterable<String>? autofillHints;
 
   @override
   Widget build(BuildContext context) {
@@ -82,6 +84,7 @@ class AppTextField extends StatelessWidget {
       onChanged: onChanged,
       onFieldSubmitted: onSubmitted,
       onTap: onTap,
+      autofillHints: autofillHints,
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
