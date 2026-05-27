@@ -131,6 +131,10 @@ dependencies:
   firebase_analytics: ^12.4.1
   firebase_messaging: ^16.2.2
 
+  # Dynamic M3 colour schemes built on top of Material Color Utilities. 
+  # Provides FlexColorScheme, FlexSubThemes, and opinionated defaults.
+  flex_color_scheme: ^8.4.0
+
   # Declarative animation helpers (fade, slide, scale, shake, etc.)
   # exposed as extensions on Widget.
   flutter_animate: ^4.5.2

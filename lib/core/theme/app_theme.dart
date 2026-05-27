@@ -1,3 +1,4 @@
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -5,27 +6,18 @@ class AppTheme {
   const AppTheme._();
 
   static ThemeData light() {
-    final base = ThemeData(
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: Colors.deepPurple,
-        brightness: Brightness.light,
-      ),
+    return FlexThemeData.light(
+      scheme: FlexScheme.deepPurple,
+      textTheme: GoogleFonts.interTextTheme(),
       useMaterial3: true,
     );
-    return base.copyWith(textTheme: _textTheme(base.textTheme));
   }
 
   static ThemeData dark() {
-    final base = ThemeData(
-      colorScheme: ColorScheme.fromSeed(
-        seedColor: Colors.deepPurple,
-        brightness: Brightness.dark,
-      ),
+    return FlexThemeData.dark(
+      scheme: FlexScheme.deepPurple,
+      textTheme: GoogleFonts.interTextTheme(),
       useMaterial3: true,
     );
-    return base.copyWith(textTheme: _textTheme(base.textTheme));
   }
-
-  static TextTheme _textTheme(TextTheme base) =>
-      GoogleFonts.interTextTheme(base);
 }

@@ -12,3 +12,4 @@
 - Use squadron ^7.4.3 for isolate/concurrency service implementation. Confidence: 0.70
 - Use flutter_animate ^4.5.2 for animation. Confidence: 0.85
 - Create reusable core animation extension methods (e.g., on Widget) to avoid repeating common .animate() chains across screens. Confidence: 0.70
+- Use flex_color_scheme ^8.4.0 for theme/color scheme. Confidence: 0.65
