@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../core/animation/widget_animations.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../domain/entities/bookmark.dart';
@@ -114,7 +115,8 @@ class _DetailBody extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text(bookmark.title, style: theme.textTheme.headlineSmall),
+          Text(bookmark.title, style: theme.textTheme.headlineSmall)
+              .animateSlideDown(),
           const SizedBox(height: 8),
           InkWell(
             onTap: () => _openUrl(context, bookmark.url),
@@ -125,10 +127,11 @@ class _DetailBody extends StatelessWidget {
                 decoration: TextDecoration.underline,
               ),
             ),
-          ),
+          ).animateFadeIn(delay: 100.ms),
           if (bookmark.description.isNotEmpty) ...[
             const SizedBox(height: 16),
-            Text(bookmark.description, style: theme.textTheme.bodyMedium),
+            Text(bookmark.description, style: theme.textTheme.bodyMedium)
+                .animateFadeIn(delay: 200.ms),
           ],
           if (bookmark.tags.isNotEmpty) ...[
             const SizedBox(height: 16),
@@ -136,7 +139,11 @@ class _DetailBody extends StatelessWidget {
               spacing: 8,
               runSpacing: 8,
               children: [
-                for (final tag in bookmark.tags) Chip(label: Text(tag)),
+                for (final tag in bookmark.tags)
+                  Chip(label: Text(tag))
+                      .animate(delay: 100.ms)
+                      .fadeIn(duration: 300.ms)
+                      .scale(duration: 300.ms, curve: Curves.easeOut),
               ],
             ),
           ],
@@ -146,7 +153,7 @@ class _DetailBody extends StatelessWidget {
             icon: Icons.open_in_new,
             expand: true,
             onPressed: () => _openUrl(context, bookmark.url),
-          ),
+          ).animateSlideUp(delay: 300.ms),
         ],
       ),
     );

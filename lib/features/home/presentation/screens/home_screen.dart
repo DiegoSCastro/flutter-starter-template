@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/animation/widget_animations.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
@@ -34,21 +35,22 @@ class HomeScreen extends StatelessWidget {
                     size: 40,
                     color: theme.colorScheme.onPrimaryContainer,
                   ),
-                ),
+                ).animateScale(delay: 100.ms),
                 const SizedBox(height: 16),
                 Text(
                   l.homeWelcome(username),
                   style: theme.textTheme.headlineSmall,
                   textAlign: TextAlign.center,
-                ),
+                ).animateSlideDown(delay: 200.ms),
                 const SizedBox(height: 8),
-                Text(l.homeSignedInBody, style: theme.textTheme.bodyMedium),
+                Text(l.homeSignedInBody, style: theme.textTheme.bodyMedium)
+                    .animateFadeIn(delay: 300.ms),
                 const SizedBox(height: 24),
                 AppButton(
                   label: 'My bookmarks',
                   icon: Icons.bookmark_outline,
                   onPressed: () => context.push('/bookmarks'),
-                ),
+                ).animateSlideUp(delay: 400.ms),
               ],
             );
           },

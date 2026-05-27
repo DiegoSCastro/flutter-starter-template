@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/animation/widget_animations.dart';
 import '../../../../core/error/failure.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/app_localizations.dart';
@@ -67,7 +68,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         l.loginHeadline,
                         textAlign: TextAlign.center,
                         style: theme.textTheme.headlineSmall,
-                      ),
+                      ).animateSlideDown(),
                       const SizedBox(height: 24),
                       AppTextField(
                         controller: _usernameController,
@@ -79,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             (value == null || value.trim().isEmpty)
                                 ? l.fieldRequired
                                 : null,
-                      ),
+                      ).animateSlideLeft(delay: 100.ms),
                       const SizedBox(height: 16),
                       AppTextField(
                         controller: _passwordController,
@@ -91,14 +92,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         validator: (value) => (value == null || value.isEmpty)
                             ? l.fieldRequired
                             : null,
-                      ),
+                      ).animateSlideLeft(delay: 200.ms),
                       if (errorMessage != null) ...[
                         const SizedBox(height: 12),
                         Text(
                           errorMessage,
                           style: TextStyle(color: theme.colorScheme.error),
                           textAlign: TextAlign.center,
-                        ),
+                        ).animateShake(),
                       ],
                       const SizedBox(height: 24),
                       AppButton(
@@ -106,7 +107,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         onPressed: _submit,
                         isLoading: isSubmitting,
                         expand: true,
-                      ),
+                      ).animateSlideUp(delay: 300.ms),
                     ],
                   ),
                 );

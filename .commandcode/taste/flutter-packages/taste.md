@@ -10,3 +10,5 @@
 - Use objectbox ^5.3.2 for local database. Confidence: 0.70
 - Use firebase_core for Firebase platform initialization when integrating any Firebase services. Confidence: 0.65
 - Use squadron ^7.4.3 for isolate/concurrency service implementation. Confidence: 0.70
+- Use flutter_animate ^4.5.2 for animation. Confidence: 0.85
+- Create reusable core animation extension methods (e.g., on Widget) to avoid repeating common .animate() chains across screens. Confidence: 0.70

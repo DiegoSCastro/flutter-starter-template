@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
+import '../../../../core/animation/widget_animations.dart';
+
 import '../../../../core/theme/theme_cubit.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
@@ -18,16 +20,16 @@ class ProfileScreen extends StatelessWidget {
       padding: EdgeInsets.zero,
       body: ListView(
         padding: const EdgeInsets.symmetric(vertical: 16),
-        children: const [
-          _ProfileHeader(),
-          SizedBox(height: 24),
-          _SectionLabel('Appearance'),
-          _ThemeModeSelector(),
-          SizedBox(height: 24),
-          _SectionLabel('About'),
-          _AppInfoTile(),
-          SizedBox(height: 32),
-          _SignOutButton(),
+        children: [
+          const _ProfileHeader(),
+          const SizedBox(height: 24),
+          const _SectionLabel('Appearance').animateSlideRight(delay: 350.ms),
+          const _ThemeModeSelector().animateSlideRight(delay: 400.ms),
+          const SizedBox(height: 24),
+          const _SectionLabel('About').animateSlideRight(delay: 450.ms),
+          const _AppInfoTile().animateSlideRight(delay: 500.ms),
+          const SizedBox(height: 32),
+          const _SignOutButton().animateSlideUp(delay: 550.ms),
         ],
       ),
     );
@@ -57,11 +59,12 @@ class _ProfileHeader extends StatelessWidget {
                   color: theme.colorScheme.onPrimaryContainer,
                 ),
               ),
-            ),
+            ).animateScale(),
             const SizedBox(height: 12),
-            Text(username, style: theme.textTheme.titleLarge),
+            Text(username, style: theme.textTheme.titleLarge)
+                .animateSlideDown(delay: 150.ms),
             const SizedBox(height: 4),
-            _CopyableId(id: id),
+            _CopyableId(id: id).animateFadeIn(delay: 250.ms),
           ],
         );
       },

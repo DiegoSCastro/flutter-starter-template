@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/animation/widget_animations.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../data/sync/bookmarks_sync_service.dart';
@@ -63,7 +64,7 @@ class _BookmarksListViewState extends State<_BookmarksListView> {
       floatingActionButton: FloatingActionButton(
         onPressed: () => context.push('/bookmarks/new'),
         child: const Icon(Icons.add),
-      ),
+      ).animateScale(delay: 300.ms),
       body: Column(
         children: [
           Padding(
@@ -74,7 +75,7 @@ class _BookmarksListViewState extends State<_BookmarksListView> {
               prefixIcon: Icons.search,
               onChanged: _onSearchChanged,
             ),
-          ),
+          ).animateSlideDown(duration: 300.ms),
           Expanded(
             child: BlocBuilder<BookmarksListCubit, BookmarksListState>(
               builder: (context, state) {
@@ -145,7 +146,7 @@ class _BookmarksListViewState extends State<_BookmarksListView> {
                           trailing: const Icon(Icons.chevron_right),
                           onTap: () => context.push('/bookmarks/${b.id}'),
                         ),
-                      );
+                      ).animateStaggerItem(index);
                     },
                   ),
                 );

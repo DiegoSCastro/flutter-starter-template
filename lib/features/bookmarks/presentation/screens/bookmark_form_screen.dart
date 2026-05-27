@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/animation/widget_animations.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../cubit/bookmark_form_cubit.dart';
@@ -103,7 +104,7 @@ class _BookmarkFormViewState extends State<_BookmarkFormView> {
                         ? 'Title is required'
                         : null,
                     onChanged: context.read<BookmarkFormCubit>().setTitle,
-                  ),
+                  ).animateSlideLeft(),
                   const SizedBox(height: 12),
                   AppTextField(
                     controller: _url,
@@ -113,7 +114,7 @@ class _BookmarkFormViewState extends State<_BookmarkFormView> {
                     textInputAction: TextInputAction.next,
                     validator: _validateUrl,
                     onChanged: context.read<BookmarkFormCubit>().setUrl,
-                  ),
+                  ).animateSlideLeft(delay: 50.ms),
                   const SizedBox(height: 12),
                   AppTextField(
                     controller: _description,
@@ -122,7 +123,7 @@ class _BookmarkFormViewState extends State<_BookmarkFormView> {
                     maxLines: 4,
                     onChanged:
                         context.read<BookmarkFormCubit>().setDescription,
-                  ),
+                  ).animateSlideLeft(delay: 100.ms),
                   const SizedBox(height: 12),
                   AppTextField(
                     controller: _tags,
@@ -130,7 +131,7 @@ class _BookmarkFormViewState extends State<_BookmarkFormView> {
                     hint: 'comma, separated, values',
                     onChanged:
                         context.read<BookmarkFormCubit>().setTagsFromCsv,
-                  ),
+                  ).animateSlideLeft(delay: 150.ms),
                   const SizedBox(height: 24),
                   AppButton(
                     label: widget.isEditing ? 'Save' : 'Create',
@@ -140,7 +141,7 @@ class _BookmarkFormViewState extends State<_BookmarkFormView> {
                       if (_formKey.currentState?.validate() != true) return;
                       context.read<BookmarkFormCubit>().submit();
                     },
-                  ),
+                  ).animateSlideUp(delay: 200.ms),
                 ],
               ),
             ),
