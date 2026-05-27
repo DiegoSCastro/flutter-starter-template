@@ -26,6 +26,9 @@ import 'package:flutter_starter_template/core/notifications/notifications_module
     as _i146;
 import 'package:flutter_starter_template/core/notifications/notifications_service.dart'
     as _i332;
+import 'package:flutter_starter_template/core/share/share_module.dart' as _i390;
+import 'package:flutter_starter_template/core/share/share_service.dart'
+    as _i580;
 import 'package:flutter_starter_template/core/theme/theme_cubit.dart' as _i848;
 import 'package:flutter_starter_template/features/auth/data/datasources/auth_local_data_source.dart'
     as _i297;
@@ -78,6 +81,7 @@ import 'package:flutter_starter_template/features/profile/presentation/cubit/pro
 import 'package:flutter_starter_template/objectbox.g.dart' as _i831;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
+import 'package:share_plus/share_plus.dart' as _i998;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 import 'package:uuid/uuid.dart' as _i706;
 
@@ -91,6 +95,7 @@ extension GetItInjectableX on _i174.GetIt {
     final sharedPreferencesModule = _$SharedPreferencesModule();
     final objectBoxModule = _$ObjectBoxModule();
     final notificationsModule = _$NotificationsModule();
+    final shareModule = _$ShareModule();
     final secureStorageModule = _$SecureStorageModule();
     final pluginsModule = _$PluginsModule();
     final networkModule = _$NetworkModule();
@@ -109,6 +114,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i892.FirebaseMessaging>(
       () => notificationsModule.provideFirebaseMessaging(),
     );
+    gh.lazySingleton<_i998.SharePlus>(() => shareModule.provideSharePlus());
     gh.lazySingleton<_i558.FlutterSecureStorage>(
       () => secureStorageModule.provideSecureStorage(),
     );
@@ -118,6 +124,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i706.Uuid>(() => pluginsModule.provideUuid());
     gh.lazySingleton<_i297.AuthLocalDataSource>(
       () => _i297.SecureStorageAuthDataSource(gh<_i558.FlutterSecureStorage>()),
+    );
+    gh.lazySingleton<_i580.ShareService>(
+      () => _i580.ShareService(gh<_i998.SharePlus>()),
     );
     gh.lazySingleton<_i848.ThemeCubit>(
       () => _i848.ThemeCubit(gh<_i460.SharedPreferences>()),
@@ -248,6 +257,8 @@ class _$SharedPreferencesModule extends _i848.SharedPreferencesModule {}
 class _$ObjectBoxModule extends _i319.ObjectBoxModule {}
 
 class _$NotificationsModule extends _i146.NotificationsModule {}
+
+class _$ShareModule extends _i390.ShareModule {}
 
 class _$SecureStorageModule extends _i297.SecureStorageModule {}
 
