@@ -105,6 +105,10 @@ dependencies:
   shared_preferences: ^2.5.5
   package_info_plus: ^10.1.0
 
+  # SVG rendering. Pairs with flutter_gen_runner: SVGs placed in assets/icons/
+  # get typed accessors that expose a ready-to-use SvgPicture widget.
+  flutter_svg: ^2.3.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
