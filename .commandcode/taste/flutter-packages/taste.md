@@ -15,3 +15,4 @@
 - Use flex_color_scheme ^8.4.0 for theme/color scheme. Confidence: 0.65
 - Use animated_text_kit ^4.3.0 for animated text. Wrap AnimatedTextKit in reusable core widgets (e.g., AppTypewriterText, AppFadeText) to avoid repeating configuration across screens. Confidence: 0.70
 - Use mocktail ^1.0.5 and bloc_test ^10.0.0 for bloc/cubit unit tests. Confidence: 0.70
+- Use flutter_link_previewer ^4.2.0 for link preview cards. Create a reusable wrapper widget in core to avoid repeating configuration. Confidence: 0.65

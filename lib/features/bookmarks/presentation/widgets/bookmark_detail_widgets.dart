@@ -124,6 +124,12 @@ class _DetailBody extends StatelessWidget {
               style: context.textTheme.bodyMedium,
             ).animateFadeIn(delay: 200.ms),
           ],
+          const SizedBox(height: 16),
+          AppLinkPreview(
+            url: bookmark.url,
+            maxWidth: double.infinity,
+            enableAnimation: true,
+          ).animateFadeIn(delay: 250.ms),
           if (bookmark.tags.isNotEmpty) ...[
             const SizedBox(height: 16),
             Wrap(

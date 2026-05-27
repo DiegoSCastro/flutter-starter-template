@@ -142,6 +142,7 @@ dependencies:
   # Pre-built animated text widgets (typewriter, fade, scale, colorize, etc.)
   animated_text_kit: ^4.3.0
   share_plus: ^13.1.0
+  flutter_link_previewer: ^4.2.0
 
 dev_dependencies:
   flutter_test:
