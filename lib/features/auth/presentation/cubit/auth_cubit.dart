@@ -10,13 +10,10 @@ import 'auth_state.dart';
 @lazySingleton
 class AuthCubit extends Cubit<AuthState> {
   AuthCubit({
-    required SignIn signIn,
-    required SignOut signOut,
-    required RestoreSession restoreSession,
-  }) : _signIn = signIn,
-       _signOut = signOut,
-       _restoreSession = restoreSession,
-       super(const AuthState.initial());
+    required this._signIn,
+    required this._signOut,
+    required this._restoreSession,
+  }) : super(const AuthState.initial());
 
   final SignIn _signIn;
   final SignOut _signOut;

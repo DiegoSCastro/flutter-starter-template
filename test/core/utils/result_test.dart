@@ -41,7 +41,7 @@ void main() {
     });
 
     test('Err is Result', () {
-      const result = Err<int>(const UnknownFailure());
+      const result = Err<int>(UnknownFailure());
       expect(result, isA<Result<int>>());
     });
 
@@ -49,7 +49,7 @@ void main() {
       Result<int> result = const Ok(10);
       final value = switch (result) {
         Ok(:final value) => value,
-        Err(:final failure) => -1,
+        Err _ => -1,
       };
       expect(value, 10);
     });
@@ -58,7 +58,7 @@ void main() {
       Result<int> result = const Err<int>(UnknownFailure());
       final value = switch (result) {
         Ok(:final value) => value,
-        Err(:final failure) => -1,
+        Err _ => -1,
       };
       expect(value, -1);
     });
