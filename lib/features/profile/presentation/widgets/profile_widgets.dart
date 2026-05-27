@@ -6,12 +6,12 @@ class _ProfileHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return BlocBuilder<AuthCubit, AuthState>(
+    return BlocBuilder<ProfileCubit, ProfileState>(
       builder: (context, state) {
-        final user = state is AuthAuthenticated ? state.user : null;
-        final username = user?.username ?? '';
-        final id = user?.id ?? '';
-        final initial = username.isNotEmpty ? username[0].toUpperCase() : '?';
+        final initial =
+            state.username.isNotEmpty
+                ? state.username[0].toUpperCase()
+                : '?';
         return Column(
           children: [
             CircleAvatar(
@@ -26,11 +26,11 @@ class _ProfileHeader extends StatelessWidget {
             ).animateScale(),
             const SizedBox(height: 12),
             Text(
-              username,
+              state.username,
               style: theme.textTheme.titleLarge,
             ).animateSlideDown(delay: 150.ms),
             const SizedBox(height: 4),
-            _CopyableId(id: id).animateFadeIn(delay: 250.ms),
+            _CopyableId(id: state.userId).animateFadeIn(delay: 250.ms),
           ],
         );
       },
@@ -225,39 +225,30 @@ class _ColorSchemeSelector extends StatelessWidget {
   };
 }
 
-class _AppInfoTile extends StatefulWidget {
+class _AppInfoTile extends StatelessWidget {
   const _AppInfoTile();
 
   @override
-  State<_AppInfoTile> createState() => _AppInfoTileState();
-}
-
-class _AppInfoTileState extends State<_AppInfoTile> {
-  PackageInfo? _info;
-
-  @override
-  void initState() {
-    super.initState();
-    PackageInfo.fromPlatform().then((info) {
-      if (mounted) setState(() => _info = info);
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final info = _info;
-    return ListTile(
-      leading: const Icon(Icons.info_outline),
-      title: Text(info?.appName ?? '—'),
-      subtitle: info == null
-          ? const Text('Loading…')
-          : Text('Version ${info.version} (build ${info.buildNumber})'),
+    return BlocBuilder<ProfileCubit, ProfileState>(
+      builder: (context, state) {
+        final info = state.packageInfo;
+        return ListTile(
+          leading: const Icon(Icons.info_outline),
+          title: Text(info?.appName ?? '—'),
+          subtitle: info == null
+              ? const Text('Loading…')
+              : Text('Version ${info.version} (build ${info.buildNumber})'),
+        );
+      },
     );
   }
 }
 
 class _SignOutButton extends StatelessWidget {
-  const _SignOutButton();
+  const _SignOutButton({required this.isLoading});
+
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -268,8 +259,33 @@ class _SignOutButton extends StatelessWidget {
         icon: Icons.logout,
         variant: AppButtonVariant.tonal,
         expand: true,
-        onPressed: () => context.read<AuthCubit>().signOut(),
+        isLoading: isLoading,
+        onPressed: () => _confirmSignOut(context),
       ),
     );
+  }
+
+  Future<void> _confirmSignOut(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder:
+          (ctx) => AlertDialog(
+            title: const Text('Sign out'),
+            content: const Text('Are you sure you want to sign out?'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(false),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(ctx).pop(true),
+                child: const Text('Sign out'),
+              ),
+            ],
+          ),
+    );
+    if (confirmed == true && context.mounted) {
+      context.read<ProfileCubit>().signOut();
+    }
   }
 }

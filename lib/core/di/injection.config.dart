@@ -73,6 +73,8 @@ import 'package:flutter_starter_template/features/bookmarks/presentation/cubit/b
     as _i230;
 import 'package:flutter_starter_template/features/home/presentation/cubit/home_cubit.dart'
     as _i1034;
+import 'package:flutter_starter_template/features/profile/presentation/cubit/profile_cubit.dart'
+    as _i656;
 import 'package:flutter_starter_template/objectbox.g.dart' as _i831;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
@@ -214,6 +216,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i244.DeleteBookmark>(),
         gh<_i539.BookmarksSyncService>(),
       ),
+    );
+    gh.lazySingleton<_i656.ProfileCubit>(
+      () => _i656.ProfileCubit(gh<_i867.AuthCubit>()),
     );
     gh.factory<_i368.BookmarkDetailCubit>(
       () => _i368.BookmarkDetailCubit(
