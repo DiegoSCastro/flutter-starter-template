@@ -1,5 +1,4 @@
 import 'package:injectable/injectable.dart' hide Order;
-import 'package:objectbox/objectbox.dart';
 
 import '../../../../objectbox.g.dart';
 import '../../domain/repositories/bookmarks_repository.dart';

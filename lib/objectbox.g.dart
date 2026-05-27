@@ -58,13 +58,13 @@ final _entities = <obx_int.ModelEntity>[
       obx_int.ModelProperty(
         id: const obx_int.IdUid(6, 5176080626139921728),
         name: 'createdAt',
-        type: 10,
+        type: 12,
         flags: 0,
       ),
       obx_int.ModelProperty(
         id: const obx_int.IdUid(7, 5892767454409296107),
         name: 'updatedAt',
-        type: 10,
+        type: 12,
         flags: 0,
       ),
     ],
@@ -151,8 +151,8 @@ obx_int.ModelDefinition getObjectBoxModel() {
         fbb.addOffset(2, urlOffset);
         fbb.addOffset(3, descriptionOffset);
         fbb.addOffset(4, tagsOffset);
-        fbb.addInt64(5, object.createdAt.millisecondsSinceEpoch);
-        fbb.addInt64(6, object.updatedAt.millisecondsSinceEpoch);
+        fbb.addInt64(5, object.createdAt.microsecondsSinceEpoch * 1000);
+        fbb.addInt64(6, object.updatedAt.microsecondsSinceEpoch * 1000);
         fbb.finish(fbb.endTable());
         return object.id;
       },
@@ -178,11 +178,15 @@ obx_int.ModelDefinition getObjectBoxModel() {
           fb.StringReader(asciiOptimization: true),
           lazy: false,
         ).vTableGet(buffer, rootOffset, 12, []);
-        final createdAtParam = DateTime.fromMillisecondsSinceEpoch(
-          const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0),
+        final createdAtParam = DateTime.fromMicrosecondsSinceEpoch(
+          (const fb.Int64Reader().vTableGet(buffer, rootOffset, 14, 0) / 1000)
+              .round(),
+          isUtc: true,
         );
-        final updatedAtParam = DateTime.fromMillisecondsSinceEpoch(
-          const fb.Int64Reader().vTableGet(buffer, rootOffset, 16, 0),
+        final updatedAtParam = DateTime.fromMicrosecondsSinceEpoch(
+          (const fb.Int64Reader().vTableGet(buffer, rootOffset, 16, 0) / 1000)
+              .round(),
+          isUtc: true,
         );
         final object = BookmarkEntity(
           id: idParam,
@@ -230,12 +234,12 @@ class BookmarkEntity_ {
   );
 
   /// See [BookmarkEntity.createdAt].
-  static final createdAt = obx.QueryDateProperty<BookmarkEntity>(
+  static final createdAt = obx.QueryDateNanoProperty<BookmarkEntity>(
     _entities[0].properties[5],
   );
 
   /// See [BookmarkEntity.updatedAt].
-  static final updatedAt = obx.QueryDateProperty<BookmarkEntity>(
+  static final updatedAt = obx.QueryDateNanoProperty<BookmarkEntity>(
     _entities[0].properties[6],
   );
 }

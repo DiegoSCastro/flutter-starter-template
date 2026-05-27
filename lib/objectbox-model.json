@@ -37,12 +37,12 @@
         {
           "id": "6:5176080626139921728",
           "name": "createdAt",
-          "type": 10
+          "type": 12
         },
         {
           "id": "7:5892767454409296107",
           "name": "updatedAt",
-          "type": 10
+          "type": 12
         }
       ],
       "relations": []

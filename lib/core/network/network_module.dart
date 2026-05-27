@@ -36,8 +36,4 @@ abstract class NetworkModule {
   @lazySingleton
   AuthRemoteDataSource provideAuthRemoteDataSource(Dio dio) =>
       AuthRemoteDataSource(dio);
-
-  @lazySingleton
-  BookmarksRemoteDataSource provideBookmarksRemoteDataSource(Dio dio) =>
-      BookmarksRemoteDataSource(dio);
 }
