@@ -49,4 +49,10 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get homeSignedInBody => 'Bạn đã đăng nhập.';
+
+  @override
+  String get homeRecentBookmarks => 'Bookmark gần đây';
+
+  @override
+  String get homeNoBookmarks => 'Chưa có bookmark nào. Nhấn + để thêm.';
 }

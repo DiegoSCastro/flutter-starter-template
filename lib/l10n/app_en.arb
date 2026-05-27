@@ -20,5 +20,7 @@
       }
     }
   },
-  "homeSignedInBody": "You are signed in."
+  "homeSignedInBody": "You are signed in.",
+  "homeRecentBookmarks": "Recent Bookmarks",
+  "homeNoBookmarks": "No bookmarks yet. Tap + to add one."
 }

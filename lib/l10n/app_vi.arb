@@ -12,5 +12,7 @@
   "homeAppBarTitle": "Trang chủ",
   "homeSignOutTooltip": "Đăng xuất",
   "homeWelcome": "Chào, {username}!",
-  "homeSignedInBody": "Bạn đã đăng nhập."
+  "homeSignedInBody": "Bạn đã đăng nhập.",
+  "homeRecentBookmarks": "Bookmark gần đây",
+  "homeNoBookmarks": "Chưa có bookmark nào. Nhấn + để thêm."
 }

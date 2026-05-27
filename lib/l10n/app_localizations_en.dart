@@ -48,4 +48,10 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeSignedInBody => 'You are signed in.';
+
+  @override
+  String get homeRecentBookmarks => 'Recent Bookmarks';
+
+  @override
+  String get homeNoBookmarks => 'No bookmarks yet. Tap + to add one.';
 }

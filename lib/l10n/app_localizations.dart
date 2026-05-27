@@ -175,6 +175,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'You are signed in.'**
   String get homeSignedInBody;
+
+  /// No description provided for @homeRecentBookmarks.
+  ///
+  /// In en, this message translates to:
+  /// **'Recent Bookmarks'**
+  String get homeRecentBookmarks;
+
+  /// No description provided for @homeNoBookmarks.
+  ///
+  /// In en, this message translates to:
+  /// **'No bookmarks yet. Tap + to add one.'**
+  String get homeNoBookmarks;
 }
 
 class _AppLocalizationsDelegate
