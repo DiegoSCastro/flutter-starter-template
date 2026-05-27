@@ -1,5 +1,12 @@
 part of '../screens/bookmark_detail_screen.dart';
 
+Future<void> _shareBookmark(Bookmark bookmark) async {
+  final content = bookmark.description.isNotEmpty
+      ? '${bookmark.title}\n${bookmark.url}\n\n${bookmark.description}'
+      : '${bookmark.title}\n${bookmark.url}';
+  await getIt<ShareService>().share(text: content, subject: bookmark.title);
+}
+
 class _BookmarkDetailView extends StatelessWidget {
   const _BookmarkDetailView({required this.id});
 
@@ -16,6 +23,11 @@ class _BookmarkDetailView extends StatelessWidget {
             if (state is! BookmarkDetailReady) return const SizedBox.shrink();
             return Row(
               children: [
+                IconButton(
+                  tooltip: 'Share',
+                  icon: const Icon(Icons.share),
+                  onPressed: () => _shareBookmark(state.bookmark),
+                ),
                 IconButton(
                   tooltip: 'Edit',
                   icon: const Icon(Icons.edit),

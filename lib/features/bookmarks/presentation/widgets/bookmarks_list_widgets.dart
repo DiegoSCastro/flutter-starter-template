@@ -1,5 +1,28 @@
 part of '../screens/bookmarks_list_screen.dart';
 
+Future<void> _showItemMenu(BuildContext context, Bookmark bookmark) async {
+  final result = await showModalBottomSheet<String>(
+    context: context,
+    builder: (_) => SafeArea(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            leading: const Icon(Icons.share),
+            title: const Text('Share'),
+            onTap: () => Navigator.pop(context, 'share'),
+          ),
+        ],
+      ),
+    ),
+  );
+  if (result != 'share' || !context.mounted) return;
+  final content = bookmark.description.isNotEmpty
+      ? '${bookmark.title}\n${bookmark.url}\n\n${bookmark.description}'
+      : '${bookmark.title}\n${bookmark.url}';
+  await getIt<ShareService>().share(text: content, subject: bookmark.title);
+}
+
 class _BookmarksListView extends StatefulWidget {
   const _BookmarksListView();
 
@@ -121,6 +144,7 @@ class _BookmarksListViewState extends State<_BookmarksListView> {
                           ),
                           trailing: const Icon(Icons.chevron_right),
                           onTap: () => context.push('/bookmarks/${b.id}'),
+                          onLongPress: () => _showItemMenu(context, b),
                         ),
                       ).animateStaggerItem(index);
                     },

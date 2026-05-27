@@ -7,8 +7,10 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/animation/widget_animations.dart';
 import '../../../../core/build_context_extensions.dart';
 import '../../../../core/di/injection.dart';
+import '../../../../core/share/share_service.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../data/sync/bookmarks_sync_service.dart';
+import '../../domain/entities/bookmark.dart';
 import '../cubit/bookmarks_list/bookmarks_list_cubit.dart';
 import '../cubit/bookmarks_list/bookmarks_list_state.dart';
 
