@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/theme/theme_cubit.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../../l10n/app_localizations.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
@@ -18,14 +17,7 @@ class HomeScreen extends StatelessWidget {
     return AppScaffold(
       title: l.homeAppBarTitle,
       padding: const EdgeInsets.all(24),
-      actions: [
-        const _ThemeToggleButton(),
-        IconButton(
-          tooltip: l.homeSignOutTooltip,
-          icon: const Icon(Icons.logout),
-          onPressed: () => context.read<AuthCubit>().signOut(),
-        ),
-      ],
+      actions: const [_ProfileAvatarButton()],
       body: Center(
         child: BlocBuilder<AuthCubit, AuthState>(
           builder: (context, state) {
@@ -66,22 +58,33 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class _ThemeToggleButton extends StatelessWidget {
-  const _ThemeToggleButton();
+class _ProfileAvatarButton extends StatelessWidget {
+  const _ProfileAvatarButton();
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ThemeCubit, ThemeMode>(
-      builder: (context, mode) {
-        final (icon, tooltip) = switch (mode) {
-          ThemeMode.light => (Icons.light_mode, 'Light theme'),
-          ThemeMode.dark => (Icons.dark_mode, 'Dark theme'),
-          ThemeMode.system => (Icons.brightness_auto, 'System theme'),
-        };
-        return IconButton(
-          tooltip: tooltip,
-          icon: Icon(icon),
-          onPressed: () => context.read<ThemeCubit>().toggle(),
+    final theme = Theme.of(context);
+    return BlocBuilder<AuthCubit, AuthState>(
+      builder: (context, state) {
+        final username =
+            state is AuthAuthenticated ? state.user.username : '';
+        final initial = username.isNotEmpty ? username[0].toUpperCase() : '?';
+        return Padding(
+          padding: const EdgeInsets.only(right: 8),
+          child: IconButton(
+            tooltip: 'Profile',
+            onPressed: () => context.push('/profile'),
+            icon: CircleAvatar(
+              radius: 16,
+              backgroundColor: theme.colorScheme.primaryContainer,
+              child: Text(
+                initial,
+                style: theme.textTheme.labelLarge?.copyWith(
+                  color: theme.colorScheme.onPrimaryContainer,
+                ),
+              ),
+            ),
+          ),
         );
       },
     );

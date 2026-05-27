@@ -10,6 +10,7 @@ import '../features/bookmarks/presentation/screens/bookmark_detail_screen.dart';
 import '../features/bookmarks/presentation/screens/bookmark_form_screen.dart';
 import '../features/bookmarks/presentation/screens/bookmarks_list_screen.dart';
 import '../features/home/presentation/screens/home_screen.dart';
+import '../features/profile/presentation/screens/profile_screen.dart';
 
 part 'router.g.dart';
 
@@ -19,6 +20,15 @@ class HomeRoute extends GoRouteData with $HomeRoute {
 
   @override
   Widget build(BuildContext context, GoRouterState state) => const HomeScreen();
+}
+
+@TypedGoRoute<ProfileRoute>(path: '/profile')
+class ProfileRoute extends GoRouteData with $ProfileRoute {
+  const ProfileRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      const ProfileScreen();
 }
 
 @TypedGoRoute<LoginRoute>(path: '/login')
