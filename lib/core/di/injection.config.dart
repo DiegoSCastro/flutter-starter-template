@@ -25,6 +25,8 @@ import 'package:flutter_starter_template/core/analytics/analytics_service.dart'
 import 'package:flutter_starter_template/core/config/env_config.dart' as _i689;
 import 'package:flutter_starter_template/core/firebase/firebase_service.dart'
     as _i999;
+import 'package:flutter_starter_template/core/media/camera_service.dart'
+    as _i756;
 import 'package:flutter_starter_template/core/media/image_picker_service.dart'
     as _i735;
 import 'package:flutter_starter_template/core/media/media_module.dart' as _i773;
@@ -143,6 +145,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i398.FirebaseAnalytics>(
       () => analyticsModule.provideFirebaseAnalytics(),
     );
+    gh.lazySingleton<_i756.CameraService>(() => _i756.CameraService());
     gh.lazySingleton<_i183.ImagePicker>(() => mediaModule.imagePicker);
     gh.lazySingleton<_i163.FlutterLocalNotificationsPlugin>(
       () => notificationsModule.providePlugin(),
