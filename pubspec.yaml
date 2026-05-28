@@ -143,6 +143,9 @@ dependencies:
   # Swipe actions for list rows, wrapped by AppSlidable.
   flutter_slidable: ^4.0.3
 
+  # Cross-platform runtime permission API. Wrapped by PermissionService.
+  permission_handler: ^12.0.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

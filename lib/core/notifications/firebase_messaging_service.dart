@@ -26,15 +26,8 @@ class FirebaseMessagingService {
     // Don't request permission on web — handled by browser APIs.
     if (kIsWeb) return;
 
-    final settings = await _messaging.requestPermission(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
-
-    if (settings.authorizationStatus != AuthorizationStatus.authorized) {
-      return;
-    }
+    final notificationsAllowed = await _localNotifications.requestPermissions();
+    if (!notificationsAllowed) return;
 
     await _saveInitialToken();
 

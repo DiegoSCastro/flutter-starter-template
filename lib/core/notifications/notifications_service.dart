@@ -1,8 +1,7 @@
-import 'dart:io' show Platform;
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:injectable/injectable.dart';
+
+import '../permissions/permission_service.dart';
 
 /// Thin wrapper around [FlutterLocalNotificationsPlugin].
 ///
@@ -11,9 +10,10 @@ import 'package:injectable/injectable.dart';
 /// required before any notification will surface.
 @lazySingleton
 class NotificationsService {
-  NotificationsService(this._plugin);
+  NotificationsService(this._plugin, this._permissions);
 
   final FlutterLocalNotificationsPlugin _plugin;
+  final PermissionService _permissions;
 
   /// Android notification channel used for general app notifications.
   /// Must match what's registered in [init] before posting.
@@ -51,29 +51,9 @@ class NotificationsService {
     _initialized = true;
   }
 
-  /// Asks the user for permission to show notifications. Safe to call multiple
-  /// times — the OS only shows the prompt once and caches the answer.
-  /// Returns `true` if notifications are allowed.
-  Future<bool> requestPermissions() async {
-    if (kIsWeb) return false;
-    if (Platform.isIOS || Platform.isMacOS) {
-      final granted = await _plugin
-          .resolvePlatformSpecificImplementation<
-            IOSFlutterLocalNotificationsPlugin
-          >()
-          ?.requestPermissions(alert: true, badge: true, sound: true);
-      return granted ?? false;
-    }
-    if (Platform.isAndroid) {
-      final granted = await _plugin
-          .resolvePlatformSpecificImplementation<
-            AndroidFlutterLocalNotificationsPlugin
-          >()
-          ?.requestNotificationsPermission();
-      return granted ?? false;
-    }
-    return true;
-  }
+  /// Asks the user for permission to show notifications.
+  Future<bool> requestPermissions() =>
+      _permissions.requestNotificationPermission();
 
   /// Shows a one-off notification on the default channel.
   Future<void> show({

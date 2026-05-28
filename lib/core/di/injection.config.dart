@@ -24,6 +24,8 @@ import 'package:flutter_starter_template/core/notifications/notifications_module
     as _i146;
 import 'package:flutter_starter_template/core/notifications/notifications_service.dart'
     as _i332;
+import 'package:flutter_starter_template/core/permissions/permission_service.dart'
+    as _i213;
 import 'package:flutter_starter_template/core/share/share_module.dart' as _i390;
 import 'package:flutter_starter_template/core/share/share_service.dart'
     as _i580;
@@ -122,6 +124,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i892.FirebaseMessaging>(
       () => notificationsModule.provideFirebaseMessaging(),
     );
+    gh.lazySingleton<_i213.PermissionService>(() => _i213.PermissionService());
     gh.lazySingleton<_i998.SharePlus>(() => shareModule.provideSharePlus());
     gh.lazySingleton<_i558.FlutterSecureStorage>(
       () => secureStorageModule.provideSecureStorage(),
@@ -133,16 +136,17 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i297.AuthLocalDataSource>(
       () => _i297.SecureStorageAuthDataSource(gh<_i558.FlutterSecureStorage>()),
     );
+    gh.lazySingleton<_i332.NotificationsService>(
+      () => _i332.NotificationsService(
+        gh<_i163.FlutterLocalNotificationsPlugin>(),
+        gh<_i213.PermissionService>(),
+      ),
+    );
     gh.lazySingleton<_i580.ShareService>(
       () => _i580.ShareService(gh<_i998.SharePlus>()),
     );
     gh.lazySingleton<_i848.ThemeCubit>(
       () => _i848.ThemeCubit(gh<_i460.SharedPreferences>()),
-    );
-    gh.lazySingleton<_i332.NotificationsService>(
-      () => _i332.NotificationsService(
-        gh<_i163.FlutterLocalNotificationsPlugin>(),
-      ),
     );
     gh.singleton<_i529.FirebaseMessagingService>(
       () => _i529.FirebaseMessagingService(
