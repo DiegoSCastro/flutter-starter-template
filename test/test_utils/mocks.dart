@@ -1,7 +1,8 @@
+import 'package:flutter_starter_template/features/auth/domain/repositories/auth_repository.dart';
 import 'package:flutter_starter_template/features/auth/domain/usecases/restore_session.dart';
 import 'package:flutter_starter_template/features/auth/domain/usecases/sign_in.dart';
 import 'package:flutter_starter_template/features/auth/domain/usecases/sign_out.dart';
-import 'package:flutter_starter_template/features/bookmarks/domain/repositories/bookmarks_repository.dart';
+import 'package:flutter_starter_template/features/bookmarks/domain/entities/bookmark.dart';
 import 'package:flutter_starter_template/features/bookmarks/domain/services/bookmarks_sync_controller.dart';
 import 'package:flutter_starter_template/features/bookmarks/domain/usecases/create_bookmark.dart';
 import 'package:flutter_starter_template/features/bookmarks/domain/usecases/delete_bookmark.dart';
@@ -16,6 +17,8 @@ class MockSignIn extends Mock implements SignIn {}
 class MockSignOut extends Mock implements SignOut {}
 
 class MockRestoreSession extends Mock implements RestoreSession {}
+
+class MockAuthRepository extends Mock implements AuthRepository {}
 
 class MockSharedPreferences extends Mock implements SharedPreferences {}
 

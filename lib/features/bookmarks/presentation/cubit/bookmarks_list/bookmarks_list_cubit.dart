@@ -9,7 +9,7 @@ import '../../../domain/usecases/delete_bookmark.dart';
 import '../../../domain/usecases/list_bookmarks.dart';
 import 'bookmarks_list_state.dart';
 
-@lazySingleton
+@injectable
 class BookmarksListCubit extends Cubit<BookmarksListState> {
   BookmarksListCubit(this._list, this._delete, this._sync)
     : super(const BookmarksListState()) {

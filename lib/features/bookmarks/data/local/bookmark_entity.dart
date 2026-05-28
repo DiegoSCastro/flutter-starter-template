@@ -1,7 +1,6 @@
 import 'package:objectbox/objectbox.dart';
 
 import '../../domain/entities/bookmark.dart';
-import '../../domain/repositories/bookmarks_repository.dart';
 
 /// Sync lifecycle for a local row. Stored as int via [SyncState.code] so
 /// ObjectBox doesn't need a converter.

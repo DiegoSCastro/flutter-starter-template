@@ -5,7 +5,7 @@ import 'package:flutter_starter_template/features/auth/presentation/cubit/auth_s
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-import '../../../test_utils.dart';
+import '../../../../test_utils.dart';
 
 void main() {
   late MockSignIn mockSignIn;

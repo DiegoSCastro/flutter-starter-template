@@ -354,12 +354,12 @@ void main() {
     test('concurrent sync calls share one in-flight', () async {
       final completer = Completer<List<BookmarkEntity>>();
       when(() => mockLocal.listPending()).thenAnswer((_) => completer.future);
-      when(
-        () => mockLocal.listAll(),
-      ).thenAnswer((_) => Future.delayed(Duration.zero, () => []));
-      when(
-        () => mockRemote.list(),
-      ).thenAnswer((_) => Future.delayed(Duration.zero, () => []));
+      when(() => mockLocal.listAll()).thenAnswer(
+        (_) => Future<List<BookmarkEntity>>.delayed(Duration.zero, () => []),
+      );
+      when(() => mockRemote.list()).thenAnswer(
+        (_) => Future<List<BookmarkDto>>.delayed(Duration.zero, () => []),
+      );
 
       final f1 = service.sync();
       final f2 = service.sync();
@@ -381,16 +381,16 @@ void main() {
 
       await service.start();
       // Wait for the initial unawaited sync to complete
-      await Future.delayed(Duration.zero);
+      await Future<void>.delayed(Duration.zero);
 
       when(() => mockLocal.listPending()).thenAnswer((_) async => []);
       when(() => mockLocal.listAll()).thenAnswer((_) async => []);
       when(() => mockRemote.list()).thenAnswer((_) async => []);
 
       connectivityController.add([ConnectivityResult.none]);
-      await Future.delayed(Duration.zero);
+      await Future<void>.delayed(Duration.zero);
       connectivityController.add([ConnectivityResult.wifi]);
-      await Future.delayed(Duration.zero);
+      await Future<void>.delayed(Duration.zero);
 
       // listPending called at least twice (initial + reconnect)
       verify(() => mockLocal.listPending()).called(greaterThanOrEqualTo(2));
@@ -402,12 +402,12 @@ void main() {
       when(() => mockRemote.list()).thenAnswer((_) async => []);
 
       await service.start();
-      await Future.delayed(Duration.zero);
+      await Future<void>.delayed(Duration.zero);
 
       when(() => mockLocal.listPending()).thenAnswer((_) async => []);
 
       connectivityController.add([ConnectivityResult.wifi]);
-      await Future.delayed(Duration.zero);
+      await Future<void>.delayed(Duration.zero);
 
       // Only called from the initial start — not from connectivity
       verify(() => mockLocal.listPending()).called(1);

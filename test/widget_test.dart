@@ -6,9 +6,9 @@ import 'package:flutter_starter_template/core/theme/theme_cubit.dart';
 import 'package:flutter_starter_template/core/utils/result.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_starter_template/app/app.dart';
+import 'package:flutter_starter_template/features/auth/domain/entities/auth_user.dart';
 import 'package:flutter_starter_template/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:flutter_starter_template/features/bookmarks/domain/services/bookmarks_sync_controller.dart';
-import 'package:flutter_starter_template/features/bookmarks/presentation/cubit/bookmarks_list/bookmarks_list_cubit.dart';
 import 'package:flutter_starter_template/features/home/presentation/cubit/home_cubit.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,17 +20,20 @@ void main() {
   late MockBookmarksSyncController sync;
   late AuthCubit authCubit;
   late ThemeCubit themeCubit;
-  late BookmarksListCubit bookmarksCubit;
-  late HomeCubit homeCubit;
+  HomeCubit? homeCubit;
 
   setUp(() async {
     await getIt.reset();
     SharedPreferences.setMockInitialValues({});
 
+    AuthUser? currentUser;
     final signIn = MockSignIn();
-    when(
-      () => signIn(username: 'alice', password: 'hunter2'),
-    ).thenAnswer((_) async => const Ok(testUser));
+    when(() => signIn(username: 'alice', password: 'hunter2')).thenAnswer((
+      _,
+    ) async {
+      currentUser = testUser;
+      return const Ok(testUser);
+    });
 
     final restoreSession = MockRestoreSession();
     when(
@@ -52,6 +55,8 @@ void main() {
 
     final listBookmarks = MockListBookmarks();
     when(() => listBookmarks()).thenAnswer((_) async => const Ok([]));
+    final authRepository = MockAuthRepository();
+    when(() => authRepository.currentUser).thenAnswer((_) => currentUser);
 
     authCubit = AuthCubit(
       signIn: signIn,
@@ -59,20 +64,20 @@ void main() {
       restoreSession: restoreSession,
     );
     themeCubit = ThemeCubit(await SharedPreferences.getInstance());
-    bookmarksCubit = BookmarksListCubit(
-      listBookmarks,
-      MockDeleteBookmark(),
-      sync,
-    );
-    homeCubit = HomeCubit(authCubit, bookmarksCubit);
 
-    getIt.registerSingleton<HomeCubit>(homeCubit);
+    getIt.registerFactory<HomeCubit>(() {
+      final cubit = HomeCubit(authRepository, listBookmarks);
+      homeCubit = cubit;
+      return cubit;
+    });
   });
 
   tearDown(() async {
     await getIt.reset();
-    await homeCubit.close();
-    await bookmarksCubit.close();
+    final cubit = homeCubit;
+    if (cubit != null && !cubit.isClosed) {
+      await cubit.close();
+    }
     await themeCubit.close();
     await authCubit.close();
     await syncStatusController.close();
@@ -94,6 +99,6 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.text('Home'), findsOneWidget);
-    expect(homeCubit.state.username, 'alice');
+    expect(homeCubit?.state.username, 'alice');
   });
 }

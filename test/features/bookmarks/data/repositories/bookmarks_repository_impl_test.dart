@@ -4,7 +4,6 @@ import 'package:flutter_starter_template/features/bookmarks/data/local/bookmark_
 import 'package:flutter_starter_template/features/bookmarks/data/local/bookmarks_local_data_source.dart';
 import 'package:flutter_starter_template/features/bookmarks/data/repositories/bookmarks_repository_impl.dart';
 import 'package:flutter_starter_template/features/bookmarks/domain/entities/bookmark.dart';
-import 'package:flutter_starter_template/features/bookmarks/domain/repositories/bookmarks_repository.dart';
 import 'package:flutter_starter_template/features/bookmarks/domain/services/bookmarks_sync_controller.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';

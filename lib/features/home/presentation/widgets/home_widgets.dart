@@ -1,7 +1,16 @@
-part of '../screens/home_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class _Body extends StatelessWidget {
-  const _Body();
+import '../../../../app/router.dart';
+import '../../../../core/animation/widget_animations.dart';
+import '../../../../core/build_context_extensions.dart';
+import '../../../../core/widgets/widgets.dart';
+import '../../../bookmarks/domain/entities/bookmark.dart';
+import '../cubit/home_cubit.dart';
+import '../cubit/home_state.dart';
+
+class HomeBody extends StatelessWidget {
+  const HomeBody({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +32,8 @@ class _Body extends StatelessWidget {
                 AppButton(
                   label: 'My bookmarks',
                   icon: Icons.bookmark_outline,
-                  onPressed: () => context.push('/bookmarks'),
+                  onPressed: () =>
+                      const BookmarksListRoute().push<void>(context),
                 ).animateSlideUp(delay: 400.ms),
                 const SizedBox(height: 40),
                 _RecentBookmarksSection(
@@ -217,7 +227,7 @@ class _BookmarkCarouselCard extends StatelessWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
-        onTap: () => context.push('/bookmarks/${bookmark.id}'),
+        onTap: () => BookmarkDetailRoute(bookmark.id).push<void>(context),
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Column(
@@ -299,7 +309,7 @@ class _ProfileAvatarButton extends StatelessWidget {
           padding: const EdgeInsets.only(right: 8),
           child: IconButton(
             tooltip: 'Profile',
-            onPressed: () => context.push('/profile'),
+            onPressed: () => const ProfileRoute().push<void>(context),
             icon: CircleAvatar(
               radius: 16,
               backgroundColor: context.colorScheme.primaryContainer,

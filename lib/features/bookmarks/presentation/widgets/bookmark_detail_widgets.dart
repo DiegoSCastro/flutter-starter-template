@@ -1,4 +1,17 @@
-part of '../screens/bookmark_detail_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+import '../../../../app/router.dart';
+import '../../../../core/animation/widget_animations.dart';
+import '../../../../core/build_context_extensions.dart';
+import '../../../../core/di/injection.dart';
+import '../../../../core/share/share_service.dart';
+import '../../../../core/widgets/widgets.dart';
+import '../../domain/entities/bookmark.dart';
+import '../cubit/bookmark_detail/bookmark_detail_cubit.dart';
+import '../cubit/bookmark_detail/bookmark_detail_state.dart';
 
 Future<void> _shareBookmark(Bookmark bookmark) async {
   final content = bookmark.description.isNotEmpty
@@ -7,8 +20,8 @@ Future<void> _shareBookmark(Bookmark bookmark) async {
   await getIt<ShareService>().share(text: content, subject: bookmark.title);
 }
 
-class _BookmarkDetailView extends StatelessWidget {
-  const _BookmarkDetailView({required this.id});
+class BookmarkDetailView extends StatelessWidget {
+  const BookmarkDetailView({super.key, required this.id});
 
   final String id;
 
@@ -31,7 +44,7 @@ class _BookmarkDetailView extends StatelessWidget {
                 IconButton(
                   tooltip: 'Edit',
                   icon: const Icon(Icons.edit),
-                  onPressed: () => context.push('/bookmarks/$id/edit'),
+                  onPressed: () => _openEditor(context),
                 ),
                 IconButton(
                   tooltip: 'Delete',
@@ -60,6 +73,13 @@ class _BookmarkDetailView extends StatelessWidget {
     );
   }
 
+  Future<void> _openEditor(BuildContext context) async {
+    final changed = await BookmarkEditRoute(id).push<bool>(context);
+    if (changed == true && context.mounted) {
+      await context.read<BookmarkDetailCubit>().load(id);
+    }
+  }
+
   Future<void> _confirmAndDelete(BuildContext context, Bookmark b) async {
     final confirmed = await showDialog<bool>(
       context: context,
@@ -84,9 +104,7 @@ class _BookmarkDetailView extends StatelessWidget {
     if (!context.mounted) return;
     final ok = await context.read<BookmarkDetailCubit>().delete(b.id);
     if (!ok || !context.mounted) return;
-    await context.read<BookmarksListCubit>().load();
-    if (!context.mounted) return;
-    context.pop();
+    context.pop(true);
   }
 }
 

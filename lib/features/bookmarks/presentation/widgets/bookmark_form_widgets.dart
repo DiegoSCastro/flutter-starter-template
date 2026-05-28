@@ -1,15 +1,22 @@
-part of '../screens/bookmark_form_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
-class _BookmarkFormView extends StatefulWidget {
-  const _BookmarkFormView({required this.isEditing});
+import '../../../../core/animation/widget_animations.dart';
+import '../../../../core/widgets/widgets.dart';
+import '../cubit/bookmark_form/bookmark_form_cubit.dart';
+import '../cubit/bookmark_form/bookmark_form_state.dart';
+
+class BookmarkFormView extends StatefulWidget {
+  const BookmarkFormView({super.key, required this.isEditing});
 
   final bool isEditing;
 
   @override
-  State<_BookmarkFormView> createState() => _BookmarkFormViewState();
+  State<BookmarkFormView> createState() => _BookmarkFormViewState();
 }
 
-class _BookmarkFormViewState extends State<_BookmarkFormView> {
+class _BookmarkFormViewState extends State<BookmarkFormView> {
   final _formKey = GlobalKey<FormState>();
   final _title = TextEditingController();
   final _url = TextEditingController();
@@ -44,8 +51,7 @@ class _BookmarkFormViewState extends State<_BookmarkFormView> {
         listenWhen: (prev, curr) => prev.status != curr.status,
         listener: (context, state) {
           if (state.status == BookmarkFormStatus.submitted) {
-            context.read<BookmarksListCubit>().load();
-            context.pop();
+            context.pop(true);
           }
           if (state.status == BookmarkFormStatus.idle &&
               state.failure != null) {

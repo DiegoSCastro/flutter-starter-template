@@ -1,64 +1,53 @@
-import 'dart:async';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../auth/presentation/cubit/auth_cubit.dart';
-import '../../../auth/presentation/cubit/auth_state.dart';
-import '../../../bookmarks/presentation/cubit/bookmarks_list/bookmarks_list_cubit.dart';
-import '../../../bookmarks/presentation/cubit/bookmarks_list/bookmarks_list_state.dart';
+import '../../../../core/utils/result.dart';
+import '../../../auth/domain/repositories/auth_repository.dart';
+import '../../../bookmarks/domain/entities/bookmark.dart';
+import '../../../bookmarks/domain/usecases/list_bookmarks.dart';
 import 'home_state.dart';
 
-@lazySingleton
+@injectable
 class HomeCubit extends Cubit<HomeState> {
-  HomeCubit(this._authCubit, this._bookmarksCubit) : super(const HomeState()) {
-    _authSub = _authCubit.stream.listen(_onAuthChanged);
-    _bookmarksSub = _bookmarksCubit.stream.listen(_onBookmarksChanged);
-  }
+  HomeCubit(this._authRepository, this._listBookmarks)
+    : super(const HomeState());
 
-  final AuthCubit _authCubit;
-  final BookmarksListCubit _bookmarksCubit;
-  late final StreamSubscription<AuthState> _authSub;
-  late final StreamSubscription<BookmarksListState> _bookmarksSub;
+  final AuthRepository _authRepository;
+  final ListBookmarks _listBookmarks;
 
   Future<void> load() async {
-    emit(state.copyWith(isLoading: true));
-    await _bookmarksCubit.load();
-    _recompute();
+    emit(state.copyWith(isLoading: true, failure: null));
+    final result = await _listBookmarks();
+    switch (result) {
+      case Ok(value: final items):
+        _recompute(items);
+      case Err(failure: final failure):
+        emit(
+          state.copyWith(
+            isLoading: false,
+            username: _authRepository.currentUser?.username ?? '',
+            failure: failure,
+          ),
+        );
+    }
   }
 
-  void _onAuthChanged(AuthState authState) => _recompute();
-
-  void _onBookmarksChanged(BookmarksListState bookmarksState) => _recompute();
-
-  void _recompute() {
-    final authState = _authCubit.state;
-    final bookmarksState = _bookmarksCubit.state;
-    final items = bookmarksState.items;
-    final username = authState is AuthAuthenticated
-        ? authState.user.username
-        : '';
+  void _recompute(List<Bookmark> items) {
     final now = DateTime.now();
     final weekAgo = now.subtract(const Duration(days: 7));
 
     emit(
       state.copyWith(
         isLoading: false,
-        username: username,
+        failure: null,
+        username: _authRepository.currentUser?.username ?? '',
         totalBookmarks: items.length,
         recentBookmarks: items
             .where((b) => b.createdAt.isAfter(weekAgo))
             .length,
         uniqueTags: items.expand((b) => b.tags).toSet().length,
-        recentItems: items.take(3).toList(),
+        recentItems: items.take(3).toList(growable: false),
       ),
     );
-  }
-
-  @override
-  Future<void> close() {
-    _authSub.cancel();
-    _bookmarksSub.cancel();
-    return super.close();
   }
 }

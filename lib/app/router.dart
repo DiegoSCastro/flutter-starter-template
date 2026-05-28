@@ -101,22 +101,34 @@ class DeepLinkState {
   bool splashCompleted = false;
 }
 
-/// Singleton accessor set by [buildRouterWithDeepLink] so the splash screen
-/// can reach the instance without constructor plumbing.
-DeepLinkState? _deepLinkStateInstance;
+class DeepLinkScope extends InheritedWidget {
+  const DeepLinkScope({
+    super.key,
+    required this.deepLink,
+    required super.child,
+  });
 
-/// Public getter for the splash screen to read [DeepLinkState.splashCompleted].
-DeepLinkState get deepLinkState => _deepLinkStateInstance!;
+  final DeepLinkState deepLink;
+
+  static DeepLinkState of(BuildContext context) {
+    final scope = context.dependOnInheritedWidgetOfExactType<DeepLinkScope>();
+    assert(scope != null, 'No DeepLinkScope found in context.');
+    return scope!.deepLink;
+  }
+
+  @override
+  bool updateShouldNotify(DeepLinkScope oldWidget) =>
+      deepLink != oldWidget.deepLink;
+}
 
 /// Builds the app router and wires auth redirects to [cubit] state changes.
-///
-/// Returns both the router and the deep-link state so callers can hold a
-/// reference, while the splash screen accesses it via [deepLinkState].
 ({GoRouter router, DeepLinkState deepLink}) buildRouterWithDeepLink(
   AuthCubit cubit,
 ) {
   final deepLink = DeepLinkState();
-  _deepLinkStateInstance = deepLink;
+  final homeLocation = const HomeRoute().location;
+  final splashLocation = const SplashRoute().location;
+  final loginLocation = const LoginRoute().location;
 
   final router = GoRouter(
     // No initialLocation — GoRouter resolves the platform deep-link URI on
@@ -133,28 +145,28 @@ DeepLinkState get deepLinkState => _deepLinkStateInstance!;
       // screen sets splashCompleted = true after restore finishes.
       if (auth is AuthInitial && !deepLink.splashCompleted) {
         // Already on splash — let it run.
-        if (location == '/splash') return null;
+        if (location == splashLocation) return null;
         // Any other location (deep link or default '/') — capture and
         // send through splash first.
         deepLink.pendingRedirect = state.uri.toString();
-        return '/splash';
+        return splashLocation;
       }
 
       // ── Phase 2: Unauthenticated ──
       // Splash completed with no session, or user signed out.
       if (auth is AuthInitial || auth is AuthFailure) {
-        if (location == '/login') return null;
+        if (location == loginLocation) return null;
         deepLink.pendingRedirect ??= state.uri.toString();
-        return '/login';
+        return loginLocation;
       }
 
       // ── Phase 3: Authenticated ──
       if (auth is AuthAuthenticated) {
         // Leaving splash or login — restore the captured deep link.
-        if (location == '/splash' || location == '/login') {
+        if (location == splashLocation || location == loginLocation) {
           final target = deepLink.pendingRedirect;
           deepLink.pendingRedirect = null;
-          return target ?? '/';
+          return target ?? homeLocation;
         }
         // Already on a valid, protected route — allow it.
         return null;

@@ -49,7 +49,7 @@ void main() {
       Result<int> result = const Ok(10);
       final value = switch (result) {
         Ok(:final value) => value,
-        Err _ => -1,
+        Err<int> _ => -1,
       };
       expect(value, 10);
     });
@@ -58,7 +58,7 @@ void main() {
       Result<int> result = const Err<int>(UnknownFailure());
       final value = switch (result) {
         Ok(:final value) => value,
-        Err _ => -1,
+        Err<int> _ => -1,
       };
       expect(value, -1);
     });

@@ -232,13 +232,19 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i412.UpdateBookmark>(
       () => _i412.UpdateBookmark(gh<_i630.BookmarksRepository>()),
     );
+    gh.factory<_i1034.HomeCubit>(
+      () => _i1034.HomeCubit(
+        gh<_i987.AuthRepository>(),
+        gh<_i568.ListBookmarks>(),
+      ),
+    );
     gh.factory<_i368.BookmarkDetailCubit>(
       () => _i368.BookmarkDetailCubit(
         gh<_i690.GetBookmark>(),
         gh<_i244.DeleteBookmark>(),
       ),
     );
-    gh.lazySingleton<_i230.BookmarksListCubit>(
+    gh.factory<_i230.BookmarksListCubit>(
       () => _i230.BookmarksListCubit(
         gh<_i568.ListBookmarks>(),
         gh<_i244.DeleteBookmark>(),
@@ -250,12 +256,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i690.GetBookmark>(),
         gh<_i632.CreateBookmark>(),
         gh<_i412.UpdateBookmark>(),
-      ),
-    );
-    gh.lazySingleton<_i1034.HomeCubit>(
-      () => _i1034.HomeCubit(
-        gh<_i867.AuthCubit>(),
-        gh<_i230.BookmarksListCubit>(),
       ),
     );
     return this;

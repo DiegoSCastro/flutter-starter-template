@@ -1,7 +1,9 @@
-part of '../screens/splash_screen.dart';
+import 'package:flutter/material.dart';
 
-class _SplashContent extends StatelessWidget {
-  const _SplashContent();
+import '../../../../core/build_context_extensions.dart';
+
+class SplashContent extends StatelessWidget {
+  const SplashContent({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -30,6 +30,7 @@ class _AppState extends State<App> {
   late final AuthCubit _authCubit;
   late final ThemeCubit _themeCubit;
   late final GoRouter _router;
+  late final DeepLinkState _deepLink;
   late final BookmarksSyncController _sync;
   StreamSubscription<AuthState>? _authSub;
 
@@ -40,6 +41,7 @@ class _AppState extends State<App> {
     _themeCubit = widget.themeCubit ?? getIt<ThemeCubit>();
     final result = buildRouterWithDeepLink(_authCubit);
     _router = result.router;
+    _deepLink = result.deepLink;
     _sync = widget.bookmarksSync ?? getIt<BookmarksSyncController>();
     _authSub = _authCubit.stream.listen(_onAuthChanged);
     // Session restoration is driven by SplashScreen so it can gate routing
@@ -64,20 +66,23 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider.value(value: _authCubit),
-        BlocProvider.value(value: _themeCubit),
-      ],
-      child: BlocBuilder<ThemeCubit, ThemeState>(
-        builder: (context, themeState) => MaterialApp.router(
-          onGenerateTitle: (context) => context.l10n.appTitle,
-          theme: AppTheme.light(scheme: themeState.scheme),
-          darkTheme: AppTheme.dark(scheme: themeState.scheme),
-          themeMode: themeState.mode,
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          supportedLocales: AppLocalizations.supportedLocales,
-          routerConfig: _router,
+    return DeepLinkScope(
+      deepLink: _deepLink,
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider.value(value: _authCubit),
+          BlocProvider.value(value: _themeCubit),
+        ],
+        child: BlocBuilder<ThemeCubit, ThemeState>(
+          builder: (context, themeState) => MaterialApp.router(
+            onGenerateTitle: (context) => context.l10n.appTitle,
+            theme: AppTheme.light(scheme: themeState.scheme),
+            darkTheme: AppTheme.dark(scheme: themeState.scheme),
+            themeMode: themeState.mode,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            routerConfig: _router,
+          ),
         ),
       ),
     );

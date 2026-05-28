@@ -22,3 +22,17 @@ class Bookmark {
   /// to the server yet. UI surfaces a badge for these.
   final bool isPendingSync;
 }
+
+class BookmarkInput {
+  const BookmarkInput({
+    required this.title,
+    required this.url,
+    required this.description,
+    required this.tags,
+  });
+
+  final String title;
+  final String url;
+  final String description;
+  final List<String> tags;
+}

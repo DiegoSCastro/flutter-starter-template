@@ -1,4 +1,18 @@
-part of '../screens/bookmarks_list_screen.dart';
+import 'dart:async';
+
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../app/router.dart';
+import '../../../../core/animation/widget_animations.dart';
+import '../../../../core/build_context_extensions.dart';
+import '../../../../core/di/injection.dart';
+import '../../../../core/share/share_service.dart';
+import '../../../../core/widgets/widgets.dart';
+import '../../domain/entities/bookmark.dart';
+import '../../domain/services/bookmarks_sync_controller.dart';
+import '../cubit/bookmarks_list/bookmarks_list_cubit.dart';
+import '../cubit/bookmarks_list/bookmarks_list_state.dart';
 
 Future<void> _showItemMenu(BuildContext context, Bookmark bookmark) async {
   final result = await showModalBottomSheet<String>(
@@ -23,14 +37,14 @@ Future<void> _showItemMenu(BuildContext context, Bookmark bookmark) async {
   await getIt<ShareService>().share(text: content, subject: bookmark.title);
 }
 
-class _BookmarksListView extends StatefulWidget {
-  const _BookmarksListView();
+class BookmarksListView extends StatefulWidget {
+  const BookmarksListView({super.key});
 
   @override
-  State<_BookmarksListView> createState() => _BookmarksListViewState();
+  State<BookmarksListView> createState() => _BookmarksListViewState();
 }
 
-class _BookmarksListViewState extends State<_BookmarksListView> {
+class _BookmarksListViewState extends State<BookmarksListView> {
   final _searchController = TextEditingController();
   Timer? _debounce;
 
@@ -48,6 +62,20 @@ class _BookmarksListViewState extends State<_BookmarksListView> {
     });
   }
 
+  Future<void> _openNew() async {
+    final changed = await const BookmarkNewRoute().push<bool>(context);
+    if (changed == true && mounted) {
+      await context.read<BookmarksListCubit>().load();
+    }
+  }
+
+  Future<void> _openDetail(Bookmark bookmark) async {
+    final changed = await BookmarkDetailRoute(bookmark.id).push<bool>(context);
+    if (changed == true && mounted) {
+      await context.read<BookmarksListCubit>().load();
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
@@ -61,7 +89,7 @@ class _BookmarksListViewState extends State<_BookmarksListView> {
         ),
       ],
       floatingActionButton: FloatingActionButton(
-        onPressed: () => context.push('/bookmarks/new'),
+        onPressed: _openNew,
         child: const Icon(Icons.add),
       ).animateScale(delay: 300.ms),
       body: Column(
@@ -144,7 +172,7 @@ class _BookmarksListViewState extends State<_BookmarksListView> {
                               overflow: TextOverflow.ellipsis,
                             ),
                             trailing: const Icon(Icons.chevron_right),
-                            onTap: () => context.push('/bookmarks/${b.id}'),
+                            onTap: () => _openDetail(b),
                             onLongPress: () => _showItemMenu(context, b),
                           ),
                         ).animateStaggerItem(index);

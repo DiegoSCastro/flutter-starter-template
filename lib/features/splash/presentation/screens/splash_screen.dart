@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../../app/router.dart';
-import '../../../../core/build_context_extensions.dart';
 import '../../../auth/presentation/cubit/auth_cubit.dart';
-
-part '../widgets/splash_widgets.dart';
+import '../widgets/splash_widgets.dart';
 
 /// Bootstrap screen shown while [AuthCubit.restoreSession] runs.
 ///
@@ -35,12 +32,12 @@ class _SplashScreenState extends State<SplashScreen> {
       Future<void>.delayed(SplashScreen._minDisplay),
     ]);
     if (!mounted) return;
-    deepLinkState.splashCompleted = true;
-    context.go('/');
+    DeepLinkScope.of(context).splashCompleted = true;
+    const HomeRoute().go(context);
   }
 
   @override
   Widget build(BuildContext context) {
-    return const _SplashContent();
+    return const SplashContent();
   }
 }
