@@ -308,7 +308,7 @@ All shared components in `lib/core/widgets/`:
 | **Link Preview**   | `flutter_link_previewer`                                                                           |
 | **UUID**           | `uuid`                                                                                             |
 | **Splash**         | Custom session-restore bootstrapper (no package)                                                   |
-| **Testing & Lints**| `mocktail` · `bloc_test` · `flutter_lints` · `build_verify`                                        |
+| **Testing & Lints**| `mocktail` · `bloc_test` · `very_good_analysis` · `build_verify`                                        |
 | **Backend**        | Go — `chi/v5` · `golang-jwt/v5` · `cors`                                                          |
 
 <br>

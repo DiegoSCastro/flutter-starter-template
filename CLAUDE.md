@@ -31,7 +31,7 @@ VS Code launch configs in `.vscode/launch.json` cover Debug / Profile / Release 
 
 ## Lints
 
-`analysis_options.yaml` extends `package:flutter_lints/flutter.yaml`. Project-specific rule overrides go under `linter.rules` in that file.
+`analysis_options.yaml` extends `package:very_good_analysis/analysis_options.yaml`. Project-specific rule overrides go under `linter.rules` in that file.
 
 ## Dart MCP server
 
@@ -208,13 +208,19 @@ Include the package in the `analysis_options.yaml` file. Use the following
 `analysis_options.yaml` file as a starting point:
 
 ```yaml
-include: package:flutter_lints/flutter.yaml
+include: package:very_good_analysis/analysis_options.yaml
 
 linter:
   rules:
-    # Add additional lint rules here:
-    # avoid_print: false
-    # prefer_single_quotes: true
+    public_member_api_docs: false
+    always_use_package_imports: false
+    prefer_relative_imports: true
+    discarded_futures: false
+    always_put_required_named_parameters_first: false
+    avoid_redundant_argument_values: false
+    lines_longer_than_80_chars: false
+    cascade_invocations: false
+    sort_pub_dependencies: false
 ```
 
 ### State Management
