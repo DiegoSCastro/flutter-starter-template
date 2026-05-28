@@ -134,6 +134,54 @@ abstract class AppLocalizations {
   /// **'Sign in'**
   String get loginSubmit;
 
+  /// No description provided for @loginNavigateToRegister.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t have an account? Register here'**
+  String get loginNavigateToRegister;
+
+  /// No description provided for @registerAppBarTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Register'**
+  String get registerAppBarTitle;
+
+  /// No description provided for @registerHeadline.
+  ///
+  /// In en, this message translates to:
+  /// **'Create an account'**
+  String get registerHeadline;
+
+  /// No description provided for @registerUsernameLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Username'**
+  String get registerUsernameLabel;
+
+  /// No description provided for @registerPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Password'**
+  String get registerPasswordLabel;
+
+  /// No description provided for @registerConfirmPasswordLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm Password'**
+  String get registerConfirmPasswordLabel;
+
+  /// No description provided for @registerSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Register'**
+  String get registerSubmit;
+
+  /// No description provided for @errorPasswordsDoNotMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match.'**
+  String get errorPasswordsDoNotMatch;
+
   /// No description provided for @fieldRequired.
   ///
   /// In en, this message translates to:

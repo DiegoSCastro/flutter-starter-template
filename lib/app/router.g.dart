@@ -11,6 +11,7 @@ List<RouteBase> get $appRoutes => [
   $homeRoute,
   $profileRoute,
   $loginRoute,
+  $registerRoute,
   $bookmarksListRoute,
 ];
 
@@ -100,6 +101,32 @@ mixin $LoginRoute on GoRouteData {
 
   @override
   String get location => GoRouteData.$location('/login');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $registerRoute => GoRouteData.$route(
+  path: '/register',
+  name: 'register',
+  factory: $RegisterRoute._fromState,
+);
+
+mixin $RegisterRoute on GoRouteData {
+  static RegisterRoute _fromState(GoRouterState state) => const RegisterRoute();
+
+  @override
+  String get location => GoRouteData.$location('/register');
 
   @override
   void go(BuildContext context) => context.go(location);

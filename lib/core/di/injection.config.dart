@@ -51,6 +51,8 @@ import 'package:flutter_starter_template/features/auth/data/repositories/auth_re
     as _i1028;
 import 'package:flutter_starter_template/features/auth/domain/repositories/auth_repository.dart'
     as _i987;
+import 'package:flutter_starter_template/features/auth/domain/usecases/register.dart'
+    as _i699;
 import 'package:flutter_starter_template/features/auth/domain/usecases/restore_session.dart'
     as _i271;
 import 'package:flutter_starter_template/features/auth/domain/usecases/sign_in.dart'
@@ -223,19 +225,14 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i533.TokenRefresher>(),
       ),
     );
+    gh.lazySingleton<_i699.Register>(
+      () => _i699.Register(gh<_i987.AuthRepository>()),
+    );
     gh.factory<_i271.RestoreSession>(
       () => _i271.RestoreSession(gh<_i987.AuthRepository>()),
     );
     gh.factory<_i1001.SignIn>(() => _i1001.SignIn(gh<_i987.AuthRepository>()));
     gh.factory<_i926.SignOut>(() => _i926.SignOut(gh<_i987.AuthRepository>()));
-    gh.lazySingleton<_i269.AuthBloc>(
-      () => _i269.AuthBloc(
-        signIn: gh<_i1001.SignIn>(),
-        signOut: gh<_i926.SignOut>(),
-        restoreSession: gh<_i271.RestoreSession>(),
-        analytics: gh<_i838.AnalyticsService>(),
-      ),
-    );
     gh.lazySingleton<_i630.BookmarksRepository>(
       () => _i73.BookmarksRepositoryImpl(
         gh<_i724.BookmarksLocalDataSource>(),
@@ -243,8 +240,14 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i706.Uuid>(),
       ),
     );
-    gh.factory<_i1013.ProfileBloc>(
-      () => _i1013.ProfileBloc(gh<_i269.AuthBloc>()),
+    gh.lazySingleton<_i269.AuthBloc>(
+      () => _i269.AuthBloc(
+        signIn: gh<_i1001.SignIn>(),
+        register: gh<_i699.Register>(),
+        signOut: gh<_i926.SignOut>(),
+        restoreSession: gh<_i271.RestoreSession>(),
+        analytics: gh<_i838.AnalyticsService>(),
+      ),
     );
     gh.factory<_i632.CreateBookmark>(
       () => _i632.CreateBookmark(gh<_i630.BookmarksRepository>()),
@@ -279,6 +282,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i244.DeleteBookmark>(),
         gh<_i838.AnalyticsService>(),
       ),
+    );
+    gh.factory<_i1013.ProfileBloc>(
+      () => _i1013.ProfileBloc(gh<_i269.AuthBloc>()),
     );
     gh.factory<_i566.BookmarksListBloc>(
       () => _i566.BookmarksListBloc(

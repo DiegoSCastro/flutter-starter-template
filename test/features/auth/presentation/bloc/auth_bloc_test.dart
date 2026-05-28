@@ -9,6 +9,7 @@ import '../../../../test_utils.dart';
 
 void main() {
   late MockSignIn mockSignIn;
+  late MockRegister mockRegister;
   late MockSignOut mockSignOut;
   late MockRestoreSession mockRestoreSession;
   late MockAnalyticsService mockAnalytics;
@@ -16,12 +17,14 @@ void main() {
 
   setUp(() {
     mockSignIn = MockSignIn();
+    mockRegister = MockRegister();
     mockSignOut = MockSignOut();
     mockRestoreSession = MockRestoreSession();
     mockAnalytics = MockAnalyticsService();
     stubAnalyticsService(mockAnalytics);
     bloc = AuthBloc(
       signIn: mockSignIn,
+      register: mockRegister,
       signOut: mockSignOut,
       restoreSession: mockRestoreSession,
       analytics: mockAnalytics,

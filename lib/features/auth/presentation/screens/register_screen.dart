@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../app/router.dart';
 import '../../../../core/animation/widget_animations.dart';
 import '../../../../core/build_context_extensions.dart';
 import '../../../../core/error/failure.dart';
@@ -9,28 +8,36 @@ import '../../../../core/widgets/widgets.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_state.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
 
   @override
   void dispose() {
     _usernameController.dispose();
     _passwordController.dispose();
+    _confirmPasswordController.dispose();
     super.dispose();
   }
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
-    await context.read<AuthBloc>().signIn(
+    
+    if (_passwordController.text != _confirmPasswordController.text) {
+       // Ideally handled by validator, but double check
+       return;
+    }
+
+    await context.read<AuthBloc>().register(
       username: _usernameController.text.trim(),
       password: _passwordController.text,
     );
@@ -44,7 +51,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
-      title: context.l10n.loginAppBarTitle,
+      title: context.l10n.registerAppBarTitle,
       padding: EdgeInsets.zero,
       body: Center(
         child: ConstrainedBox(
@@ -63,17 +70,17 @@ class _LoginScreenState extends State<LoginScreen> {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       Text(
-                        context.l10n.loginHeadline,
+                        context.l10n.registerHeadline,
                         textAlign: TextAlign.center,
                         style: context.textTheme.headlineSmall,
                       ).animateSlideDown(),
                       const SizedBox(height: 24),
                       AppTextField(
                         controller: _usernameController,
-                        label: context.l10n.loginUsernameLabel,
+                        label: context.l10n.registerUsernameLabel,
                         prefixIcon: Icons.person_outline,
                         textInputAction: TextInputAction.next,
-                        autofillHints: const [AutofillHints.username],
+                        autofillHints: const [AutofillHints.newUsername],
                         validator: (value) =>
                             (value == null || value.trim().isEmpty)
                             ? context.l10n.fieldRequired
@@ -82,15 +89,33 @@ class _LoginScreenState extends State<LoginScreen> {
                       const SizedBox(height: 16),
                       AppTextField(
                         controller: _passwordController,
-                        label: context.l10n.loginPasswordLabel,
+                        label: context.l10n.registerPasswordLabel,
                         prefixIcon: Icons.lock_outline,
                         obscureText: true,
-                        autofillHints: const [AutofillHints.password],
-                        onSubmitted: (_) => _submit(),
+                        textInputAction: TextInputAction.next,
+                        autofillHints: const [AutofillHints.newPassword],
                         validator: (value) => (value == null || value.isEmpty)
                             ? context.l10n.fieldRequired
                             : null,
                       ).animateSlideLeft(delay: 200.ms),
+                      const SizedBox(height: 16),
+                      AppTextField(
+                        controller: _confirmPasswordController,
+                        label: context.l10n.registerConfirmPasswordLabel,
+                        prefixIcon: Icons.lock_outline,
+                        obscureText: true,
+                        textInputAction: TextInputAction.done,
+                        onSubmitted: (_) => _submit(),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return context.l10n.fieldRequired;
+                          }
+                          if (value != _passwordController.text) {
+                            return context.l10n.errorPasswordsDoNotMatch;
+                          }
+                          return null;
+                        },
+                      ).animateSlideLeft(delay: 300.ms),
                       if (errorMessage != null) ...[
                         const SizedBox(height: 12),
                         Text(
@@ -101,17 +126,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       ],
                       const SizedBox(height: 24),
                       AppButton(
-                        label: context.l10n.loginSubmit,
+                        label: context.l10n.registerSubmit,
                         onPressed: _submit,
                         isLoading: isSubmitting,
                         expand: true,
-                      ).animateSlideUp(delay: 300.ms),
-                      const SizedBox(height: 16),
-                      TextButton(
-                        onPressed: isSubmitting
-                            ? null
-                            : () => const RegisterRoute().go(context),
-                        child: Text(context.l10n.loginNavigateToRegister),
                       ).animateSlideUp(delay: 400.ms),
                     ],
                   ),

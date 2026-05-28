@@ -7,6 +7,8 @@ abstract class AnalyticsService {
 
   Future<void> logLogin({required String method});
 
+  Future<void> logSignUp({required String signUpMethod});
+
   Future<void> logScreenView({required String screenName});
 
   Future<void> setCurrentUser(String? userId);
@@ -30,6 +32,11 @@ class FirebaseAnalyticsService implements AnalyticsService {
   @override
   Future<void> logLogin({required String method}) {
     return _guard(() => _analytics.logLogin(loginMethod: method));
+  }
+
+  @override
+  Future<void> logSignUp({required String signUpMethod}) {
+    return _guard(() => _analytics.logSignUp(signUpMethod: signUpMethod));
   }
 
   @override

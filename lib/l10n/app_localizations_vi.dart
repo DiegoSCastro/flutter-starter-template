@@ -27,6 +27,30 @@ class AppLocalizationsVi extends AppLocalizations {
   String get loginSubmit => 'Đăng nhập';
 
   @override
+  String get loginNavigateToRegister => 'Chưa có tài khoản? Đăng ký ngay';
+
+  @override
+  String get registerAppBarTitle => 'Đăng ký';
+
+  @override
+  String get registerHeadline => 'Tạo tài khoản mới';
+
+  @override
+  String get registerUsernameLabel => 'Tên đăng nhập';
+
+  @override
+  String get registerPasswordLabel => 'Mật khẩu';
+
+  @override
+  String get registerConfirmPasswordLabel => 'Xác nhận mật khẩu';
+
+  @override
+  String get registerSubmit => 'Đăng ký';
+
+  @override
+  String get errorPasswordsDoNotMatch => 'Mật khẩu không khớp.';
+
+  @override
   String get fieldRequired => 'Bắt buộc';
 
   @override

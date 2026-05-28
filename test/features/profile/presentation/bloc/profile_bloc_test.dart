@@ -137,6 +137,7 @@ AuthBloc _authBloc({MockSignIn? signIn, MockSignOut? signOut}) {
   stubAnalyticsService(analytics);
   return AuthBloc(
     signIn: signIn ?? MockSignIn(),
+    register: MockRegister(),
     signOut: signOut ?? MockSignOut(),
     restoreSession: MockRestoreSession(),
     analytics: analytics,

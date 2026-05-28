@@ -8,6 +8,7 @@ import '../../../../core/analytics/analytics_extensions.dart';
 import '../../../../core/analytics/analytics_service.dart';
 import '../../../../core/bloc/event_completion.dart';
 import '../../../../core/utils/result.dart';
+import '../../domain/usecases/register.dart';
 import '../../domain/usecases/restore_session.dart';
 import '../../domain/usecases/sign_in.dart';
 import '../../domain/usecases/sign_out.dart';
@@ -17,6 +18,7 @@ import 'auth_state.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc({
     required this._signIn,
+    required this._register,
     required this._signOut,
     required this._restoreSession,
     required this._analytics,
@@ -26,14 +28,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       transformer: sequential(),
     );
     on<AuthSignInRequested>(_onSignInRequested, transformer: sequential());
+    on<AuthRegisterRequested>(_onRegisterRequested, transformer: sequential());
     on<AuthSignOutRequested>(_onSignOutRequested, transformer: sequential());
   }
 
   final SignIn _signIn;
+  final Register _register;
   final SignOut _signOut;
   final RestoreSession _restoreSession;
   final AnalyticsService _analytics;
   bool _signInInFlight = false;
+  bool _registerInFlight = false;
 
   /// Called once during app bootstrap. Tries to rehydrate a persisted session;
   /// silently lands on [AuthState.initial] if there isn't one or it expired.
@@ -58,6 +63,23 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       ),
     );
     return completer.future.whenComplete(() => _signInInFlight = false);
+  }
+
+  Future<void> register({
+    required String username,
+    required String password,
+  }) {
+    if (state is AuthSubmitting || _registerInFlight) return Future<void>.value();
+    _registerInFlight = true;
+    final completer = Completer<void>();
+    add(
+      AuthRegisterRequested(
+        username: username,
+        password: password,
+        completer: completer,
+      ),
+    );
+    return completer.future.whenComplete(() => _registerInFlight = false);
   }
 
   Future<void> signOut() {
@@ -122,6 +144,41 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 
+  Future<void> _onRegisterRequested(
+    AuthRegisterRequested event,
+    Emitter<AuthState> emit,
+  ) async {
+    try {
+      if (state is AuthSubmitting) {
+        event.completer.completeVoidIfPending();
+        return;
+      }
+      emit(const AuthState.submitting());
+
+      final result = await _register((
+        username: event.username,
+        password: event.password,
+      ));
+      switch (result) {
+        case Ok(value: final user):
+          unawaited(_analytics.setCurrentUser(user.id));
+          unawaited(_analytics.logSignUp(signUpMethod: 'password'));
+          emit(AuthState.authenticated(user));
+        case Err(:final failure):
+          unawaited(
+            _analytics.trackLoginFailed(
+              errorType: failure.runtimeType.toString(),
+            ),
+          );
+          emit(AuthState.failure(failure));
+      }
+      event.completer.completeVoidIfPending();
+    } catch (error, stackTrace) {
+      event.completer.completeErrorIfPending(error, stackTrace);
+      rethrow;
+    }
+  }
+
   Future<void> _onSignOutRequested(
     AuthSignOutRequested event,
     Emitter<AuthState> emit,
@@ -153,6 +210,18 @@ final class AuthSessionRestoreRequested extends AuthEvent {
 
 final class AuthSignInRequested extends AuthEvent {
   const AuthSignInRequested({
+    required this.username,
+    required this.password,
+    this.completer,
+  });
+
+  final String username;
+  final String password;
+  final Completer<void>? completer;
+}
+
+final class AuthRegisterRequested extends AuthEvent {
+  const AuthRegisterRequested({
     required this.username,
     required this.password,
     this.completer,

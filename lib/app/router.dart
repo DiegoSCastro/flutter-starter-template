@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import '../features/auth/presentation/bloc/auth_bloc.dart';
 import '../features/auth/presentation/bloc/auth_state.dart';
 import '../features/auth/presentation/screens/login_screen.dart';
+import '../features/auth/presentation/screens/register_screen.dart';
 import '../features/bookmarks/presentation/screens/bookmark_detail_screen.dart';
 import '../features/bookmarks/presentation/screens/bookmark_form_screen.dart';
 import '../features/bookmarks/presentation/screens/bookmarks_list_screen.dart';
@@ -48,6 +49,15 @@ class LoginRoute extends GoRouteData with $LoginRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) =>
       const LoginScreen();
+}
+
+@TypedGoRoute<RegisterRoute>(path: '/register', name: 'register')
+class RegisterRoute extends GoRouteData with $RegisterRoute {
+  const RegisterRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      const RegisterScreen();
 }
 
 @TypedGoRoute<BookmarksListRoute>(
@@ -131,6 +141,7 @@ class DeepLinkScope extends InheritedWidget {
   final homeLocation = const HomeRoute().location;
   final splashLocation = const SplashRoute().location;
   final loginLocation = const LoginRoute().location;
+  final registerLocation = const RegisterRoute().location;
 
   final router = GoRouter(
     // No initialLocation — GoRouter resolves the platform deep-link URI on
@@ -158,15 +169,15 @@ class DeepLinkScope extends InheritedWidget {
       // ── Phase 2: Unauthenticated ──
       // Splash completed with no session, or user signed out.
       if (auth is AuthInitial || auth is AuthFailure) {
-        if (location == loginLocation) return null;
+        if (location == loginLocation || location == registerLocation) return null;
         deepLink.pendingRedirect ??= state.uri.toString();
         return loginLocation;
       }
 
       // ── Phase 3: Authenticated ──
       if (auth is AuthAuthenticated) {
-        // Leaving splash or login — restore the captured deep link.
-        if (location == splashLocation || location == loginLocation) {
+        // Leaving splash or login/register — restore the captured deep link.
+        if (location == splashLocation || location == loginLocation || location == registerLocation) {
           final target = deepLink.pendingRedirect;
           deepLink.pendingRedirect = null;
           return target ?? homeLocation;

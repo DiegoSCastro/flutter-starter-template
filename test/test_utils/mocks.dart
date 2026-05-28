@@ -1,5 +1,6 @@
 import 'package:flutter_starter_template/core/analytics/analytics_service.dart';
 import 'package:flutter_starter_template/features/auth/domain/repositories/auth_repository.dart';
+import 'package:flutter_starter_template/features/auth/domain/usecases/register.dart';
 import 'package:flutter_starter_template/features/auth/domain/usecases/restore_session.dart';
 import 'package:flutter_starter_template/features/auth/domain/usecases/sign_in.dart';
 import 'package:flutter_starter_template/features/auth/domain/usecases/sign_out.dart';
@@ -14,6 +15,8 @@ import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MockSignIn extends Mock implements SignIn {}
+
+class MockRegister extends Mock implements Register {}
 
 class MockSignOut extends Mock implements SignOut {}
 
@@ -31,6 +34,9 @@ void stubAnalyticsService(MockAnalyticsService analytics) {
   ).thenAnswer((_) async {});
   when(
     () => analytics.logLogin(method: any(named: 'method')),
+  ).thenAnswer((_) async {});
+  when(
+    () => analytics.logSignUp(signUpMethod: any(named: 'signUpMethod')),
   ).thenAnswer((_) async {});
   when(
     () => analytics.logScreenView(screenName: any(named: 'screenName')),

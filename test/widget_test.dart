@@ -63,6 +63,7 @@ void main() {
 
     authBloc = AuthBloc(
       signIn: signIn,
+      register: MockRegister(),
       signOut: signOut,
       restoreSession: restoreSession,
       analytics: analytics,

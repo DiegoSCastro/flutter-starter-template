@@ -7,6 +7,11 @@ abstract interface class AuthRepository {
     required String password,
   });
 
+  Future<Result<AuthUser>> register({
+    required String username,
+    required String password,
+  });
+
   Future<Result<void>> signOut();
 
   /// Loads any persisted session and attempts to refresh its access token.

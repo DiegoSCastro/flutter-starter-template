@@ -27,6 +27,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get loginSubmit => 'Sign in';
 
   @override
+  String get loginNavigateToRegister => 'Don\'t have an account? Register here';
+
+  @override
+  String get registerAppBarTitle => 'Register';
+
+  @override
+  String get registerHeadline => 'Create an account';
+
+  @override
+  String get registerUsernameLabel => 'Username';
+
+  @override
+  String get registerPasswordLabel => 'Password';
+
+  @override
+  String get registerConfirmPasswordLabel => 'Confirm Password';
+
+  @override
+  String get registerSubmit => 'Register';
+
+  @override
+  String get errorPasswordsDoNotMatch => 'Passwords do not match.';
+
+  @override
   String get fieldRequired => 'Required';
 
   @override

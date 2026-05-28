@@ -8,6 +8,7 @@ import '../../domain/repositories/auth_repository.dart';
 import '../datasources/auth_local_data_source.dart';
 import '../datasources/auth_remote_data_source.dart';
 import '../models/refresh_token_request.dart';
+import '../models/register_request.dart';
 import '../models/sign_in_request.dart';
 import '../network/token_refresher.dart';
 
@@ -35,6 +36,32 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       final response = await _remote.signIn(
         SignInRequest(username: username, password: password),
+      );
+      final user = response.user.toDomain();
+      await _local.setSession(
+        user: user,
+        accessToken: response.accessToken,
+        refreshToken: response.refreshToken,
+      );
+      return Ok(user);
+    } on DioException catch (e) {
+      return Err(_mapDioError(e));
+    }
+  }
+
+  @override
+  Future<Result<AuthUser>> register({
+    required String username,
+    required String password,
+  }) async {
+    if (username.isEmpty || password.isEmpty) {
+      return const Err(
+        InvalidCredentialsFailure('Username and password are required.'),
+      );
+    }
+    try {
+      final response = await _remote.register(
+        RegisterRequest(username: username, password: password),
       );
       final user = response.user.toDomain();
       await _local.setSession(
