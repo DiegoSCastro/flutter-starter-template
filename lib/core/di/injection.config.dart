@@ -25,6 +25,9 @@ import 'package:flutter_starter_template/core/analytics/analytics_service.dart'
 import 'package:flutter_starter_template/core/config/env_config.dart' as _i689;
 import 'package:flutter_starter_template/core/firebase/firebase_service.dart'
     as _i999;
+import 'package:flutter_starter_template/core/media/image_picker_service.dart'
+    as _i735;
+import 'package:flutter_starter_template/core/media/media_module.dart' as _i773;
 import 'package:flutter_starter_template/core/network/network_module.dart'
     as _i173;
 import 'package:flutter_starter_template/core/notifications/firebase_messaging_service.dart'
@@ -103,6 +106,7 @@ import 'package:flutter_starter_template/features/profile/presentation/bloc/prof
     as _i1013;
 import 'package:flutter_starter_template/objectbox.g.dart' as _i831;
 import 'package:get_it/get_it.dart' as _i174;
+import 'package:image_picker/image_picker.dart' as _i183;
 import 'package:injectable/injectable.dart' as _i526;
 import 'package:share_plus/share_plus.dart' as _i998;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
@@ -118,6 +122,7 @@ extension GetItInjectableX on _i174.GetIt {
     final sharedPreferencesModule = _$SharedPreferencesModule();
     final objectBoxModule = _$ObjectBoxModule();
     final analyticsModule = _$AnalyticsModule();
+    final mediaModule = _$MediaModule();
     final notificationsModule = _$NotificationsModule();
     final shareModule = _$ShareModule();
     final secureStorageModule = _$SecureStorageModule();
@@ -138,6 +143,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i398.FirebaseAnalytics>(
       () => analyticsModule.provideFirebaseAnalytics(),
     );
+    gh.lazySingleton<_i183.ImagePicker>(() => mediaModule.imagePicker);
     gh.lazySingleton<_i163.FlutterLocalNotificationsPlugin>(
       () => notificationsModule.providePlugin(),
     );
@@ -161,6 +167,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i163.FlutterLocalNotificationsPlugin>(),
         gh<_i213.PermissionService>(),
       ),
+    );
+    gh.lazySingleton<_i735.ImagePickerService>(
+      () => _i735.ImagePickerService(gh<_i183.ImagePicker>()),
     );
     gh.lazySingleton<_i580.ShareService>(
       () => _i580.ShareService(gh<_i998.SharePlus>()),
@@ -313,6 +322,8 @@ class _$SharedPreferencesModule extends _i652.SharedPreferencesModule {}
 class _$ObjectBoxModule extends _i319.ObjectBoxModule {}
 
 class _$AnalyticsModule extends _i720.AnalyticsModule {}
+
+class _$MediaModule extends _i773.MediaModule {}
 
 class _$NotificationsModule extends _i146.NotificationsModule {}
 

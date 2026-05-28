@@ -152,6 +152,7 @@ dependencies:
   photo_view: ^0.15.0
 
   vector_graphics: any
+  image_picker: ^1.2.2
 dev_dependencies:
   flutter_test:
     sdk: flutter
