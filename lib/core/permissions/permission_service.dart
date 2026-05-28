@@ -18,6 +18,12 @@ class PermissionService {
         () => Permission.notification.request(),
         () => Permission.notification.shouldShowRequestRationale,
         openAppSettings,
+        cameraStatus: () => Permission.camera.status,
+        requestCamera: () => Permission.camera.request(),
+        cameraRationale: () => Permission.camera.shouldShowRequestRationale,
+        galleryStatus: () => Permission.photos.status,
+        requestGallery: () => Permission.photos.request(),
+        galleryRationale: () => Permission.photos.shouldShowRequestRationale,
       );
 
   @visibleForTesting
@@ -25,12 +31,33 @@ class PermissionService {
     this._notificationStatus,
     this._requestNotification,
     this._notificationRationale,
-    this._openSettings,
-  );
+    this._openSettings, {
+    PermissionStatusLoader? cameraStatus,
+    PermissionStatusLoader? requestCamera,
+    PermissionRationaleLoader? cameraRationale,
+    PermissionStatusLoader? galleryStatus,
+    PermissionStatusLoader? requestGallery,
+    PermissionRationaleLoader? galleryRationale,
+  }) : _cameraStatus =
+           cameraStatus ?? (() => Future.value(PermissionStatus.denied)),
+       _requestCamera =
+           requestCamera ?? (() => Future.value(PermissionStatus.denied)),
+       _cameraRationale = cameraRationale ?? (() => Future.value(false)),
+       _galleryStatus =
+           galleryStatus ?? (() => Future.value(PermissionStatus.denied)),
+       _requestGallery =
+           requestGallery ?? (() => Future.value(PermissionStatus.denied)),
+       _galleryRationale = galleryRationale ?? (() => Future.value(false));
 
   final PermissionStatusLoader _notificationStatus;
   final PermissionStatusLoader _requestNotification;
   final PermissionRationaleLoader _notificationRationale;
+  final PermissionStatusLoader _cameraStatus;
+  final PermissionStatusLoader _requestCamera;
+  final PermissionRationaleLoader _cameraRationale;
+  final PermissionStatusLoader _galleryStatus;
+  final PermissionStatusLoader _requestGallery;
+  final PermissionRationaleLoader _galleryRationale;
   final AppSettingsOpener _openSettings;
 
   Future<PermissionStatus> notificationStatus() {
@@ -56,6 +83,52 @@ class PermissionService {
     return _notificationRationale();
   }
 
+  Future<PermissionStatus> cameraStatus() {
+    if (kIsWeb) return Future.value(PermissionStatus.denied);
+    return _cameraStatus();
+  }
+
+  Future<bool> hasCameraPermission() async {
+    return isCameraAllowed(await cameraStatus());
+  }
+
+  Future<PermissionStatus> requestCameraStatus() {
+    if (kIsWeb) return Future.value(PermissionStatus.denied);
+    return _requestCamera();
+  }
+
+  Future<bool> requestCameraPermission() async {
+    return isCameraAllowed(await requestCameraStatus());
+  }
+
+  Future<bool> shouldShowCameraPermissionRationale() {
+    if (kIsWeb) return Future.value(false);
+    return _cameraRationale();
+  }
+
+  Future<PermissionStatus> galleryStatus() {
+    if (kIsWeb) return Future.value(PermissionStatus.denied);
+    return _galleryStatus();
+  }
+
+  Future<bool> hasGalleryPermission() async {
+    return isGalleryAllowed(await galleryStatus());
+  }
+
+  Future<PermissionStatus> requestGalleryStatus() {
+    if (kIsWeb) return Future.value(PermissionStatus.denied);
+    return _requestGallery();
+  }
+
+  Future<bool> requestGalleryPermission() async {
+    return isGalleryAllowed(await requestGalleryStatus());
+  }
+
+  Future<bool> shouldShowGalleryPermissionRationale() {
+    if (kIsWeb) return Future.value(false);
+    return _galleryRationale();
+  }
+
   Future<bool> openAppSettingsPage() {
     if (kIsWeb) return Future.value(false);
     return _openSettings();
@@ -64,5 +137,15 @@ class PermissionService {
   /// iOS provisional authorization can display notifications quietly.
   bool isNotificationAllowed(PermissionStatus status) {
     return status.isGranted || status.isProvisional;
+  }
+
+  /// Whether camera permission is considered allowed (granted).
+  bool isCameraAllowed(PermissionStatus status) {
+    return status.isGranted;
+  }
+
+  /// Whether gallery permission is considered allowed (granted or limited).
+  bool isGalleryAllowed(PermissionStatus status) {
+    return status.isGranted || status.isLimited;
   }
 }
