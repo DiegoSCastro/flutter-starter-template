@@ -79,7 +79,7 @@ void main() {
             parameters: any(named: 'parameters'),
           ),
         ).called(1);
-        cubit.close();
+        await cubit.close();
       });
 
       test('returns false on failure', () async {
@@ -95,7 +95,7 @@ void main() {
             parameters: any(named: 'parameters'),
           ),
         ).called(1);
-        cubit.close();
+        await cubit.close();
       });
     });
   });

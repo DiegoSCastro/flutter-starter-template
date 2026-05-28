@@ -76,7 +76,7 @@ void main() {
       ).thenAnswer((_) async => const Ok(testUser));
 
       final mockSignOut = MockSignOut();
-      when(() => mockSignOut.call()).thenAnswer((_) async => const Ok(null));
+      when(mockSignOut.call).thenAnswer((_) async => const Ok(null));
 
       final authCubit = _authCubit(signIn: mockSignIn, signOut: mockSignOut);
       final cubit = ProfileCubit(authCubit);
@@ -97,7 +97,7 @@ void main() {
 
     test('signOut sets isSigningOut and delegates', () async {
       final mockSignOut = MockSignOut();
-      when(() => mockSignOut.call()).thenAnswer((_) async => const Ok(null));
+      when(mockSignOut.call).thenAnswer((_) async => const Ok(null));
 
       final authCubit = _authCubit(signOut: mockSignOut);
       final cubit = ProfileCubit(authCubit);

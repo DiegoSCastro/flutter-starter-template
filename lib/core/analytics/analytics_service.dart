@@ -50,7 +50,7 @@ class FirebaseAnalyticsService implements AnalyticsService {
   Future<void> _guard(Future<void> Function() operation) async {
     try {
       await operation();
-    } catch (error) {
+    } on Object catch (error) {
       if (kDebugMode) {
         debugPrint('Analytics error: $error');
       }

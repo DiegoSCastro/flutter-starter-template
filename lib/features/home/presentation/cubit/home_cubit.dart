@@ -21,7 +21,7 @@ class HomeCubit extends Cubit<HomeState> {
     switch (result) {
       case Ok(value: final items):
         _recompute(items);
-      case Err(failure: final failure):
+      case Err(: final failure):
         emit(
           state.copyWith(
             isLoading: false,

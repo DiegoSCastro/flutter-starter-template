@@ -1,15 +1,15 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_starter_template/app/app.dart';
 import 'package:flutter_starter_template/core/di/injection.dart';
 import 'package:flutter_starter_template/core/theme/theme_cubit.dart';
 import 'package:flutter_starter_template/core/utils/result.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter_starter_template/app/app.dart';
 import 'package:flutter_starter_template/features/auth/domain/entities/auth_user.dart';
 import 'package:flutter_starter_template/features/auth/presentation/cubit/auth_cubit.dart';
 import 'package:flutter_starter_template/features/bookmarks/domain/services/bookmarks_sync_controller.dart';
 import 'package:flutter_starter_template/features/home/presentation/cubit/home_cubit.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -40,11 +40,11 @@ void main() {
 
     final restoreSession = MockRestoreSession();
     when(
-      () => restoreSession(),
+      restoreSession.call,
     ).thenAnswer((_) async => const Err(testFailure));
 
     final signOut = MockSignOut();
-    when(() => signOut()).thenAnswer((_) async => const Ok(null));
+    when(signOut.call).thenAnswer((_) async => const Ok(null));
 
     syncStatusController = StreamController<BookmarksSyncStatus>.broadcast();
     sync = MockBookmarksSyncController();
@@ -57,7 +57,7 @@ void main() {
     when(() => sync.sync()).thenAnswer((_) async {});
 
     final listBookmarks = MockListBookmarks();
-    when(() => listBookmarks()).thenAnswer((_) async => const Ok([]));
+    when(listBookmarks.call).thenAnswer((_) async => const Ok([]));
     final authRepository = MockAuthRepository();
     when(() => authRepository.currentUser).thenAnswer((_) => currentUser);
 
@@ -87,7 +87,7 @@ void main() {
     await syncStatusController.close();
   });
 
-  testWidgets('signs in and lands on home screen', (WidgetTester tester) async {
+  testWidgets('signs in and lands on home screen', (tester) async {
     await tester.pumpWidget(
       App(
         authCubit: authCubit,

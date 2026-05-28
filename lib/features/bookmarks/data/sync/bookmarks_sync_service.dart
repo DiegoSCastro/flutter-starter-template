@@ -4,11 +4,11 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../domain/services/bookmarks_sync_controller.dart';
 import '../datasources/bookmarks_remote_data_source.dart';
 import '../local/bookmark_entity.dart';
 import '../local/bookmarks_local_data_source.dart';
 import '../models/bookmark_request.dart';
-import '../../domain/services/bookmarks_sync_controller.dart';
 
 /// Reconciles the local ObjectBox store with the remote API.
 ///
@@ -97,7 +97,7 @@ class BookmarksSyncService implements BookmarksSyncController {
       // Network/auth error — leave pending rows untouched so the next trigger
       // retries. Don't propagate; sync is fire-and-forget from callers.
       _emit(BookmarksSyncStatus.error);
-    } catch (_) {
+    } on Object catch (_) {
       _emit(BookmarksSyncStatus.error);
     }
   }

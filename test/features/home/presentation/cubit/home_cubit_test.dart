@@ -78,6 +78,6 @@ MockAuthRepository _authRepository({AuthUser? currentUser}) {
 
 MockListBookmarks _listBookmarks(Result<List<Bookmark>> result) {
   final listBookmarks = MockListBookmarks();
-  when(() => listBookmarks()).thenAnswer((_) async => result);
+  when(listBookmarks.call).thenAnswer((_) async => result);
   return listBookmarks;
 }

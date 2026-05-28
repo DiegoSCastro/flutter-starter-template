@@ -123,20 +123,20 @@ void main() {
   });
 
   group('create', () {
-    final input = BookmarkInput(
+    const input = BookmarkInput(
       title: 'Flutter',
       url: 'https://flutter.dev',
       description: 'Flutter website',
-      tags: const ['dev'],
+      tags: ['dev'],
     );
 
     test('returns ValidationFailure when title is empty', () async {
       final result = await repository.create(
-        BookmarkInput(
+        const BookmarkInput(
           title: '',
           url: 'https://flutter.dev',
           description: '',
-          tags: const [],
+          tags: [],
         ),
       );
 
@@ -148,11 +148,11 @@ void main() {
 
     test('returns ValidationFailure when url is empty', () async {
       final result = await repository.create(
-        BookmarkInput(
+        const BookmarkInput(
           title: 'Flutter',
           url: '',
           description: '',
-          tags: const [],
+          tags: [],
         ),
       );
 
@@ -170,11 +170,11 @@ void main() {
       );
 
       final result = await repository.create(
-        BookmarkInput(
+        const BookmarkInput(
           title: '  Flutter  ',
           url: 'https://flutter.dev  ',
           description: '  Flutter website  ',
-          tags: const ['  dev  ', ' dev ', '  dart  '],
+          tags: ['  dev  ', ' dev ', '  dart  '],
         ),
       );
 
@@ -208,21 +208,21 @@ void main() {
   });
 
   group('update', () {
-    final input = BookmarkInput(
+    const input = BookmarkInput(
       title: 'Updated',
       url: 'https://new.dev',
       description: 'Updated desc',
-      tags: const ['updated'],
+      tags: ['updated'],
     );
 
     test('returns ValidationFailure when title is empty', () async {
       final result = await repository.update(
         'b-1',
-        BookmarkInput(
+        const BookmarkInput(
           title: '',
           url: 'https://flutter.dev',
           description: '',
-          tags: const [],
+          tags: [],
         ),
       );
 

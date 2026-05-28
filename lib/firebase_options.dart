@@ -1,6 +1,6 @@
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
-    show defaultTargetPlatform, TargetPlatform;
+    show TargetPlatform, defaultTargetPlatform;
 
 import 'core/config/env_config.dart';
 
@@ -18,7 +18,7 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static final _env = const EnvConfig();
+  static const _env = EnvConfig();
 
   static FirebaseOptions get android => FirebaseOptions(
     apiKey: _env.androidApiKey,

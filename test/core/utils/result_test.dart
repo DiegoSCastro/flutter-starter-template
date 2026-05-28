@@ -46,7 +46,7 @@ void main() {
     });
 
     test('pattern matching on Result', () {
-      Result<int> result = const Ok(10);
+      const Result<int> result = Ok(10);
       final value = switch (result) {
         Ok(:final value) => value,
         Err<int> _ => -1,
@@ -55,7 +55,7 @@ void main() {
     });
 
     test('pattern matching on Err', () {
-      Result<int> result = const Err<int>(UnknownFailure());
+      const Result<int> result = Err<int>(UnknownFailure());
       final value = switch (result) {
         Ok(:final value) => value,
         Err<int> _ => -1,

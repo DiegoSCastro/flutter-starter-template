@@ -18,7 +18,7 @@ class ShareService {
   }) {
     return _share.share(
       ShareParams(
-        files: paths.map((p) => XFile(p)).toList(),
+        files: paths.map(XFile.new).toList(),
         subject: subject,
         text: text,
       ),

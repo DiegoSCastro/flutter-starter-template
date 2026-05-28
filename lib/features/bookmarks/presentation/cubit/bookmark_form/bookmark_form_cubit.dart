@@ -43,7 +43,7 @@ class BookmarkFormCubit extends Cubit<BookmarkFormState> {
             tags: List.of(b.tags),
           ),
         );
-      case Err(failure: final failure):
+      case Err(: final failure):
         emit(
           state.copyWith(
             status: BookmarkFormStatus.loadFailed,
@@ -95,7 +95,7 @@ class BookmarkFormCubit extends Cubit<BookmarkFormState> {
         );
         emit(state.copyWith(status: BookmarkFormStatus.submitted));
         return true;
-      case Err(failure: final failure):
+      case Err(: final failure):
         emit(state.copyWith(status: BookmarkFormStatus.idle, failure: failure));
         return false;
     }

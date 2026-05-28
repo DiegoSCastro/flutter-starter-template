@@ -130,11 +130,11 @@ void main() {
           ).thenAnswer((_) async => Ok(testBookmark));
         },
         build: buildCubit,
-        seed: () => BookmarkFormState(
+        seed: () => const BookmarkFormState(
           title: 'Flutter',
           url: 'https://flutter.dev',
           description: 'Flutter website',
-          tags: const ['dev'],
+          tags: ['dev'],
         ),
         act: (cubit) => cubit.submit(),
         expect: () => [
@@ -163,12 +163,12 @@ void main() {
           ).thenAnswer((_) async => Ok(testBookmark));
         },
         build: buildCubit,
-        seed: () => BookmarkFormState(
+        seed: () => const BookmarkFormState(
           id: '1',
           title: 'Flutter',
           url: 'https://flutter.dev',
           description: 'Flutter website',
-          tags: const ['dev'],
+          tags: ['dev'],
         ),
         act: (cubit) => cubit.submit(),
         expect: () => [
@@ -197,7 +197,7 @@ void main() {
           ).thenAnswer((_) async => const Err(ValidationFailure('Invalid')));
         },
         build: buildCubit,
-        seed: () => BookmarkFormState(title: '.', url: '.'),
+        seed: () => const BookmarkFormState(title: '.', url: '.'),
         act: (cubit) => cubit.submit(),
         expect: () => [
           predicate<BookmarkFormState>(
@@ -212,7 +212,7 @@ void main() {
       blocTest<BookmarkFormCubit, BookmarkFormState>(
         'does nothing when already submitting',
         build: buildCubit,
-        seed: () => BookmarkFormState(status: BookmarkFormStatus.submitting),
+        seed: () => const BookmarkFormState(status: BookmarkFormStatus.submitting),
         act: (cubit) => cubit.submit(),
         expect: () => <BookmarkFormState>[],
       );

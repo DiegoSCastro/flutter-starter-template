@@ -13,7 +13,7 @@ void main() {
       final result = await useCase('abc');
 
       switch (result) {
-        case Ok(value: final value):
+        case Ok(: final value):
           expect(value, 3);
         case Err():
           fail('Expected Ok');
@@ -30,6 +30,9 @@ void main() {
     test('runGuarded maps thrown Failure to Err unchanged', () async {
       const failure = ValidationFailure('Invalid value');
 
+      // We throw a Failure model directly in this test case to verify that the
+      // guard mechanism correctly traps it and handles it as a Failure.
+      // ignore: only_throw_errors
       final result = await useCase.guard(() => throw failure);
 
       expect(result, isA<Err<int>>());

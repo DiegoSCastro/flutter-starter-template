@@ -52,7 +52,7 @@ class AuthCubit extends Cubit<AuthState> {
         unawaited(_analytics.setCurrentUser(user.id));
         unawaited(_analytics.logLogin(method: 'password'));
         emit(AuthState.authenticated(user));
-      case Err(failure: final failure):
+      case Err(: final failure):
         unawaited(
           _analytics.trackLoginFailed(
             errorType: failure.runtimeType.toString(),

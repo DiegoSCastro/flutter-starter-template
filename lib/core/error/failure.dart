@@ -1,3 +1,5 @@
+import '../utils/result.dart' show Result;
+
 /// Base type for domain-layer failures returned from repositories and use
 /// cases. Subclass per feature; never throw these — return them via [Result].
 sealed class Failure {

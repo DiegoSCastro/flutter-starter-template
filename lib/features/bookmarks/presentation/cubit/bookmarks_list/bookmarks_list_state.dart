@@ -8,7 +8,6 @@ part 'bookmarks_list_state.freezed.dart';
 
 @freezed
 abstract class BookmarksListState with _$BookmarksListState {
-  const BookmarksListState._();
 
   const factory BookmarksListState({
     @Default(false) bool isLoading,
@@ -17,6 +16,7 @@ abstract class BookmarksListState with _$BookmarksListState {
     @Default('') String query,
     Failure? failure,
   }) = _BookmarksListState;
+  const BookmarksListState._();
 
   /// Items filtered by the active query (matches title, url, or any tag).
   List<Bookmark> get visibleItems {

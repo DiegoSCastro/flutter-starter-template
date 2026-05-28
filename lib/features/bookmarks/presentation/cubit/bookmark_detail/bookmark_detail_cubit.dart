@@ -32,7 +32,7 @@ class BookmarkDetailCubit extends Cubit<BookmarkDetailState> {
           ),
         );
         emit(BookmarkDetailState.ready(bookmark));
-      case Err(failure: final failure):
+      case Err(: final failure):
         emit(BookmarkDetailState.failure(failure));
     }
   }
@@ -49,7 +49,7 @@ class BookmarkDetailCubit extends Cubit<BookmarkDetailState> {
           ),
         );
         return true;
-      case Err(failure: final failure):
+      case Err(: final failure):
         unawaited(
           _analytics.trackBookmarkDeleteFailed(
             bookmarkId: id,

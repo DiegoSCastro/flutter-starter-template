@@ -7,7 +7,7 @@ class ThemeState {
   final ThemeMode mode;
   final FlexScheme scheme;
 
-  static const defaultScheme = FlexScheme.deepPurple;
+  static const FlexScheme defaultScheme = FlexScheme.deepPurple;
 
   ThemeState copyWith({ThemeMode? mode, FlexScheme? scheme}) =>
       ThemeState(mode: mode ?? this.mode, scheme: scheme ?? this.scheme);

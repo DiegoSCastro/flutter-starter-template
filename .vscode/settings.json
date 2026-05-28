@@ -23,6 +23,7 @@
     "usecases",
     "xcconfig",
     "xcrun",
-    "yourdomain"
+    "yourdomain",
+    "zoomable"
   ]
 }

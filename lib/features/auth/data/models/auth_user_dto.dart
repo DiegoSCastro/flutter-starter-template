@@ -7,10 +7,10 @@ part 'auth_user_dto.g.dart';
 
 @Freezed(copyWith: false, equal: false)
 abstract class AuthUserDto with _$AuthUserDto {
-  const AuthUserDto._();
 
   const factory AuthUserDto({required String id, required String username}) =
       _AuthUserDto;
+  const AuthUserDto._();
 
   factory AuthUserDto.fromJson(Map<String, dynamic> json) =>
       _$AuthUserDtoFromJson(json);

@@ -157,7 +157,7 @@ class AppPhotoView extends StatefulWidget {
         opaque: false,
         barrierDismissible: true,
         barrierColor: Colors.black.withValues(alpha: 0.9),
-        pageBuilder: (context, _, __) => _AppPhotoViewFullScreenPage(
+        pageBuilder: (context, _, _) => _AppPhotoViewFullScreenPage(
           imageProvider: imageProvider,
           heroTag: heroTag,
           enableRotation: enableRotation,
@@ -183,7 +183,7 @@ class _AppPhotoViewState extends State<AppPhotoView> {
   void initState() {
     super.initState();
     _photoViewController = widget.controller ?? PhotoViewController();
-    
+
     // Listen to scale changes to capture the initial resolved scale factor
     _photoViewController.outputStateStream.listen((value) {
       if (mounted && _initialScale == null && value.scale != null) {
@@ -204,7 +204,7 @@ class _AppPhotoViewState extends State<AppPhotoView> {
   void _handleDoubleTap() {
     final scale = _photoViewController.scale ?? 1.0;
     final baseScale = _initialScale ?? 1.0;
-    
+
     // Toggle between initial scale and 2.5x zoom
     if (scale > baseScale * 1.05) {
       _photoViewController.scale = baseScale;
@@ -218,66 +218,69 @@ class _AppPhotoViewState extends State<AppPhotoView> {
     Widget child = PhotoView(
       imageProvider: widget.imageProvider,
       controller: _photoViewController,
-      minScale: widget.minScale ?? (widget.isCover
-          ? PhotoViewComputedScale.covered * 0.8
-          : PhotoViewComputedScale.contained),
-      maxScale: widget.maxScale ?? (widget.isCover
-          ? PhotoViewComputedScale.covered * 4.0
-          : PhotoViewComputedScale.contained * 4.0),
-      initialScale: widget.initialScale ?? (widget.isCover
-          ? PhotoViewComputedScale.covered
-          : PhotoViewComputedScale.contained),
-      backgroundDecoration: widget.backgroundDecoration ??
+      minScale:
+          widget.minScale ??
+          (widget.isCover
+              ? PhotoViewComputedScale.covered * 0.8
+              : PhotoViewComputedScale.contained),
+      maxScale:
+          widget.maxScale ??
+          (widget.isCover
+              ? PhotoViewComputedScale.covered * 4.0
+              : PhotoViewComputedScale.contained * 4.0),
+      initialScale:
+          widget.initialScale ??
+          (widget.isCover
+              ? PhotoViewComputedScale.covered
+              : PhotoViewComputedScale.contained),
+      backgroundDecoration:
+          widget.backgroundDecoration ??
           const BoxDecoration(color: Colors.transparent),
       enableRotation: widget.enableRotation,
-      loadingBuilder: widget.loadingBuilder ??
+      loadingBuilder:
+          widget.loadingBuilder ??
           (context, event) => Center(
-                child: SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: CircularProgressIndicator(
-                    strokeWidth: 2,
-                    value: event == null || event.expectedTotalBytes == null
-                        ? null
-                        : event.cumulativeBytesLoaded / event.expectedTotalBytes!,
+            child: SizedBox(
+              width: 24,
+              height: 24,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                value: event == null || event.expectedTotalBytes == null
+                    ? null
+                    : event.cumulativeBytesLoaded / event.expectedTotalBytes!,
+              ),
+            ),
+          ),
+      errorBuilder:
+          widget.errorBuilder ??
+          (context, error, stackTrace) => Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.broken_image_rounded,
+                  color: Theme.of(context).colorScheme.error,
+                  size: 40,
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Failed to load image',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: Theme.of(context).colorScheme.error,
                   ),
                 ),
-              ),
-      errorBuilder: widget.errorBuilder ??
-          (context, error, stackTrace) => Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      Icons.broken_image_rounded,
-                      color: Theme.of(context).colorScheme.error,
-                      size: 40,
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Failed to load image',
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: Theme.of(context).colorScheme.error,
-                          ),
-                    ),
-                  ],
-                ),
-              ),
+              ],
+            ),
+          ),
       onTapUp: widget.onTapUp,
       onTapDown: widget.onTapDown,
     );
 
     if (widget.heroTag != null) {
-      child = Hero(
-        tag: widget.heroTag!,
-        child: child,
-      );
+      child = Hero(tag: widget.heroTag!, child: child);
     }
 
-    return GestureDetector(
-      onDoubleTap: _handleDoubleTap,
-      child: child,
-    );
+    return GestureDetector(onDoubleTap: _handleDoubleTap, child: child);
   }
 }
 
@@ -302,13 +305,14 @@ class _AppPhotoViewFullScreenPage extends StatefulWidget {
 }
 
 class _AppPhotoViewFullScreenPageState
-    extends State<_AppPhotoViewFullScreenPage> with SingleTickerProviderStateMixin {
+    extends State<_AppPhotoViewFullScreenPage>
+    with SingleTickerProviderStateMixin {
   late PageController _pageController;
   late int _currentIndex;
   bool _showUI = true;
 
   // Swipe-down to dismiss fields
-  double _dragOffset = 0.0;
+  double _dragOffset = 0;
   bool _isDragging = false;
   late PhotoViewController _photoViewController;
   double? _initialScale;
@@ -319,7 +323,7 @@ class _AppPhotoViewFullScreenPageState
     _currentIndex = widget.initialIndex;
     _pageController = PageController(initialPage: widget.initialIndex);
     _photoViewController = PhotoViewController();
-    
+
     // Track the initial scale to dynamically determine if the image is zoomed in
     _photoViewController.outputStateStream.listen((value) {
       if (mounted && _initialScale == null && value.scale != null) {
@@ -379,8 +383,8 @@ class _AppPhotoViewFullScreenPageState
 
   @override
   Widget build(BuildContext context) {
-    final hasGallery = widget.galleryImages != null &&
-        widget.galleryImages!.isNotEmpty;
+    final hasGallery =
+        widget.galleryImages != null && widget.galleryImages!.isNotEmpty;
     final totalImages = hasGallery ? widget.galleryImages!.length : 1;
 
     // Calculate background opacity based on drag distance

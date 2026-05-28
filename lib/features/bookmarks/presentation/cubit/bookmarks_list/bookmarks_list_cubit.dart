@@ -33,7 +33,7 @@ class BookmarksListCubit extends Cubit<BookmarksListState> {
     switch (result) {
       case Ok(value: final items):
         emit(state.copyWith(isLoading: false, items: items));
-      case Err(failure: final failure):
+      case Err(: final failure):
         emit(state.copyWith(isLoading: false, failure: failure));
     }
   }
@@ -95,8 +95,7 @@ class BookmarksListCubit extends Cubit<BookmarksListState> {
             source: AnalyticsSources.list,
           ),
         );
-        break;
-      case Err(failure: final failure):
+      case Err(: final failure):
         unawaited(
           _analytics.trackBookmarkDeleteFailed(
             bookmarkId: id,

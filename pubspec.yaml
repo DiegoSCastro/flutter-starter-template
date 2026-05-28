@@ -149,6 +149,7 @@ dependencies:
   # Interactive zoomable image viewer widget. Wrapped by AppPhotoView.
   photo_view: ^0.15.0
 
+  vector_graphics: any
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -197,6 +198,7 @@ dev_dependencies:
   # (output: lib/gen/assets.gen.dart). Use e.g. Assets.images.logo instead
   # of raw 'assets/images/logo.png' strings.
   flutter_gen_runner: ^5.14.1
+  very_good_analysis: ^10.2.0
 
 flutter_gen:
   output: lib/gen/

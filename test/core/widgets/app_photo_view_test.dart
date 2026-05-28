@@ -1,9 +1,10 @@
 import 'dart:io';
 import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_starter_template/core/widgets/app_photo_view.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:flutter_starter_template/core/widgets/app_photo_view.dart';
 
 import '../../test_utils.dart';
 

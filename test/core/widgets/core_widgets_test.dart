@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_starter_template/core/widgets/app_button.dart';
 import 'package:flutter_starter_template/core/widgets/app_empty_view.dart';
 import 'package:flutter_starter_template/core/widgets/app_error_view.dart';
@@ -6,7 +7,6 @@ import 'package:flutter_starter_template/core/widgets/app_loading.dart';
 import 'package:flutter_starter_template/core/widgets/app_scaffold.dart';
 import 'package:flutter_starter_template/core/widgets/app_slidable.dart';
 import 'package:flutter_starter_template/core/widgets/app_text_field.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Widget materialApp(Widget child) {
@@ -141,7 +141,7 @@ void main() {
   group('AppScaffold', () {
     testWidgets('renders body inside SafeArea with padding', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(home: AppScaffold(body: const Text('Content'))),
+        const MaterialApp(home: AppScaffold(body: Text('Content'))),
       );
 
       expect(find.text('Content'), findsOneWidget);
@@ -150,8 +150,8 @@ void main() {
 
     testWidgets('renders AppBar when title is provided', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          home: AppScaffold(title: 'Test Screen', body: const Text('Content')),
+        const MaterialApp(
+          home: AppScaffold(title: 'Test Screen', body: Text('Content')),
         ),
       );
 
@@ -173,8 +173,8 @@ void main() {
 
     testWidgets('shows loading overlay when isLoading is true', (tester) async {
       await tester.pumpWidget(
-        MaterialApp(
-          home: AppScaffold(body: const Text('Content'), isLoading: true),
+        const MaterialApp(
+          home: AppScaffold(body: Text('Content'), isLoading: true),
         ),
       );
 

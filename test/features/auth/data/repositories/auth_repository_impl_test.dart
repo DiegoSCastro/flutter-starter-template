@@ -31,9 +31,9 @@ void main() {
   late MockTokenRefresher mockRefresher;
   late AuthRepositoryImpl repository;
 
-  final testUser = AuthUser(id: 'user-1', username: 'alice');
-  final testSignInResponse = SignInResponse(
-    user: const AuthUserDto(id: 'user-1', username: 'alice'),
+  const testUser = AuthUser(id: 'user-1', username: 'alice');
+  const testSignInResponse = SignInResponse(
+    user: AuthUserDto(id: 'user-1', username: 'alice'),
     accessToken: 'access',
     refreshToken: 'refresh',
     expiresIn: 3600,

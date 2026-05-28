@@ -196,7 +196,7 @@ class _ThemeModeSelector extends StatelessWidget {
 class _ColorSchemeSelector extends StatelessWidget {
   const _ColorSchemeSelector();
 
-  static const _schemes = [
+  static const List<FlexScheme> _schemes = [
     FlexScheme.material,
     FlexScheme.deepPurple,
     FlexScheme.indigo,
@@ -336,7 +336,7 @@ class _SignOutButton extends StatelessWidget {
       ),
     );
     if (confirmed == true && context.mounted) {
-      context.read<ProfileCubit>().signOut();
+      unawaited(context.read<ProfileCubit>().signOut());
     }
   }
 }

@@ -155,7 +155,9 @@ class _BookmarksListViewState extends State<BookmarksListView> {
                                   b.title,
                                 );
                                 if (!shouldDelete || !context.mounted) return;
-                                context.read<BookmarksListCubit>().delete(b.id);
+                                unawaited(
+                                  context.read<BookmarksListCubit>().delete(b.id),
+                                );
                               },
                             ),
                           ],
