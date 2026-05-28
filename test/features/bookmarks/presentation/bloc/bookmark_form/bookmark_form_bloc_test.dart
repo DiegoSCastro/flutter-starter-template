@@ -367,5 +367,57 @@ void main() {
         ],
       );
     });
+
+    group('video picking', () {
+      final mockVideo = XFile('test/video.mp4');
+
+      blocTest<BookmarkFormBloc, BookmarkFormState>(
+        'picks video successfully when gallery permission is already granted',
+        setUp: () {
+          when(
+            () => mockPermission.hasGalleryPermission(),
+          ).thenAnswer((_) async => true);
+          when(
+            () => mockImagePicker.pickVideo(source: ImageSource.gallery),
+          ).thenAnswer((_) async => mockVideo);
+        },
+        build: buildBloc,
+        act: (bloc) => bloc.pickVideo(),
+        expect: () => [
+          predicate<BookmarkFormState>(
+            (s) => s.videoUrl == 'test/video.mp4',
+          ),
+        ],
+      );
+
+      blocTest<BookmarkFormBloc, BookmarkFormState>(
+        'records video successfully when camera permission is already granted',
+        setUp: () {
+          when(
+            () => mockPermission.hasCameraPermission(),
+          ).thenAnswer((_) async => true);
+          when(
+            () => mockImagePicker.pickVideo(source: ImageSource.camera),
+          ).thenAnswer((_) async => mockVideo);
+        },
+        build: buildBloc,
+        act: (bloc) => bloc.recordVideoFromCamera(),
+        expect: () => [
+          predicate<BookmarkFormState>(
+            (s) => s.videoUrl == 'test/video.mp4',
+          ),
+        ],
+      );
+
+      blocTest<BookmarkFormBloc, BookmarkFormState>(
+        'removes video successfully',
+        build: buildBloc,
+        seed: () => const BookmarkFormState(videoUrl: 'test/video.mp4'),
+        act: (bloc) => bloc.removeVideo(),
+        expect: () => [
+          predicate<BookmarkFormState>((s) => s.videoUrl == null),
+        ],
+      );
+    });
   });
 }

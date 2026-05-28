@@ -52,6 +52,7 @@ class BookmarksRepositoryImpl implements BookmarksRepository {
       description: normalized.description,
       tags: List.of(normalized.tags),
       imageUrls: List.of(normalized.imageUrls),
+      videoUrl: normalized.videoUrl,
       createdAt: now,
       updatedAt: now,
       syncStateCode: SyncState.pendingCreate.code,
@@ -125,6 +126,7 @@ class BookmarksRepositoryImpl implements BookmarksRepository {
       description: input.description.trim(),
       tags: tags,
       imageUrls: List.of(input.imageUrls),
+      videoUrl: input.videoUrl,
     );
   }
 }

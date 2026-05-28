@@ -8,6 +8,7 @@ class Bookmark {
     required this.createdAt,
     required this.updatedAt,
     this.imageUrls = const [],
+    this.videoUrl,
     this.isPendingSync = false,
   });
 
@@ -17,6 +18,7 @@ class Bookmark {
   final String description;
   final List<String> tags;
   final List<String> imageUrls;
+  final String? videoUrl;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -32,6 +34,7 @@ class BookmarkInput {
     required this.description,
     required this.tags,
     this.imageUrls = const [],
+    this.videoUrl,
   });
 
   final String title;
@@ -39,4 +42,5 @@ class BookmarkInput {
   final String description;
   final List<String> tags;
   final List<String> imageUrls;
+  final String? videoUrl;
 }

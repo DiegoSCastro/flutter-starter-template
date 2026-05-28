@@ -22,7 +22,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
     id: const obx_int.IdUid(1, 8542772984841996240),
     name: 'BookmarkEntity',
-    lastPropertyId: const obx_int.IdUid(11, 5870960339971504163),
+    lastPropertyId: const obx_int.IdUid(12, 2425304307927444286),
     flags: 0,
     properties: <obx_int.ModelProperty>[
       obx_int.ModelProperty(
@@ -90,6 +90,12 @@ final _entities = <obx_int.ModelEntity>[
         id: const obx_int.IdUid(11, 5870960339971504163),
         name: 'imageUrls',
         type: 30,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(12, 2425304307927444286),
+        name: 'videoUrl',
+        type: 9,
         flags: 0,
       ),
     ],
@@ -174,7 +180,10 @@ obx_int.ModelDefinition getObjectBoxModel() {
         final imageUrlsOffset = fbb.writeList(
           object.imageUrls.map(fbb.writeString).toList(growable: false),
         );
-        fbb.startTable(12);
+        final videoUrlOffset = object.videoUrl == null
+            ? null
+            : fbb.writeString(object.videoUrl!);
+        fbb.startTable(13);
         fbb.addInt64(0, object.id);
         fbb.addOffset(1, titleOffset);
         fbb.addOffset(2, urlOffset);
@@ -191,6 +200,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
         );
         fbb.addInt64(9, object.syncStateCode);
         fbb.addOffset(10, imageUrlsOffset);
+        fbb.addOffset(11, videoUrlOffset);
         fbb.finish(fbb.endTable());
         return object.id;
       },
@@ -250,6 +260,9 @@ obx_int.ModelDefinition getObjectBoxModel() {
           fb.StringReader(asciiOptimization: true),
           lazy: false,
         ).vTableGet(buffer, rootOffset, 24, []);
+        final videoUrlParam = const fb.StringReader(
+          asciiOptimization: true,
+        ).vTableGetNullable(buffer, rootOffset, 26);
         final object = BookmarkEntity(
           id: idParam,
           uuid: uuidParam,
@@ -262,6 +275,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
           serverUpdatedAt: serverUpdatedAtParam,
           syncStateCode: syncStateCodeParam,
           imageUrls: imageUrlsParam,
+          videoUrl: videoUrlParam,
         );
 
         return object;
@@ -327,5 +341,10 @@ class BookmarkEntity_ {
   /// See [BookmarkEntity.imageUrls].
   static final imageUrls = obx.QueryStringVectorProperty<BookmarkEntity>(
     _entities[0].properties[10],
+  );
+
+  /// See [BookmarkEntity.videoUrl].
+  static final videoUrl = obx.QueryStringProperty<BookmarkEntity>(
+    _entities[0].properties[11],
   );
 }

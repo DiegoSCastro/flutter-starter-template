@@ -5,7 +5,7 @@
   "entities": [
     {
       "id": "1:8542772984841996240",
-      "lastPropertyId": "11:5870960339971504163",
+      "lastPropertyId": "12:2425304307927444286",
       "name": "BookmarkEntity",
       "properties": [
         {
@@ -65,6 +65,11 @@
           "id": "11:5870960339971504163",
           "name": "imageUrls",
           "type": 30
+        },
+        {
+          "id": "12:2425304307927444286",
+          "name": "videoUrl",
+          "type": 9
         }
       ],
       "relations": []

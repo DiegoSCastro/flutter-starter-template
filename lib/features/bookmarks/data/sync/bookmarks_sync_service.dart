@@ -119,11 +119,15 @@ class BookmarksSyncService implements BookmarksSyncController {
               url: row.url,
               description: row.description,
               tags: row.tags,
+              imageUrls: row.imageUrls,
+              videoUrl: row.videoUrl,
             ),
           );
           row
             ..syncState = SyncState.synced
-            ..serverUpdatedAt = dto.updatedAt;
+            ..serverUpdatedAt = dto.updatedAt
+            ..imageUrls = List.of(dto.imageUrls)
+            ..videoUrl = dto.videoUrl;
           await _local.put(row);
         case SyncState.pendingUpdate:
           final dto = await _remote.update(
@@ -133,11 +137,15 @@ class BookmarksSyncService implements BookmarksSyncController {
               url: row.url,
               description: row.description,
               tags: row.tags,
+              imageUrls: row.imageUrls,
+              videoUrl: row.videoUrl,
             ),
           );
           row
             ..syncState = SyncState.synced
-            ..serverUpdatedAt = dto.updatedAt;
+            ..serverUpdatedAt = dto.updatedAt
+            ..imageUrls = List.of(dto.imageUrls)
+            ..videoUrl = dto.videoUrl;
           await _local.put(row);
         case SyncState.pendingDelete:
           try {
@@ -172,6 +180,8 @@ class BookmarksSyncService implements BookmarksSyncController {
             url: dto.url,
             description: dto.description,
             tags: List.of(dto.tags),
+            imageUrls: List.of(dto.imageUrls),
+            videoUrl: dto.videoUrl,
             createdAt: dto.createdAt,
             updatedAt: dto.updatedAt,
             serverUpdatedAt: dto.updatedAt,
@@ -189,6 +199,8 @@ class BookmarksSyncService implements BookmarksSyncController {
           ..url = dto.url
           ..description = dto.description
           ..tags = List.of(dto.tags)
+          ..imageUrls = List.of(dto.imageUrls)
+          ..videoUrl = dto.videoUrl
           ..updatedAt = dto.updatedAt
           ..serverUpdatedAt = dto.updatedAt;
         await _local.put(local);

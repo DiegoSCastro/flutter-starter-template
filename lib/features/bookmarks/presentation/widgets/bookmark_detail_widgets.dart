@@ -12,7 +12,9 @@ import '../../../../core/analytics/analytics_service.dart';
 import '../../../../core/animation/widget_animations.dart';
 import '../../../../core/build_context_extensions.dart';
 import '../../../../core/di/injection.dart';
+import '../../../../core/media/video_player_service.dart';
 import '../../../../core/share/share_service.dart';
+import '../../../../core/widgets/app_video_player.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../domain/entities/bookmark.dart';
 import '../bloc/bookmark_detail/bookmark_detail_bloc.dart';
@@ -161,6 +163,8 @@ class _DetailBody extends StatelessWidget {
             maxWidth: double.infinity,
             enableAnimation: true,
           ).animateFadeIn(delay: 250.ms),
+          if (bookmark.videoUrl != null && bookmark.videoUrl!.isNotEmpty)
+            _VideoSection(videoUrl: bookmark.videoUrl!).animateFadeIn(delay: 275.ms),
           if (bookmark.imageUrls.isNotEmpty) ...[
             const SizedBox(height: 16),
             SizedBox(
@@ -239,5 +243,61 @@ class _DetailBody extends StatelessWidget {
     ScaffoldMessenger.of(
       context,
     ).showSnackBar(SnackBar(content: Text(message)));
+  }
+}
+
+class _VideoSection extends StatefulWidget {
+  const _VideoSection({required this.videoUrl});
+
+  final String videoUrl;
+
+  @override
+  State<_VideoSection> createState() => _VideoSectionState();
+}
+
+class _VideoSectionState extends State<_VideoSection> {
+  AppVideoPlayerController? _videoPlayerController;
+
+  @override
+  void initState() {
+    super.initState();
+    final service = getIt<VideoPlayerService>();
+    final uri = Uri.tryParse(widget.videoUrl);
+    if (uri != null && (uri.scheme == 'http' || uri.scheme == 'https')) {
+      _videoPlayerController = service.network(uri);
+    } else {
+      _videoPlayerController = service.file(File(widget.videoUrl));
+    }
+    _videoPlayerController?.initialize().then((_) {
+      if (mounted) setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _videoPlayerController?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final controller = _videoPlayerController;
+    if (controller == null) return const SizedBox.shrink();
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 16),
+        Text(
+          'Attached Video',
+          style: context.textTheme.titleMedium,
+        ),
+        const SizedBox(height: 8),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: AppVideoPlayer(controller: controller),
+        ),
+      ],
+    );
   }
 }

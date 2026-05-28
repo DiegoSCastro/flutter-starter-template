@@ -15,6 +15,7 @@ _BookmarkDto _$BookmarkDtoFromJson(Map<String, dynamic> json) => _BookmarkDto(
   imageUrls:
       (json['imageUrls'] as List<dynamic>?)?.map((e) => e as String).toList() ??
       const [],
+  videoUrl: json['videoUrl'] as String?,
   createdAt: DateTime.parse(json['created_at'] as String),
   updatedAt: DateTime.parse(json['updated_at'] as String),
 );
@@ -27,6 +28,7 @@ Map<String, dynamic> _$BookmarkDtoToJson(_BookmarkDto instance) =>
       'description': instance.description,
       'tags': instance.tags,
       'imageUrls': instance.imageUrls,
+      'videoUrl': instance.videoUrl,
       'created_at': instance.createdAt.toIso8601String(),
       'updated_at': instance.updatedAt.toIso8601String(),
     };

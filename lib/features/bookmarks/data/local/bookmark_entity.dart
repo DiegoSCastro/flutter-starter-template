@@ -41,6 +41,7 @@ class BookmarkEntity {
     this.serverUpdatedAt,
     this.syncStateCode = 0,
     this.imageUrls = const [],
+    this.videoUrl,
   });
 
   /// ObjectBox primary key. Internal — never exposed to the domain layer.
@@ -59,6 +60,7 @@ class BookmarkEntity {
   String description;
   List<String> tags;
   List<String> imageUrls;
+  String? videoUrl;
 
   /// Stored and read back as UTC. Domain layer handles any presentation-time
   /// conversion to local.
@@ -89,6 +91,7 @@ class BookmarkEntity {
     description: description,
     tags: List.unmodifiable(tags),
     imageUrls: List.unmodifiable(imageUrls),
+    videoUrl: videoUrl,
     createdAt: createdAt,
     updatedAt: updatedAt,
     isPendingSync: syncState.isPending,
@@ -102,6 +105,7 @@ class BookmarkEntity {
     description = input.description;
     tags = List.of(input.tags);
     imageUrls = List.of(input.imageUrls);
+    videoUrl = input.videoUrl;
     updatedAt = now;
   }
 }

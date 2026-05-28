@@ -5,6 +5,9 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/animation/widget_animations.dart';
 import '../../../../core/build_context_extensions.dart';
+import '../../../../core/di/injection.dart';
+import '../../../../core/media/video_player_service.dart';
+import '../../../../core/widgets/app_video_player.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../bloc/bookmark_form/bookmark_form_bloc.dart';
 import '../bloc/bookmark_form/bookmark_form_state.dart';
@@ -26,6 +29,8 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
   final _description = TextEditingController();
   final _tags = TextEditingController();
   bool _hydrated = false;
+  AppVideoPlayerController? _videoPlayerController;
+  String? _lastVideoUrl;
 
   @override
   void dispose() {
@@ -33,6 +38,7 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
     _url.dispose();
     _description.dispose();
     _tags.dispose();
+    _videoPlayerController?.dispose();
     super.dispose();
   }
 
@@ -43,6 +49,26 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
     _description.text = state.description;
     _tags.text = state.tags.join(', ');
     _hydrated = true;
+  }
+
+  void _updateVideoController(String? videoUrl) {
+    if (videoUrl == _lastVideoUrl) return;
+    _lastVideoUrl = videoUrl;
+    _videoPlayerController?.dispose();
+    _videoPlayerController = null;
+
+    if (videoUrl != null && videoUrl.isNotEmpty) {
+      final service = getIt<VideoPlayerService>();
+      final uri = Uri.tryParse(videoUrl);
+      if (uri != null && (uri.scheme == 'http' || uri.scheme == 'https')) {
+        _videoPlayerController = service.network(uri);
+      } else {
+        _videoPlayerController = service.file(File(videoUrl));
+      }
+      _videoPlayerController?.initialize().then((_) {
+        if (mounted) setState(() {});
+      });
+    }
   }
 
   @override
@@ -79,6 +105,7 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
             );
           }
           _hydrateFromState(state);
+          _updateVideoController(state.videoUrl);
           final isSubmitting = state.status == BookmarkFormStatus.submitting;
           return SingleChildScrollView(
             padding: const EdgeInsets.all(20),
@@ -214,6 +241,50 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
             ),
           ),
         if (state.imageUrls.isNotEmpty) const SizedBox(height: 8),
+        if (state.videoUrl != null && state.videoUrl!.isNotEmpty) ...[
+          Text(
+            'Attached Video',
+            style: context.textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 4),
+          Stack(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: SizedBox(
+                  height: 180,
+                  width: double.infinity,
+                  child: _videoPlayerController != null
+                      ? AppVideoPlayer(controller: _videoPlayerController!)
+                      : const Center(child: CircularProgressIndicator()),
+                ),
+              ),
+              Positioned(
+                top: 8,
+                right: 8,
+                child: GestureDetector(
+                  onTap: () =>
+                      context.read<BookmarkFormBloc>().removeVideo(),
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: const BoxDecoration(
+                      color: Colors.black54,
+                      shape: BoxShape.circle,
+                    ),
+                    child: const Icon(
+                      Icons.close,
+                      size: 20,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+        ],
         Row(
           children: [
             Expanded(
@@ -230,6 +301,27 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
                     context.read<BookmarkFormBloc>().takeImageFromCamera(),
                 icon: const Icon(Icons.camera_alt),
                 label: const Text('Take Photo'),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        Row(
+          children: [
+            Expanded(
+              child: OutlinedButton.icon(
+                onPressed: () => context.read<BookmarkFormBloc>().pickVideo(),
+                icon: const Icon(Icons.video_library),
+                label: const Text('Add Video'),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: OutlinedButton.icon(
+                onPressed: () =>
+                    context.read<BookmarkFormBloc>().recordVideoFromCamera(),
+                icon: const Icon(Icons.videocam),
+                label: const Text('Record Video'),
               ),
             ),
           ],

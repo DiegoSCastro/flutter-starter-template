@@ -42,6 +42,12 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
       transformer: sequential(),
     );
     on<BookmarkFormImageRemoved>(_onImageRemoved, transformer: sequential());
+    on<BookmarkFormVideoPicked>(_onVideoPicked, transformer: sequential());
+    on<BookmarkFormCameraVideoTaken>(
+      _onCameraVideoTaken,
+      transformer: sequential(),
+    );
+    on<BookmarkFormVideoRemoved>(_onVideoRemoved, transformer: sequential());
     on<BookmarkFormSubmitted>(_onSubmitted, transformer: sequential());
   }
 
@@ -103,6 +109,24 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
     return completer.future;
   }
 
+  Future<void> pickVideo() {
+    final completer = Completer<void>();
+    add(BookmarkFormVideoPicked(completer: completer));
+    return completer.future;
+  }
+
+  Future<void> recordVideoFromCamera() {
+    final completer = Completer<void>();
+    add(BookmarkFormCameraVideoTaken(completer: completer));
+    return completer.future;
+  }
+
+  Future<void> removeVideo() {
+    final completer = Completer<void>();
+    add(BookmarkFormVideoRemoved(completer: completer));
+    return completer.future;
+  }
+
   /// Returns `true` if submit succeeded so the screen can pop.
   Future<bool> submit() {
     if (state.status == BookmarkFormStatus.submitting || _submitInFlight) {
@@ -138,6 +162,7 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
               description: b.description,
               tags: List.of(b.tags),
               imageUrls: List.of(b.imageUrls),
+              videoUrl: b.videoUrl,
             ),
           );
         case Err(:final failure):
@@ -266,6 +291,80 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
     event.completer.completeVoidIfPending();
   }
 
+  Future<void> _onVideoPicked(
+    BookmarkFormVideoPicked event,
+    Emitter<BookmarkFormState> emit,
+  ) async {
+    try {
+      final hasPermission = await _permissionService.hasGalleryPermission();
+      if (!hasPermission) {
+        final requestResult =
+            await _permissionService.requestGalleryPermission();
+        if (!requestResult) {
+          emit(
+            state.copyWith(
+              status: BookmarkFormStatus.idle,
+              failure: const PermissionFailure(),
+            ),
+          );
+          event.completer.completeVoidIfPending();
+          return;
+        }
+      }
+
+      final video = await _imagePickerService.pickVideo(
+        source: ImageSource.gallery,
+      );
+      if (video != null) {
+        emit(state.copyWith(videoUrl: video.path));
+      }
+      event.completer.completeVoidIfPending();
+    } on Object catch (error, stackTrace) {
+      event.completer.completeErrorIfPending(error, stackTrace);
+    }
+  }
+
+  Future<void> _onCameraVideoTaken(
+    BookmarkFormCameraVideoTaken event,
+    Emitter<BookmarkFormState> emit,
+  ) async {
+    try {
+      final hasPermission = await _permissionService.hasCameraPermission();
+      if (!hasPermission) {
+        final requestResult =
+            await _permissionService.requestCameraPermission();
+        if (!requestResult) {
+          emit(
+            state.copyWith(
+              status: BookmarkFormStatus.idle,
+              failure: const CameraPermissionFailure(),
+            ),
+          );
+          event.completer.completeVoidIfPending();
+          return;
+        }
+      }
+
+      final video = await _imagePickerService.pickVideo(
+        source: ImageSource.camera,
+      );
+      if (video != null) {
+        emit(state.copyWith(videoUrl: video.path));
+      }
+      event.completer.completeVoidIfPending();
+    } on Object catch (error, stackTrace) {
+      event.completer.completeErrorIfPending(error, stackTrace);
+    }
+  }
+
+  void _onVideoRemoved(
+    BookmarkFormVideoRemoved event,
+    Emitter<BookmarkFormState> emit,
+  ) {
+    emit(state.copyWith(videoUrl: null));
+    event.completer.completeVoidIfPending();
+  }
+
   Future<void> _onSubmitted(
     BookmarkFormSubmitted event,
     Emitter<BookmarkFormState> emit,
@@ -285,6 +384,7 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
         description: state.description.trim(),
         tags: state.tags,
         imageUrls: state.imageUrls,
+        videoUrl: state.videoUrl,
       );
       final isEditing = state.id != null;
       final result = !isEditing
@@ -373,6 +473,24 @@ final class BookmarkFormImageRemoved extends BookmarkFormEvent {
   const BookmarkFormImageRemoved(this.path, {this.completer});
 
   final String path;
+  final Completer<void>? completer;
+}
+
+final class BookmarkFormVideoPicked extends BookmarkFormEvent {
+  const BookmarkFormVideoPicked({this.completer});
+
+  final Completer<void>? completer;
+}
+
+final class BookmarkFormCameraVideoTaken extends BookmarkFormEvent {
+  const BookmarkFormCameraVideoTaken({this.completer});
+
+  final Completer<void>? completer;
+}
+
+final class BookmarkFormVideoRemoved extends BookmarkFormEvent {
+  const BookmarkFormVideoRemoved({this.completer});
+
   final Completer<void>? completer;
 }
 
