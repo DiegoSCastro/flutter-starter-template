@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$BookmarkRequest {
 
- String? get id; String get title; String get url; String get description; List<String> get tags;
+ String? get id; String get title; String get url; String get description; List<String> get tags; List<String> get imageUrls;
 
   /// Serializes this BookmarkRequest to a JSON map.
   Map<String, dynamic> toJson();
@@ -25,7 +25,7 @@ mixin _$BookmarkRequest {
 
 @override
 String toString() {
-  return 'BookmarkRequest(id: $id, title: $title, url: $url, description: $description, tags: $tags)';
+  return 'BookmarkRequest(id: $id, title: $title, url: $url, description: $description, tags: $tags, imageUrls: $imageUrls)';
 }
 
 
@@ -112,10 +112,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? id,  String title,  String url,  String description,  List<String> tags)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? id,  String title,  String url,  String description,  List<String> tags,  List<String> imageUrls)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _BookmarkRequest() when $default != null:
-return $default(_that.id,_that.title,_that.url,_that.description,_that.tags);case _:
+return $default(_that.id,_that.title,_that.url,_that.description,_that.tags,_that.imageUrls);case _:
   return orElse();
 
 }
@@ -133,10 +133,10 @@ return $default(_that.id,_that.title,_that.url,_that.description,_that.tags);cas
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? id,  String title,  String url,  String description,  List<String> tags)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? id,  String title,  String url,  String description,  List<String> tags,  List<String> imageUrls)  $default,) {final _that = this;
 switch (_that) {
 case _BookmarkRequest():
-return $default(_that.id,_that.title,_that.url,_that.description,_that.tags);case _:
+return $default(_that.id,_that.title,_that.url,_that.description,_that.tags,_that.imageUrls);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -153,10 +153,10 @@ return $default(_that.id,_that.title,_that.url,_that.description,_that.tags);cas
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? id,  String title,  String url,  String description,  List<String> tags)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? id,  String title,  String url,  String description,  List<String> tags,  List<String> imageUrls)?  $default,) {final _that = this;
 switch (_that) {
 case _BookmarkRequest() when $default != null:
-return $default(_that.id,_that.title,_that.url,_that.description,_that.tags);case _:
+return $default(_that.id,_that.title,_that.url,_that.description,_that.tags,_that.imageUrls);case _:
   return null;
 
 }
@@ -168,7 +168,7 @@ return $default(_that.id,_that.title,_that.url,_that.description,_that.tags);cas
 @JsonSerializable()
 
 class _BookmarkRequest implements BookmarkRequest {
-  const _BookmarkRequest({this.id, required this.title, required this.url, required this.description, required final  List<String> tags}): _tags = tags;
+  const _BookmarkRequest({this.id, required this.title, required this.url, required this.description, required final  List<String> tags, final  List<String> imageUrls = const []}): _tags = tags,_imageUrls = imageUrls;
   factory _BookmarkRequest.fromJson(Map<String, dynamic> json) => _$BookmarkRequestFromJson(json);
 
 @override final  String? id;
@@ -182,6 +182,13 @@ class _BookmarkRequest implements BookmarkRequest {
   return EqualUnmodifiableListView(_tags);
 }
 
+ final  List<String> _imageUrls;
+@override@JsonKey() List<String> get imageUrls {
+  if (_imageUrls is EqualUnmodifiableListView) return _imageUrls;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_imageUrls);
+}
+
 
 
 @override
@@ -193,7 +200,7 @@ Map<String, dynamic> toJson() {
 
 @override
 String toString() {
-  return 'BookmarkRequest(id: $id, title: $title, url: $url, description: $description, tags: $tags)';
+  return 'BookmarkRequest(id: $id, title: $title, url: $url, description: $description, tags: $tags, imageUrls: $imageUrls)';
 }
 
 

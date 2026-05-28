@@ -22,7 +22,7 @@ final _entities = <obx_int.ModelEntity>[
   obx_int.ModelEntity(
     id: const obx_int.IdUid(1, 8542772984841996240),
     name: 'BookmarkEntity',
-    lastPropertyId: const obx_int.IdUid(10, 5606715827893123261),
+    lastPropertyId: const obx_int.IdUid(11, 5870960339971504163),
     flags: 0,
     properties: <obx_int.ModelProperty>[
       obx_int.ModelProperty(
@@ -84,6 +84,12 @@ final _entities = <obx_int.ModelEntity>[
         id: const obx_int.IdUid(10, 5606715827893123261),
         name: 'syncStateCode',
         type: 6,
+        flags: 0,
+      ),
+      obx_int.ModelProperty(
+        id: const obx_int.IdUid(11, 5870960339971504163),
+        name: 'imageUrls',
+        type: 30,
         flags: 0,
       ),
     ],
@@ -165,7 +171,10 @@ obx_int.ModelDefinition getObjectBoxModel() {
           object.tags.map(fbb.writeString).toList(growable: false),
         );
         final uuidOffset = fbb.writeString(object.uuid);
-        fbb.startTable(11);
+        final imageUrlsOffset = fbb.writeList(
+          object.imageUrls.map(fbb.writeString).toList(growable: false),
+        );
+        fbb.startTable(12);
         fbb.addInt64(0, object.id);
         fbb.addOffset(1, titleOffset);
         fbb.addOffset(2, urlOffset);
@@ -181,6 +190,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
               : object.serverUpdatedAt!.microsecondsSinceEpoch * 1000,
         );
         fbb.addInt64(9, object.syncStateCode);
+        fbb.addOffset(10, imageUrlsOffset);
         fbb.finish(fbb.endTable());
         return object.id;
       },
@@ -236,6 +246,10 @@ obx_int.ModelDefinition getObjectBoxModel() {
           22,
           0,
         );
+        final imageUrlsParam = const fb.ListReader<String>(
+          fb.StringReader(asciiOptimization: true),
+          lazy: false,
+        ).vTableGet(buffer, rootOffset, 24, []);
         final object = BookmarkEntity(
           id: idParam,
           uuid: uuidParam,
@@ -247,6 +261,7 @@ obx_int.ModelDefinition getObjectBoxModel() {
           updatedAt: updatedAtParam,
           serverUpdatedAt: serverUpdatedAtParam,
           syncStateCode: syncStateCodeParam,
+          imageUrls: imageUrlsParam,
         );
 
         return object;
@@ -307,5 +322,10 @@ class BookmarkEntity_ {
   /// See [BookmarkEntity.syncStateCode].
   static final syncStateCode = obx.QueryIntegerProperty<BookmarkEntity>(
     _entities[0].properties[9],
+  );
+
+  /// See [BookmarkEntity.imageUrls].
+  static final imageUrls = obx.QueryStringVectorProperty<BookmarkEntity>(
+    _entities[0].properties[10],
   );
 }

@@ -13,6 +13,11 @@ _BookmarkRequest _$BookmarkRequestFromJson(Map<String, dynamic> json) =>
       url: json['url'] as String,
       description: json['description'] as String,
       tags: (json['tags'] as List<dynamic>).map((e) => e as String).toList(),
+      imageUrls:
+          (json['imageUrls'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$BookmarkRequestToJson(_BookmarkRequest instance) =>
@@ -22,4 +27,5 @@ Map<String, dynamic> _$BookmarkRequestToJson(_BookmarkRequest instance) =>
       'url': instance.url,
       'description': instance.description,
       'tags': instance.tags,
+      'imageUrls': instance.imageUrls,
     };

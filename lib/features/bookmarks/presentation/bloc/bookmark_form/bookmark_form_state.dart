@@ -15,6 +15,7 @@ abstract class BookmarkFormState with _$BookmarkFormState {
     @Default('') String url,
     @Default('') String description,
     @Default([]) List<String> tags,
+    @Default([]) List<String> imageUrls,
     Failure? failure,
   }) = _BookmarkFormState;
 }

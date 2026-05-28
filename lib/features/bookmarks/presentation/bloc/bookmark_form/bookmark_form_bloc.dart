@@ -7,6 +7,7 @@ import 'package:injectable/injectable.dart';
 import '../../../../../core/analytics/analytics_extensions.dart';
 import '../../../../../core/analytics/analytics_service.dart';
 import '../../../../../core/bloc/event_completion.dart';
+import '../../../../../core/media/image_picker_service.dart';
 import '../../../../../core/utils/result.dart';
 import '../../../domain/entities/bookmark.dart';
 import '../../../domain/usecases/create_bookmark.dart';
@@ -16,8 +17,13 @@ import 'bookmark_form_state.dart';
 
 @injectable
 class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
-  BookmarkFormBloc(this._get, this._create, this._update, this._analytics)
-    : super(const BookmarkFormState()) {
+  BookmarkFormBloc(
+    this._get,
+    this._create,
+    this._update,
+    this._analytics,
+    this._imagePickerService,
+  ) : super(const BookmarkFormState()) {
     on<BookmarkFormInitialized>(_onInitialized, transformer: sequential());
     on<BookmarkFormTitleChanged>(_onTitleChanged, transformer: sequential());
     on<BookmarkFormUrlChanged>(_onUrlChanged, transformer: sequential());
@@ -26,6 +32,8 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
       transformer: sequential(),
     );
     on<BookmarkFormTagsChanged>(_onTagsChanged, transformer: sequential());
+    on<BookmarkFormImagesPicked>(_onImagesPicked, transformer: sequential());
+    on<BookmarkFormImageRemoved>(_onImageRemoved, transformer: sequential());
     on<BookmarkFormSubmitted>(_onSubmitted, transformer: sequential());
   }
 
@@ -33,6 +41,7 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
   final CreateBookmark _create;
   final UpdateBookmark _update;
   final AnalyticsService _analytics;
+  final ImagePickerService _imagePickerService;
   bool _submitInFlight = false;
 
   /// For create flows, pass `null`. For edit flows, fetches the existing
@@ -64,6 +73,18 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
   Future<void> setTagsFromCsv(String csv) {
     final completer = Completer<void>();
     add(BookmarkFormTagsChanged(csv, completer: completer));
+    return completer.future;
+  }
+
+  Future<void> pickImages() {
+    final completer = Completer<void>();
+    add(BookmarkFormImagesPicked(completer: completer));
+    return completer.future;
+  }
+
+  Future<void> removeImage(String path) {
+    final completer = Completer<void>();
+    add(BookmarkFormImageRemoved(path, completer: completer));
     return completer.future;
   }
 
@@ -101,6 +122,7 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
               url: b.url,
               description: b.description,
               tags: List.of(b.tags),
+              imageUrls: List.of(b.imageUrls),
             ),
           );
         case Err(:final failure):
@@ -112,7 +134,7 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
           );
       }
       event.completer.completeVoidIfPending();
-    } catch (error, stackTrace) {
+    } on Object catch (error, stackTrace) {
       event.completer.completeErrorIfPending(error, stackTrace);
       rethrow;
     }
@@ -155,6 +177,31 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
     event.completer.completeVoidIfPending();
   }
 
+  Future<void> _onImagesPicked(
+    BookmarkFormImagesPicked event,
+    Emitter<BookmarkFormState> emit,
+  ) async {
+    try {
+      final images = await _imagePickerService.pickMultiImage();
+      if (images.isNotEmpty) {
+        final newPaths = images.map((e) => e.path).toList();
+        emit(state.copyWith(imageUrls: [...state.imageUrls, ...newPaths]));
+      }
+      event.completer.completeVoidIfPending();
+    } on Object catch (error, stackTrace) {
+      event.completer.completeErrorIfPending(error, stackTrace);
+    }
+  }
+
+  void _onImageRemoved(
+    BookmarkFormImageRemoved event,
+    Emitter<BookmarkFormState> emit,
+  ) {
+    final updated = List<String>.of(state.imageUrls)..remove(event.path);
+    emit(state.copyWith(imageUrls: updated));
+    event.completer.completeVoidIfPending();
+  }
+
   Future<void> _onSubmitted(
     BookmarkFormSubmitted event,
     Emitter<BookmarkFormState> emit,
@@ -173,6 +220,7 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
         url: state.url.trim(),
         description: state.description.trim(),
         tags: state.tags,
+        imageUrls: state.imageUrls,
       );
       final isEditing = state.id != null;
       final result = !isEditing
@@ -242,6 +290,19 @@ final class BookmarkFormTagsChanged extends BookmarkFormEvent {
   const BookmarkFormTagsChanged(this.csv, {this.completer});
 
   final String csv;
+  final Completer<void>? completer;
+}
+
+final class BookmarkFormImagesPicked extends BookmarkFormEvent {
+  const BookmarkFormImagesPicked({this.completer});
+
+  final Completer<void>? completer;
+}
+
+final class BookmarkFormImageRemoved extends BookmarkFormEvent {
+  const BookmarkFormImageRemoved(this.path, {this.completer});
+
+  final String path;
   final Completer<void>? completer;
 }
 

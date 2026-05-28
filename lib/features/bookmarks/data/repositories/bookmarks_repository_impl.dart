@@ -51,6 +51,7 @@ class BookmarksRepositoryImpl implements BookmarksRepository {
       url: normalized.url,
       description: normalized.description,
       tags: List.of(normalized.tags),
+      imageUrls: List.of(normalized.imageUrls),
       createdAt: now,
       updatedAt: now,
       syncStateCode: SyncState.pendingCreate.code,
@@ -123,6 +124,7 @@ class BookmarksRepositoryImpl implements BookmarksRepository {
       url: input.url.trim(),
       description: input.description.trim(),
       tags: tags,
+      imageUrls: List.of(input.imageUrls),
     );
   }
 }

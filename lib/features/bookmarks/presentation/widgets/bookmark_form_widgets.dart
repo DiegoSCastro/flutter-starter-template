@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -120,6 +121,8 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
                     hint: context.l10n.bookmarkTagsHint,
                     onChanged: context.read<BookmarkFormBloc>().setTagsFromCsv,
                   ).animateSlideLeft(delay: 150.ms),
+                  const SizedBox(height: 16),
+                  _buildImageSection(context, state).animateSlideLeft(delay: 175.ms),
                   const SizedBox(height: 24),
                   AppButton(
                     label: widget.isEditing
@@ -150,5 +153,73 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
       return context.l10n.bookmarkUrlInvalid;
     }
     return null;
+  }
+
+  Widget _buildImageSection(BuildContext context, BookmarkFormState state) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Attachments',
+          style: context.textTheme.titleMedium,
+        ),
+        const SizedBox(height: 8),
+        if (state.imageUrls.isNotEmpty)
+          SizedBox(
+            height: 100,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemCount: state.imageUrls.length,
+              separatorBuilder: (_, _) => const SizedBox(width: 8),
+              itemBuilder: (context, index) {
+                final path = state.imageUrls[index];
+                return Stack(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: path.startsWith('http')
+                          ? AppNetworkImage(
+                              imageUrl: path,
+                              fit: BoxFit.cover,
+                              width: 100,
+                              height: 100,
+                            )
+                          : Image.file(
+                              File(path),
+                              fit: BoxFit.cover,
+                              width: 100,
+                              height: 100,
+                            ),
+                    ),
+                    Positioned(
+                      top: 4,
+                      right: 4,
+                      child: GestureDetector(
+                        onTap: () => context
+                            .read<BookmarkFormBloc>()
+                            .removeImage(path),
+                        child: Container(
+                          padding: const EdgeInsets.all(2),
+                          decoration: const BoxDecoration(
+                            color: Colors.black54,
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(Icons.close, size: 16, color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              },
+            ),
+          ),
+        if (state.imageUrls.isNotEmpty) const SizedBox(height: 8),
+        OutlinedButton.icon(
+          onPressed: () => context.read<BookmarkFormBloc>().pickImages(),
+          icon: const Icon(Icons.add_photo_alternate),
+          label: const Text('Add Images'),
+        ),
+      ],
+    );
   }
 }

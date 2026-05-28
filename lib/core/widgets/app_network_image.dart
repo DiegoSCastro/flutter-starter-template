@@ -97,7 +97,7 @@ class AppNetworkImage extends StatelessWidget {
       child: Icon(
         Icons.broken_image_rounded,
         size: errorIconSize,
-        color: context.colorScheme.onSurfaceVariant.withOpacity(0.5),
+        color: context.colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
       ),
     );
   }

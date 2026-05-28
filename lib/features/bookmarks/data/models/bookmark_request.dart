@@ -14,6 +14,7 @@ abstract class BookmarkRequest with _$BookmarkRequest {
     required String url,
     required String description,
     required List<String> tags,
+    @Default([]) List<String> imageUrls,
   }) = _BookmarkRequest;
 
   factory BookmarkRequest.fromJson(Map<String, dynamic> json) =>

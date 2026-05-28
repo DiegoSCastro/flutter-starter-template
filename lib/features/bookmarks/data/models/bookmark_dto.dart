@@ -11,6 +11,7 @@ abstract class BookmarkDto with _$BookmarkDto {
     required String url,
     required String description,
     required List<String> tags,
+    @Default([]) List<String> imageUrls,
     @JsonKey(name: 'created_at') required DateTime createdAt,
     @JsonKey(name: 'updated_at') required DateTime updatedAt,
   }) = _BookmarkDto;

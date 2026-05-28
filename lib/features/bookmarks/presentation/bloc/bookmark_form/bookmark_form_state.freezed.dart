@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$BookmarkFormState {
 
- String? get id; BookmarkFormStatus get status; String get title; String get url; String get description; List<String> get tags; Failure? get failure;
+ String? get id; BookmarkFormStatus get status; String get title; String get url; String get description; List<String> get tags; List<String> get imageUrls; Failure? get failure;
 /// Create a copy of BookmarkFormState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $BookmarkFormStateCopyWith<BookmarkFormState> get copyWith => _$BookmarkFormStat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BookmarkFormState&&(identical(other.id, id) || other.id == id)&&(identical(other.status, status) || other.status == status)&&(identical(other.title, title) || other.title == title)&&(identical(other.url, url) || other.url == url)&&(identical(other.description, description) || other.description == description)&&const DeepCollectionEquality().equals(other.tags, tags)&&(identical(other.failure, failure) || other.failure == failure));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BookmarkFormState&&(identical(other.id, id) || other.id == id)&&(identical(other.status, status) || other.status == status)&&(identical(other.title, title) || other.title == title)&&(identical(other.url, url) || other.url == url)&&(identical(other.description, description) || other.description == description)&&const DeepCollectionEquality().equals(other.tags, tags)&&const DeepCollectionEquality().equals(other.imageUrls, imageUrls)&&(identical(other.failure, failure) || other.failure == failure));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,status,title,url,description,const DeepCollectionEquality().hash(tags),failure);
+int get hashCode => Object.hash(runtimeType,id,status,title,url,description,const DeepCollectionEquality().hash(tags),const DeepCollectionEquality().hash(imageUrls),failure);
 
 @override
 String toString() {
-  return 'BookmarkFormState(id: $id, status: $status, title: $title, url: $url, description: $description, tags: $tags, failure: $failure)';
+  return 'BookmarkFormState(id: $id, status: $status, title: $title, url: $url, description: $description, tags: $tags, imageUrls: $imageUrls, failure: $failure)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $BookmarkFormStateCopyWith<$Res>  {
   factory $BookmarkFormStateCopyWith(BookmarkFormState value, $Res Function(BookmarkFormState) _then) = _$BookmarkFormStateCopyWithImpl;
 @useResult
 $Res call({
- String? id, BookmarkFormStatus status, String title, String url, String description, List<String> tags, Failure? failure
+ String? id, BookmarkFormStatus status, String title, String url, String description, List<String> tags, List<String> imageUrls, Failure? failure
 });
 
 
@@ -62,7 +62,7 @@ class _$BookmarkFormStateCopyWithImpl<$Res>
 
 /// Create a copy of BookmarkFormState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? status = null,Object? title = null,Object? url = null,Object? description = null,Object? tags = null,Object? failure = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? status = null,Object? title = null,Object? url = null,Object? description = null,Object? tags = null,Object? imageUrls = null,Object? failure = freezed,}) {
   return _then(_self.copyWith(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
@@ -70,6 +70,7 @@ as BookmarkFormStatus,title: null == title ? _self.title : title // ignore: cast
 as String,url: null == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,tags: null == tags ? _self.tags : tags // ignore: cast_nullable_to_non_nullable
+as List<String>,imageUrls: null == imageUrls ? _self.imageUrls : imageUrls // ignore: cast_nullable_to_non_nullable
 as List<String>,failure: freezed == failure ? _self.failure : failure // ignore: cast_nullable_to_non_nullable
 as Failure?,
   ));
@@ -156,10 +157,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? id,  BookmarkFormStatus status,  String title,  String url,  String description,  List<String> tags,  Failure? failure)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? id,  BookmarkFormStatus status,  String title,  String url,  String description,  List<String> tags,  List<String> imageUrls,  Failure? failure)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _BookmarkFormState() when $default != null:
-return $default(_that.id,_that.status,_that.title,_that.url,_that.description,_that.tags,_that.failure);case _:
+return $default(_that.id,_that.status,_that.title,_that.url,_that.description,_that.tags,_that.imageUrls,_that.failure);case _:
   return orElse();
 
 }
@@ -177,10 +178,10 @@ return $default(_that.id,_that.status,_that.title,_that.url,_that.description,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? id,  BookmarkFormStatus status,  String title,  String url,  String description,  List<String> tags,  Failure? failure)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? id,  BookmarkFormStatus status,  String title,  String url,  String description,  List<String> tags,  List<String> imageUrls,  Failure? failure)  $default,) {final _that = this;
 switch (_that) {
 case _BookmarkFormState():
-return $default(_that.id,_that.status,_that.title,_that.url,_that.description,_that.tags,_that.failure);case _:
+return $default(_that.id,_that.status,_that.title,_that.url,_that.description,_that.tags,_that.imageUrls,_that.failure);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -197,10 +198,10 @@ return $default(_that.id,_that.status,_that.title,_that.url,_that.description,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? id,  BookmarkFormStatus status,  String title,  String url,  String description,  List<String> tags,  Failure? failure)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? id,  BookmarkFormStatus status,  String title,  String url,  String description,  List<String> tags,  List<String> imageUrls,  Failure? failure)?  $default,) {final _that = this;
 switch (_that) {
 case _BookmarkFormState() when $default != null:
-return $default(_that.id,_that.status,_that.title,_that.url,_that.description,_that.tags,_that.failure);case _:
+return $default(_that.id,_that.status,_that.title,_that.url,_that.description,_that.tags,_that.imageUrls,_that.failure);case _:
   return null;
 
 }
@@ -212,7 +213,7 @@ return $default(_that.id,_that.status,_that.title,_that.url,_that.description,_t
 
 
 class _BookmarkFormState implements BookmarkFormState {
-  const _BookmarkFormState({this.id, this.status = BookmarkFormStatus.idle, this.title = '', this.url = '', this.description = '', final  List<String> tags = const [], this.failure}): _tags = tags;
+  const _BookmarkFormState({this.id, this.status = BookmarkFormStatus.idle, this.title = '', this.url = '', this.description = '', final  List<String> tags = const [], final  List<String> imageUrls = const [], this.failure}): _tags = tags,_imageUrls = imageUrls;
   
 
 @override final  String? id;
@@ -227,6 +228,13 @@ class _BookmarkFormState implements BookmarkFormState {
   return EqualUnmodifiableListView(_tags);
 }
 
+ final  List<String> _imageUrls;
+@override@JsonKey() List<String> get imageUrls {
+  if (_imageUrls is EqualUnmodifiableListView) return _imageUrls;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_imageUrls);
+}
+
 @override final  Failure? failure;
 
 /// Create a copy of BookmarkFormState
@@ -239,16 +247,16 @@ _$BookmarkFormStateCopyWith<_BookmarkFormState> get copyWith => __$BookmarkFormS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BookmarkFormState&&(identical(other.id, id) || other.id == id)&&(identical(other.status, status) || other.status == status)&&(identical(other.title, title) || other.title == title)&&(identical(other.url, url) || other.url == url)&&(identical(other.description, description) || other.description == description)&&const DeepCollectionEquality().equals(other._tags, _tags)&&(identical(other.failure, failure) || other.failure == failure));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BookmarkFormState&&(identical(other.id, id) || other.id == id)&&(identical(other.status, status) || other.status == status)&&(identical(other.title, title) || other.title == title)&&(identical(other.url, url) || other.url == url)&&(identical(other.description, description) || other.description == description)&&const DeepCollectionEquality().equals(other._tags, _tags)&&const DeepCollectionEquality().equals(other._imageUrls, _imageUrls)&&(identical(other.failure, failure) || other.failure == failure));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,id,status,title,url,description,const DeepCollectionEquality().hash(_tags),failure);
+int get hashCode => Object.hash(runtimeType,id,status,title,url,description,const DeepCollectionEquality().hash(_tags),const DeepCollectionEquality().hash(_imageUrls),failure);
 
 @override
 String toString() {
-  return 'BookmarkFormState(id: $id, status: $status, title: $title, url: $url, description: $description, tags: $tags, failure: $failure)';
+  return 'BookmarkFormState(id: $id, status: $status, title: $title, url: $url, description: $description, tags: $tags, imageUrls: $imageUrls, failure: $failure)';
 }
 
 
@@ -259,7 +267,7 @@ abstract mixin class _$BookmarkFormStateCopyWith<$Res> implements $BookmarkFormS
   factory _$BookmarkFormStateCopyWith(_BookmarkFormState value, $Res Function(_BookmarkFormState) _then) = __$BookmarkFormStateCopyWithImpl;
 @override @useResult
 $Res call({
- String? id, BookmarkFormStatus status, String title, String url, String description, List<String> tags, Failure? failure
+ String? id, BookmarkFormStatus status, String title, String url, String description, List<String> tags, List<String> imageUrls, Failure? failure
 });
 
 
@@ -276,7 +284,7 @@ class __$BookmarkFormStateCopyWithImpl<$Res>
 
 /// Create a copy of BookmarkFormState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? status = null,Object? title = null,Object? url = null,Object? description = null,Object? tags = null,Object? failure = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? status = null,Object? title = null,Object? url = null,Object? description = null,Object? tags = null,Object? imageUrls = null,Object? failure = freezed,}) {
   return _then(_BookmarkFormState(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,status: null == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
@@ -284,6 +292,7 @@ as BookmarkFormStatus,title: null == title ? _self.title : title // ignore: cast
 as String,url: null == url ? _self.url : url // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,tags: null == tags ? _self._tags : tags // ignore: cast_nullable_to_non_nullable
+as List<String>,imageUrls: null == imageUrls ? _self._imageUrls : imageUrls // ignore: cast_nullable_to_non_nullable
 as List<String>,failure: freezed == failure ? _self.failure : failure // ignore: cast_nullable_to_non_nullable
 as Failure?,
   ));

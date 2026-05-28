@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -160,6 +161,36 @@ class _DetailBody extends StatelessWidget {
             maxWidth: double.infinity,
             enableAnimation: true,
           ).animateFadeIn(delay: 250.ms),
+          if (bookmark.imageUrls.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            SizedBox(
+              height: 200,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: bookmark.imageUrls.length,
+                separatorBuilder: (_, _) => const SizedBox(width: 8),
+                itemBuilder: (context, index) {
+                  final path = bookmark.imageUrls[index];
+                  return ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: path.startsWith('http')
+                        ? AppNetworkImage(
+                            imageUrl: path,
+                            fit: BoxFit.cover,
+                            width: 200,
+                            height: 200,
+                          )
+                        : Image.file(
+                            File(path),
+                            fit: BoxFit.cover,
+                            width: 200,
+                            height: 200,
+                          ),
+                  );
+                },
+              ),
+            ).animateFadeIn(delay: 300.ms),
+          ],
           if (bookmark.tags.isNotEmpty) ...[
             const SizedBox(height: 16),
             Wrap(

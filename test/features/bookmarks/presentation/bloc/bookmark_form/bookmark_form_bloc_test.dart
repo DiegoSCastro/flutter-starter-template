@@ -14,6 +14,7 @@ void main() {
   late MockCreateBookmark mockCreate;
   late MockUpdateBookmark mockUpdate;
   late MockAnalyticsService mockAnalytics;
+  late MockImagePickerService mockImagePicker;
 
   setUpAll(() {
     registerFallbackValue(FakeBookmarkInput());
@@ -29,11 +30,17 @@ void main() {
     mockCreate = MockCreateBookmark();
     mockUpdate = MockUpdateBookmark();
     mockAnalytics = MockAnalyticsService();
+    mockImagePicker = MockImagePickerService();
     stubAnalyticsService(mockAnalytics);
   });
 
-  BookmarkFormBloc buildBloc() =>
-      BookmarkFormBloc(mockGet, mockCreate, mockUpdate, mockAnalytics);
+  BookmarkFormBloc buildBloc() => BookmarkFormBloc(
+        mockGet,
+        mockCreate,
+        mockUpdate,
+        mockAnalytics,
+        mockImagePicker,
+      );
 
   group('BookmarkFormBloc', () {
     group('initialize', () {

@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$BookmarkDto {
 
- String get id; String get title; String get url; String get description; List<String> get tags;@JsonKey(name: 'created_at') DateTime get createdAt;@JsonKey(name: 'updated_at') DateTime get updatedAt;
+ String get id; String get title; String get url; String get description; List<String> get tags; List<String> get imageUrls;@JsonKey(name: 'created_at') DateTime get createdAt;@JsonKey(name: 'updated_at') DateTime get updatedAt;
 
   /// Serializes this BookmarkDto to a JSON map.
   Map<String, dynamic> toJson();
@@ -25,7 +25,7 @@ mixin _$BookmarkDto {
 
 @override
 String toString() {
-  return 'BookmarkDto(id: $id, title: $title, url: $url, description: $description, tags: $tags, createdAt: $createdAt, updatedAt: $updatedAt)';
+  return 'BookmarkDto(id: $id, title: $title, url: $url, description: $description, tags: $tags, imageUrls: $imageUrls, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 
@@ -112,10 +112,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title,  String url,  String description,  List<String> tags, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String title,  String url,  String description,  List<String> tags,  List<String> imageUrls, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _BookmarkDto() when $default != null:
-return $default(_that.id,_that.title,_that.url,_that.description,_that.tags,_that.createdAt,_that.updatedAt);case _:
+return $default(_that.id,_that.title,_that.url,_that.description,_that.tags,_that.imageUrls,_that.createdAt,_that.updatedAt);case _:
   return orElse();
 
 }
@@ -133,10 +133,10 @@ return $default(_that.id,_that.title,_that.url,_that.description,_that.tags,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String title,  String url,  String description,  List<String> tags, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String title,  String url,  String description,  List<String> tags,  List<String> imageUrls, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _BookmarkDto():
-return $default(_that.id,_that.title,_that.url,_that.description,_that.tags,_that.createdAt,_that.updatedAt);case _:
+return $default(_that.id,_that.title,_that.url,_that.description,_that.tags,_that.imageUrls,_that.createdAt,_that.updatedAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -153,10 +153,10 @@ return $default(_that.id,_that.title,_that.url,_that.description,_that.tags,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title,  String url,  String description,  List<String> tags, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String title,  String url,  String description,  List<String> tags,  List<String> imageUrls, @JsonKey(name: 'created_at')  DateTime createdAt, @JsonKey(name: 'updated_at')  DateTime updatedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _BookmarkDto() when $default != null:
-return $default(_that.id,_that.title,_that.url,_that.description,_that.tags,_that.createdAt,_that.updatedAt);case _:
+return $default(_that.id,_that.title,_that.url,_that.description,_that.tags,_that.imageUrls,_that.createdAt,_that.updatedAt);case _:
   return null;
 
 }
@@ -168,7 +168,7 @@ return $default(_that.id,_that.title,_that.url,_that.description,_that.tags,_tha
 @JsonSerializable()
 
 class _BookmarkDto implements BookmarkDto {
-  const _BookmarkDto({required this.id, required this.title, required this.url, required this.description, required final  List<String> tags, @JsonKey(name: 'created_at') required this.createdAt, @JsonKey(name: 'updated_at') required this.updatedAt}): _tags = tags;
+  const _BookmarkDto({required this.id, required this.title, required this.url, required this.description, required final  List<String> tags, final  List<String> imageUrls = const [], @JsonKey(name: 'created_at') required this.createdAt, @JsonKey(name: 'updated_at') required this.updatedAt}): _tags = tags,_imageUrls = imageUrls;
   factory _BookmarkDto.fromJson(Map<String, dynamic> json) => _$BookmarkDtoFromJson(json);
 
 @override final  String id;
@@ -180,6 +180,13 @@ class _BookmarkDto implements BookmarkDto {
   if (_tags is EqualUnmodifiableListView) return _tags;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_tags);
+}
+
+ final  List<String> _imageUrls;
+@override@JsonKey() List<String> get imageUrls {
+  if (_imageUrls is EqualUnmodifiableListView) return _imageUrls;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_imageUrls);
 }
 
 @override@JsonKey(name: 'created_at') final  DateTime createdAt;
@@ -195,7 +202,7 @@ Map<String, dynamic> toJson() {
 
 @override
 String toString() {
-  return 'BookmarkDto(id: $id, title: $title, url: $url, description: $description, tags: $tags, createdAt: $createdAt, updatedAt: $updatedAt)';
+  return 'BookmarkDto(id: $id, title: $title, url: $url, description: $description, tags: $tags, imageUrls: $imageUrls, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 
