@@ -51,10 +51,12 @@ The project-scoped MCP config lives in `.mcp.json`.
   reload/restart, and Flutter inspector workflows when available.
 - `codegraph` runs via `codegraph serve --mcp --path <project>` and should be
   preferred for structural code questions.
+- `firebase` runs via `npx -y firebase-tools@latest mcp` and should be
+  preferred for working with Firebase projects, resources, and data.
 
 ## Agent skills
 
-Official task-playbook skills from `flutter/skills` and `dart-lang/skills` are
+Official task-playbook skills from `flutter/skills`, `dart-lang/skills`, and `firebase/agent-skills` are
 vendored under `.agents/skills/` and hash-pinned in `skills-lock.json`.
 
 When a task matches a skill, open that skill's `SKILL.md` and follow it rather
@@ -70,6 +72,8 @@ than improvising. Common mappings:
 - Layout errors: `flutter-fix-layout-issues`
 - Localization: `flutter-setup-localization`
 - REST calls: `flutter-use-http-package`
+- Firebase basics: `firebase-basics`
+- Firestore database: `firebase-firestore`
 
 <!-- CODEGRAPH_START -->
 ## CodeGraph
