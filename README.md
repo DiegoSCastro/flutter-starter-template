@@ -39,6 +39,7 @@
 | 💉 **DI**                 | `get_it` + `injectable` code‑gen — zero manual wiring |
 | 📡 **REST**               | `Retrofit` + `Dio` typed clients with auth interceptor |
 | ⚙️ **Go Backend**         | Companion server — `chi/v5`, JWT issuer, bookmark CRUD |
+| 🤖 **AI-Native**          | Rules, MCP servers, and agent skills for Claude, Cursor, Codex, Command Code, and Antigravity |
 
 <br>
 
@@ -55,6 +56,7 @@ lib/
 │   ├── app.dart                      # MaterialApp.router + providers
 │   └── router.dart                   # TypedGoRoute + auth redirect
 ├── core/
+│   ├── analytics/                    # Firebase Analytics wrapper + route observer
 │   ├── animation/                    # Shared transitions + motion helpers
 │   ├── build_context_extensions.dart # Theme/MediaQuery shortcuts on BuildContext
 │   ├── config/                       # EnvConfig — typed --dart-define values
@@ -62,8 +64,10 @@ lib/
 │   ├── error/                        # Failure hierarchy
 │   ├── network/                      # Dio clients, auth interceptor, token refresh
 │   ├── notifications/                # flutter_local_notifications
+│   ├── permissions/                  # Runtime permission request handling
 │   ├── share/                        # share_plus wrapper
 │   ├── theme/                        # ThemeCubit + light/dark ThemeData
+│   ├── usecases/                     # Abstract UseCase base class
 │   ├── utils/                        # Result<T> type
 │   └── widgets/                      # Reusable UI components
 ├── features/
@@ -265,6 +269,7 @@ All shared components in `lib/core/widgets/`:
 | `AppLoading`        | Centered spinner                                                 |
 | `AppEmptyView`      | Empty‑state placeholder — icon + message                         |
 | `AppErrorView`      | Error state — icon + message + retry                             |
+| `AppSlidable`       | Swipe‑to‑reveal actions wrapper for list items                    |
 
 <br>
 
@@ -284,11 +289,13 @@ All shared components in `lib/core/widgets/`:
 | **Local DB**       | `ObjectBox` (`objectbox` · `objectbox_flutter_libs`)                                               |
 | **Secure Storage** | `flutter_secure_storage`                                                                           |
 | **Auth**           | JWT — access + refresh tokens                                                                      |
-| **Theming**        | Material 3 · `flex_color_scheme` · Google Fonts (Inter)                                            |
+| **Theming**        | Material 3 · `flex_color_scheme` · `google_fonts` (Inter)                                          |
 | **i18n**           | `flutter_localizations` · `intl`                                                                   |
 | **Icons**          | `cupertino_icons`                                                                                  |
 | **Assets**         | `flutter_svg` · `flutter_gen_runner`                                                               |
 | **Carousel**       | `carousel_slider`                                                                                  |
+| **List Slidables** | `flutter_slidable`                                                                                 |
+| **Permissions**    | `permission_handler`                                                                               |
 | **Notifications**  | `flutter_local_notifications`                                                                      |
 | **Firebase**       | `firebase_core` · `firebase_crashlytics` · `firebase_analytics` · `firebase_messaging`             |
 | **Animations**     | `flutter_animate` · `animated_text_kit`                                                            |
@@ -300,8 +307,8 @@ All shared components in `lib/core/widgets/`:
 | **Share**          | `share_plus`                                                                                       |
 | **Link Preview**   | `flutter_link_previewer`                                                                           |
 | **UUID**           | `uuid`                                                                                             |
-| **Splash**         | `splashscreen`                                                                                     |
-| **Testing**        | `mocktail` · `bloc_test`                                                                           |
+| **Splash**         | Custom session-restore bootstrapper (no package)                                                   |
+| **Testing & Lints**| `mocktail` · `bloc_test` · `flutter_lints` · `build_verify`                                        |
 | **Backend**        | Go — `chi/v5` · `golang-jwt/v5` · `cors`                                                          |
 
 <br>
