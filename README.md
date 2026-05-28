@@ -58,10 +58,13 @@ lib/
 ├── core/
 │   ├── analytics/                    # Firebase Analytics wrapper + route observer
 │   ├── animation/                    # Shared transitions + motion helpers
+│   ├── bloc/                         # BLoC event completion and nullable completer utilities
 │   ├── build_context_extensions.dart # Theme/MediaQuery shortcuts on BuildContext
 │   ├── config/                       # EnvConfig — typed --dart-define values
 │   ├── di/                           # get_it + injectable
 │   ├── error/                        # Failure hierarchy
+│   ├── firebase/                     # Firebase initialization & global Crashlytics/Messaging setup
+│   ├── media/                        # Image picker and media retrieval services
 │   ├── network/                      # Dio clients, auth interceptor, token refresh
 │   ├── notifications/                # flutter_local_notifications
 │   ├── permissions/                  # Runtime permission request handling
@@ -260,16 +263,18 @@ All shared components in `lib/core/widgets/`:
 
 | Widget              | Purpose                                                          |
 |---------------------|------------------------------------------------------------------|
-| `AppScaffold`       | Themed shell — app bar, connectivity banner                      |
-| `AppButton`         | Loading state, expand‑to‑fill, leading icon                      |
-| `AppTextField`      | Label, prefix icon, validation, autofill hints                   |
-| `AppCarousel`       | Auto‑play slider with dot indicators                             |
-| `AppLinkPreview`    | Rich card — image, title, description                            |
 | `AppAnimatedText`   | Typewriter + fade text animations                                |
-| `AppLoading`        | Centered spinner                                                 |
+| `AppButton`         | Loading state, expand‑to‑fill, leading icon                      |
+| `AppCarousel`       | Auto‑play slider with dot indicators                             |
 | `AppEmptyView`      | Empty‑state placeholder — icon + message                         |
 | `AppErrorView`      | Error state — icon + message + retry                             |
+| `AppLinkPreview`    | Rich card — image, title, description                            |
+| `AppLoading`        | Centered spinner                                                 |
+| `AppNetworkImage`   | Cached network image with loading placeholder and error widgets  |
+| `AppPhotoView`      | Interactive image viewer with zoom, rotation, and fullscreen gallery |
+| `AppScaffold`       | Themed shell — app bar, connectivity banner                      |
 | `AppSlidable`       | Swipe‑to‑reveal actions wrapper for list items                    |
+| `AppTextField`      | Label, prefix icon, validation, autofill hints                   |
 
 <br>
 
@@ -281,7 +286,7 @@ All shared components in `lib/core/widgets/`:
 
 | Layer              | Packages                                                                                           |
 |--------------------|----------------------------------------------------------------------------------------------------|
-| **State**          | `flutter_bloc` (Bloc)                                                                              |
+| **State**          | `flutter_bloc` (Bloc) · `bloc_concurrency`                                                         |
 | **Routing**        | `go_router` · `go_router_builder`                                                                  |
 | **DI**             | `get_it` · `injectable`                                                                            |
 | **Networking**     | `Dio` · `Retrofit`                                                                                 |
@@ -293,6 +298,7 @@ All shared components in `lib/core/widgets/`:
 | **i18n**           | `flutter_localizations` · `intl`                                                                   |
 | **Icons**          | `cupertino_icons`                                                                                  |
 | **Assets**         | `flutter_svg` · `flutter_gen_runner`                                                               |
+| **Image / Media**  | `photo_view` · `image_picker` · `cached_network_image` · `vector_graphics`                         |
 | **Carousel**       | `carousel_slider`                                                                                  |
 | **List Slidables** | `flutter_slidable`                                                                                 |
 | **Permissions**    | `permission_handler`                                                                               |
