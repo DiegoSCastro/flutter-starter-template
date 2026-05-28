@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/analytics/analytics_events.dart';
+import '../../../../core/analytics/analytics_extensions.dart';
 import '../../../../core/analytics/analytics_service.dart';
 import '../../../../core/utils/result.dart';
 import '../../domain/usecases/restore_session.dart';
@@ -54,11 +54,8 @@ class AuthCubit extends Cubit<AuthState> {
         emit(AuthState.authenticated(user));
       case Err(failure: final failure):
         unawaited(
-          _analytics.logEvent(
-            AnalyticsEvents.loginFailed,
-            parameters: {
-              AnalyticsParams.errorType: failure.runtimeType.toString(),
-            },
+          _analytics.trackLoginFailed(
+            errorType: failure.runtimeType.toString(),
           ),
         );
         emit(AuthState.failure(failure));
@@ -68,7 +65,7 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> signOut() async {
     final result = await _signOut();
     if (result is Ok<void>) {
-      unawaited(_analytics.logEvent(AnalyticsEvents.signOut));
+      unawaited(_analytics.trackSignOut());
       unawaited(_analytics.setCurrentUser(null));
       emit(const AuthState.initial());
     }

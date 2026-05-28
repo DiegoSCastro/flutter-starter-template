@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../../core/analytics/analytics_events.dart';
+import '../../../../../core/analytics/analytics_extensions.dart';
 import '../../../../../core/analytics/analytics_service.dart';
 import '../../../../../core/utils/result.dart';
 import '../../../domain/entities/bookmark.dart';
@@ -83,18 +83,14 @@ class BookmarkFormCubit extends Cubit<BookmarkFormState> {
 
     switch (result) {
       case Ok(value: final bookmark):
+        final trackChange = isEditing
+            ? _analytics.trackBookmarkUpdated
+            : _analytics.trackBookmarkCreated;
         unawaited(
-          _analytics.logEvent(
-            isEditing
-                ? AnalyticsEvents.bookmarkUpdated
-                : AnalyticsEvents.bookmarkCreated,
-            parameters: {
-              AnalyticsParams.bookmarkId: bookmark.id,
-              AnalyticsParams.tagCount: bookmark.tags.length,
-              AnalyticsParams.hasDescription: bookmark.description.isNotEmpty
-                  ? 1
-                  : 0,
-            },
+          trackChange(
+            bookmarkId: bookmark.id,
+            tagCount: bookmark.tags.length,
+            hasDescription: bookmark.description.isNotEmpty,
           ),
         );
         emit(state.copyWith(status: BookmarkFormStatus.submitted));

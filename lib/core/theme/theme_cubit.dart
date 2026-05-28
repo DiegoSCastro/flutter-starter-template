@@ -6,7 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../analytics/analytics_events.dart';
+import '../analytics/analytics_extensions.dart';
 import '../analytics/analytics_service.dart';
 import 'theme_state.dart';
 
@@ -40,24 +40,14 @@ class ThemeCubit extends Cubit<ThemeState> {
     if (mode == state.mode) return;
     final next = state.copyWith(mode: mode);
     await _persistAndEmit(next);
-    unawaited(
-      _analytics.logEvent(
-        AnalyticsEvents.themeModeChanged,
-        parameters: {AnalyticsParams.themeMode: mode.name},
-      ),
-    );
+    unawaited(_analytics.trackThemeModeChanged(mode.name));
   }
 
   Future<void> setScheme(FlexScheme scheme) async {
     if (scheme == state.scheme) return;
     final next = state.copyWith(scheme: scheme);
     await _persistAndEmit(next);
-    unawaited(
-      _analytics.logEvent(
-        AnalyticsEvents.themeSchemeChanged,
-        parameters: {AnalyticsParams.themeScheme: scheme.name},
-      ),
-    );
+    unawaited(_analytics.trackThemeSchemeChanged(scheme.name));
   }
 
   Future<void> _persistAndEmit(ThemeState next) async {

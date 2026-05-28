@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../../core/analytics/analytics_events.dart';
+import '../../../../../core/analytics/analytics_extensions.dart';
 import '../../../../../core/analytics/analytics_service.dart';
 import '../../../../../core/utils/result.dart';
 import '../../../domain/usecases/delete_bookmark.dart';
@@ -25,15 +25,10 @@ class BookmarkDetailCubit extends Cubit<BookmarkDetailState> {
     switch (result) {
       case Ok(value: final bookmark):
         unawaited(
-          _analytics.logEvent(
-            AnalyticsEvents.bookmarkViewed,
-            parameters: {
-              AnalyticsParams.bookmarkId: bookmark.id,
-              AnalyticsParams.tagCount: bookmark.tags.length,
-              AnalyticsParams.hasDescription: bookmark.description.isNotEmpty
-                  ? 1
-                  : 0,
-            },
+          _analytics.trackBookmarkViewed(
+            bookmarkId: bookmark.id,
+            tagCount: bookmark.tags.length,
+            hasDescription: bookmark.description.isNotEmpty,
           ),
         );
         emit(BookmarkDetailState.ready(bookmark));
@@ -48,24 +43,18 @@ class BookmarkDetailCubit extends Cubit<BookmarkDetailState> {
     switch (result) {
       case Ok<void>():
         unawaited(
-          _analytics.logEvent(
-            AnalyticsEvents.bookmarkDeleted,
-            parameters: {
-              AnalyticsParams.bookmarkId: id,
-              AnalyticsParams.source: AnalyticsSources.detail,
-            },
+          _analytics.trackBookmarkDeleted(
+            bookmarkId: id,
+            source: AnalyticsSources.detail,
           ),
         );
         return true;
       case Err(failure: final failure):
         unawaited(
-          _analytics.logEvent(
-            AnalyticsEvents.bookmarkDeleteFailed,
-            parameters: {
-              AnalyticsParams.bookmarkId: id,
-              AnalyticsParams.source: AnalyticsSources.detail,
-              AnalyticsParams.errorType: failure.runtimeType.toString(),
-            },
+          _analytics.trackBookmarkDeleteFailed(
+            bookmarkId: id,
+            source: AnalyticsSources.detail,
+            errorType: failure.runtimeType.toString(),
           ),
         );
         return false;

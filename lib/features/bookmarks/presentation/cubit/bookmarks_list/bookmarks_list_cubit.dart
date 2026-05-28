@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../../core/analytics/analytics_events.dart';
+import '../../../../../core/analytics/analytics_extensions.dart';
 import '../../../../../core/analytics/analytics_service.dart';
 import '../../../../../core/utils/result.dart';
 import '../../../domain/services/bookmarks_sync_controller.dart';
@@ -57,7 +57,7 @@ class BookmarksListCubit extends Cubit<BookmarksListState> {
   }
 
   Future<void> retrySync() {
-    unawaited(_analytics.logEvent(AnalyticsEvents.bookmarkSyncRetried));
+    unawaited(_analytics.trackBookmarkSyncRetried());
     return _sync.sync();
   }
 
@@ -70,12 +70,9 @@ class BookmarksListCubit extends Cubit<BookmarksListState> {
     final normalized = query.trim();
     if (normalized.isEmpty) return;
     unawaited(
-      _analytics.logEvent(
-        AnalyticsEvents.bookmarkSearch,
-        parameters: {
-          AnalyticsParams.queryLength: normalized.length,
-          AnalyticsParams.resultCount: next.visibleItems.length,
-        },
+      _analytics.trackBookmarkSearch(
+        queryLength: normalized.length,
+        resultCount: next.visibleItems.length,
       ),
     );
   }
@@ -93,24 +90,18 @@ class BookmarksListCubit extends Cubit<BookmarksListState> {
     switch (result) {
       case Ok<void>():
         unawaited(
-          _analytics.logEvent(
-            AnalyticsEvents.bookmarkDeleted,
-            parameters: {
-              AnalyticsParams.bookmarkId: id,
-              AnalyticsParams.source: AnalyticsSources.list,
-            },
+          _analytics.trackBookmarkDeleted(
+            bookmarkId: id,
+            source: AnalyticsSources.list,
           ),
         );
         break;
       case Err(failure: final failure):
         unawaited(
-          _analytics.logEvent(
-            AnalyticsEvents.bookmarkDeleteFailed,
-            parameters: {
-              AnalyticsParams.bookmarkId: id,
-              AnalyticsParams.source: AnalyticsSources.list,
-              AnalyticsParams.errorType: failure.runtimeType.toString(),
-            },
+          _analytics.trackBookmarkDeleteFailed(
+            bookmarkId: id,
+            source: AnalyticsSources.list,
+            errorType: failure.runtimeType.toString(),
           ),
         );
         emit(state.copyWith(items: previous));

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../app/router.dart';
-import '../../../../core/analytics/analytics_events.dart';
+import '../../../../core/analytics/analytics_extensions.dart';
 import '../../../../core/analytics/analytics_service.dart';
 import '../../../../core/animation/widget_animations.dart';
 import '../../../../core/build_context_extensions.dart';
@@ -34,12 +34,9 @@ Future<void> _showItemMenu(BuildContext context, Bookmark bookmark) async {
   );
   if (result != 'share' || !context.mounted) return;
   unawaited(
-    getIt<AnalyticsService>().logEvent(
-      AnalyticsEvents.bookmarkShared,
-      parameters: {
-        AnalyticsParams.bookmarkId: bookmark.id,
-        AnalyticsParams.source: AnalyticsSources.list,
-      },
+    getIt<AnalyticsService>().trackBookmarkShared(
+      bookmarkId: bookmark.id,
+      source: AnalyticsSources.list,
     ),
   );
   final content = bookmark.description.isNotEmpty

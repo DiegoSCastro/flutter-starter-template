@@ -5,7 +5,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 
-import '../analytics/analytics_events.dart';
+import '../analytics/analytics_extensions.dart';
 import '../analytics/analytics_service.dart';
 import 'notifications_service.dart';
 
@@ -93,10 +93,7 @@ class FirebaseMessagingService {
 
   void _handleNotificationTap(Map<String, dynamic>? data) {
     unawaited(
-      _analytics.logEvent(
-        AnalyticsEvents.notificationOpened,
-        parameters: {AnalyticsParams.payloadKeyCount: data?.length ?? 0},
-      ),
+      _analytics.trackNotificationOpened(payloadKeyCount: data?.length ?? 0),
     );
     final callback = onNotificationTap;
     if (callback != null) {

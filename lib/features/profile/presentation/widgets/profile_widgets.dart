@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/analytics/analytics_events.dart';
+import '../../../../core/analytics/analytics_extensions.dart';
 import '../../../../core/analytics/analytics_service.dart';
 import '../../../../core/animation/widget_animations.dart';
 import '../../../../core/build_context_extensions.dart';
@@ -102,12 +102,7 @@ class _CopyableId extends StatelessWidget {
       borderRadius: BorderRadius.circular(8),
       onTap: () {
         Clipboard.setData(ClipboardData(text: id));
-        unawaited(
-          getIt<AnalyticsService>().logEvent(
-            AnalyticsEvents.userIdCopied,
-            parameters: {AnalyticsParams.source: AnalyticsSources.profile},
-          ),
-        );
+        unawaited(getIt<AnalyticsService>().trackUserIdCopied());
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(const SnackBar(content: Text('User ID copied')));

@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../app/router.dart';
-import '../../../../core/analytics/analytics_events.dart';
+import '../../../../core/analytics/analytics_extensions.dart';
 import '../../../../core/analytics/analytics_service.dart';
 import '../../../../core/animation/widget_animations.dart';
 import '../../../../core/build_context_extensions.dart';
@@ -19,12 +19,9 @@ import '../cubit/bookmark_detail/bookmark_detail_state.dart';
 
 Future<void> _shareBookmark(Bookmark bookmark) async {
   unawaited(
-    getIt<AnalyticsService>().logEvent(
-      AnalyticsEvents.bookmarkShared,
-      parameters: {
-        AnalyticsParams.bookmarkId: bookmark.id,
-        AnalyticsParams.source: AnalyticsSources.detail,
-      },
+    getIt<AnalyticsService>().trackBookmarkShared(
+      bookmarkId: bookmark.id,
+      source: AnalyticsSources.detail,
     ),
   );
   final content = bookmark.description.isNotEmpty
@@ -194,12 +191,9 @@ class _DetailBody extends StatelessWidget {
       return;
     }
     unawaited(
-      getIt<AnalyticsService>().logEvent(
-        AnalyticsEvents.bookmarkOpened,
-        parameters: {
-          AnalyticsParams.bookmarkId: bookmark.id,
-          AnalyticsParams.source: AnalyticsSources.detail,
-        },
+      getIt<AnalyticsService>().trackBookmarkOpened(
+        bookmarkId: bookmark.id,
+        source: AnalyticsSources.detail,
       ),
     );
     final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
