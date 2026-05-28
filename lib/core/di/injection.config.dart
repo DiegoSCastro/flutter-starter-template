@@ -23,6 +23,8 @@ import 'package:flutter_starter_template/core/analytics/analytics_route_observer
 import 'package:flutter_starter_template/core/analytics/analytics_service.dart'
     as _i838;
 import 'package:flutter_starter_template/core/config/env_config.dart' as _i689;
+import 'package:flutter_starter_template/core/firebase/firebase_service.dart'
+    as _i999;
 import 'package:flutter_starter_template/core/network/network_module.dart'
     as _i173;
 import 'package:flutter_starter_template/core/notifications/firebase_messaging_service.dart'
@@ -122,6 +124,7 @@ extension GetItInjectableX on _i174.GetIt {
       preResolve: true,
     );
     gh.singleton<_i689.EnvConfig>(() => const _i689.EnvConfig());
+    gh.singleton<_i999.FirebaseService>(() => _i999.FirebaseService());
     await gh.singletonAsync<_i319.ObjectBox>(
       () => objectBoxModule.provideObjectBox(),
       preResolve: true,
