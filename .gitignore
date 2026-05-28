@@ -54,6 +54,7 @@ macos/.symlinks/
 !.vscode/settings.json
 !.vscode/extensions.json
 !.vscode/launch.json
+!.vscode/README.md
 
 # -------------------------------------------------------------------------
 # System Files
