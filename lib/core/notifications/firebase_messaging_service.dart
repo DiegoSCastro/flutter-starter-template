@@ -11,7 +11,7 @@ import 'notifications_service.dart';
 
 typedef OnNotificationTap = void Function(Map<String, dynamic>? data);
 
-@singleton
+@lazySingleton
 class FirebaseMessagingService {
   FirebaseMessagingService(
     this._localNotifications,

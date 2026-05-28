@@ -178,7 +178,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i724.BookmarksLocalDataSource>(
       () => _i724.ObjectBoxBookmarksDataSource(gh<_i831.Store>()),
     );
-    gh.singleton<_i529.FirebaseMessagingService>(
+    gh.lazySingleton<_i529.FirebaseMessagingService>(
       () => _i529.FirebaseMessagingService(
         gh<_i332.NotificationsService>(),
         gh<_i892.FirebaseMessaging>(),
