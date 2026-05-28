@@ -10,6 +10,7 @@ List<RouteBase> get $appRoutes => [
   $splashRoute,
   $homeRoute,
   $profileRoute,
+  $changePasswordRoute,
   $loginRoute,
   $registerRoute,
   $bookmarksListRoute,
@@ -75,6 +76,33 @@ mixin $ProfileRoute on GoRouteData {
 
   @override
   String get location => GoRouteData.$location('/profile');
+
+  @override
+  void go(BuildContext context) => context.go(location);
+
+  @override
+  Future<T?> push<T>(BuildContext context) => context.push<T>(location);
+
+  @override
+  void pushReplacement(BuildContext context) =>
+      context.pushReplacement(location);
+
+  @override
+  void replace(BuildContext context) => context.replace(location);
+}
+
+RouteBase get $changePasswordRoute => GoRouteData.$route(
+  path: '/profile/change-password',
+  name: 'change-password',
+  factory: $ChangePasswordRoute._fromState,
+);
+
+mixin $ChangePasswordRoute on GoRouteData {
+  static ChangePasswordRoute _fromState(GoRouterState state) =>
+      const ChangePasswordRoute();
+
+  @override
+  String get location => GoRouteData.$location('/profile/change-password');
 
   @override
   void go(BuildContext context) => context.go(location);

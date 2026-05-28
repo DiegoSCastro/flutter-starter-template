@@ -350,6 +350,60 @@ abstract class AppLocalizations {
   /// **'Appearance'**
   String get profileSectionAppearance;
 
+  /// No description provided for @profileSectionAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get profileSectionAccount;
+
+  /// No description provided for @profileChangePassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Password'**
+  String get profileChangePassword;
+
+  /// No description provided for @changePasswordAppBarTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Password'**
+  String get changePasswordAppBarTitle;
+
+  /// No description provided for @changePasswordCurrentLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Current Password'**
+  String get changePasswordCurrentLabel;
+
+  /// No description provided for @changePasswordNewLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'New Password'**
+  String get changePasswordNewLabel;
+
+  /// No description provided for @changePasswordConfirmLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm New Password'**
+  String get changePasswordConfirmLabel;
+
+  /// No description provided for @changePasswordSubmit.
+  ///
+  /// In en, this message translates to:
+  /// **'Update Password'**
+  String get changePasswordSubmit;
+
+  /// No description provided for @changePasswordSuccessMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Password updated successfully.'**
+  String get changePasswordSuccessMessage;
+
+  /// No description provided for @changePasswordMismatchError.
+  ///
+  /// In en, this message translates to:
+  /// **'New passwords do not match.'**
+  String get changePasswordMismatchError;
+
   /// No description provided for @profileSectionAbout.
   ///
   /// In en, this message translates to:

@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
 
+import '../models/change_password_request.dart';
 import '../models/refresh_token_request.dart';
 import '../models/register_request.dart';
 import '../models/sign_in_request.dart';
@@ -12,6 +13,9 @@ part 'auth_remote_data_source.g.dart';
 abstract class AuthRemoteDataSource {
   factory AuthRemoteDataSource(Dio dio, {String baseUrl}) =
       _AuthRemoteDataSource;
+
+  @POST('/api/auth/change-password')
+  Future<void> changePassword(@Body() ChangePasswordRequest body);
 
   @POST('/api/auth/register')
   Future<SignInResponse> register(@Body() RegisterRequest body);

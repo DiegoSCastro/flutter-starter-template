@@ -51,6 +51,8 @@ import 'package:flutter_starter_template/features/auth/data/repositories/auth_re
     as _i1028;
 import 'package:flutter_starter_template/features/auth/domain/repositories/auth_repository.dart'
     as _i987;
+import 'package:flutter_starter_template/features/auth/domain/usecases/change_password.dart'
+    as _i780;
 import 'package:flutter_starter_template/features/auth/domain/usecases/register.dart'
     as _i699;
 import 'package:flutter_starter_template/features/auth/domain/usecases/restore_session.dart'
@@ -61,6 +63,8 @@ import 'package:flutter_starter_template/features/auth/domain/usecases/sign_out.
     as _i926;
 import 'package:flutter_starter_template/features/auth/presentation/bloc/auth_bloc.dart'
     as _i269;
+import 'package:flutter_starter_template/features/auth/presentation/bloc/change_password_cubit.dart'
+    as _i11;
 import 'package:flutter_starter_template/features/bookmarks/data/datasources/bookmarks_remote_data_source.dart'
     as _i729;
 import 'package:flutter_starter_template/features/bookmarks/data/datasources/bookmarks_remote_module.dart'
@@ -225,7 +229,10 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i533.TokenRefresher>(),
       ),
     );
-    gh.lazySingleton<_i699.Register>(
+    gh.factory<_i780.ChangePassword>(
+      () => _i780.ChangePassword(gh<_i987.AuthRepository>()),
+    );
+    gh.factory<_i699.Register>(
       () => _i699.Register(gh<_i987.AuthRepository>()),
     );
     gh.factory<_i271.RestoreSession>(
@@ -239,6 +246,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i627.BookmarksSyncController>(),
         gh<_i706.Uuid>(),
       ),
+    );
+    gh.factory<_i11.ChangePasswordCubit>(
+      () => _i11.ChangePasswordCubit(gh<_i780.ChangePassword>()),
     );
     gh.lazySingleton<_i269.AuthBloc>(
       () => _i269.AuthBloc(

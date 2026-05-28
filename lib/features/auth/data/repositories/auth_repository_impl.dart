@@ -7,6 +7,7 @@ import '../../domain/entities/auth_user.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../datasources/auth_local_data_source.dart';
 import '../datasources/auth_remote_data_source.dart';
+import '../models/change_password_request.dart';
 import '../models/refresh_token_request.dart';
 import '../models/register_request.dart';
 import '../models/sign_in_request.dart';
@@ -70,6 +71,29 @@ class AuthRepositoryImpl implements AuthRepository {
         refreshToken: response.refreshToken,
       );
       return Ok(user);
+    } on DioException catch (e) {
+      return Err(_mapDioError(e));
+    }
+  }
+
+  @override
+  Future<Result<void>> changePassword({
+    required String currentPassword,
+    required String newPassword,
+  }) async {
+    if (currentPassword.isEmpty || newPassword.isEmpty) {
+      return const Err(
+        InvalidCredentialsFailure('Both passwords are required.'),
+      );
+    }
+    try {
+      await _remote.changePassword(
+        ChangePasswordRequest(
+          currentPassword: currentPassword,
+          newPassword: newPassword,
+        ),
+      );
+      return const Ok(null);
     } on DioException catch (e) {
       return Err(_mapDioError(e));
     }

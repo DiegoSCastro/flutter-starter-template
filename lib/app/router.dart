@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../features/auth/presentation/bloc/auth_bloc.dart';
 import '../features/auth/presentation/bloc/auth_state.dart';
+import '../features/auth/presentation/screens/change_password_screen.dart';
 import '../features/auth/presentation/screens/login_screen.dart';
 import '../features/auth/presentation/screens/register_screen.dart';
 import '../features/bookmarks/presentation/screens/bookmark_detail_screen.dart';
@@ -40,6 +41,15 @@ class ProfileRoute extends GoRouteData with $ProfileRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) =>
       const ProfileScreen();
+}
+
+@TypedGoRoute<ChangePasswordRoute>(path: '/profile/change-password', name: 'change-password')
+class ChangePasswordRoute extends GoRouteData with $ChangePasswordRoute {
+  const ChangePasswordRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      const ChangePasswordScreen();
 }
 
 @TypedGoRoute<LoginRoute>(path: '/login', name: 'login')

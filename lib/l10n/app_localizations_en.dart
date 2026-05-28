@@ -137,6 +137,33 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileSectionAppearance => 'Appearance';
 
   @override
+  String get profileSectionAccount => 'Account';
+
+  @override
+  String get profileChangePassword => 'Change Password';
+
+  @override
+  String get changePasswordAppBarTitle => 'Change Password';
+
+  @override
+  String get changePasswordCurrentLabel => 'Current Password';
+
+  @override
+  String get changePasswordNewLabel => 'New Password';
+
+  @override
+  String get changePasswordConfirmLabel => 'Confirm New Password';
+
+  @override
+  String get changePasswordSubmit => 'Update Password';
+
+  @override
+  String get changePasswordSuccessMessage => 'Password updated successfully.';
+
+  @override
+  String get changePasswordMismatchError => 'New passwords do not match.';
+
+  @override
   String get profileSectionAbout => 'About';
 
   @override

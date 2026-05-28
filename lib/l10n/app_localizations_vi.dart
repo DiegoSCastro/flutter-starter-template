@@ -138,6 +138,33 @@ class AppLocalizationsVi extends AppLocalizations {
   String get profileSectionAppearance => 'Giao diện';
 
   @override
+  String get profileSectionAccount => 'Tài khoản';
+
+  @override
+  String get profileChangePassword => 'Đổi mật khẩu';
+
+  @override
+  String get changePasswordAppBarTitle => 'Đổi mật khẩu';
+
+  @override
+  String get changePasswordCurrentLabel => 'Mật khẩu hiện tại';
+
+  @override
+  String get changePasswordNewLabel => 'Mật khẩu mới';
+
+  @override
+  String get changePasswordConfirmLabel => 'Xác nhận mật khẩu mới';
+
+  @override
+  String get changePasswordSubmit => 'Cập nhật mật khẩu';
+
+  @override
+  String get changePasswordSuccessMessage => 'Cập nhật mật khẩu thành công.';
+
+  @override
+  String get changePasswordMismatchError => 'Mật khẩu mới không khớp.';
+
+  @override
   String get profileSectionAbout => 'Giới thiệu';
 
   @override

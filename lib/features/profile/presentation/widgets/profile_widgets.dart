@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../app/router.dart';
 import '../../../../core/analytics/analytics_extensions.dart';
 import '../../../../core/analytics/analytics_service.dart';
 import '../../../../core/animation/widget_animations.dart';
@@ -30,6 +31,11 @@ class ProfileBody extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 16),
             children: [
               const _ProfileHeader(),
+              const SizedBox(height: 24),
+              _SectionLabel(
+                context.l10n.profileSectionAccount,
+              ).animateSlideRight(delay: 300.ms),
+              const _ChangePasswordTile().animateSlideRight(delay: 325.ms),
               const SizedBox(height: 24),
               _SectionLabel(
                 context.l10n.profileSectionAppearance,
@@ -346,5 +352,21 @@ class _SignOutButton extends StatelessWidget {
     if (confirmed == true && context.mounted) {
       unawaited(context.read<ProfileBloc>().signOut());
     }
+  }
+}
+
+class _ChangePasswordTile extends StatelessWidget {
+  const _ChangePasswordTile();
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: const Icon(Icons.password),
+      title: Text(context.l10n.profileChangePassword),
+      trailing: const Icon(Icons.chevron_right),
+      onTap: () {
+        const ChangePasswordRoute().go(context);
+      },
+    );
   }
 }
