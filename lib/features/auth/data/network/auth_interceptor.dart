@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 
-import '../../features/auth/data/datasources/auth_local_data_source.dart';
+import '../datasources/auth_local_data_source.dart';
 import 'token_refresher.dart';
 
 /// Attaches the persisted access token to outgoing requests and, on 401,

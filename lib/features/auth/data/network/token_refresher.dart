@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../features/auth/data/datasources/auth_local_data_source.dart';
-import '../../features/auth/data/models/refresh_token_response.dart';
+import '../datasources/auth_local_data_source.dart';
+import '../models/refresh_token_response.dart';
 
 /// Single-flight refresh: concurrent callers share one in-flight POST so the
 /// server doesn't see a stampede of refresh requests during a 401 storm.
