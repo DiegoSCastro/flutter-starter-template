@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../app/router.dart';
+import '../../../../core/analytics/analytics_events.dart';
+import '../../../../core/analytics/analytics_service.dart';
 import '../../../../core/animation/widget_animations.dart';
 import '../../../../core/build_context_extensions.dart';
 import '../../../../core/di/injection.dart';
@@ -14,6 +18,15 @@ import '../cubit/bookmark_detail/bookmark_detail_cubit.dart';
 import '../cubit/bookmark_detail/bookmark_detail_state.dart';
 
 Future<void> _shareBookmark(Bookmark bookmark) async {
+  unawaited(
+    getIt<AnalyticsService>().logEvent(
+      AnalyticsEvents.bookmarkShared,
+      parameters: {
+        AnalyticsParams.bookmarkId: bookmark.id,
+        AnalyticsParams.source: AnalyticsSources.detail,
+      },
+    ),
+  );
   final content = bookmark.description.isNotEmpty
       ? '${bookmark.title}\n${bookmark.url}\n\n${bookmark.description}'
       : '${bookmark.title}\n${bookmark.url}';
@@ -126,7 +139,7 @@ class _DetailBody extends StatelessWidget {
           ).animateSlideDown(),
           const SizedBox(height: 8),
           InkWell(
-            onTap: () => _openUrl(context, bookmark.url),
+            onTap: () => _openUrl(context, bookmark),
             child: Text(
               bookmark.url,
               style: context.textTheme.bodyMedium?.copyWith(
@@ -167,19 +180,28 @@ class _DetailBody extends StatelessWidget {
             label: 'Open URL',
             icon: Icons.open_in_new,
             expand: true,
-            onPressed: () => _openUrl(context, bookmark.url),
+            onPressed: () => _openUrl(context, bookmark),
           ).animateSlideUp(delay: 300.ms),
         ],
       ),
     );
   }
 
-  Future<void> _openUrl(BuildContext context, String url) async {
-    final uri = Uri.tryParse(url);
+  Future<void> _openUrl(BuildContext context, Bookmark bookmark) async {
+    final uri = Uri.tryParse(bookmark.url);
     if (uri == null) {
       _toast(context, 'Invalid URL');
       return;
     }
+    unawaited(
+      getIt<AnalyticsService>().logEvent(
+        AnalyticsEvents.bookmarkOpened,
+        parameters: {
+          AnalyticsParams.bookmarkId: bookmark.id,
+          AnalyticsParams.source: AnalyticsSources.detail,
+        },
+      ),
+    );
     final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
     if (!launched && context.mounted) {
       _toast(context, 'Could not open URL');

@@ -13,6 +13,7 @@ void main() {
   late MockGetBookmark mockGet;
   late MockCreateBookmark mockCreate;
   late MockUpdateBookmark mockUpdate;
+  late MockAnalyticsService mockAnalytics;
 
   setUpAll(() {
     registerFallbackValue(FakeBookmarkInput());
@@ -27,10 +28,12 @@ void main() {
     mockGet = MockGetBookmark();
     mockCreate = MockCreateBookmark();
     mockUpdate = MockUpdateBookmark();
+    mockAnalytics = MockAnalyticsService();
+    stubAnalyticsService(mockAnalytics);
   });
 
   BookmarkFormCubit buildCubit() =>
-      BookmarkFormCubit(mockGet, mockCreate, mockUpdate);
+      BookmarkFormCubit(mockGet, mockCreate, mockUpdate, mockAnalytics);
 
   group('BookmarkFormCubit', () {
     group('initialize', () {
@@ -142,6 +145,14 @@ void main() {
             (s) => s.status == BookmarkFormStatus.submitted,
           ),
         ],
+        verify: (_) {
+          verify(
+            () => mockAnalytics.logEvent(
+              'bookmark_created',
+              parameters: any(named: 'parameters'),
+            ),
+          ).called(1);
+        },
       );
 
       blocTest<BookmarkFormCubit, BookmarkFormState>(
@@ -168,6 +179,14 @@ void main() {
             (s) => s.status == BookmarkFormStatus.submitted,
           ),
         ],
+        verify: (_) {
+          verify(
+            () => mockAnalytics.logEvent(
+              'bookmark_updated',
+              parameters: any(named: 'parameters'),
+            ),
+          ).called(1);
+        },
       );
 
       blocTest<BookmarkFormCubit, BookmarkFormState>(

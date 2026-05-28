@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../../../../core/analytics/analytics_events.dart';
+import '../../../../../core/analytics/analytics_service.dart';
 import '../../../../../core/utils/result.dart';
 import '../../../domain/services/bookmarks_sync_controller.dart';
 import '../../../domain/usecases/delete_bookmark.dart';
@@ -11,7 +13,7 @@ import 'bookmarks_list_state.dart';
 
 @injectable
 class BookmarksListCubit extends Cubit<BookmarksListState> {
-  BookmarksListCubit(this._list, this._delete, this._sync)
+  BookmarksListCubit(this._list, this._delete, this._sync, this._analytics)
     : super(const BookmarksListState()) {
     // Reload local data after every sync cycle so server-side changes
     // appear without the user pulling-to-refresh.
@@ -21,6 +23,7 @@ class BookmarksListCubit extends Cubit<BookmarksListState> {
   final ListBookmarks _list;
   final DeleteBookmark _delete;
   final BookmarksSyncController _sync;
+  final AnalyticsService _analytics;
   late final StreamSubscription<BookmarksSyncStatus> _syncSub;
   BookmarksSyncStatus _lastSyncStatus = BookmarksSyncStatus.idle;
 
@@ -53,13 +56,28 @@ class BookmarksListCubit extends Cubit<BookmarksListState> {
     }
   }
 
-  Future<void> retrySync() => _sync.sync();
+  Future<void> retrySync() {
+    unawaited(_analytics.logEvent(AnalyticsEvents.bookmarkSyncRetried));
+    return _sync.sync();
+  }
 
   /// Updates the search query. Filtering is derived in the state itself
   /// ([BookmarksListState.visibleItems]), so this is a single setState.
   void setQuery(String query) {
     if (query == state.query) return;
-    emit(state.copyWith(query: query));
+    final next = state.copyWith(query: query);
+    emit(next);
+    final normalized = query.trim();
+    if (normalized.isEmpty) return;
+    unawaited(
+      _analytics.logEvent(
+        AnalyticsEvents.bookmarkSearch,
+        parameters: {
+          AnalyticsParams.queryLength: normalized.length,
+          AnalyticsParams.resultCount: next.visibleItems.length,
+        },
+      ),
+    );
   }
 
   /// Optimistically removes the row, then issues the delete (which marks
@@ -72,9 +90,31 @@ class BookmarksListCubit extends Cubit<BookmarksListState> {
       ),
     );
     final result = await _delete(id);
-    if (result is Err) {
-      emit(state.copyWith(items: previous));
-      await load();
+    switch (result) {
+      case Ok<void>():
+        unawaited(
+          _analytics.logEvent(
+            AnalyticsEvents.bookmarkDeleted,
+            parameters: {
+              AnalyticsParams.bookmarkId: id,
+              AnalyticsParams.source: AnalyticsSources.list,
+            },
+          ),
+        );
+        break;
+      case Err(failure: final failure):
+        unawaited(
+          _analytics.logEvent(
+            AnalyticsEvents.bookmarkDeleteFailed,
+            parameters: {
+              AnalyticsParams.bookmarkId: id,
+              AnalyticsParams.source: AnalyticsSources.list,
+              AnalyticsParams.errorType: failure.runtimeType.toString(),
+            },
+          ),
+        );
+        emit(state.copyWith(items: previous));
+        await load();
     }
   }
 

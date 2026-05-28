@@ -15,12 +15,15 @@ void main() {
   late MockListBookmarks mockList;
   late MockDeleteBookmark mockDelete;
   late MockBookmarksSyncController mockSync;
+  late MockAnalyticsService mockAnalytics;
   late StreamController<BookmarksSyncStatus> statusController;
 
   setUp(() {
     mockList = MockListBookmarks();
     mockDelete = MockDeleteBookmark();
     mockSync = MockBookmarksSyncController();
+    mockAnalytics = MockAnalyticsService();
+    stubAnalyticsService(mockAnalytics);
     statusController = StreamController<BookmarksSyncStatus>.broadcast();
     when(
       () => mockSync.statusStream,
@@ -32,7 +35,7 @@ void main() {
   });
 
   BookmarksListCubit buildCubit() =>
-      BookmarksListCubit(mockList, mockDelete, mockSync);
+      BookmarksListCubit(mockList, mockDelete, mockSync, mockAnalytics);
 
   group('BookmarksListCubit', () {
     test('initial state is empty', () {
@@ -88,6 +91,14 @@ void main() {
             (s) => s.query == 'Dart' && s.visibleItems.length == 1,
           ),
         ],
+        verify: (_) {
+          verify(
+            () => mockAnalytics.logEvent(
+              'bookmark_search',
+              parameters: any(named: 'parameters'),
+            ),
+          ).called(1);
+        },
       );
 
       blocTest<BookmarksListCubit, BookmarksListState>(
@@ -109,6 +120,14 @@ void main() {
         seed: () => BookmarksListState(items: [testBookmark]),
         act: (cubit) => cubit.delete('1'),
         expect: () => [predicate<BookmarksListState>((s) => s.items.isEmpty)],
+        verify: (_) {
+          verify(
+            () => mockAnalytics.logEvent(
+              'bookmark_deleted',
+              parameters: any(named: 'parameters'),
+            ),
+          ).called(1);
+        },
       );
 
       blocTest<BookmarksListCubit, BookmarksListState>(
@@ -128,6 +147,14 @@ void main() {
           predicate<BookmarksListState>((s) => s.isLoading),
           predicate<BookmarksListState>((s) => !s.isLoading),
         ],
+        verify: (_) {
+          verify(
+            () => mockAnalytics.logEvent(
+              'bookmark_delete_failed',
+              parameters: any(named: 'parameters'),
+            ),
+          ).called(1);
+        },
       );
     });
   });

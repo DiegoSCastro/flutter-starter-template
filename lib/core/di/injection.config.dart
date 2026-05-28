@@ -11,10 +11,17 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:connectivity_plus/connectivity_plus.dart' as _i895;
 import 'package:dio/dio.dart' as _i361;
+import 'package:firebase_analytics/firebase_analytics.dart' as _i398;
 import 'package:firebase_messaging/firebase_messaging.dart' as _i892;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart'
     as _i163;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
+import 'package:flutter_starter_template/core/analytics/analytics_module.dart'
+    as _i720;
+import 'package:flutter_starter_template/core/analytics/analytics_route_observer.dart'
+    as _i873;
+import 'package:flutter_starter_template/core/analytics/analytics_service.dart'
+    as _i838;
 import 'package:flutter_starter_template/core/config/env_config.dart' as _i689;
 import 'package:flutter_starter_template/core/network/network_module.dart'
     as _i173;
@@ -102,6 +109,7 @@ extension GetItInjectableX on _i174.GetIt {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     final sharedPreferencesModule = _$SharedPreferencesModule();
     final objectBoxModule = _$ObjectBoxModule();
+    final analyticsModule = _$AnalyticsModule();
     final notificationsModule = _$NotificationsModule();
     final shareModule = _$ShareModule();
     final secureStorageModule = _$SecureStorageModule();
@@ -117,6 +125,9 @@ extension GetItInjectableX on _i174.GetIt {
     await gh.singletonAsync<_i319.ObjectBox>(
       () => objectBoxModule.provideObjectBox(),
       preResolve: true,
+    );
+    gh.lazySingleton<_i398.FirebaseAnalytics>(
+      () => analyticsModule.provideFirebaseAnalytics(),
     );
     gh.lazySingleton<_i163.FlutterLocalNotificationsPlugin>(
       () => notificationsModule.providePlugin(),
@@ -145,13 +156,13 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i580.ShareService>(
       () => _i580.ShareService(gh<_i998.SharePlus>()),
     );
-    gh.lazySingleton<_i848.ThemeCubit>(
-      () => _i848.ThemeCubit(gh<_i460.SharedPreferences>()),
+    gh.lazySingleton<_i838.AnalyticsService>(
+      () => _i838.FirebaseAnalyticsService(gh<_i398.FirebaseAnalytics>()),
     );
-    gh.singleton<_i529.FirebaseMessagingService>(
-      () => _i529.FirebaseMessagingService(
-        gh<_i332.NotificationsService>(),
-        gh<_i892.FirebaseMessaging>(),
+    gh.lazySingleton<_i848.ThemeCubit>(
+      () => _i848.ThemeCubit(
+        gh<_i460.SharedPreferences>(),
+        gh<_i838.AnalyticsService>(),
       ),
     );
     gh.singleton<_i831.Store>(
@@ -163,6 +174,16 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i724.BookmarksLocalDataSource>(
       () => _i724.ObjectBoxBookmarksDataSource(gh<_i831.Store>()),
+    );
+    gh.singleton<_i529.FirebaseMessagingService>(
+      () => _i529.FirebaseMessagingService(
+        gh<_i332.NotificationsService>(),
+        gh<_i892.FirebaseMessaging>(),
+        gh<_i838.AnalyticsService>(),
+      ),
+    );
+    gh.lazySingleton<_i873.AnalyticsRouteObserver>(
+      () => _i873.AnalyticsRouteObserver(gh<_i838.AnalyticsService>()),
     );
     gh.lazySingleton<_i533.TokenRefresher>(
       () => _i533.TokenRefresher(
@@ -209,6 +230,7 @@ extension GetItInjectableX on _i174.GetIt {
         signIn: gh<_i1001.SignIn>(),
         signOut: gh<_i926.SignOut>(),
         restoreSession: gh<_i271.RestoreSession>(),
+        analytics: gh<_i838.AnalyticsService>(),
       ),
     );
     gh.lazySingleton<_i630.BookmarksRepository>(
@@ -242,10 +264,19 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i568.ListBookmarks>(),
       ),
     );
+    gh.factory<_i885.BookmarkFormCubit>(
+      () => _i885.BookmarkFormCubit(
+        gh<_i690.GetBookmark>(),
+        gh<_i632.CreateBookmark>(),
+        gh<_i412.UpdateBookmark>(),
+        gh<_i838.AnalyticsService>(),
+      ),
+    );
     gh.factory<_i368.BookmarkDetailCubit>(
       () => _i368.BookmarkDetailCubit(
         gh<_i690.GetBookmark>(),
         gh<_i244.DeleteBookmark>(),
+        gh<_i838.AnalyticsService>(),
       ),
     );
     gh.factory<_i230.BookmarksListCubit>(
@@ -253,13 +284,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i568.ListBookmarks>(),
         gh<_i244.DeleteBookmark>(),
         gh<_i627.BookmarksSyncController>(),
-      ),
-    );
-    gh.factory<_i885.BookmarkFormCubit>(
-      () => _i885.BookmarkFormCubit(
-        gh<_i690.GetBookmark>(),
-        gh<_i632.CreateBookmark>(),
-        gh<_i412.UpdateBookmark>(),
+        gh<_i838.AnalyticsService>(),
       ),
     );
     return this;
@@ -269,6 +294,8 @@ extension GetItInjectableX on _i174.GetIt {
 class _$SharedPreferencesModule extends _i848.SharedPreferencesModule {}
 
 class _$ObjectBoxModule extends _i319.ObjectBoxModule {}
+
+class _$AnalyticsModule extends _i720.AnalyticsModule {}
 
 class _$NotificationsModule extends _i146.NotificationsModule {}
 

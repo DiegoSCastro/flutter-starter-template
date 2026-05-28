@@ -14,8 +14,11 @@ List<RouteBase> get $appRoutes => [
   $bookmarksListRoute,
 ];
 
-RouteBase get $splashRoute =>
-    GoRouteData.$route(path: '/splash', factory: $SplashRoute._fromState);
+RouteBase get $splashRoute => GoRouteData.$route(
+  path: '/splash',
+  name: 'splash',
+  factory: $SplashRoute._fromState,
+);
 
 mixin $SplashRoute on GoRouteData {
   static SplashRoute _fromState(GoRouterState state) => const SplashRoute();
@@ -38,7 +41,7 @@ mixin $SplashRoute on GoRouteData {
 }
 
 RouteBase get $homeRoute =>
-    GoRouteData.$route(path: '/', factory: $HomeRoute._fromState);
+    GoRouteData.$route(path: '/', name: 'home', factory: $HomeRoute._fromState);
 
 mixin $HomeRoute on GoRouteData {
   static HomeRoute _fromState(GoRouterState state) => const HomeRoute();
@@ -60,8 +63,11 @@ mixin $HomeRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-RouteBase get $profileRoute =>
-    GoRouteData.$route(path: '/profile', factory: $ProfileRoute._fromState);
+RouteBase get $profileRoute => GoRouteData.$route(
+  path: '/profile',
+  name: 'profile',
+  factory: $ProfileRoute._fromState,
+);
 
 mixin $ProfileRoute on GoRouteData {
   static ProfileRoute _fromState(GoRouterState state) => const ProfileRoute();
@@ -83,8 +89,11 @@ mixin $ProfileRoute on GoRouteData {
   void replace(BuildContext context) => context.replace(location);
 }
 
-RouteBase get $loginRoute =>
-    GoRouteData.$route(path: '/login', factory: $LoginRoute._fromState);
+RouteBase get $loginRoute => GoRouteData.$route(
+  path: '/login',
+  name: 'login',
+  factory: $LoginRoute._fromState,
+);
 
 mixin $LoginRoute on GoRouteData {
   static LoginRoute _fromState(GoRouterState state) => const LoginRoute();
@@ -108,12 +117,22 @@ mixin $LoginRoute on GoRouteData {
 
 RouteBase get $bookmarksListRoute => GoRouteData.$route(
   path: '/bookmarks',
+  name: 'bookmarks',
   factory: $BookmarksListRoute._fromState,
   routes: [
-    GoRouteData.$route(path: 'new', factory: $BookmarkNewRoute._fromState),
-    GoRouteData.$route(path: ':id', factory: $BookmarkDetailRoute._fromState),
+    GoRouteData.$route(
+      path: 'new',
+      name: 'bookmark_new',
+      factory: $BookmarkNewRoute._fromState,
+    ),
+    GoRouteData.$route(
+      path: ':id',
+      name: 'bookmark_detail',
+      factory: $BookmarkDetailRoute._fromState,
+    ),
     GoRouteData.$route(
       path: ':id/edit',
+      name: 'bookmark_edit',
       factory: $BookmarkEditRoute._fromState,
     ),
   ],

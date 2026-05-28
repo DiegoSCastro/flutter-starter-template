@@ -10,14 +10,17 @@ import '../../test_utils.dart';
 
 void main() {
   late MockSharedPreferences mockPrefs;
+  late MockAnalyticsService mockAnalytics;
   late ThemeCubit cubit;
 
   setUp(() {
     mockPrefs = MockSharedPreferences();
+    mockAnalytics = MockAnalyticsService();
+    stubAnalyticsService(mockAnalytics);
     registerFallbackValue('');
     when(() => mockPrefs.getString(any())).thenReturn(null);
     when(() => mockPrefs.setString(any(), any())).thenAnswer((_) async => true);
-    cubit = ThemeCubit(mockPrefs);
+    cubit = ThemeCubit(mockPrefs, mockAnalytics);
   });
 
   tearDown(() {
@@ -34,7 +37,7 @@ void main() {
       when(() => mockPrefs.getString('app.theme_mode')).thenReturn('dark');
       when(() => mockPrefs.getString('app.theme_scheme')).thenReturn('indigo');
 
-      final c = ThemeCubit(mockPrefs);
+      final c = ThemeCubit(mockPrefs, mockAnalytics);
       expect(c.state.mode, ThemeMode.dark);
       expect(c.state.scheme, FlexScheme.indigo);
       c.close();
@@ -58,6 +61,12 @@ void main() {
             () => mockPrefs.setString(
               'app.theme_scheme',
               ThemeState.defaultScheme.name,
+            ),
+          ).called(1);
+          verify(
+            () => mockAnalytics.logEvent(
+              'theme_mode_changed',
+              parameters: any(named: 'parameters'),
             ),
           ).called(1);
         },
@@ -87,6 +96,12 @@ void main() {
           ).called(1);
           verify(
             () => mockPrefs.setString('app.theme_scheme', 'mango'),
+          ).called(1);
+          verify(
+            () => mockAnalytics.logEvent(
+              'theme_scheme_changed',
+              parameters: any(named: 'parameters'),
+            ),
           ).called(1);
         },
       );

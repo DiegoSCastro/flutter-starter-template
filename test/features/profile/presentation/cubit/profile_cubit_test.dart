@@ -132,8 +132,13 @@ void main() {
   });
 }
 
-AuthCubit _authCubit({MockSignIn? signIn, MockSignOut? signOut}) => AuthCubit(
-  signIn: signIn ?? MockSignIn(),
-  signOut: signOut ?? MockSignOut(),
-  restoreSession: MockRestoreSession(),
-);
+AuthCubit _authCubit({MockSignIn? signIn, MockSignOut? signOut}) {
+  final analytics = MockAnalyticsService();
+  stubAnalyticsService(analytics);
+  return AuthCubit(
+    signIn: signIn ?? MockSignIn(),
+    signOut: signOut ?? MockSignOut(),
+    restoreSession: MockRestoreSession(),
+    analytics: analytics,
+  );
+}

@@ -18,6 +18,7 @@ import 'test_utils.dart';
 void main() {
   late StreamController<BookmarksSyncStatus> syncStatusController;
   late MockBookmarksSyncController sync;
+  late MockAnalyticsService analytics;
   late AuthCubit authCubit;
   late ThemeCubit themeCubit;
   HomeCubit? homeCubit;
@@ -25,6 +26,8 @@ void main() {
   setUp(() async {
     await getIt.reset();
     SharedPreferences.setMockInitialValues({});
+    analytics = MockAnalyticsService();
+    stubAnalyticsService(analytics);
 
     AuthUser? currentUser;
     final signIn = MockSignIn();
@@ -62,8 +65,9 @@ void main() {
       signIn: signIn,
       signOut: signOut,
       restoreSession: restoreSession,
+      analytics: analytics,
     );
-    themeCubit = ThemeCubit(await SharedPreferences.getInstance());
+    themeCubit = ThemeCubit(await SharedPreferences.getInstance(), analytics);
 
     getIt.registerFactory<HomeCubit>(() {
       final cubit = HomeCubit(authRepository, listBookmarks);
@@ -85,7 +89,12 @@ void main() {
 
   testWidgets('signs in and lands on home screen', (WidgetTester tester) async {
     await tester.pumpWidget(
-      App(authCubit: authCubit, themeCubit: themeCubit, bookmarksSync: sync),
+      App(
+        authCubit: authCubit,
+        themeCubit: themeCubit,
+        bookmarksSync: sync,
+        navigatorObservers: const [],
+      ),
     );
     await tester.pump(const Duration(seconds: 3));
     await tester.pump();

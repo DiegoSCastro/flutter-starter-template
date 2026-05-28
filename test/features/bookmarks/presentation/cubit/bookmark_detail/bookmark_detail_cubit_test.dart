@@ -11,16 +11,19 @@ import '../../../../../test_utils.dart';
 void main() {
   late MockGetBookmark mockGet;
   late MockDeleteBookmark mockDelete;
+  late MockAnalyticsService mockAnalytics;
 
   setUp(() {
     mockGet = MockGetBookmark();
     mockDelete = MockDeleteBookmark();
+    mockAnalytics = MockAnalyticsService();
+    stubAnalyticsService(mockAnalytics);
   });
 
   group('BookmarkDetailCubit', () {
     blocTest<BookmarkDetailCubit, BookmarkDetailState>(
       'initial state is loading',
-      build: () => BookmarkDetailCubit(mockGet, mockDelete),
+      build: () => BookmarkDetailCubit(mockGet, mockDelete, mockAnalytics),
       verify: (cubit) {
         expect(cubit.state, const BookmarkDetailState.loading());
       },
@@ -31,13 +34,21 @@ void main() {
         'emits loading then ready on success',
         build: () {
           when(() => mockGet('1')).thenAnswer((_) async => Ok(testBookmark));
-          return BookmarkDetailCubit(mockGet, mockDelete);
+          return BookmarkDetailCubit(mockGet, mockDelete, mockAnalytics);
         },
         act: (cubit) => cubit.load('1'),
         expect: () => [
           const BookmarkDetailState.loading(),
           BookmarkDetailState.ready(testBookmark),
         ],
+        verify: (_) {
+          verify(
+            () => mockAnalytics.logEvent(
+              'bookmark_viewed',
+              parameters: any(named: 'parameters'),
+            ),
+          ).called(1);
+        },
       );
 
       blocTest<BookmarkDetailCubit, BookmarkDetailState>(
@@ -46,7 +57,7 @@ void main() {
           when(
             () => mockGet('1'),
           ).thenAnswer((_) async => const Err(NotFoundFailure('Not found')));
-          return BookmarkDetailCubit(mockGet, mockDelete);
+          return BookmarkDetailCubit(mockGet, mockDelete, mockAnalytics);
         },
         act: (cubit) => cubit.load('1'),
         expect: () => [
@@ -59,9 +70,15 @@ void main() {
     group('delete', () {
       test('returns true on success', () async {
         when(() => mockDelete('1')).thenAnswer((_) async => const Ok(null));
-        final cubit = BookmarkDetailCubit(mockGet, mockDelete);
+        final cubit = BookmarkDetailCubit(mockGet, mockDelete, mockAnalytics);
         final ok = await cubit.delete('1');
         expect(ok, true);
+        verify(
+          () => mockAnalytics.logEvent(
+            'bookmark_deleted',
+            parameters: any(named: 'parameters'),
+          ),
+        ).called(1);
         cubit.close();
       });
 
@@ -69,9 +86,15 @@ void main() {
         when(
           () => mockDelete('1'),
         ).thenAnswer((_) async => const Err(UnknownFailure('Failed')));
-        final cubit = BookmarkDetailCubit(mockGet, mockDelete);
+        final cubit = BookmarkDetailCubit(mockGet, mockDelete, mockAnalytics);
         final ok = await cubit.delete('1');
         expect(ok, false);
+        verify(
+          () => mockAnalytics.logEvent(
+            'bookmark_delete_failed',
+            parameters: any(named: 'parameters'),
+          ),
+        ).called(1);
         cubit.close();
       });
     });

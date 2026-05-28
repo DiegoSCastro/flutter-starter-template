@@ -1,3 +1,4 @@
+import 'package:flutter_starter_template/core/analytics/analytics_service.dart';
 import 'package:flutter_starter_template/features/auth/domain/repositories/auth_repository.dart';
 import 'package:flutter_starter_template/features/auth/domain/usecases/restore_session.dart';
 import 'package:flutter_starter_template/features/auth/domain/usecases/sign_in.dart';
@@ -21,6 +22,27 @@ class MockRestoreSession extends Mock implements RestoreSession {}
 class MockAuthRepository extends Mock implements AuthRepository {}
 
 class MockSharedPreferences extends Mock implements SharedPreferences {}
+
+class MockAnalyticsService extends Mock implements AnalyticsService {}
+
+void stubAnalyticsService(MockAnalyticsService analytics) {
+  when(
+    () => analytics.logEvent(any(), parameters: any(named: 'parameters')),
+  ).thenAnswer((_) async {});
+  when(
+    () => analytics.logLogin(method: any(named: 'method')),
+  ).thenAnswer((_) async {});
+  when(
+    () => analytics.logScreenView(screenName: any(named: 'screenName')),
+  ).thenAnswer((_) async {});
+  when(() => analytics.setCurrentUser(any())).thenAnswer((_) async {});
+  when(
+    () => analytics.setUserProperty(
+      name: any(named: 'name'),
+      value: any(named: 'value'),
+    ),
+  ).thenAnswer((_) async {});
+}
 
 class MockListBookmarks extends Mock implements ListBookmarks {}
 

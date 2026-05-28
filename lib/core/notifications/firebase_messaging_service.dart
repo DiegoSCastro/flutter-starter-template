@@ -5,16 +5,23 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 
+import '../analytics/analytics_events.dart';
+import '../analytics/analytics_service.dart';
 import 'notifications_service.dart';
 
 typedef OnNotificationTap = void Function(Map<String, dynamic>? data);
 
 @singleton
 class FirebaseMessagingService {
-  FirebaseMessagingService(this._localNotifications, this._messaging);
+  FirebaseMessagingService(
+    this._localNotifications,
+    this._messaging,
+    this._analytics,
+  );
 
   final NotificationsService _localNotifications;
   final FirebaseMessaging _messaging;
+  final AnalyticsService _analytics;
 
   final _tokenStream = StreamController<String?>.broadcast();
 
@@ -85,6 +92,12 @@ class FirebaseMessagingService {
   }
 
   void _handleNotificationTap(Map<String, dynamic>? data) {
+    unawaited(
+      _analytics.logEvent(
+        AnalyticsEvents.notificationOpened,
+        parameters: {AnalyticsParams.payloadKeyCount: data?.length ?? 0},
+      ),
+    );
     final callback = onNotificationTap;
     if (callback != null) {
       callback(data);

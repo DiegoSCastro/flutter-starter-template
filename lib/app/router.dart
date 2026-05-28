@@ -15,7 +15,7 @@ import '../features/splash/presentation/screens/splash_screen.dart';
 
 part 'router.g.dart';
 
-@TypedGoRoute<SplashRoute>(path: '/splash')
+@TypedGoRoute<SplashRoute>(path: '/splash', name: 'splash')
 class SplashRoute extends GoRouteData with $SplashRoute {
   const SplashRoute();
 
@@ -24,7 +24,7 @@ class SplashRoute extends GoRouteData with $SplashRoute {
       const SplashScreen();
 }
 
-@TypedGoRoute<HomeRoute>(path: '/')
+@TypedGoRoute<HomeRoute>(path: '/', name: 'home')
 class HomeRoute extends GoRouteData with $HomeRoute {
   const HomeRoute();
 
@@ -32,7 +32,7 @@ class HomeRoute extends GoRouteData with $HomeRoute {
   Widget build(BuildContext context, GoRouterState state) => const HomeScreen();
 }
 
-@TypedGoRoute<ProfileRoute>(path: '/profile')
+@TypedGoRoute<ProfileRoute>(path: '/profile', name: 'profile')
 class ProfileRoute extends GoRouteData with $ProfileRoute {
   const ProfileRoute();
 
@@ -41,7 +41,7 @@ class ProfileRoute extends GoRouteData with $ProfileRoute {
       const ProfileScreen();
 }
 
-@TypedGoRoute<LoginRoute>(path: '/login')
+@TypedGoRoute<LoginRoute>(path: '/login', name: 'login')
 class LoginRoute extends GoRouteData with $LoginRoute {
   const LoginRoute();
 
@@ -52,10 +52,11 @@ class LoginRoute extends GoRouteData with $LoginRoute {
 
 @TypedGoRoute<BookmarksListRoute>(
   path: '/bookmarks',
+  name: 'bookmarks',
   routes: [
-    TypedGoRoute<BookmarkNewRoute>(path: 'new'),
-    TypedGoRoute<BookmarkDetailRoute>(path: ':id'),
-    TypedGoRoute<BookmarkEditRoute>(path: ':id/edit'),
+    TypedGoRoute<BookmarkNewRoute>(path: 'new', name: 'bookmark_new'),
+    TypedGoRoute<BookmarkDetailRoute>(path: ':id', name: 'bookmark_detail'),
+    TypedGoRoute<BookmarkEditRoute>(path: ':id/edit', name: 'bookmark_edit'),
   ],
 )
 class BookmarksListRoute extends GoRouteData with $BookmarksListRoute {
@@ -123,8 +124,9 @@ class DeepLinkScope extends InheritedWidget {
 
 /// Builds the app router and wires auth redirects to [cubit] state changes.
 ({GoRouter router, DeepLinkState deepLink}) buildRouterWithDeepLink(
-  AuthCubit cubit,
-) {
+  AuthCubit cubit, {
+  List<NavigatorObserver>? observers,
+}) {
   final deepLink = DeepLinkState();
   final homeLocation = const HomeRoute().location;
   final splashLocation = const SplashRoute().location;
@@ -135,6 +137,7 @@ class DeepLinkScope extends InheritedWidget {
     // cold start and the redirect below captures it before sending the user
     // through splash / auth.
     routes: $appRoutes,
+    observers: observers,
     refreshListenable: _CubitListenable(cubit.stream),
     redirect: (context, state) {
       final location = state.matchedLocation;

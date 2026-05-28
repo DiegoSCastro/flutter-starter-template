@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../analytics/analytics_events.dart';
+import '../analytics/analytics_service.dart';
 import 'theme_state.dart';
 
 const _kThemeModeKey = 'app.theme_mode';
@@ -11,9 +15,10 @@ const _kThemeSchemeKey = 'app.theme_scheme';
 
 @lazySingleton
 class ThemeCubit extends Cubit<ThemeState> {
-  ThemeCubit(this._prefs) : super(_readInitial(_prefs));
+  ThemeCubit(this._prefs, this._analytics) : super(_readInitial(_prefs));
 
   final SharedPreferences _prefs;
+  final AnalyticsService _analytics;
 
   static ThemeState _readInitial(SharedPreferences prefs) {
     final modeRaw = prefs.getString(_kThemeModeKey);
@@ -35,12 +40,24 @@ class ThemeCubit extends Cubit<ThemeState> {
     if (mode == state.mode) return;
     final next = state.copyWith(mode: mode);
     await _persistAndEmit(next);
+    unawaited(
+      _analytics.logEvent(
+        AnalyticsEvents.themeModeChanged,
+        parameters: {AnalyticsParams.themeMode: mode.name},
+      ),
+    );
   }
 
   Future<void> setScheme(FlexScheme scheme) async {
     if (scheme == state.scheme) return;
     final next = state.copyWith(scheme: scheme);
     await _persistAndEmit(next);
+    unawaited(
+      _analytics.logEvent(
+        AnalyticsEvents.themeSchemeChanged,
+        parameters: {AnalyticsParams.themeScheme: scheme.name},
+      ),
+    );
   }
 
   Future<void> _persistAndEmit(ThemeState next) async {

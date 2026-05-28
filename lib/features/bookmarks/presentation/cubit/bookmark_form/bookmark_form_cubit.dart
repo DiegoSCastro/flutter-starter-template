@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../../../../core/analytics/analytics_events.dart';
+import '../../../../../core/analytics/analytics_service.dart';
 import '../../../../../core/utils/result.dart';
 import '../../../domain/entities/bookmark.dart';
 import '../../../domain/usecases/create_bookmark.dart';
@@ -10,12 +14,13 @@ import 'bookmark_form_state.dart';
 
 @injectable
 class BookmarkFormCubit extends Cubit<BookmarkFormState> {
-  BookmarkFormCubit(this._get, this._create, this._update)
+  BookmarkFormCubit(this._get, this._create, this._update, this._analytics)
     : super(const BookmarkFormState());
 
   final GetBookmark _get;
   final CreateBookmark _create;
   final UpdateBookmark _update;
+  final AnalyticsService _analytics;
 
   /// For create flows, pass `null`. For edit flows, fetches the existing
   /// bookmark and seeds the form.
@@ -71,12 +76,27 @@ class BookmarkFormCubit extends Cubit<BookmarkFormState> {
       description: state.description.trim(),
       tags: state.tags,
     );
-    final result = state.id == null
+    final isEditing = state.id != null;
+    final result = !isEditing
         ? await _create(input)
         : await _update((id: state.id!, input: input));
 
     switch (result) {
-      case Ok():
+      case Ok(value: final bookmark):
+        unawaited(
+          _analytics.logEvent(
+            isEditing
+                ? AnalyticsEvents.bookmarkUpdated
+                : AnalyticsEvents.bookmarkCreated,
+            parameters: {
+              AnalyticsParams.bookmarkId: bookmark.id,
+              AnalyticsParams.tagCount: bookmark.tags.length,
+              AnalyticsParams.hasDescription: bookmark.description.isNotEmpty
+                  ? 1
+                  : 0,
+            },
+          ),
+        );
         emit(state.copyWith(status: BookmarkFormStatus.submitted));
         return true;
       case Err(failure: final failure):

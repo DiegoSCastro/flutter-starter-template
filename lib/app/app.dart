@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../core/build_context_extensions.dart';
+import '../core/analytics/analytics_route_observer.dart';
 import '../core/di/injection.dart';
 import '../core/theme/app_theme.dart';
 import '../core/theme/theme_cubit.dart';
@@ -16,11 +17,18 @@ import '../l10n/app_localizations.dart';
 import 'router.dart';
 
 class App extends StatefulWidget {
-  const App({super.key, this.authCubit, this.themeCubit, this.bookmarksSync});
+  const App({
+    super.key,
+    this.authCubit,
+    this.themeCubit,
+    this.bookmarksSync,
+    this.navigatorObservers,
+  });
 
   final AuthCubit? authCubit;
   final ThemeCubit? themeCubit;
   final BookmarksSyncController? bookmarksSync;
+  final List<NavigatorObserver>? navigatorObservers;
 
   @override
   State<App> createState() => _AppState();
@@ -39,7 +47,10 @@ class _AppState extends State<App> {
     super.initState();
     _authCubit = widget.authCubit ?? getIt<AuthCubit>();
     _themeCubit = widget.themeCubit ?? getIt<ThemeCubit>();
-    final result = buildRouterWithDeepLink(_authCubit);
+    final result = buildRouterWithDeepLink(
+      _authCubit,
+      observers: widget.navigatorObservers ?? [getIt<AnalyticsRouteObserver>()],
+    );
     _router = result.router;
     _deepLink = result.deepLink;
     _sync = widget.bookmarksSync ?? getIt<BookmarksSyncController>();

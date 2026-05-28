@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../../../core/analytics/analytics_events.dart';
+import '../../../../core/analytics/analytics_service.dart';
 import '../../../../core/utils/result.dart';
 import '../../domain/usecases/restore_session.dart';
 import '../../domain/usecases/sign_in.dart';
@@ -13,11 +17,13 @@ class AuthCubit extends Cubit<AuthState> {
     required this._signIn,
     required this._signOut,
     required this._restoreSession,
+    required this._analytics,
   }) : super(const AuthState.initial());
 
   final SignIn _signIn;
   final SignOut _signOut;
   final RestoreSession _restoreSession;
+  final AnalyticsService _analytics;
 
   /// Called once during app bootstrap. Tries to rehydrate a persisted session;
   /// silently lands on [AuthState.initial] if there isn't one or it expired.
@@ -25,8 +31,10 @@ class AuthCubit extends Cubit<AuthState> {
     final result = await _restoreSession();
     switch (result) {
       case Ok(value: final user):
+        unawaited(_analytics.setCurrentUser(user.id));
         emit(AuthState.authenticated(user));
       case Err():
+        unawaited(_analytics.setCurrentUser(null));
         emit(const AuthState.initial());
     }
   }
@@ -41,8 +49,18 @@ class AuthCubit extends Cubit<AuthState> {
     final result = await _signIn((username: username, password: password));
     switch (result) {
       case Ok(value: final user):
+        unawaited(_analytics.setCurrentUser(user.id));
+        unawaited(_analytics.logLogin(method: 'password'));
         emit(AuthState.authenticated(user));
       case Err(failure: final failure):
+        unawaited(
+          _analytics.logEvent(
+            AnalyticsEvents.loginFailed,
+            parameters: {
+              AnalyticsParams.errorType: failure.runtimeType.toString(),
+            },
+          ),
+        );
         emit(AuthState.failure(failure));
     }
   }
@@ -50,6 +68,8 @@ class AuthCubit extends Cubit<AuthState> {
   Future<void> signOut() async {
     final result = await _signOut();
     if (result is Ok<void>) {
+      unawaited(_analytics.logEvent(AnalyticsEvents.signOut));
+      unawaited(_analytics.setCurrentUser(null));
       emit(const AuthState.initial());
     }
   }

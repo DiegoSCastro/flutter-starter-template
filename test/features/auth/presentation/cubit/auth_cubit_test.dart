@@ -11,16 +11,20 @@ void main() {
   late MockSignIn mockSignIn;
   late MockSignOut mockSignOut;
   late MockRestoreSession mockRestoreSession;
+  late MockAnalyticsService mockAnalytics;
   late AuthCubit cubit;
 
   setUp(() {
     mockSignIn = MockSignIn();
     mockSignOut = MockSignOut();
     mockRestoreSession = MockRestoreSession();
+    mockAnalytics = MockAnalyticsService();
+    stubAnalyticsService(mockAnalytics);
     cubit = AuthCubit(
       signIn: mockSignIn,
       signOut: mockSignOut,
       restoreSession: mockRestoreSession,
+      analytics: mockAnalytics,
     );
   });
 
@@ -44,6 +48,9 @@ void main() {
         },
         act: (cubit) => cubit.restoreSession(),
         expect: () => [const AuthState.authenticated(testUser)],
+        verify: (_) {
+          verify(() => mockAnalytics.setCurrentUser(testUser.id)).called(1);
+        },
       );
 
       blocTest<AuthCubit, AuthState>(
@@ -56,6 +63,9 @@ void main() {
         },
         act: (cubit) => cubit.restoreSession(),
         expect: () => [const AuthState.initial()],
+        verify: (_) {
+          verify(() => mockAnalytics.setCurrentUser(null)).called(1);
+        },
       );
     });
 
@@ -73,6 +83,10 @@ void main() {
           const AuthState.submitting(),
           const AuthState.authenticated(testUser),
         ],
+        verify: (_) {
+          verify(() => mockAnalytics.setCurrentUser(testUser.id)).called(1);
+          verify(() => mockAnalytics.logLogin(method: 'password')).called(1);
+        },
       );
 
       blocTest<AuthCubit, AuthState>(
@@ -88,6 +102,14 @@ void main() {
           const AuthState.submitting(),
           const AuthState.failure(testFailure),
         ],
+        verify: (_) {
+          verify(
+            () => mockAnalytics.logEvent(
+              'login_failed',
+              parameters: any(named: 'parameters'),
+            ),
+          ).called(1);
+        },
       );
 
       blocTest<AuthCubit, AuthState>(
@@ -114,6 +136,10 @@ void main() {
         seed: () => const AuthState.authenticated(testUser),
         act: (cubit) => cubit.signOut(),
         expect: () => [const AuthState.initial()],
+        verify: (_) {
+          verify(() => mockAnalytics.logEvent('sign_out')).called(1);
+          verify(() => mockAnalytics.setCurrentUser(null)).called(1);
+        },
       );
 
       blocTest<AuthCubit, AuthState>(
