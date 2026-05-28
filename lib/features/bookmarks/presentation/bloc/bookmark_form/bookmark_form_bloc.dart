@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../../core/analytics/analytics_extensions.dart';
@@ -36,6 +37,10 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
     );
     on<BookmarkFormTagsChanged>(_onTagsChanged, transformer: sequential());
     on<BookmarkFormImagesPicked>(_onImagesPicked, transformer: sequential());
+    on<BookmarkFormCameraImageTaken>(
+      _onCameraImageTaken,
+      transformer: sequential(),
+    );
     on<BookmarkFormImageRemoved>(_onImageRemoved, transformer: sequential());
     on<BookmarkFormSubmitted>(_onSubmitted, transformer: sequential());
   }
@@ -83,6 +88,12 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
   Future<void> pickImages() {
     final completer = Completer<void>();
     add(BookmarkFormImagesPicked(completer: completer));
+    return completer.future;
+  }
+
+  Future<void> takeImageFromCamera() {
+    final completer = Completer<void>();
+    add(BookmarkFormCameraImageTaken(completer: completer));
     return completer.future;
   }
 
@@ -213,6 +224,39 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
     }
   }
 
+  Future<void> _onCameraImageTaken(
+    BookmarkFormCameraImageTaken event,
+    Emitter<BookmarkFormState> emit,
+  ) async {
+    try {
+      final hasPermission = await _permissionService.hasCameraPermission();
+      if (!hasPermission) {
+        final requestResult = await _permissionService
+            .requestCameraPermission();
+        if (!requestResult) {
+          emit(
+            state.copyWith(
+              status: BookmarkFormStatus.idle,
+              failure: const CameraPermissionFailure(),
+            ),
+          );
+          event.completer.completeVoidIfPending();
+          return;
+        }
+      }
+
+      final image = await _imagePickerService.pickImage(
+        source: ImageSource.camera,
+      );
+      if (image != null) {
+        emit(state.copyWith(imageUrls: [...state.imageUrls, image.path]));
+      }
+      event.completer.completeVoidIfPending();
+    } on Object catch (error, stackTrace) {
+      event.completer.completeErrorIfPending(error, stackTrace);
+    }
+  }
+
   void _onImageRemoved(
     BookmarkFormImageRemoved event,
     Emitter<BookmarkFormState> emit,
@@ -315,6 +359,12 @@ final class BookmarkFormTagsChanged extends BookmarkFormEvent {
 
 final class BookmarkFormImagesPicked extends BookmarkFormEvent {
   const BookmarkFormImagesPicked({this.completer});
+
+  final Completer<void>? completer;
+}
+
+final class BookmarkFormCameraImageTaken extends BookmarkFormEvent {
+  const BookmarkFormCameraImageTaken({this.completer});
 
   final Completer<void>? completer;
 }

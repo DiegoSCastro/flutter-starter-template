@@ -214,10 +214,25 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
             ),
           ),
         if (state.imageUrls.isNotEmpty) const SizedBox(height: 8),
-        OutlinedButton.icon(
-          onPressed: () => context.read<BookmarkFormBloc>().pickImages(),
-          icon: const Icon(Icons.add_photo_alternate),
-          label: const Text('Add Images'),
+        Row(
+          children: [
+            Expanded(
+              child: OutlinedButton.icon(
+                onPressed: () => context.read<BookmarkFormBloc>().pickImages(),
+                icon: const Icon(Icons.add_photo_alternate),
+                label: const Text('Add Images'),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: OutlinedButton.icon(
+                onPressed: () =>
+                    context.read<BookmarkFormBloc>().takeImageFromCamera(),
+                icon: const Icon(Icons.camera_alt),
+                label: const Text('Take Photo'),
+              ),
+            ),
+          ],
         ),
       ],
     );

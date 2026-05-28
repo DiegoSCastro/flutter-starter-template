@@ -296,6 +296,68 @@ void main() {
       );
 
       blocTest<BookmarkFormBloc, BookmarkFormState>(
+        'takes image successfully when camera permission is already granted',
+        setUp: () {
+          when(
+            () => mockPermission.hasCameraPermission(),
+          ).thenAnswer((_) async => true);
+          when(
+            () => mockImagePicker.pickImage(source: ImageSource.camera),
+          ).thenAnswer((_) async => mockFile);
+        },
+        build: buildBloc,
+        act: (bloc) => bloc.takeImageFromCamera(),
+        expect: () => [
+          predicate<BookmarkFormState>(
+            (s) =>
+                s.imageUrls.length == 1 && s.imageUrls.first == 'test/path.png',
+          ),
+        ],
+      );
+
+      blocTest<BookmarkFormBloc, BookmarkFormState>(
+        'takes image successfully after requesting and getting camera permission',
+        setUp: () {
+          when(
+            () => mockPermission.hasCameraPermission(),
+          ).thenAnswer((_) async => false);
+          when(
+            () => mockPermission.requestCameraPermission(),
+          ).thenAnswer((_) async => true);
+          when(
+            () => mockImagePicker.pickImage(source: ImageSource.camera),
+          ).thenAnswer((_) async => mockFile);
+        },
+        build: buildBloc,
+        act: (bloc) => bloc.takeImageFromCamera(),
+        expect: () => [
+          predicate<BookmarkFormState>(
+            (s) =>
+                s.imageUrls.length == 1 && s.imageUrls.first == 'test/path.png',
+          ),
+        ],
+      );
+
+      blocTest<BookmarkFormBloc, BookmarkFormState>(
+        'fails to take image when camera permission is denied',
+        setUp: () {
+          when(
+            () => mockPermission.hasCameraPermission(),
+          ).thenAnswer((_) async => false);
+          when(
+            () => mockPermission.requestCameraPermission(),
+          ).thenAnswer((_) async => false);
+        },
+        build: buildBloc,
+        act: (bloc) => bloc.takeImageFromCamera(),
+        expect: () => [
+          predicate<BookmarkFormState>(
+            (s) => s.failure is CameraPermissionFailure,
+          ),
+        ],
+      );
+
+      blocTest<BookmarkFormBloc, BookmarkFormState>(
         'removes image successfully',
         build: buildBloc,
         seed: () => const BookmarkFormState(imageUrls: ['test/path.png']),

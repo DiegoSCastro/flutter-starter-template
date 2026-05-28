@@ -273,4 +273,8 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get errorGalleryPermissionRequired =>
       'Photo gallery access is required to attach images.';
+
+  @override
+  String get errorCameraPermissionRequired =>
+      'Camera access is required to take photos.';
 }

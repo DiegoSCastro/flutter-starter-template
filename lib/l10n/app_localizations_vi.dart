@@ -276,4 +276,8 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get errorGalleryPermissionRequired =>
       'Cần có quyền truy cập thư viện ảnh để đính kèm hình ảnh.';
+
+  @override
+  String get errorCameraPermissionRequired =>
+      'Cần có quyền truy cập máy ảnh để chụp ảnh.';
 }

@@ -85,5 +85,6 @@
   "bookmarkUrlRequired": "Bắt buộc nhập URL",
   "bookmarkUrlInvalid": "Nhập URL hợp lệ (https://…)",
   "errorPermissionDenied": "Quyền truy cập bị từ chối.",
-  "errorGalleryPermissionRequired": "Cần có quyền truy cập thư viện ảnh để đính kèm hình ảnh."
+  "errorGalleryPermissionRequired": "Cần có quyền truy cập thư viện ảnh để đính kèm hình ảnh.",
+  "errorCameraPermissionRequired": "Cần có quyền truy cập máy ảnh để chụp ảnh."
 }

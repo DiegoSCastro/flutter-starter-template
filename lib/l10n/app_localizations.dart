@@ -613,6 +613,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Photo gallery access is required to attach images.'**
   String get errorGalleryPermissionRequired;
+
+  /// No description provided for @errorCameraPermissionRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera access is required to take photos.'**
+  String get errorCameraPermissionRequired;
 }
 
 class _AppLocalizationsDelegate
