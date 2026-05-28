@@ -64,7 +64,7 @@ lib/
 │   ├── di/                           # get_it + injectable
 │   ├── error/                        # Failure hierarchy
 │   ├── firebase/                     # Firebase initialization & global Crashlytics/Messaging setup
-│   ├── media/                        # Image picker and media retrieval services
+│   ├── media/                        # Camera, Image Picker, and Video Player wrapper services
 │   ├── network/                      # Dio clients, auth interceptor, token refresh
 │   ├── notifications/                # flutter_local_notifications
 │   ├── permissions/                  # Runtime permission request handling
@@ -155,6 +155,44 @@ go run .                    # → http://localhost:8080
 
 ```bash
 fvm flutter run
+```
+
+<br>
+
+## 🧪 Testing & Code Quality
+
+This template includes a robust set of automated tests and static analysis configuration to ensure code quality.
+
+### 🏃 Running Tests
+
+Unit and widget tests mirror the `lib/` directory structure. Run them using:
+
+```bash
+# Run all unit and widget tests
+fvm flutter test
+
+# Run a specific test file
+fvm flutter test test/widget_test.dart
+
+# Run tests by name match
+fvm flutter test --name "signs in"
+```
+
+Refer to the [test/README.md](file:///Users/trunglaptieu/development/projects/flutter-starter-template/test/README.md) file for detailed testing guidelines and patterns.
+
+### 🔍 Static Analysis & Linting
+
+Verify lint rules, formatting, and type safety before committing:
+
+```bash
+# Analyze code for warnings and errors
+fvm flutter analyze
+
+# Automatically apply quick fixes
+fvm dart fix --apply
+
+# Format all Dart files
+fvm flutter format .
 ```
 
 <br>
@@ -275,6 +313,7 @@ All shared components in `lib/core/widgets/`:
 | `AppScaffold`       | Themed shell — app bar, connectivity banner                      |
 | `AppSlidable`       | Swipe‑to‑reveal actions wrapper for list items                    |
 | `AppTextField`      | Label, prefix icon, validation, autofill hints                   |
+| `AppVideoPlayer`    | Customizable video player with progress controls and audio controls |
 
 <br>
 
@@ -298,7 +337,7 @@ All shared components in `lib/core/widgets/`:
 | **i18n**           | `flutter_localizations` · `intl`                                                                   |
 | **Icons**          | `cupertino_icons`                                                                                  |
 | **Assets**         | `flutter_svg` · `flutter_gen_runner`                                                               |
-| **Image / Media**  | `photo_view` · `image_picker` · `cached_network_image` · `vector_graphics`                         |
+| **Image / Media**  | `photo_view` · `image_picker` · `camera` · `video_player` · `cached_network_image` · `vector_graphics` |
 | **Carousel**       | `carousel_slider`                                                                                  |
 | **List Slidables** | `flutter_slidable`                                                                                 |
 | **Permissions**    | `permission_handler`                                                                               |
@@ -350,6 +389,11 @@ Project‑scoped MCP servers in `.mcp.json` give agents direct access to:
 |-------------|------------------------------------------------|----------------------------------------------|
 | `dart`      | `fvm dart mcp-server`                          | Static analysis, formatting, packages, tests |
 | `codegraph` | `codegraph serve --mcp --path <project-root>` | Symbol search, callers/callees, code context |
+
+> 💡 **Tip** — If the CodeGraph index is missing or out of sync, build/update it by running:
+> ```bash
+> codegraph init -i
+> ```
 
 ### 📜 Rules Files
 
@@ -417,6 +461,23 @@ fvm dart run build_runner watch --delete-conflicting-outputs   # incremental
 ```
 
 Runs Freezed, Retrofit, Injectable, ObjectBox, `go_router_builder`, `flutter_gen`, and `json_serializable`. Generated files are tracked in git — adjust `.gitignore` if your team prefers otherwise.
+
+<br>
+
+## 🌐 Localization (i18n)
+
+Translations are managed using ARB (Application Resource Bundle) files located under [lib/l10n/](file:///Users/trunglaptieu/development/projects/flutter-starter-template/lib/l10n/).
+
+### 🛠 Generating Translations
+
+Since `generate: true` is enabled in [pubspec.yaml](file:///Users/trunglaptieu/development/projects/flutter-starter-template/pubspec.yaml), Flutter automatically updates the generated localization files whenever you run packages commands:
+
+```bash
+# Generate localization resources manually
+fvm flutter gen-l10n
+```
+
+Import `package:flutter_gen/gen_l10n/app_localizations.dart` and use `AppLocalizations.of(context)` to access localized strings.
 
 <br>
 
