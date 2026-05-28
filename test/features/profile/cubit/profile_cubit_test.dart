@@ -28,16 +28,16 @@ void main() {
       const channel = MethodChannel('dev.fluttercommunity.plus/package_info');
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
           .setMockMethodCallHandler(channel, (call) async {
-        if (call.method == 'getAll') {
-          return <String, dynamic>{
-            'appName': 'TestApp',
-            'packageName': 'com.test.app',
-            'version': '1.0.0',
-            'buildNumber': '42',
-          };
-        }
-        return null;
-      });
+            if (call.method == 'getAll') {
+              return <String, dynamic>{
+                'appName': 'TestApp',
+                'packageName': 'com.test.app',
+                'version': '1.0.0',
+                'buildNumber': '42',
+              };
+            }
+            return null;
+          });
 
       final cubit = ProfileCubit(_authCubit());
       await cubit.load();
@@ -52,8 +52,9 @@ void main() {
 
     test('reacts to auth authenticated state', () async {
       final mockSignIn = MockSignIn();
-      when(() => mockSignIn(username: 'alice', password: 'pass'))
-          .thenAnswer((_) async => const Ok(testUser));
+      when(
+        () => mockSignIn(username: 'alice', password: 'pass'),
+      ).thenAnswer((_) async => const Ok(testUser));
 
       final authCubit = _authCubit(signIn: mockSignIn);
       final cubit = ProfileCubit(authCubit);
@@ -70,8 +71,9 @@ void main() {
 
     test('reacts to auth signed out state', () async {
       final mockSignIn = MockSignIn();
-      when(() => mockSignIn(username: 'alice', password: 'pass'))
-          .thenAnswer((_) async => const Ok(testUser));
+      when(
+        () => mockSignIn(username: 'alice', password: 'pass'),
+      ).thenAnswer((_) async => const Ok(testUser));
 
       final mockSignOut = MockSignOut();
       when(() => mockSignOut.call()).thenAnswer((_) async => const Ok(null));
@@ -115,8 +117,9 @@ void main() {
       await cubit.close();
 
       final mockSignIn = MockSignIn();
-      when(() => mockSignIn(username: 'bob', password: 'pass'))
-          .thenAnswer((_) async => const Ok(testUser));
+      when(
+        () => mockSignIn(username: 'bob', password: 'pass'),
+      ).thenAnswer((_) async => const Ok(testUser));
 
       final authCubit2 = _authCubit(signIn: mockSignIn);
       await authCubit2.signIn(username: 'bob', password: 'pass');
@@ -130,7 +133,7 @@ void main() {
 }
 
 AuthCubit _authCubit({MockSignIn? signIn, MockSignOut? signOut}) => AuthCubit(
-      signIn: signIn ?? MockSignIn(),
-      signOut: signOut ?? MockSignOut(),
-      restoreSession: MockRestoreSession(),
-    );
+  signIn: signIn ?? MockSignIn(),
+  signOut: signOut ?? MockSignOut(),
+  restoreSession: MockRestoreSession(),
+);

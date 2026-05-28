@@ -28,8 +28,9 @@ void main() {
   setUp(() {
     mockCubit = MockAuthCubit();
     when(() => mockCubit.state).thenReturn(const AuthState.initial());
-    when(() => mockCubit.stream)
-        .thenAnswer((_) => Stream.value(const AuthState.initial()));
+    when(
+      () => mockCubit.stream,
+    ).thenAnswer((_) => Stream.value(const AuthState.initial()));
   });
 
   group('LoginScreen', () {
@@ -70,10 +71,13 @@ void main() {
       ).called(1);
     });
 
-    testWidgets('shows CircularProgressIndicator while submitting', (tester) async {
+    testWidgets('shows CircularProgressIndicator while submitting', (
+      tester,
+    ) async {
       when(() => mockCubit.state).thenReturn(const AuthState.submitting());
-      when(() => mockCubit.stream)
-          .thenAnswer((_) => Stream.value(const AuthState.submitting()));
+      when(
+        () => mockCubit.stream,
+      ).thenAnswer((_) => Stream.value(const AuthState.submitting()));
 
       await tester.pumpWidget(wrapWithDependencies(mockCubit));
       await tester.pump(const Duration(seconds: 1));
@@ -82,10 +86,12 @@ void main() {
     });
 
     testWidgets('shows error message on auth failure', (tester) async {
-      when(() => mockCubit.state)
-          .thenReturn(const AuthState.failure(testFailure));
-      when(() => mockCubit.stream)
-          .thenAnswer((_) => Stream.value(const AuthState.failure(testFailure)));
+      when(
+        () => mockCubit.state,
+      ).thenReturn(const AuthState.failure(testFailure));
+      when(
+        () => mockCubit.stream,
+      ).thenAnswer((_) => Stream.value(const AuthState.failure(testFailure)));
 
       await tester.pumpWidget(wrapWithDependencies(mockCubit));
       await tester.pump(const Duration(seconds: 1));

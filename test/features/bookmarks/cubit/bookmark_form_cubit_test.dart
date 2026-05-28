@@ -38,9 +38,7 @@ void main() {
       blocTest<BookmarkFormCubit, BookmarkFormState>(
         'loads existing bookmark for edit mode',
         setUp: () {
-          when(() => mockGet('1')).thenAnswer(
-            (_) async => Ok(testBookmark),
-          );
+          when(() => mockGet('1')).thenAnswer((_) async => Ok(testBookmark));
         },
         build: buildCubit,
         act: (cubit) => cubit.initialize('1'),
@@ -60,9 +58,9 @@ void main() {
       blocTest<BookmarkFormCubit, BookmarkFormState>(
         'emits loadFailed when bookmark not found',
         setUp: () {
-          when(() => mockGet('1')).thenAnswer(
-            (_) async => const Err(NotFoundFailure('Not found')),
-          );
+          when(
+            () => mockGet('1'),
+          ).thenAnswer((_) async => const Err(NotFoundFailure('Not found')));
         },
         build: buildCubit,
         act: (cubit) => cubit.initialize('1'),
@@ -118,9 +116,9 @@ void main() {
       blocTest<BookmarkFormCubit, BookmarkFormState>(
         'creates new bookmark on success',
         setUp: () {
-          when(() => mockCreate(any())).thenAnswer(
-            (_) async => Ok(testBookmark),
-          );
+          when(
+            () => mockCreate(any()),
+          ).thenAnswer((_) async => Ok(testBookmark));
         },
         build: buildCubit,
         seed: () => BookmarkFormState(
@@ -143,9 +141,9 @@ void main() {
       blocTest<BookmarkFormCubit, BookmarkFormState>(
         'updates existing bookmark on success',
         setUp: () {
-          when(() => mockUpdate(any(), any())).thenAnswer(
-            (_) async => Ok(testBookmark),
-          );
+          when(
+            () => mockUpdate(any(), any()),
+          ).thenAnswer((_) async => Ok(testBookmark));
         },
         build: buildCubit,
         seed: () => BookmarkFormState(
@@ -169,23 +167,19 @@ void main() {
       blocTest<BookmarkFormCubit, BookmarkFormState>(
         'returns to idle with failure on error',
         setUp: () {
-          when(() => mockCreate(any())).thenAnswer(
-            (_) async => const Err(ValidationFailure('Invalid')),
-          );
+          when(
+            () => mockCreate(any()),
+          ).thenAnswer((_) async => const Err(ValidationFailure('Invalid')));
         },
         build: buildCubit,
-        seed: () => BookmarkFormState(
-          title: '.',
-          url: '.',
-        ),
+        seed: () => BookmarkFormState(title: '.', url: '.'),
         act: (cubit) => cubit.submit(),
         expect: () => [
           predicate<BookmarkFormState>(
             (s) => s.status == BookmarkFormStatus.submitting,
           ),
           predicate<BookmarkFormState>(
-            (s) =>
-                s.status == BookmarkFormStatus.idle && s.failure != null,
+            (s) => s.status == BookmarkFormStatus.idle && s.failure != null,
           ),
         ],
       );
@@ -193,9 +187,7 @@ void main() {
       blocTest<BookmarkFormCubit, BookmarkFormState>(
         'does nothing when already submitting',
         build: buildCubit,
-        seed: () => BookmarkFormState(
-          status: BookmarkFormStatus.submitting,
-        ),
+        seed: () => BookmarkFormState(status: BookmarkFormStatus.submitting),
         act: (cubit) => cubit.submit(),
         expect: () => <BookmarkFormState>[],
       );

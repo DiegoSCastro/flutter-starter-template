@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_starter_template/core/error/failure.dart';
-import 'package:flutter_starter_template/core/network/token_refresher.dart';
 import 'package:flutter_starter_template/core/utils/result.dart';
 import 'package:flutter_starter_template/features/auth/data/datasources/auth_local_data_source.dart';
 import 'package:flutter_starter_template/features/auth/data/datasources/auth_remote_data_source.dart';
@@ -8,6 +7,7 @@ import 'package:flutter_starter_template/features/auth/data/models/auth_user_dto
 import 'package:flutter_starter_template/features/auth/data/models/refresh_token_request.dart';
 import 'package:flutter_starter_template/features/auth/data/models/sign_in_request.dart';
 import 'package:flutter_starter_template/features/auth/data/models/sign_in_response.dart';
+import 'package:flutter_starter_template/features/auth/data/network/token_refresher.dart';
 import 'package:flutter_starter_template/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:flutter_starter_template/features/auth/domain/entities/auth_user.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -54,10 +54,7 @@ void main() {
 
   group('signIn', () {
     test('returns ValidationFailure when username is empty', () async {
-      final result = await repository.signIn(
-        username: '',
-        password: 'pass',
-      );
+      final result = await repository.signIn(username: '', password: 'pass');
 
       expect(result, isA<Err<AuthUser>>());
       final err = result as Err<AuthUser>;
@@ -66,10 +63,7 @@ void main() {
     });
 
     test('returns ValidationFailure when password is empty', () async {
-      final result = await repository.signIn(
-        username: 'alice',
-        password: '',
-      );
+      final result = await repository.signIn(username: 'alice', password: '');
 
       expect(result, isA<Err<AuthUser>>());
       final err = result as Err<AuthUser>;
@@ -77,9 +71,9 @@ void main() {
     });
 
     test('returns Ok with user and persists session on success', () async {
-      when(() => mockRemote.signIn(any())).thenAnswer(
-        (_) async => testSignInResponse,
-      );
+      when(
+        () => mockRemote.signIn(any()),
+      ).thenAnswer((_) async => testSignInResponse);
       when(
         () => mockLocal.setSession(
           user: any(named: 'user'),
@@ -151,9 +145,7 @@ void main() {
 
     test('returns default message when DioException has no message', () async {
       when(() => mockRemote.signIn(any())).thenThrow(
-        DioException(
-          requestOptions: RequestOptions(path: '/api/auth/sign-in'),
-        ),
+        DioException(requestOptions: RequestOptions(path: '/api/auth/sign-in')),
       );
 
       final result = await repository.signIn(
@@ -169,34 +161,37 @@ void main() {
   });
 
   group('signOut', () {
-    test('clears local session and returns Ok when server call succeeds',
-        () async {
-      when(() => mockLocal.refreshToken).thenReturn('refresh');
-      when(() => mockRemote.signOut(any())).thenAnswer((_) async {});
-      when(() => mockLocal.clearSession()).thenAnswer((_) async {});
+    test(
+      'clears local session and returns Ok when server call succeeds',
+      () async {
+        when(() => mockLocal.refreshToken).thenReturn('refresh');
+        when(() => mockRemote.signOut(any())).thenAnswer((_) async {});
+        when(() => mockLocal.clearSession()).thenAnswer((_) async {});
 
-      final result = await repository.signOut();
+        final result = await repository.signOut();
 
-      expect(result, isA<Ok<void>>());
-      verify(() => mockLocal.clearSession()).called(1);
-    });
+        expect(result, isA<Ok<void>>());
+        verify(() => mockLocal.clearSession()).called(1);
+      },
+    );
 
     test(
-        'still clears local session when server call fails (best-effort)',
-        () async {
-      when(() => mockLocal.refreshToken).thenReturn('refresh');
-      when(() => mockRemote.signOut(any())).thenThrow(
-        DioException(
-          requestOptions: RequestOptions(path: '/api/auth/sign-out'),
-        ),
-      );
-      when(() => mockLocal.clearSession()).thenAnswer((_) async {});
+      'still clears local session when server call fails (best-effort)',
+      () async {
+        when(() => mockLocal.refreshToken).thenReturn('refresh');
+        when(() => mockRemote.signOut(any())).thenThrow(
+          DioException(
+            requestOptions: RequestOptions(path: '/api/auth/sign-out'),
+          ),
+        );
+        when(() => mockLocal.clearSession()).thenAnswer((_) async {});
 
-      final result = await repository.signOut();
+        final result = await repository.signOut();
 
-      expect(result, isA<Ok<void>>());
-      verify(() => mockLocal.clearSession()).called(1);
-    });
+        expect(result, isA<Ok<void>>());
+        verify(() => mockLocal.clearSession()).called(1);
+      },
+    );
 
     test('clears local session even when no refresh token', () async {
       when(() => mockLocal.refreshToken).thenReturn(null);

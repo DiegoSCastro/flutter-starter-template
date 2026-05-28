@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_starter_template/core/error/failure.dart';
 import 'package:flutter_starter_template/core/utils/result.dart';
-import 'package:flutter_starter_template/features/bookmarks/data/sync/bookmarks_sync_service.dart';
+import 'package:flutter_starter_template/features/bookmarks/domain/services/bookmarks_sync_controller.dart';
 import 'package:flutter_starter_template/features/bookmarks/presentation/cubit/bookmarks_list/bookmarks_list_cubit.dart';
 import 'package:flutter_starter_template/features/bookmarks/presentation/cubit/bookmarks_list/bookmarks_list_state.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -14,15 +14,17 @@ import '../../../test_utils.dart';
 void main() {
   late MockListBookmarks mockList;
   late MockDeleteBookmark mockDelete;
-  late MockBookmarksSyncService mockSync;
+  late MockBookmarksSyncController mockSync;
   late StreamController<BookmarksSyncStatus> statusController;
 
   setUp(() {
     mockList = MockListBookmarks();
     mockDelete = MockDeleteBookmark();
-    mockSync = MockBookmarksSyncService();
+    mockSync = MockBookmarksSyncController();
     statusController = StreamController<BookmarksSyncStatus>.broadcast();
-    when(() => mockSync.statusStream).thenAnswer((_) => statusController.stream);
+    when(
+      () => mockSync.statusStream,
+    ).thenAnswer((_) => statusController.stream);
   });
 
   tearDown(() {
@@ -45,9 +47,9 @@ void main() {
       blocTest<BookmarksListCubit, BookmarksListState>(
         'emits loading then items on success',
         setUp: () {
-          when(() => mockList()).thenAnswer(
-            (_) async => Ok([testBookmark, testBookmark2]),
-          );
+          when(
+            () => mockList(),
+          ).thenAnswer((_) async => Ok([testBookmark, testBookmark2]));
         },
         build: buildCubit,
         act: (cubit) => cubit.load(),
@@ -62,9 +64,9 @@ void main() {
       blocTest<BookmarksListCubit, BookmarksListState>(
         'emits loading then failure on error',
         setUp: () {
-          when(() => mockList()).thenAnswer(
-            (_) async => const Err(UnknownFailure('Failed')),
-          );
+          when(
+            () => mockList(),
+          ).thenAnswer((_) async => const Err(UnknownFailure('Failed')));
         },
         build: buildCubit,
         act: (cubit) => cubit.load(),
@@ -91,10 +93,7 @@ void main() {
       blocTest<BookmarksListCubit, BookmarksListState>(
         'does nothing when query is unchanged',
         build: buildCubit,
-        seed: () => BookmarksListState(
-          items: [testBookmark],
-          query: 'flutter',
-        ),
+        seed: () => BookmarksListState(items: [testBookmark], query: 'flutter'),
         act: (cubit) => cubit.setQuery('flutter'),
         expect: () => <BookmarksListState>[],
       );
@@ -104,27 +103,21 @@ void main() {
       blocTest<BookmarksListCubit, BookmarksListState>(
         'optimistically removes item',
         setUp: () {
-          when(() => mockDelete('1')).thenAnswer(
-            (_) async => const Ok(null),
-          );
+          when(() => mockDelete('1')).thenAnswer((_) async => const Ok(null));
         },
         build: buildCubit,
         seed: () => BookmarksListState(items: [testBookmark]),
         act: (cubit) => cubit.delete('1'),
-        expect: () => [
-          predicate<BookmarksListState>((s) => s.items.isEmpty),
-        ],
+        expect: () => [predicate<BookmarksListState>((s) => s.items.isEmpty)],
       );
 
       blocTest<BookmarksListCubit, BookmarksListState>(
         'restores item and reloads on delete failure',
         setUp: () {
-          when(() => mockDelete('1')).thenAnswer(
-            (_) async => const Err(UnknownFailure('Failed')),
-          );
-          when(() => mockList()).thenAnswer(
-            (_) async => Ok([testBookmark]),
-          );
+          when(
+            () => mockDelete('1'),
+          ).thenAnswer((_) async => const Err(UnknownFailure('Failed')));
+          when(() => mockList()).thenAnswer((_) async => Ok([testBookmark]));
         },
         build: buildCubit,
         seed: () => BookmarksListState(items: [testBookmark]),

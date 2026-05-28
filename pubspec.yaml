@@ -113,10 +113,6 @@ dependencies:
   # get typed accessors that expose a ready-to-use SvgPicture widget.
   flutter_svg: ^2.3.0
 
-  # Splash screen widget shown during app bootstrap while AuthCubit
-  # restores the persisted session, before routing to /login or /home.
-  splashscreen: ^2.0.0
-
   # Cross-platform local (on-device) notifications. Used to schedule and
   # display notifications without a push backend; permissions are requested
   # at runtime on iOS and on Android 13+.

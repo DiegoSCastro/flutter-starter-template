@@ -37,9 +37,9 @@ void main() {
       blocTest<AuthCubit, AuthState>(
         'emits authenticated when session is restored',
         build: () {
-          when(() => mockRestoreSession()).thenAnswer(
-            (_) async => const Ok(testUser),
-          );
+          when(
+            () => mockRestoreSession(),
+          ).thenAnswer((_) async => const Ok(testUser));
           return cubit;
         },
         act: (cubit) => cubit.restoreSession(),
@@ -49,9 +49,9 @@ void main() {
       blocTest<AuthCubit, AuthState>(
         'emits initial when restore fails',
         build: () {
-          when(() => mockRestoreSession()).thenAnswer(
-            (_) async => const Err(testFailure),
-          );
+          when(
+            () => mockRestoreSession(),
+          ).thenAnswer((_) async => const Err(testFailure));
           return cubit;
         },
         act: (cubit) => cubit.restoreSession(),
@@ -108,9 +108,7 @@ void main() {
       blocTest<AuthCubit, AuthState>(
         'emits initial on successful sign out',
         build: () {
-          when(() => mockSignOut()).thenAnswer(
-            (_) async => const Ok(null),
-          );
+          when(() => mockSignOut()).thenAnswer((_) async => const Ok(null));
           return cubit;
         },
         seed: () => const AuthState.authenticated(testUser),
@@ -121,9 +119,9 @@ void main() {
       blocTest<AuthCubit, AuthState>(
         'does nothing when sign out returns Err',
         build: () {
-          when(() => mockSignOut()).thenAnswer(
-            (_) async => const Err(testFailure),
-          );
+          when(
+            () => mockSignOut(),
+          ).thenAnswer((_) async => const Err(testFailure));
           return cubit;
         },
         seed: () => const AuthState.authenticated(testUser),

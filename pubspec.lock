@@ -1370,14 +1370,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.10.2"
-  splashscreen:
-    dependency: "direct main"
-    description:
-      name: splashscreen
-      sha256: "8619b056057523a76a4d3792b3de4ce23df104ea228769d848abb21881c2c6ba"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.0"
   stack_trace:
     dependency: transitive
     description:

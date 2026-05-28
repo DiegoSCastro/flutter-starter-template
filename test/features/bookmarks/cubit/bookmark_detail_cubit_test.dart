@@ -30,9 +30,7 @@ void main() {
       blocTest<BookmarkDetailCubit, BookmarkDetailState>(
         'emits loading then ready on success',
         build: () {
-          when(() => mockGet('1')).thenAnswer(
-            (_) async => Ok(testBookmark),
-          );
+          when(() => mockGet('1')).thenAnswer((_) async => Ok(testBookmark));
           return BookmarkDetailCubit(mockGet, mockDelete);
         },
         act: (cubit) => cubit.load('1'),
@@ -45,26 +43,22 @@ void main() {
       blocTest<BookmarkDetailCubit, BookmarkDetailState>(
         'emits loading then failure on error',
         build: () {
-          when(() => mockGet('1')).thenAnswer(
-            (_) async => const Err(NotFoundFailure('Not found')),
-          );
+          when(
+            () => mockGet('1'),
+          ).thenAnswer((_) async => const Err(NotFoundFailure('Not found')));
           return BookmarkDetailCubit(mockGet, mockDelete);
         },
         act: (cubit) => cubit.load('1'),
         expect: () => [
           const BookmarkDetailState.loading(),
-          predicate<BookmarkDetailState>(
-            (s) => s is BookmarkDetailFailure,
-          ),
+          predicate<BookmarkDetailState>((s) => s is BookmarkDetailFailure),
         ],
       );
     });
 
     group('delete', () {
       test('returns true on success', () async {
-        when(() => mockDelete('1')).thenAnswer(
-          (_) async => const Ok(null),
-        );
+        when(() => mockDelete('1')).thenAnswer((_) async => const Ok(null));
         final cubit = BookmarkDetailCubit(mockGet, mockDelete);
         final ok = await cubit.delete('1');
         expect(ok, true);
@@ -72,9 +66,9 @@ void main() {
       });
 
       test('returns false on failure', () async {
-        when(() => mockDelete('1')).thenAnswer(
-          (_) async => const Err(UnknownFailure('Failed')),
-        );
+        when(
+          () => mockDelete('1'),
+        ).thenAnswer((_) async => const Err(UnknownFailure('Failed')));
         final cubit = BookmarkDetailCubit(mockGet, mockDelete);
         final ok = await cubit.delete('1');
         expect(ok, false);

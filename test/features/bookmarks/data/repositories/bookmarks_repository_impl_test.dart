@@ -3,9 +3,9 @@ import 'package:flutter_starter_template/core/utils/result.dart';
 import 'package:flutter_starter_template/features/bookmarks/data/local/bookmark_entity.dart';
 import 'package:flutter_starter_template/features/bookmarks/data/local/bookmarks_local_data_source.dart';
 import 'package:flutter_starter_template/features/bookmarks/data/repositories/bookmarks_repository_impl.dart';
-import 'package:flutter_starter_template/features/bookmarks/data/sync/bookmarks_sync_service.dart';
 import 'package:flutter_starter_template/features/bookmarks/domain/entities/bookmark.dart';
 import 'package:flutter_starter_template/features/bookmarks/domain/repositories/bookmarks_repository.dart';
+import 'package:flutter_starter_template/features/bookmarks/domain/services/bookmarks_sync_controller.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:uuid/uuid.dart';
@@ -13,7 +13,8 @@ import 'package:uuid/uuid.dart';
 class MockBookmarksLocalDataSource extends Mock
     implements BookmarksLocalDataSource {}
 
-class MockBookmarksSyncService extends Mock implements BookmarksSyncService {}
+class MockBookmarksSyncController extends Mock
+    implements BookmarksSyncController {}
 
 class MockUuid extends Mock implements Uuid {}
 
@@ -21,7 +22,7 @@ class FakeBookmarkEntity extends Fake implements BookmarkEntity {}
 
 void main() {
   late MockBookmarksLocalDataSource mockLocal;
-  late MockBookmarksSyncService mockSync;
+  late MockBookmarksSyncController mockSync;
   late MockUuid mockUuid;
   late BookmarksRepositoryImpl repository;
 
@@ -59,7 +60,7 @@ void main() {
 
   setUp(() {
     mockLocal = MockBookmarksLocalDataSource();
-    mockSync = MockBookmarksSyncService();
+    mockSync = MockBookmarksSyncController();
     mockUuid = MockUuid();
     when(() => mockSync.sync()).thenAnswer((_) async {});
     repository = BookmarksRepositoryImpl(mockLocal, mockSync, mockUuid);
@@ -92,8 +93,7 @@ void main() {
   group('get', () {
     test('returns bookmark when found', () async {
       final entity = createEntity();
-      when(() => mockLocal.getByUuid('b-1'))
-          .thenAnswer((_) async => entity);
+      when(() => mockLocal.getByUuid('b-1')).thenAnswer((_) async => entity);
 
       final result = await repository.get('b-1');
 
@@ -112,11 +112,8 @@ void main() {
     });
 
     test('returns NotFoundFailure when pendingDelete', () async {
-      final entity = createEntity(
-        syncStateCode: SyncState.pendingDelete.code,
-      );
-      when(() => mockLocal.getByUuid('b-1'))
-          .thenAnswer((_) async => entity);
+      final entity = createEntity(syncStateCode: SyncState.pendingDelete.code);
+      when(() => mockLocal.getByUuid('b-1')).thenAnswer((_) async => entity);
 
       final result = await repository.get('b-1');
 
@@ -169,7 +166,8 @@ void main() {
     test('creates entity with trimmed and normalized input', () async {
       when(() => mockUuid.v4()).thenReturn('new-uuid');
       when(() => mockLocal.putNew(any())).thenAnswer(
-        (invocation) async => invocation.positionalArguments[0] as BookmarkEntity,
+        (invocation) async =>
+            invocation.positionalArguments[0] as BookmarkEntity,
       );
 
       final result = await repository.create(
@@ -195,14 +193,15 @@ void main() {
     test('puts entity with pendingCreate sync state', () async {
       when(() => mockUuid.v4()).thenReturn('new-uuid');
       when(() => mockLocal.putNew(any())).thenAnswer(
-        (invocation) async => invocation.positionalArguments[0] as BookmarkEntity,
+        (invocation) async =>
+            invocation.positionalArguments[0] as BookmarkEntity,
       );
 
       await repository.create(input);
 
-      final captured = verify(() => mockLocal.putNew(captureAny()))
-          .captured
-          .single as BookmarkEntity;
+      final captured =
+          verify(() => mockLocal.putNew(captureAny())).captured.single
+              as BookmarkEntity;
       expect(captured.uuid, 'new-uuid');
       expect(captured.syncState, SyncState.pendingCreate);
       expect(captured.syncStateCode, SyncState.pendingCreate.code);
@@ -244,11 +243,8 @@ void main() {
     });
 
     test('returns NotFoundFailure when existing is pendingDelete', () async {
-      final entity = createEntity(
-        syncStateCode: SyncState.pendingDelete.code,
-      );
-      when(() => mockLocal.getByUuid('b-1'))
-          .thenAnswer((_) async => entity);
+      final entity = createEntity(syncStateCode: SyncState.pendingDelete.code);
+      when(() => mockLocal.getByUuid('b-1')).thenAnswer((_) async => entity);
 
       final result = await repository.update('b-1', input);
 
@@ -257,8 +253,7 @@ void main() {
 
     test('transitions synced to pendingUpdate', () async {
       final entity = createEntity(syncStateCode: SyncState.synced.code);
-      when(() => mockLocal.getByUuid('b-1'))
-          .thenAnswer((_) async => entity);
+      when(() => mockLocal.getByUuid('b-1')).thenAnswer((_) async => entity);
       when(() => mockLocal.put(any())).thenAnswer((_) async {});
 
       final result = await repository.update('b-1', input);
@@ -270,11 +265,8 @@ void main() {
     });
 
     test('keeps pendingCreate when updating pendingCreate', () async {
-      final entity = createEntity(
-        syncStateCode: SyncState.pendingCreate.code,
-      );
-      when(() => mockLocal.getByUuid('b-1'))
-          .thenAnswer((_) async => entity);
+      final entity = createEntity(syncStateCode: SyncState.pendingCreate.code);
+      when(() => mockLocal.getByUuid('b-1')).thenAnswer((_) async => entity);
       when(() => mockLocal.put(any())).thenAnswer((_) async {});
 
       final result = await repository.update('b-1', input);
@@ -298,11 +290,8 @@ void main() {
     });
 
     test('returns NotFoundFailure when already pendingDelete', () async {
-      final entity = createEntity(
-        syncStateCode: SyncState.pendingDelete.code,
-      );
-      when(() => mockLocal.getByUuid('b-1'))
-          .thenAnswer((_) async => entity);
+      final entity = createEntity(syncStateCode: SyncState.pendingDelete.code);
+      when(() => mockLocal.getByUuid('b-1')).thenAnswer((_) async => entity);
 
       final result = await repository.delete('b-1');
 
@@ -314,8 +303,7 @@ void main() {
         id: 42,
         syncStateCode: SyncState.pendingCreate.code,
       );
-      when(() => mockLocal.getByUuid('b-1'))
-          .thenAnswer((_) async => entity);
+      when(() => mockLocal.getByUuid('b-1')).thenAnswer((_) async => entity);
       when(() => mockLocal.hardDelete(42)).thenAnswer((_) async {});
 
       final result = await repository.delete('b-1');
@@ -327,8 +315,7 @@ void main() {
 
     test('marks synced as pendingDelete and triggers sync', () async {
       final entity = createEntity(syncStateCode: SyncState.synced.code);
-      when(() => mockLocal.getByUuid('b-1'))
-          .thenAnswer((_) async => entity);
+      when(() => mockLocal.getByUuid('b-1')).thenAnswer((_) async => entity);
       when(() => mockLocal.put(any())).thenAnswer((_) async {});
 
       final result = await repository.delete('b-1');

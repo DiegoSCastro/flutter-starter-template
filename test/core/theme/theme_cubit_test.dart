@@ -16,9 +16,7 @@ void main() {
     mockPrefs = MockSharedPreferences();
     registerFallbackValue('');
     when(() => mockPrefs.getString(any())).thenReturn(null);
-    when(() => mockPrefs.setString(any(), any())).thenAnswer(
-      (_) async => true,
-    );
+    when(() => mockPrefs.setString(any(), any())).thenAnswer((_) async => true);
     cubit = ThemeCubit(mockPrefs);
   });
 
@@ -49,12 +47,19 @@ void main() {
         act: (cubit) => cubit.setMode(ThemeMode.dark),
         expect: () => [
           predicate<ThemeState>(
-            (s) => s.mode == ThemeMode.dark && s.scheme == ThemeState.defaultScheme,
+            (s) =>
+                s.mode == ThemeMode.dark &&
+                s.scheme == ThemeState.defaultScheme,
           ),
         ],
         verify: (_) {
           verify(() => mockPrefs.setString('app.theme_mode', 'dark')).called(1);
-          verify(() => mockPrefs.setString('app.theme_scheme', ThemeState.defaultScheme.name)).called(1);
+          verify(
+            () => mockPrefs.setString(
+              'app.theme_scheme',
+              ThemeState.defaultScheme.name,
+            ),
+          ).called(1);
         },
       );
 
@@ -77,8 +82,12 @@ void main() {
           ),
         ],
         verify: (_) {
-          verify(() => mockPrefs.setString('app.theme_mode', 'system')).called(1);
-          verify(() => mockPrefs.setString('app.theme_scheme', 'mango')).called(1);
+          verify(
+            () => mockPrefs.setString('app.theme_mode', 'system'),
+          ).called(1);
+          verify(
+            () => mockPrefs.setString('app.theme_scheme', 'mango'),
+          ).called(1);
         },
       );
 

@@ -8,6 +8,7 @@ import 'package:flutter_starter_template/features/bookmarks/data/local/bookmarks
 import 'package:flutter_starter_template/features/bookmarks/data/models/bookmark_dto.dart';
 import 'package:flutter_starter_template/features/bookmarks/data/models/bookmark_request.dart';
 import 'package:flutter_starter_template/features/bookmarks/data/sync/bookmarks_sync_service.dart';
+import 'package:flutter_starter_template/features/bookmarks/domain/services/bookmarks_sync_controller.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -87,11 +88,12 @@ void main() {
     connectivityController =
         StreamController<List<ConnectivityResult>>.broadcast();
 
-    when(() => mockConnectivity.onConnectivityChanged)
-        .thenAnswer((_) => connectivityController.stream);
-    when(() => mockConnectivity.checkConnectivity()).thenAnswer(
-      (_) async => [ConnectivityResult.wifi],
-    );
+    when(
+      () => mockConnectivity.onConnectivityChanged,
+    ).thenAnswer((_) => connectivityController.stream);
+    when(
+      () => mockConnectivity.checkConnectivity(),
+    ).thenAnswer((_) async => [ConnectivityResult.wifi]);
 
     service = BookmarksSyncService(mockLocal, mockRemote, mockConnectivity);
   });
@@ -331,9 +333,7 @@ void main() {
   group('error handling', () {
     test('emits error on DioException', () async {
       when(() => mockLocal.listPending()).thenThrow(
-        DioException(
-          requestOptions: RequestOptions(path: '/api/bookmarks'),
-        ),
+        DioException(requestOptions: RequestOptions(path: '/api/bookmarks')),
       );
 
       await service.sync();
@@ -354,10 +354,12 @@ void main() {
     test('concurrent sync calls share one in-flight', () async {
       final completer = Completer<List<BookmarkEntity>>();
       when(() => mockLocal.listPending()).thenAnswer((_) => completer.future);
-      when(() => mockLocal.listAll())
-          .thenAnswer((_) => Future.delayed(Duration.zero, () => []));
-      when(() => mockRemote.list())
-          .thenAnswer((_) => Future.delayed(Duration.zero, () => []));
+      when(
+        () => mockLocal.listAll(),
+      ).thenAnswer((_) => Future.delayed(Duration.zero, () => []));
+      when(
+        () => mockRemote.list(),
+      ).thenAnswer((_) => Future.delayed(Duration.zero, () => []));
 
       final f1 = service.sync();
       final f2 = service.sync();
