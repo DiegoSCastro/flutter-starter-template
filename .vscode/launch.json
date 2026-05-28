@@ -2,6 +2,13 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Backend (Debug)",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/simple_backend_server"
+    },
+    {
       "name": "Dev (Debug)",
       "request": "launch",
       "type": "dart",
@@ -51,6 +58,15 @@
       "args": [
         "--dart-define-from-file",
         "env/prod.json"
+      ]
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Full Stack (Debug)",
+      "configurations": [
+        "Backend (Debug)",
+        "Dev (Debug)"
       ]
     }
   ]
