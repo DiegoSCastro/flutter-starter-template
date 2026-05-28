@@ -3,7 +3,7 @@
     <source media="(prefers-color-scheme: dark)" srcset="https://img.shields.io/badge/Flutter-3.44+-02569B?style=for-the-badge&logo=flutter&logoColor=white">
     <img alt="Flutter" src="https://img.shields.io/badge/Flutter-3.44+-02569B?style=for-the-badge&logo=flutter&logoColor=white">
   </picture>
-  <a href="https://github.com/your-org/flutter-starter-template/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-green?style=for-the-badge"></a>
+  <a href="https://github.com/kido-luci/flutter-starter-template/blob/main/LICENSE"><img alt="License" src="https://img.shields.io/badge/license-MIT-green?style=for-the-badge"></a>
   <a href="https://lucistudio.com"><img alt="Luci" src="https://img.shields.io/badge/built_by-Luci_Studio-FF6B6B?style=for-the-badge&logo=data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxyZWN0IHg9IjMiIHk9IjMiIHdpZHRoPSIxOCIgaGVpZ2h0PSIxOCIgcng9IjIiIHJ5PSIyIi8+PGNpcmNsZSBjeD0iOSIgY3k9IjkiIHI9IjIiLz48bGluZSB4MT0iMTIuMSIgeTE9IjkuMSIgeDI9IjE1IiB5Mj0iMTUiLz48L3N2Zz4="></a>
 </p>
 
@@ -55,10 +55,14 @@ lib/
 │   ├── app.dart                      # MaterialApp.router + providers
 │   └── router.dart                   # TypedGoRoute + auth redirect
 ├── core/
+│   ├── animation/                    # Shared transitions + motion helpers
+│   ├── build_context_extensions.dart # Theme/MediaQuery shortcuts on BuildContext
+│   ├── config/                       # EnvConfig — typed --dart-define values
 │   ├── di/                           # get_it + injectable
 │   ├── error/                        # Failure hierarchy
 │   ├── network/                      # Dio clients, auth interceptor, token refresh
 │   ├── notifications/                # flutter_local_notifications
+│   ├── share/                        # share_plus wrapper
 │   ├── theme/                        # ThemeCubit + light/dark ThemeData
 │   ├── utils/                        # Result<T> type
 │   └── widgets/                      # Reusable UI components
@@ -111,11 +115,11 @@ feature/
 ### ⚡ Install & Generate
 
 ```bash
-git clone https://github.com/your-org/flutter-starter-template.git
+git clone https://github.com/kido-luci/flutter-starter-template.git
 cd flutter-starter-template
 
-flutter pub get
-dart run build_runner build --delete-conflicting-outputs
+fvm flutter pub get
+fvm dart run build_runner build --delete-conflicting-outputs
 ```
 
 ### 🖥 Start Backend
@@ -143,7 +147,7 @@ go run .                    # → http://localhost:8080
 ### 📱 Launch App
 
 ```bash
-flutter run
+fvm flutter run
 ```
 
 <br>
@@ -157,7 +161,7 @@ flutter run
 Crashlytics + Analytics + Messaging — pre‑configured and ready to connect.
 
 ```bash
-dart pub global activate flutterfire_cli
+fvm dart pub global activate flutterfire_cli
 flutterfire configure                          # → lib/firebase_options.dart
 ```
 
@@ -308,7 +312,7 @@ All shared components in `lib/core/widgets/`:
 
 ## 🤖 AI‑Native Workflow
 
-This project is built for AI‑assisted development with **Command Code**, Claude Code, Codex, and Antigravity.
+This project is built for AI‑assisted development with **Command Code**, Claude Code, Codex, Cursor, and Antigravity.
 
 ### 🎯 Command Code — Taste & Plans
 
@@ -342,6 +346,7 @@ Project‑scoped MCP servers in `.mcp.json` give agents direct access to:
 | Command Code    | `.commandcode/plans/`       |
 | Codex           | `AGENTS.md`                 |
 | Claude Code     | `CLAUDE.md`                 |
+| Cursor          | `.cursor/rules/`            |
 | Antigravity     | `.antigravityrules`         |
 
 ### 🛠 Agent Skills
@@ -394,10 +399,11 @@ Official playbooks from `flutter/skills` and `dart-lang/skills` are vendored in 
 ## 🔄 Code Generation
 
 ```bash
-fvm dart run build_runner build --delete-conflicting-outputs
+fvm dart run build_runner build --delete-conflicting-outputs   # one-shot
+fvm dart run build_runner watch --delete-conflicting-outputs   # incremental
 ```
 
-Generated files are tracked in git — adjust `.gitignore` if your team prefers otherwise.
+Runs Freezed, Retrofit, Injectable, ObjectBox, `go_router_builder`, `flutter_gen`, and `json_serializable`. Generated files are tracked in git — adjust `.gitignore` if your team prefers otherwise.
 
 <br>
 
@@ -408,7 +414,7 @@ Generated files are tracked in git — adjust `.gitignore` if your team prefers 
 <p align="center">
   <sub>Made with ❤️ by <a href="https://lucistudio.com">Luci Studio</a></sub>
   <br><br>
-  <a href="https://github.com/your-org/flutter-starter-template/blob/main/LICENSE">
+  <a href="https://github.com/kido-luci/flutter-starter-template/blob/main/LICENSE">
     <img alt="MIT" src="https://img.shields.io/badge/license-MIT-brightgreen?style=flat-square">
   </a>
 </p>
