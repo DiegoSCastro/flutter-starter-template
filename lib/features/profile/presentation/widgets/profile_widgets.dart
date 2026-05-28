@@ -8,10 +8,9 @@ class _ProfileHeader extends StatelessWidget {
     final theme = Theme.of(context);
     return BlocBuilder<ProfileCubit, ProfileState>(
       builder: (context, state) {
-        final initial =
-            state.username.isNotEmpty
-                ? state.username[0].toUpperCase()
-                : '?';
+        final initial = state.username.isNotEmpty
+            ? state.username[0].toUpperCase()
+            : '?';
         return Column(
           children: [
             CircleAvatar(
@@ -171,7 +170,7 @@ class _ColorSchemeSelector extends StatelessWidget {
             children: _schemes.map((scheme) {
               final isActive = scheme == state.scheme;
               return GestureDetector(
-                onTap: () => context.themeCubit.setScheme(scheme),
+                onTap: () => context.read<ThemeCubit>().setScheme(scheme),
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
                   width: 40,
@@ -268,21 +267,20 @@ class _SignOutButton extends StatelessWidget {
   Future<void> _confirmSignOut(BuildContext context) async {
     final confirmed = await showDialog<bool>(
       context: context,
-      builder:
-          (ctx) => AlertDialog(
-            title: const Text('Sign out'),
-            content: const Text('Are you sure you want to sign out?'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(ctx).pop(false),
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () => Navigator.of(ctx).pop(true),
-                child: const Text('Sign out'),
-              ),
-            ],
+      builder: (ctx) => AlertDialog(
+        title: const Text('Sign out'),
+        content: const Text('Are you sure you want to sign out?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('Cancel'),
           ),
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: const Text('Sign out'),
+          ),
+        ],
+      ),
     );
     if (confirmed == true && context.mounted) {
       context.read<ProfileCubit>().signOut();

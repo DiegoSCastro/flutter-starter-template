@@ -29,7 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
-    await context.auth.signIn(
+    await context.read<AuthCubit>().signIn(
       username: _usernameController.text.trim(),
       password: _passwordController.text,
     );

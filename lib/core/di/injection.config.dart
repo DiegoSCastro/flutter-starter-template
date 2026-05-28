@@ -18,8 +18,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
 import 'package:flutter_starter_template/core/config/env_config.dart' as _i689;
 import 'package:flutter_starter_template/core/network/network_module.dart'
     as _i173;
-import 'package:flutter_starter_template/core/network/token_refresher.dart'
-    as _i665;
 import 'package:flutter_starter_template/core/notifications/firebase_messaging_service.dart'
     as _i529;
 import 'package:flutter_starter_template/core/notifications/notifications_module.dart'
@@ -34,6 +32,10 @@ import 'package:flutter_starter_template/features/auth/data/datasources/auth_loc
     as _i297;
 import 'package:flutter_starter_template/features/auth/data/datasources/auth_remote_data_source.dart'
     as _i87;
+import 'package:flutter_starter_template/features/auth/data/network/auth_network_module.dart'
+    as _i740;
+import 'package:flutter_starter_template/features/auth/data/network/token_refresher.dart'
+    as _i533;
 import 'package:flutter_starter_template/features/auth/data/repositories/auth_repository_impl.dart'
     as _i1028;
 import 'package:flutter_starter_template/features/auth/domain/repositories/auth_repository.dart'
@@ -48,6 +50,8 @@ import 'package:flutter_starter_template/features/auth/presentation/cubit/auth_c
     as _i867;
 import 'package:flutter_starter_template/features/bookmarks/data/datasources/bookmarks_remote_data_source.dart'
     as _i729;
+import 'package:flutter_starter_template/features/bookmarks/data/datasources/bookmarks_remote_module.dart'
+    as _i235;
 import 'package:flutter_starter_template/features/bookmarks/data/local/bookmarks_local_data_source.dart'
     as _i724;
 import 'package:flutter_starter_template/features/bookmarks/data/local/object_box.dart'
@@ -58,6 +62,8 @@ import 'package:flutter_starter_template/features/bookmarks/data/sync/bookmarks_
     as _i539;
 import 'package:flutter_starter_template/features/bookmarks/domain/repositories/bookmarks_repository.dart'
     as _i630;
+import 'package:flutter_starter_template/features/bookmarks/domain/services/bookmarks_sync_controller.dart'
+    as _i627;
 import 'package:flutter_starter_template/features/bookmarks/domain/usecases/create_bookmark.dart'
     as _i632;
 import 'package:flutter_starter_template/features/bookmarks/domain/usecases/delete_bookmark.dart'
@@ -99,6 +105,8 @@ extension GetItInjectableX on _i174.GetIt {
     final secureStorageModule = _$SecureStorageModule();
     final pluginsModule = _$PluginsModule();
     final networkModule = _$NetworkModule();
+    final authNetworkModule = _$AuthNetworkModule();
+    final bookmarksRemoteModule = _$BookmarksRemoteModule();
     await gh.factoryAsync<_i460.SharedPreferences>(
       () => sharedPreferencesModule.provideSharedPreferences(),
       preResolve: true,
@@ -152,44 +160,39 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i724.BookmarksLocalDataSource>(
       () => _i724.ObjectBoxBookmarksDataSource(gh<_i831.Store>()),
     );
-    gh.lazySingleton<_i665.TokenRefresher>(
-      () => _i665.TokenRefresher(
+    gh.lazySingleton<_i533.TokenRefresher>(
+      () => _i533.TokenRefresher(
         gh<_i297.AuthLocalDataSource>(),
         gh<_i361.Dio>(instanceName: 'plain'),
       ),
     );
     gh.lazySingleton<_i361.Dio>(
-      () => networkModule.provideDio(
+      () => authNetworkModule.provideDio(
         gh<_i297.AuthLocalDataSource>(),
-        gh<_i665.TokenRefresher>(),
+        gh<_i533.TokenRefresher>(),
         gh<_i689.EnvConfig>(),
       ),
     );
     gh.lazySingleton<_i87.AuthRemoteDataSource>(
-      () => networkModule.provideAuthRemoteDataSource(gh<_i361.Dio>()),
+      () => authNetworkModule.provideAuthRemoteDataSource(gh<_i361.Dio>()),
     );
     gh.lazySingleton<_i729.BookmarksRemoteDataSource>(
-      () => networkModule.provideBookmarksRemoteDataSource(gh<_i361.Dio>()),
-    );
-    gh.lazySingleton<_i987.AuthRepository>(
-      () => _i1028.AuthRepositoryImpl(
-        gh<_i87.AuthRemoteDataSource>(),
-        gh<_i297.AuthLocalDataSource>(),
-        gh<_i665.TokenRefresher>(),
+      () => bookmarksRemoteModule.provideBookmarksRemoteDataSource(
+        gh<_i361.Dio>(),
       ),
     );
-    gh.lazySingleton<_i539.BookmarksSyncService>(
+    gh.lazySingleton<_i627.BookmarksSyncController>(
       () => _i539.BookmarksSyncService(
         gh<_i724.BookmarksLocalDataSource>(),
         gh<_i729.BookmarksRemoteDataSource>(),
         gh<_i895.Connectivity>(),
       ),
     );
-    gh.lazySingleton<_i630.BookmarksRepository>(
-      () => _i73.BookmarksRepositoryImpl(
-        gh<_i724.BookmarksLocalDataSource>(),
-        gh<_i539.BookmarksSyncService>(),
-        gh<_i706.Uuid>(),
+    gh.lazySingleton<_i987.AuthRepository>(
+      () => _i1028.AuthRepositoryImpl(
+        gh<_i87.AuthRemoteDataSource>(),
+        gh<_i297.AuthLocalDataSource>(),
+        gh<_i533.TokenRefresher>(),
       ),
     );
     gh.factory<_i271.RestoreSession>(
@@ -197,6 +200,23 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i1001.SignIn>(() => _i1001.SignIn(gh<_i987.AuthRepository>()));
     gh.factory<_i926.SignOut>(() => _i926.SignOut(gh<_i987.AuthRepository>()));
+    gh.lazySingleton<_i867.AuthCubit>(
+      () => _i867.AuthCubit(
+        signIn: gh<_i1001.SignIn>(),
+        signOut: gh<_i926.SignOut>(),
+        restoreSession: gh<_i271.RestoreSession>(),
+      ),
+    );
+    gh.lazySingleton<_i630.BookmarksRepository>(
+      () => _i73.BookmarksRepositoryImpl(
+        gh<_i724.BookmarksLocalDataSource>(),
+        gh<_i627.BookmarksSyncController>(),
+        gh<_i706.Uuid>(),
+      ),
+    );
+    gh.factory<_i656.ProfileCubit>(
+      () => _i656.ProfileCubit(gh<_i867.AuthCubit>()),
+    );
     gh.factory<_i632.CreateBookmark>(
       () => _i632.CreateBookmark(gh<_i630.BookmarksRepository>()),
     );
@@ -212,33 +232,17 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i412.UpdateBookmark>(
       () => _i412.UpdateBookmark(gh<_i630.BookmarksRepository>()),
     );
-    gh.lazySingleton<_i867.AuthCubit>(
-      () => _i867.AuthCubit(
-        signIn: gh<_i1001.SignIn>(),
-        signOut: gh<_i926.SignOut>(),
-        restoreSession: gh<_i271.RestoreSession>(),
-      ),
-    );
-    gh.lazySingleton<_i230.BookmarksListCubit>(
-      () => _i230.BookmarksListCubit(
-        gh<_i568.ListBookmarks>(),
-        gh<_i244.DeleteBookmark>(),
-        gh<_i539.BookmarksSyncService>(),
-      ),
-    );
-    gh.lazySingleton<_i656.ProfileCubit>(
-      () => _i656.ProfileCubit(gh<_i867.AuthCubit>()),
-    );
     gh.factory<_i368.BookmarkDetailCubit>(
       () => _i368.BookmarkDetailCubit(
         gh<_i690.GetBookmark>(),
         gh<_i244.DeleteBookmark>(),
       ),
     );
-    gh.lazySingleton<_i1034.HomeCubit>(
-      () => _i1034.HomeCubit(
-        gh<_i867.AuthCubit>(),
-        gh<_i230.BookmarksListCubit>(),
+    gh.lazySingleton<_i230.BookmarksListCubit>(
+      () => _i230.BookmarksListCubit(
+        gh<_i568.ListBookmarks>(),
+        gh<_i244.DeleteBookmark>(),
+        gh<_i627.BookmarksSyncController>(),
       ),
     );
     gh.factory<_i885.BookmarkFormCubit>(
@@ -246,6 +250,12 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i690.GetBookmark>(),
         gh<_i632.CreateBookmark>(),
         gh<_i412.UpdateBookmark>(),
+      ),
+    );
+    gh.lazySingleton<_i1034.HomeCubit>(
+      () => _i1034.HomeCubit(
+        gh<_i867.AuthCubit>(),
+        gh<_i230.BookmarksListCubit>(),
       ),
     );
     return this;
@@ -265,3 +275,7 @@ class _$SecureStorageModule extends _i297.SecureStorageModule {}
 class _$PluginsModule extends _i319.PluginsModule {}
 
 class _$NetworkModule extends _i173.NetworkModule {}
+
+class _$AuthNetworkModule extends _i740.AuthNetworkModule {}
+
+class _$BookmarksRemoteModule extends _i235.BookmarksRemoteModule {}

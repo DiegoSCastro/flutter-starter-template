@@ -7,13 +7,8 @@ class ShareService {
 
   final SharePlus _share;
 
-  Future<void> share({
-    required String text,
-    String? subject,
-  }) {
-    return _share.share(
-      ShareParams(text: text, subject: subject),
-    );
+  Future<void> share({required String text, String? subject}) {
+    return _share.share(ShareParams(text: text, subject: subject));
   }
 
   Future<void> shareFiles({
@@ -30,4 +25,3 @@ class ShareService {
     );
   }
 }
-

@@ -35,8 +35,9 @@ class HomeCubit extends Cubit<HomeState> {
     final authState = _authCubit.state;
     final bookmarksState = _bookmarksCubit.state;
     final items = bookmarksState.items;
-    final username =
-        authState is AuthAuthenticated ? authState.user.username : '';
+    final username = authState is AuthAuthenticated
+        ? authState.user.username
+        : '';
     final now = DateTime.now();
     final weekAgo = now.subtract(const Duration(days: 7));
 
@@ -45,7 +46,9 @@ class HomeCubit extends Cubit<HomeState> {
         isLoading: false,
         username: username,
         totalBookmarks: items.length,
-        recentBookmarks: items.where((b) => b.createdAt.isAfter(weekAgo)).length,
+        recentBookmarks: items
+            .where((b) => b.createdAt.isAfter(weekAgo))
+            .length,
         uniqueTags: items.expand((b) => b.tags).toSet().length,
         recentItems: items.take(3).toList(),
       ),

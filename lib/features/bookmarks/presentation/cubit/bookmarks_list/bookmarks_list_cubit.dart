@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../../core/utils/result.dart';
-import '../../../data/sync/bookmarks_sync_service.dart';
+import '../../../domain/services/bookmarks_sync_controller.dart';
 import '../../../domain/usecases/delete_bookmark.dart';
 import '../../../domain/usecases/list_bookmarks.dart';
 import 'bookmarks_list_state.dart';
@@ -20,7 +20,7 @@ class BookmarksListCubit extends Cubit<BookmarksListState> {
 
   final ListBookmarks _list;
   final DeleteBookmark _delete;
-  final BookmarksSyncService _sync;
+  final BookmarksSyncController _sync;
   late final StreamSubscription<BookmarksSyncStatus> _syncSub;
   BookmarksSyncStatus _lastSyncStatus = BookmarksSyncStatus.idle;
 
@@ -52,6 +52,8 @@ class BookmarksListCubit extends Cubit<BookmarksListState> {
       emit(state.copyWith(items: items));
     }
   }
+
+  Future<void> retrySync() => _sync.sync();
 
   /// Updates the search query. Filtering is derived in the state itself
   /// ([BookmarksListState.visibleItems]), so this is a single setState.

@@ -8,8 +8,7 @@ import '../datasources/bookmarks_remote_data_source.dart';
 import '../local/bookmark_entity.dart';
 import '../local/bookmarks_local_data_source.dart';
 import '../models/bookmark_request.dart';
-
-enum BookmarksSyncStatus { idle, syncing, error }
+import '../../domain/services/bookmarks_sync_controller.dart';
 
 /// Reconciles the local ObjectBox store with the remote API.
 ///
@@ -32,8 +31,8 @@ enum BookmarksSyncStatus { idle, syncing, error }
 /// Concurrent calls collapse into one in-flight sync (single-flight). The
 /// service is intentionally not a stream-of-bookmarks; the repository keeps
 /// owning reads.
-@lazySingleton
-class BookmarksSyncService {
+@LazySingleton(as: BookmarksSyncController)
+class BookmarksSyncService implements BookmarksSyncController {
   BookmarksSyncService(this._local, this._remote, this._connectivity);
 
   final BookmarksLocalDataSource _local;
@@ -47,10 +46,13 @@ class BookmarksSyncService {
 
   /// UI subscribes to drive the AppBar indicator. The latest value is also
   /// available via [statusNow].
+  @override
   Stream<BookmarksSyncStatus> get statusStream => _status.stream;
+  @override
   BookmarksSyncStatus statusNow = BookmarksSyncStatus.idle;
 
   /// Begin reacting to connectivity changes and run an initial sync. Idempotent.
+  @override
   Future<void> start() async {
     if (_connectivitySub != null) return;
     _connectivitySub = _connectivity.onConnectivityChanged.listen(
@@ -62,6 +64,7 @@ class BookmarksSyncService {
   }
 
   /// Stop listening and reset state. Called on sign-out.
+  @override
   Future<void> stop() async {
     await _connectivitySub?.cancel();
     _connectivitySub = null;
@@ -79,6 +82,7 @@ class BookmarksSyncService {
       result.any((r) => r != ConnectivityResult.none);
 
   /// Public trigger. Concurrent callers share the in-flight future.
+  @override
   Future<void> sync() {
     return _inflight ??= _run()..whenComplete(() => _inflight = null);
   }

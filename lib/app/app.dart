@@ -11,12 +11,16 @@ import '../core/theme/theme_cubit.dart';
 import '../core/theme/theme_state.dart';
 import '../features/auth/presentation/cubit/auth_cubit.dart';
 import '../features/auth/presentation/cubit/auth_state.dart';
-import '../features/bookmarks/data/sync/bookmarks_sync_service.dart';
+import '../features/bookmarks/domain/services/bookmarks_sync_controller.dart';
 import '../l10n/app_localizations.dart';
 import 'router.dart';
 
 class App extends StatefulWidget {
-  const App({super.key});
+  const App({super.key, this.authCubit, this.themeCubit, this.bookmarksSync});
+
+  final AuthCubit? authCubit;
+  final ThemeCubit? themeCubit;
+  final BookmarksSyncController? bookmarksSync;
 
   @override
   State<App> createState() => _AppState();
@@ -26,17 +30,17 @@ class _AppState extends State<App> {
   late final AuthCubit _authCubit;
   late final ThemeCubit _themeCubit;
   late final GoRouter _router;
-  late final BookmarksSyncService _sync;
+  late final BookmarksSyncController _sync;
   StreamSubscription<AuthState>? _authSub;
 
   @override
   void initState() {
     super.initState();
-    _authCubit = getIt<AuthCubit>();
-    _themeCubit = getIt<ThemeCubit>();
+    _authCubit = widget.authCubit ?? getIt<AuthCubit>();
+    _themeCubit = widget.themeCubit ?? getIt<ThemeCubit>();
     final result = buildRouterWithDeepLink(_authCubit);
     _router = result.router;
-    _sync = getIt<BookmarksSyncService>();
+    _sync = widget.bookmarksSync ?? getIt<BookmarksSyncController>();
     _authSub = _authCubit.stream.listen(_onAuthChanged);
     // Session restoration is driven by SplashScreen so it can gate routing
     // on completion instead of racing the redirect.

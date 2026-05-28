@@ -41,7 +41,9 @@ class _ProfileBody extends StatelessWidget {
             children: [
               const _ProfileHeader(),
               const SizedBox(height: 24),
-              const _SectionLabel('Appearance').animateSlideRight(delay: 350.ms),
+              const _SectionLabel(
+                'Appearance',
+              ).animateSlideRight(delay: 350.ms),
               const _ThemeModeSelector().animateSlideRight(delay: 400.ms),
               const SizedBox(height: 8),
               const _ColorSchemeSelector().animateSlideRight(delay: 450.ms),

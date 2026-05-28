@@ -209,7 +209,7 @@ class _SyncStatusIcon extends StatelessWidget {
       BookmarksSyncStatus.error => IconButton(
         tooltip: 'Sync failed — tap to retry',
         icon: const Icon(Icons.cloud_off),
-        onPressed: () => getIt<BookmarksSyncService>().sync(),
+        onPressed: () => context.read<BookmarksListCubit>().retrySync(),
       ),
       BookmarksSyncStatus.idle => const SizedBox.shrink(),
     };

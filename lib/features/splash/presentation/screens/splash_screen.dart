@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:splashscreen/splashscreen.dart' as pkg;
 
 import '../../../../app/router.dart';
 import '../../../../core/build_context_extensions.dart';
@@ -29,7 +29,7 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _bootstrap() async {
-    final cubit = context.auth;
+    final cubit = context.read<AuthCubit>();
     await Future.wait<void>([
       cubit.restoreSession(),
       Future<void>.delayed(SplashScreen._minDisplay),
@@ -41,22 +41,6 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return pkg.SplashScreen(
-      seconds: 60,
-      navigateAfterSeconds: const _SplashFallback(),
-      backgroundColor: context.colorScheme.surface,
-      loaderColor: context.colorScheme.primary,
-      useLoader: true,
-      title: Text(
-        'Flutter Starter',
-        style: context.textTheme.headlineSmall?.copyWith(
-          color: context.colorScheme.onSurface,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
-      loadingText: const Text(''),
-      loadingTextPadding: EdgeInsets.zero,
-      styleTextUnderTheLoader: TextStyle(color: context.colorScheme.onSurface),
-    );
+    return const _SplashContent();
   }
 }

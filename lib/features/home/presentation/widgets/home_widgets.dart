@@ -136,11 +136,7 @@ class _StatCard extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              icon,
-              size: 28,
-              color: context.colorScheme.primary,
-            ),
+            Icon(icon, size: 28, color: context.colorScheme.primary),
             const SizedBox(height: 8),
             Text(
               value,
@@ -198,10 +194,9 @@ class _RecentBookmarksSection extends StatelessWidget {
         ).animateFadeIn(delay: animationDelay),
         const SizedBox(height: 16),
         AppCarousel(
-          items:
-              recentItems
-                  .map((b) => _BookmarkCarouselCard(bookmark: b))
-                  .toList(),
+          items: recentItems
+              .map((b) => _BookmarkCarouselCard(bookmark: b))
+              .toList(),
           showIndicators: recentItems.length > 1,
           height: 160,
         ).animateFadeIn(delay: animationDelay + 200.ms),
@@ -263,26 +258,24 @@ class _BookmarkCarouselCard extends StatelessWidget {
                 Wrap(
                   spacing: 6,
                   runSpacing: 4,
-                  children:
-                      bookmark.tags.map((tag) {
-                        return Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 8,
-                            vertical: 2,
-                          ),
-                          decoration: BoxDecoration(
-                            color: context.colorScheme.secondaryContainer,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Text(
-                            tag,
-                            style: context.textTheme.labelSmall?.copyWith(
-                              color: context.colorScheme
-                                  .onSecondaryContainer,
-                            ),
-                          ),
-                        );
-                      }).toList(),
+                  children: bookmark.tags.map((tag) {
+                    return Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: context.colorScheme.secondaryContainer,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        tag,
+                        style: context.textTheme.labelSmall?.copyWith(
+                          color: context.colorScheme.onSecondaryContainer,
+                        ),
+                      ),
+                    );
+                  }).toList(),
                 ),
               ],
             ],
@@ -301,8 +294,7 @@ class _ProfileAvatarButton extends StatelessWidget {
     return BlocBuilder<HomeCubit, HomeState>(
       builder: (context, state) {
         final username = state.username;
-        final initial =
-            username.isNotEmpty ? username[0].toUpperCase() : '?';
+        final initial = username.isNotEmpty ? username[0].toUpperCase() : '?';
         return Padding(
           padding: const EdgeInsets.only(right: 8),
           child: IconButton(

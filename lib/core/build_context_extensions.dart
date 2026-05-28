@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../features/auth/presentation/cubit/auth_cubit.dart';
 import '../l10n/app_localizations.dart';
-import 'theme/theme_cubit.dart';
 
 extension BuildContextTheme on BuildContext {
   ThemeData get theme => Theme.of(this);
@@ -27,9 +24,4 @@ extension BuildContextMedia on BuildContext {
 
 extension BuildContextLocalization on BuildContext {
   AppLocalizations get l10n => AppLocalizations.of(this);
-}
-
-extension BuildContextCubits on BuildContext {
-  AuthCubit get auth => read<AuthCubit>();
-  ThemeCubit get themeCubit => read<ThemeCubit>();
 }

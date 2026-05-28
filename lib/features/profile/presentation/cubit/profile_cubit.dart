@@ -8,7 +8,7 @@ import '../../../auth/presentation/cubit/auth_cubit.dart';
 import '../../../auth/presentation/cubit/auth_state.dart';
 import 'profile_state.dart';
 
-@lazySingleton
+@injectable
 class ProfileCubit extends Cubit<ProfileState> {
   ProfileCubit(this._authCubit) : super(const ProfileState()) {
     _authSub = _authCubit.stream.listen(_onAuthChanged);
@@ -42,9 +42,7 @@ class ProfileCubit extends Cubit<ProfileState> {
         ),
       );
     } else {
-      emit(
-        state.copyWith(username: '', userId: ''),
-      );
+      emit(state.copyWith(username: '', userId: ''));
     }
   }
 

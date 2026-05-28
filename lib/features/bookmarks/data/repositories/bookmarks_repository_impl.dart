@@ -7,9 +7,9 @@ import '../../../../core/error/failure.dart';
 import '../../../../core/utils/result.dart';
 import '../../domain/entities/bookmark.dart';
 import '../../domain/repositories/bookmarks_repository.dart';
+import '../../domain/services/bookmarks_sync_controller.dart';
 import '../local/bookmark_entity.dart';
 import '../local/bookmarks_local_data_source.dart';
-import '../sync/bookmarks_sync_service.dart';
 
 /// Offline-first: reads always serve from the local ObjectBox store, writes
 /// commit locally first (and mark sync state), then kick a fire-and-forget
@@ -19,7 +19,7 @@ class BookmarksRepositoryImpl implements BookmarksRepository {
   BookmarksRepositoryImpl(this._local, this._sync, this._uuid);
 
   final BookmarksLocalDataSource _local;
-  final BookmarksSyncService _sync;
+  final BookmarksSyncController _sync;
   final Uuid _uuid;
 
   @override
