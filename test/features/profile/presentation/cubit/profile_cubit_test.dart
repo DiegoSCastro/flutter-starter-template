@@ -53,7 +53,7 @@ void main() {
     test('reacts to auth authenticated state', () async {
       final mockSignIn = MockSignIn();
       when(
-        () => mockSignIn(username: 'alice', password: 'pass'),
+        () => mockSignIn((username: 'alice', password: 'pass')),
       ).thenAnswer((_) async => const Ok(testUser));
 
       final authCubit = _authCubit(signIn: mockSignIn);
@@ -72,7 +72,7 @@ void main() {
     test('reacts to auth signed out state', () async {
       final mockSignIn = MockSignIn();
       when(
-        () => mockSignIn(username: 'alice', password: 'pass'),
+        () => mockSignIn((username: 'alice', password: 'pass')),
       ).thenAnswer((_) async => const Ok(testUser));
 
       final mockSignOut = MockSignOut();
@@ -118,7 +118,7 @@ void main() {
 
       final mockSignIn = MockSignIn();
       when(
-        () => mockSignIn(username: 'bob', password: 'pass'),
+        () => mockSignIn((username: 'bob', password: 'pass')),
       ).thenAnswer((_) async => const Ok(testUser));
 
       final authCubit2 = _authCubit(signIn: mockSignIn);

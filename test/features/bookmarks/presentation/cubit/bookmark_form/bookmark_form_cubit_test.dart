@@ -1,6 +1,7 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_starter_template/core/error/failure.dart';
 import 'package:flutter_starter_template/core/utils/result.dart';
+import 'package:flutter_starter_template/features/bookmarks/domain/usecases/update_bookmark.dart';
 import 'package:flutter_starter_template/features/bookmarks/presentation/cubit/bookmark_form/bookmark_form_cubit.dart';
 import 'package:flutter_starter_template/features/bookmarks/presentation/cubit/bookmark_form/bookmark_form_state.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -15,6 +16,11 @@ void main() {
 
   setUpAll(() {
     registerFallbackValue(FakeBookmarkInput());
+    final UpdateBookmarkParams fallbackUpdateParams = (
+      id: '',
+      input: FakeBookmarkInput(),
+    );
+    registerFallbackValue(fallbackUpdateParams);
   });
 
   setUp(() {
@@ -142,7 +148,7 @@ void main() {
         'updates existing bookmark on success',
         setUp: () {
           when(
-            () => mockUpdate(any(), any()),
+            () => mockUpdate(any<UpdateBookmarkParams>()),
           ).thenAnswer((_) async => Ok(testBookmark));
         },
         build: buildCubit,

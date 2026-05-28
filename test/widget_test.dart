@@ -28,7 +28,7 @@ void main() {
 
     AuthUser? currentUser;
     final signIn = MockSignIn();
-    when(() => signIn(username: 'alice', password: 'hunter2')).thenAnswer((
+    when(() => signIn((username: 'alice', password: 'hunter2'))).thenAnswer((
       _,
     ) async {
       currentUser = testUser;

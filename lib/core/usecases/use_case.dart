@@ -33,6 +33,25 @@ abstract class UseCase<Param, Output> {
       return Err(mapper(error, stackTrace));
     }
   }
+
+  Future<Result<Output>> runResultGuarded(
+    FutureOr<Result<Output>> Function() operation, {
+    FailureMapper? mapFailure,
+  }) async {
+    try {
+      return await Future<Result<Output>>.sync(operation);
+    } on Object catch (error, stackTrace) {
+      final mapper = mapFailure ?? defaultUseCaseFailureMapper;
+      return Err(mapper(error, stackTrace));
+    }
+  }
+}
+
+abstract class NoParamUseCase<Output> extends UseCase<NoParams, Output> {
+  const NoParamUseCase();
+
+  @override
+  Future<Result<Output>> call([NoParams param = noParams]);
 }
 
 Failure defaultUseCaseFailureMapper(Object error, StackTrace stackTrace) {

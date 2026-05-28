@@ -38,7 +38,7 @@ class AuthCubit extends Cubit<AuthState> {
     if (state is AuthSubmitting) return;
     emit(const AuthState.submitting());
 
-    final result = await _signIn(username: username, password: password);
+    final result = await _signIn((username: username, password: password));
     switch (result) {
       case Ok(value: final user):
         emit(AuthState.authenticated(user));

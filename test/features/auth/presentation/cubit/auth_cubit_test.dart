@@ -64,7 +64,7 @@ void main() {
         'emits submitting then authenticated on success',
         build: () {
           when(
-            () => mockSignIn(username: 'alice', password: 'pass'),
+            () => mockSignIn((username: 'alice', password: 'pass')),
           ).thenAnswer((_) async => const Ok(testUser));
           return cubit;
         },
@@ -79,7 +79,7 @@ void main() {
         'emits submitting then failure on error',
         build: () {
           when(
-            () => mockSignIn(username: 'bob', password: 'bad'),
+            () => mockSignIn((username: 'bob', password: 'bad')),
           ).thenAnswer((_) async => const Err(testFailure));
           return cubit;
         },
@@ -94,7 +94,7 @@ void main() {
         'does nothing when already submitting',
         build: () {
           when(
-            () => mockSignIn(username: 'alice', password: 'pass'),
+            () => mockSignIn((username: 'alice', password: 'pass')),
           ).thenAnswer((_) async => const Ok(testUser));
           return cubit;
         },

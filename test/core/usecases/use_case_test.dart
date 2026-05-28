@@ -56,11 +56,34 @@ void main() {
       expect(failure, isA<ValidationFailure>());
       expect(failure.message, 'Mapped');
     });
+
+    test('runResultGuarded returns existing Result', () async {
+      final result = await useCase.guardResult(() => const Ok(7));
+
+      expect(result, isA<Ok<int>>());
+      expect((result as Ok<int>).value, 7);
+    });
+
+    test('runResultGuarded maps thrown exceptions to Err', () async {
+      final result = await useCase.guardResult(() => throw Exception('boom'));
+
+      expect(result, isA<Err<int>>());
+      expect((result as Err<int>).failure, isA<UnknownFailure>());
+    });
   });
 
   group('NoParams', () {
     test('provides a reusable no-argument marker', () {
       expect(noParams, isA<NoParams>());
+    });
+
+    test('NoParamUseCase can be called without params', () async {
+      const useCase = _TestNoParamUseCase();
+
+      final result = await useCase();
+
+      expect(result, isA<Ok<int>>());
+      expect((result as Ok<int>).value, 1);
     });
   });
 }
@@ -78,5 +101,21 @@ class _TestUseCase extends UseCase<String, int> {
     FailureMapper? mapFailure,
   }) {
     return runGuarded(operation, mapFailure: mapFailure);
+  }
+
+  Future<Result<int>> guardResult(
+    FutureOr<Result<int>> Function() operation, {
+    FailureMapper? mapFailure,
+  }) {
+    return runResultGuarded(operation, mapFailure: mapFailure);
+  }
+}
+
+class _TestNoParamUseCase extends NoParamUseCase<int> {
+  const _TestNoParamUseCase();
+
+  @override
+  Future<Result<int>> call([NoParams param = noParams]) {
+    return runGuarded(() => 1);
   }
 }

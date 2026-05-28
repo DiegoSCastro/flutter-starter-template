@@ -73,7 +73,7 @@ class BookmarkFormCubit extends Cubit<BookmarkFormState> {
     );
     final result = state.id == null
         ? await _create(input)
-        : await _update(state.id!, input);
+        : await _update((id: state.id!, input: input));
 
     switch (result) {
       case Ok():
