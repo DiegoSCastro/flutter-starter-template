@@ -30,6 +30,8 @@ import 'package:flutter_starter_template/core/media/camera_service.dart'
 import 'package:flutter_starter_template/core/media/image_picker_service.dart'
     as _i735;
 import 'package:flutter_starter_template/core/media/media_module.dart' as _i773;
+import 'package:flutter_starter_template/core/media/video_player_service.dart'
+    as _i863;
 import 'package:flutter_starter_template/core/network/network_module.dart'
     as _i173;
 import 'package:flutter_starter_template/core/notifications/firebase_messaging_service.dart'
@@ -147,6 +149,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i756.CameraService>(() => _i756.CameraService());
     gh.lazySingleton<_i183.ImagePicker>(() => mediaModule.imagePicker);
+    gh.lazySingleton<_i863.VideoPlayerService>(
+      () => _i863.VideoPlayerService(),
+    );
     gh.lazySingleton<_i163.FlutterLocalNotificationsPlugin>(
       () => notificationsModule.providePlugin(),
     );
