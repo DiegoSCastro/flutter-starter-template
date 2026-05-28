@@ -266,4 +266,11 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get bookmarkUrlInvalid => 'Enter a valid URL (https://…)';
+
+  @override
+  String get errorPermissionDenied => 'Permission denied.';
+
+  @override
+  String get errorGalleryPermissionRequired =>
+      'Photo gallery access is required to attach images.';
 }

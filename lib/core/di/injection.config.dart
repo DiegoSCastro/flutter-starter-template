@@ -294,6 +294,16 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i838.AnalyticsService>(),
       ),
     );
+    gh.factory<_i540.BookmarkFormBloc>(
+      () => _i540.BookmarkFormBloc(
+        gh<_i690.GetBookmark>(),
+        gh<_i632.CreateBookmark>(),
+        gh<_i412.UpdateBookmark>(),
+        gh<_i838.AnalyticsService>(),
+        gh<_i735.ImagePickerService>(),
+        gh<_i213.PermissionService>(),
+      ),
+    );
     gh.factory<_i1013.ProfileBloc>(
       () => _i1013.ProfileBloc(gh<_i269.AuthBloc>()),
     );
@@ -303,15 +313,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i244.DeleteBookmark>(),
         gh<_i627.BookmarksSyncController>(),
         gh<_i838.AnalyticsService>(),
-      ),
-    );
-    gh.factory<_i540.BookmarkFormBloc>(
-      () => _i540.BookmarkFormBloc(
-        gh<_i690.GetBookmark>(),
-        gh<_i632.CreateBookmark>(),
-        gh<_i412.UpdateBookmark>(),
-        gh<_i838.AnalyticsService>(),
-        gh<_i735.ImagePickerService>(),
       ),
     );
     return this;

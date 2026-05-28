@@ -601,6 +601,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Enter a valid URL (https://…)'**
   String get bookmarkUrlInvalid;
+
+  /// No description provided for @errorPermissionDenied.
+  ///
+  /// In en, this message translates to:
+  /// **'Permission denied.'**
+  String get errorPermissionDenied;
+
+  /// No description provided for @errorGalleryPermissionRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Photo gallery access is required to attach images.'**
+  String get errorGalleryPermissionRequired;
 }
 
 class _AppLocalizationsDelegate

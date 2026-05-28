@@ -6,5 +6,8 @@ import '../../../../core/error/failure.dart';
 String bookmarkFailureMessage(BuildContext context, Failure failure) {
   if (failure is NotFoundFailure) return context.l10n.bookmarkNotFound;
   if (failure is ValidationFailure) return context.l10n.errorInvalidInput;
+  if (failure is PermissionFailure) {
+    return context.l10n.errorGalleryPermissionRequired;
+  }
   return context.l10n.errorUnknown;
 }

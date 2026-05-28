@@ -7,7 +7,9 @@ import 'package:injectable/injectable.dart';
 import '../../../../../core/analytics/analytics_extensions.dart';
 import '../../../../../core/analytics/analytics_service.dart';
 import '../../../../../core/bloc/event_completion.dart';
+import '../../../../../core/error/failure.dart';
 import '../../../../../core/media/image_picker_service.dart';
+import '../../../../../core/permissions/permission_service.dart';
 import '../../../../../core/utils/result.dart';
 import '../../../domain/entities/bookmark.dart';
 import '../../../domain/usecases/create_bookmark.dart';
@@ -23,6 +25,7 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
     this._update,
     this._analytics,
     this._imagePickerService,
+    this._permissionService,
   ) : super(const BookmarkFormState()) {
     on<BookmarkFormInitialized>(_onInitialized, transformer: sequential());
     on<BookmarkFormTitleChanged>(_onTitleChanged, transformer: sequential());
@@ -42,6 +45,7 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
   final UpdateBookmark _update;
   final AnalyticsService _analytics;
   final ImagePickerService _imagePickerService;
+  final PermissionService _permissionService;
   bool _submitInFlight = false;
 
   /// For create flows, pass `null`. For edit flows, fetches the existing
@@ -182,6 +186,22 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
     Emitter<BookmarkFormState> emit,
   ) async {
     try {
+      final hasPermission = await _permissionService.hasGalleryPermission();
+      if (!hasPermission) {
+        final requestResult = await _permissionService
+            .requestGalleryPermission();
+        if (!requestResult) {
+          emit(
+            state.copyWith(
+              status: BookmarkFormStatus.idle,
+              failure: const PermissionFailure(),
+            ),
+          );
+          event.completer.completeVoidIfPending();
+          return;
+        }
+      }
+
       final images = await _imagePickerService.pickMultiImage();
       if (images.isNotEmpty) {
         final newPaths = images.map((e) => e.path).toList();

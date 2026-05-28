@@ -269,4 +269,11 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get bookmarkUrlInvalid => 'Nhập URL hợp lệ (https://…)';
+
+  @override
+  String get errorPermissionDenied => 'Quyền truy cập bị từ chối.';
+
+  @override
+  String get errorGalleryPermissionRequired =>
+      'Cần có quyền truy cập thư viện ảnh để đính kèm hình ảnh.';
 }

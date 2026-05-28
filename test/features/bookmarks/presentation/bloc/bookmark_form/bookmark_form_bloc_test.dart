@@ -5,6 +5,7 @@ import 'package:flutter_starter_template/features/bookmarks/domain/usecases/upda
 import 'package:flutter_starter_template/features/bookmarks/presentation/bloc/bookmark_form/bookmark_form_bloc.dart';
 import 'package:flutter_starter_template/features/bookmarks/presentation/bloc/bookmark_form/bookmark_form_state.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../../../../../test_utils.dart';
@@ -15,6 +16,7 @@ void main() {
   late MockUpdateBookmark mockUpdate;
   late MockAnalyticsService mockAnalytics;
   late MockImagePickerService mockImagePicker;
+  late MockPermissionService mockPermission;
 
   setUpAll(() {
     registerFallbackValue(FakeBookmarkInput());
@@ -31,16 +33,18 @@ void main() {
     mockUpdate = MockUpdateBookmark();
     mockAnalytics = MockAnalyticsService();
     mockImagePicker = MockImagePickerService();
+    mockPermission = MockPermissionService();
     stubAnalyticsService(mockAnalytics);
   });
 
   BookmarkFormBloc buildBloc() => BookmarkFormBloc(
-        mockGet,
-        mockCreate,
-        mockUpdate,
-        mockAnalytics,
-        mockImagePicker,
-      );
+    mockGet,
+    mockCreate,
+    mockUpdate,
+    mockAnalytics,
+    mockImagePicker,
+    mockPermission,
+  );
 
   group('BookmarkFormBloc', () {
     group('initialize', () {
@@ -223,6 +227,82 @@ void main() {
             const BookmarkFormState(status: BookmarkFormStatus.submitting),
         act: (bloc) => bloc.submit(),
         expect: () => <BookmarkFormState>[],
+      );
+    });
+
+    group('image picking', () {
+      final mockFile = XFile('test/path.png');
+
+      blocTest<BookmarkFormBloc, BookmarkFormState>(
+        'picks images successfully when gallery permission is already granted',
+        setUp: () {
+          when(
+            () => mockPermission.hasGalleryPermission(),
+          ).thenAnswer((_) async => true);
+          when(
+            () => mockImagePicker.pickMultiImage(),
+          ).thenAnswer((_) async => [mockFile]);
+        },
+        build: buildBloc,
+        act: (bloc) => bloc.pickImages(),
+        expect: () => [
+          predicate<BookmarkFormState>(
+            (s) =>
+                s.imageUrls.length == 1 && s.imageUrls.first == 'test/path.png',
+          ),
+        ],
+      );
+
+      blocTest<BookmarkFormBloc, BookmarkFormState>(
+        'picks images successfully after requesting and getting gallery permission',
+        setUp: () {
+          when(
+            () => mockPermission.hasGalleryPermission(),
+          ).thenAnswer((_) async => false);
+          when(
+            () => mockPermission.requestGalleryPermission(),
+          ).thenAnswer((_) async => true);
+          when(
+            () => mockImagePicker.pickMultiImage(),
+          ).thenAnswer((_) async => [mockFile]);
+        },
+        build: buildBloc,
+        act: (bloc) => bloc.pickImages(),
+        expect: () => [
+          predicate<BookmarkFormState>(
+            (s) =>
+                s.imageUrls.length == 1 && s.imageUrls.first == 'test/path.png',
+          ),
+        ],
+      );
+
+      blocTest<BookmarkFormBloc, BookmarkFormState>(
+        'fails to pick images when gallery permission is denied',
+        setUp: () {
+          when(
+            () => mockPermission.hasGalleryPermission(),
+          ).thenAnswer((_) async => false);
+          when(
+            () => mockPermission.requestGalleryPermission(),
+          ).thenAnswer((_) async => false);
+        },
+        build: buildBloc,
+        act: (bloc) => bloc.pickImages(),
+        expect: () => [
+          predicate<BookmarkFormState>(
+            (s) => s.failure is PermissionFailure,
+          ),
+        ],
+      );
+
+      blocTest<BookmarkFormBloc, BookmarkFormState>(
+        'removes image successfully',
+        build: buildBloc,
+        seed: () => const BookmarkFormState(imageUrls: ['test/path.png']),
+        act: (bloc) => bloc.removeImage('test/path.png'),
+        expect: () => [
+          predicate<BookmarkFormState>((s) => s.imageUrls.isEmpty),
+        ],
       );
     });
   });

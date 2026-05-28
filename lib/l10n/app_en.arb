@@ -111,5 +111,7 @@
   "bookmarkTagsHint": "comma, separated, values",
   "bookmarkTitleRequired": "Title is required",
   "bookmarkUrlRequired": "URL is required",
-  "bookmarkUrlInvalid": "Enter a valid URL (https://…)"
+  "bookmarkUrlInvalid": "Enter a valid URL (https://…)",
+  "errorPermissionDenied": "Permission denied.",
+  "errorGalleryPermissionRequired": "Photo gallery access is required to attach images."
 }

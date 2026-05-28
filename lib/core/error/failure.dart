@@ -23,3 +23,7 @@ class NotFoundFailure extends Failure {
 class ValidationFailure extends Failure {
   const ValidationFailure([super.message = 'Invalid input']);
 }
+
+class PermissionFailure extends Failure {
+  const PermissionFailure([super.message = 'Permission denied']);
+}

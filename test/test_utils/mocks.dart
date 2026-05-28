@@ -1,5 +1,6 @@
 import 'package:flutter_starter_template/core/analytics/analytics_service.dart';
 import 'package:flutter_starter_template/core/media/image_picker_service.dart';
+import 'package:flutter_starter_template/core/permissions/permission_service.dart';
 import 'package:flutter_starter_template/features/auth/domain/repositories/auth_repository.dart';
 import 'package:flutter_starter_template/features/auth/domain/usecases/register.dart';
 import 'package:flutter_starter_template/features/auth/domain/usecases/restore_session.dart';
@@ -67,3 +68,5 @@ class MockBookmarksSyncController extends Mock
 class FakeBookmarkInput extends Fake implements BookmarkInput {}
 
 class MockImagePickerService extends Mock implements ImagePickerService {}
+
+class MockPermissionService extends Mock implements PermissionService {}

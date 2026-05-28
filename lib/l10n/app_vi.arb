@@ -83,5 +83,7 @@
   "bookmarkTagsHint": "các, giá trị, phân tách, bằng, dấu phẩy",
   "bookmarkTitleRequired": "Bắt buộc nhập tiêu đề",
   "bookmarkUrlRequired": "Bắt buộc nhập URL",
-  "bookmarkUrlInvalid": "Nhập URL hợp lệ (https://…)"
+  "bookmarkUrlInvalid": "Nhập URL hợp lệ (https://…)",
+  "errorPermissionDenied": "Quyền truy cập bị từ chối.",
+  "errorGalleryPermissionRequired": "Cần có quyền truy cập thư viện ảnh để đính kèm hình ảnh."
 }
