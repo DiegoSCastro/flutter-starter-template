@@ -42,7 +42,7 @@ class AppSlidableAction {
 
   const AppSlidableAction.delete({
     required this.onPressed,
-    this.label = 'Delete',
+    this.label,
     this.icon = Icons.delete_outline,
     this.backgroundColor,
     this.foregroundColor,
@@ -52,7 +52,7 @@ class AppSlidableAction {
     this.padding,
   }) : tone = AppSlidableActionTone.destructive;
 
-  final String label;
+  final String? label;
   final IconData icon;
   final AppSlidableActionPressed? onPressed;
   final AppSlidableActionTone tone;
@@ -76,7 +76,7 @@ class AppSlidableAction {
       backgroundColor: backgroundColor ?? _backgroundColor(context),
       foregroundColor: foregroundColor ?? _foregroundColor(context),
       icon: icon,
-      label: label,
+      label: label ?? context.l10n.commonDelete,
       borderRadius: borderRadius,
       padding: padding,
     );

@@ -33,13 +33,55 @@ class AppLocalizationsEn extends AppLocalizations {
   String get errorInvalidCredentials => 'Please enter a username and password.';
 
   @override
+  String get errorInvalidInput => 'Invalid input.';
+
+  @override
   String get errorUnknown => 'Something went wrong.';
+
+  @override
+  String get commonCancel => 'Cancel';
+
+  @override
+  String get commonCreate => 'Create';
+
+  @override
+  String get commonDelete => 'Delete';
+
+  @override
+  String get commonEdit => 'Edit';
+
+  @override
+  String get commonImageLoadFailed => 'Failed to load image';
+
+  @override
+  String get commonLoading => 'Loading…';
+
+  @override
+  String get commonRetry => 'Retry';
+
+  @override
+  String get commonSave => 'Save';
+
+  @override
+  String get commonShare => 'Share';
+
+  @override
+  String get commonSignOut => 'Sign out';
 
   @override
   String get homeAppBarTitle => 'Home';
 
   @override
   String get homeSignOutTooltip => 'Sign out';
+
+  @override
+  String get homeMyBookmarks => 'My bookmarks';
+
+  @override
+  String get homeNoDescription => 'No description';
+
+  @override
+  String get homeProfileTooltip => 'Profile';
 
   @override
   String homeWelcome(String username) {
@@ -63,4 +105,114 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get homeStatsTags => 'Tags';
+
+  @override
+  String get profileAppBarTitle => 'Profile';
+
+  @override
+  String get profileSectionAppearance => 'Appearance';
+
+  @override
+  String get profileSectionAbout => 'About';
+
+  @override
+  String get profileUserIdCopied => 'User ID copied';
+
+  @override
+  String get profileThemeSystemDefault => 'System default';
+
+  @override
+  String get profileThemeLight => 'Light';
+
+  @override
+  String get profileThemeDark => 'Dark';
+
+  @override
+  String profileAppVersionBuild(String version, String buildNumber) {
+    return 'Version $version (build $buildNumber)';
+  }
+
+  @override
+  String get profileSignOutConfirmMessage =>
+      'Are you sure you want to sign out?';
+
+  @override
+  String get bookmarksAppBarTitle => 'Bookmarks';
+
+  @override
+  String get bookmarksSearchHint => 'Search title, URL, or tag';
+
+  @override
+  String get bookmarksNoMatchesTitle => 'No matches';
+
+  @override
+  String get bookmarksNoMatchesMessage => 'No bookmarks match your search.';
+
+  @override
+  String get bookmarksEmptyTitle => 'No bookmarks yet';
+
+  @override
+  String get bookmarksEmptyMessage => 'Tap + to add your first bookmark.';
+
+  @override
+  String get bookmarksNotYetSynced => 'Not yet synced';
+
+  @override
+  String get bookmarksSyncFailedRetryTooltip => 'Sync failed - tap to retry';
+
+  @override
+  String get bookmarkAppBarTitle => 'Bookmark';
+
+  @override
+  String get bookmarkNotFound => 'Bookmark not found.';
+
+  @override
+  String get bookmarkDeleteDialogTitle => 'Delete bookmark?';
+
+  @override
+  String bookmarkDeleteDialogMessage(String title) {
+    return '\"$title\" will be removed.';
+  }
+
+  @override
+  String get bookmarkOpenUrl => 'Open URL';
+
+  @override
+  String get bookmarkInvalidUrl => 'Invalid URL';
+
+  @override
+  String get bookmarkCouldNotOpenUrl => 'Could not open URL';
+
+  @override
+  String get bookmarkFormEditTitle => 'Edit bookmark';
+
+  @override
+  String get bookmarkFormNewTitle => 'New bookmark';
+
+  @override
+  String get bookmarkFormLoadFailed => 'Failed to load bookmark.';
+
+  @override
+  String get bookmarkTitleLabel => 'Title';
+
+  @override
+  String get bookmarkUrlLabel => 'URL';
+
+  @override
+  String get bookmarkDescriptionLabel => 'Description (optional)';
+
+  @override
+  String get bookmarkTagsLabel => 'Tags';
+
+  @override
+  String get bookmarkTagsHint => 'comma, separated, values';
+
+  @override
+  String get bookmarkTitleRequired => 'Title is required';
+
+  @override
+  String get bookmarkUrlRequired => 'URL is required';
+
+  @override
+  String get bookmarkUrlInvalid => 'Enter a valid URL (https://…)';
 }

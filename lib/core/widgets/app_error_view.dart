@@ -10,14 +10,14 @@ class AppErrorView extends StatelessWidget {
     required this.message,
     this.title,
     this.onRetry,
-    this.retryLabel = 'Retry',
+    this.retryLabel,
     this.icon = Icons.error_outline,
   });
 
   final String message;
   final String? title;
   final VoidCallback? onRetry;
-  final String retryLabel;
+  final String? retryLabel;
   final IconData icon;
 
   @override
@@ -54,7 +54,7 @@ class AppErrorView extends StatelessWidget {
               FilledButton.tonalIcon(
                 onPressed: effectiveOnRetry,
                 icon: const Icon(Icons.refresh),
-                label: Text(retryLabel),
+                label: Text(retryLabel ?? context.l10n.commonRetry),
               ),
             ],
           ],

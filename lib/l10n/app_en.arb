@@ -8,9 +8,23 @@
   "loginSubmit": "Sign in",
   "fieldRequired": "Required",
   "errorInvalidCredentials": "Please enter a username and password.",
+  "errorInvalidInput": "Invalid input.",
   "errorUnknown": "Something went wrong.",
+  "commonCancel": "Cancel",
+  "commonCreate": "Create",
+  "commonDelete": "Delete",
+  "commonEdit": "Edit",
+  "commonImageLoadFailed": "Failed to load image",
+  "commonLoading": "Loading…",
+  "commonRetry": "Retry",
+  "commonSave": "Save",
+  "commonShare": "Share",
+  "commonSignOut": "Sign out",
   "homeAppBarTitle": "Home",
   "homeSignOutTooltip": "Sign out",
+  "homeMyBookmarks": "My bookmarks",
+  "homeNoDescription": "No description",
+  "homeProfileTooltip": "Profile",
   "homeWelcome": "Welcome, {username}!",
   "@homeWelcome": {
     "placeholders": {
@@ -25,5 +39,60 @@
   "homeNoBookmarks": "No bookmarks yet. Tap + to add one.",
   "homeStatsTotal": "Total",
   "homeStatsRecent": "Recent",
-  "homeStatsTags": "Tags"
+  "homeStatsTags": "Tags",
+  "profileAppBarTitle": "Profile",
+  "profileSectionAppearance": "Appearance",
+  "profileSectionAbout": "About",
+  "profileUserIdCopied": "User ID copied",
+  "profileThemeSystemDefault": "System default",
+  "profileThemeLight": "Light",
+  "profileThemeDark": "Dark",
+  "profileAppVersionBuild": "Version {version} (build {buildNumber})",
+  "@profileAppVersionBuild": {
+    "placeholders": {
+      "version": {
+        "type": "String",
+        "example": "1.0.0"
+      },
+      "buildNumber": {
+        "type": "String",
+        "example": "42"
+      }
+    }
+  },
+  "profileSignOutConfirmMessage": "Are you sure you want to sign out?",
+  "bookmarksAppBarTitle": "Bookmarks",
+  "bookmarksSearchHint": "Search title, URL, or tag",
+  "bookmarksNoMatchesTitle": "No matches",
+  "bookmarksNoMatchesMessage": "No bookmarks match your search.",
+  "bookmarksEmptyTitle": "No bookmarks yet",
+  "bookmarksEmptyMessage": "Tap + to add your first bookmark.",
+  "bookmarksNotYetSynced": "Not yet synced",
+  "bookmarksSyncFailedRetryTooltip": "Sync failed - tap to retry",
+  "bookmarkAppBarTitle": "Bookmark",
+  "bookmarkNotFound": "Bookmark not found.",
+  "bookmarkDeleteDialogTitle": "Delete bookmark?",
+  "bookmarkDeleteDialogMessage": "\"{title}\" will be removed.",
+  "@bookmarkDeleteDialogMessage": {
+    "placeholders": {
+      "title": {
+        "type": "String",
+        "example": "Flutter docs"
+      }
+    }
+  },
+  "bookmarkOpenUrl": "Open URL",
+  "bookmarkInvalidUrl": "Invalid URL",
+  "bookmarkCouldNotOpenUrl": "Could not open URL",
+  "bookmarkFormEditTitle": "Edit bookmark",
+  "bookmarkFormNewTitle": "New bookmark",
+  "bookmarkFormLoadFailed": "Failed to load bookmark.",
+  "bookmarkTitleLabel": "Title",
+  "bookmarkUrlLabel": "URL",
+  "bookmarkDescriptionLabel": "Description (optional)",
+  "bookmarkTagsLabel": "Tags",
+  "bookmarkTagsHint": "comma, separated, values",
+  "bookmarkTitleRequired": "Title is required",
+  "bookmarkUrlRequired": "URL is required",
+  "bookmarkUrlInvalid": "Enter a valid URL (https://…)"
 }

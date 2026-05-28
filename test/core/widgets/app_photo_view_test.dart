@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_starter_template/core/widgets/app_photo_view.dart';
+import 'package:flutter_starter_template/l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:photo_view/photo_view.dart';
 
@@ -10,7 +11,11 @@ import '../../test_utils.dart';
 
 void main() {
   Widget wrapWithMaterial(Widget child) {
-    return MaterialApp(home: Scaffold(body: child));
+    return MaterialApp(
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      supportedLocales: AppLocalizations.supportedLocales,
+      home: Scaffold(body: child),
+    );
   }
 
   group('AppPhotoView', () {

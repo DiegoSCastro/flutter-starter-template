@@ -14,7 +14,7 @@ class SplashContent extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              'Flutter Starter',
+              context.l10n.appTitle,
               style: context.textTheme.headlineSmall?.copyWith(
                 color: context.colorScheme.onSurface,
                 fontWeight: FontWeight.w600,

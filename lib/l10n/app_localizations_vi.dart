@@ -34,13 +34,55 @@ class AppLocalizationsVi extends AppLocalizations {
       'Vui lòng nhập tên đăng nhập và mật khẩu.';
 
   @override
+  String get errorInvalidInput => 'Dữ liệu không hợp lệ.';
+
+  @override
   String get errorUnknown => 'Đã xảy ra lỗi.';
+
+  @override
+  String get commonCancel => 'Hủy';
+
+  @override
+  String get commonCreate => 'Tạo';
+
+  @override
+  String get commonDelete => 'Xóa';
+
+  @override
+  String get commonEdit => 'Chỉnh sửa';
+
+  @override
+  String get commonImageLoadFailed => 'Không tải được hình ảnh';
+
+  @override
+  String get commonLoading => 'Đang tải…';
+
+  @override
+  String get commonRetry => 'Thử lại';
+
+  @override
+  String get commonSave => 'Lưu';
+
+  @override
+  String get commonShare => 'Chia sẻ';
+
+  @override
+  String get commonSignOut => 'Đăng xuất';
 
   @override
   String get homeAppBarTitle => 'Trang chủ';
 
   @override
   String get homeSignOutTooltip => 'Đăng xuất';
+
+  @override
+  String get homeMyBookmarks => 'Bookmark của tôi';
+
+  @override
+  String get homeNoDescription => 'Không có mô tả';
+
+  @override
+  String get homeProfileTooltip => 'Hồ sơ';
 
   @override
   String homeWelcome(String username) {
@@ -64,4 +106,116 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get homeStatsTags => 'Thẻ';
+
+  @override
+  String get profileAppBarTitle => 'Hồ sơ';
+
+  @override
+  String get profileSectionAppearance => 'Giao diện';
+
+  @override
+  String get profileSectionAbout => 'Giới thiệu';
+
+  @override
+  String get profileUserIdCopied => 'Đã sao chép ID người dùng';
+
+  @override
+  String get profileThemeSystemDefault => 'Mặc định hệ thống';
+
+  @override
+  String get profileThemeLight => 'Sáng';
+
+  @override
+  String get profileThemeDark => 'Tối';
+
+  @override
+  String profileAppVersionBuild(String version, String buildNumber) {
+    return 'Phiên bản $version (bản dựng $buildNumber)';
+  }
+
+  @override
+  String get profileSignOutConfirmMessage =>
+      'Bạn có chắc muốn đăng xuất không?';
+
+  @override
+  String get bookmarksAppBarTitle => 'Bookmarks';
+
+  @override
+  String get bookmarksSearchHint => 'Tìm tiêu đề, URL hoặc thẻ';
+
+  @override
+  String get bookmarksNoMatchesTitle => 'Không có kết quả';
+
+  @override
+  String get bookmarksNoMatchesMessage =>
+      'Không có bookmark nào khớp với tìm kiếm.';
+
+  @override
+  String get bookmarksEmptyTitle => 'Chưa có bookmark nào';
+
+  @override
+  String get bookmarksEmptyMessage => 'Nhấn + để thêm bookmark đầu tiên.';
+
+  @override
+  String get bookmarksNotYetSynced => 'Chưa đồng bộ';
+
+  @override
+  String get bookmarksSyncFailedRetryTooltip =>
+      'Đồng bộ thất bại - nhấn để thử lại';
+
+  @override
+  String get bookmarkAppBarTitle => 'Bookmark';
+
+  @override
+  String get bookmarkNotFound => 'Không tìm thấy bookmark.';
+
+  @override
+  String get bookmarkDeleteDialogTitle => 'Xóa bookmark?';
+
+  @override
+  String bookmarkDeleteDialogMessage(String title) {
+    return '\"$title\" sẽ bị xóa.';
+  }
+
+  @override
+  String get bookmarkOpenUrl => 'Mở URL';
+
+  @override
+  String get bookmarkInvalidUrl => 'URL không hợp lệ';
+
+  @override
+  String get bookmarkCouldNotOpenUrl => 'Không thể mở URL';
+
+  @override
+  String get bookmarkFormEditTitle => 'Chỉnh sửa bookmark';
+
+  @override
+  String get bookmarkFormNewTitle => 'Bookmark mới';
+
+  @override
+  String get bookmarkFormLoadFailed => 'Không tải được bookmark.';
+
+  @override
+  String get bookmarkTitleLabel => 'Tiêu đề';
+
+  @override
+  String get bookmarkUrlLabel => 'URL';
+
+  @override
+  String get bookmarkDescriptionLabel => 'Mô tả (tùy chọn)';
+
+  @override
+  String get bookmarkTagsLabel => 'Thẻ';
+
+  @override
+  String get bookmarkTagsHint => 'các, giá trị, phân tách, bằng, dấu phẩy';
+
+  @override
+  String get bookmarkTitleRequired => 'Bắt buộc nhập tiêu đề';
+
+  @override
+  String get bookmarkUrlRequired => 'Bắt buộc nhập URL';
+
+  @override
+  String get bookmarkUrlInvalid => 'Nhập URL hợp lệ (https://…)';
 }

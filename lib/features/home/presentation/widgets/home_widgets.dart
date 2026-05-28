@@ -30,7 +30,7 @@ class HomeBody extends StatelessWidget {
                 _StatsDashboard(state: state),
                 const SizedBox(height: 32),
                 AppButton(
-                  label: 'My bookmarks',
+                  label: context.l10n.homeMyBookmarks,
                   icon: Icons.bookmark_outline,
                   onPressed: () =>
                       const BookmarksListRoute().push<void>(context),
@@ -255,7 +255,7 @@ class _BookmarkCarouselCard extends StatelessWidget {
                 child: Text(
                   bookmark.description.isNotEmpty
                       ? bookmark.description
-                      : 'No description',
+                      : context.l10n.homeNoDescription,
                   style: context.textTheme.bodySmall?.copyWith(
                     color: context.colorScheme.onSurface.withValues(alpha: 0.7),
                   ),
@@ -308,7 +308,7 @@ class _ProfileAvatarButton extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.only(right: 8),
           child: IconButton(
-            tooltip: 'Profile',
+            tooltip: context.l10n.homeProfileTooltip,
             onPressed: () => const ProfileRoute().push<void>(context),
             icon: CircleAvatar(
               radius: 16,

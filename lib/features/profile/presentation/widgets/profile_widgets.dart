@@ -24,21 +24,23 @@ class ProfileBody extends StatelessWidget {
     return BlocBuilder<ProfileCubit, ProfileState>(
       builder: (context, state) {
         return AppScaffold(
-          title: 'Profile',
+          title: context.l10n.profileAppBarTitle,
           padding: EdgeInsets.zero,
           body: ListView(
             padding: const EdgeInsets.symmetric(vertical: 16),
             children: [
               const _ProfileHeader(),
               const SizedBox(height: 24),
-              const _SectionLabel(
-                'Appearance',
+              _SectionLabel(
+                context.l10n.profileSectionAppearance,
               ).animateSlideRight(delay: 350.ms),
               const _ThemeModeSelector().animateSlideRight(delay: 400.ms),
               const SizedBox(height: 8),
               const _ColorSchemeSelector().animateSlideRight(delay: 450.ms),
               const SizedBox(height: 24),
-              const _SectionLabel('About').animateSlideRight(delay: 500.ms),
+              _SectionLabel(
+                context.l10n.profileSectionAbout,
+              ).animateSlideRight(delay: 500.ms),
               const _AppInfoTile().animateSlideRight(delay: 550.ms),
               const SizedBox(height: 32),
               _SignOutButton(
@@ -103,9 +105,9 @@ class _CopyableId extends StatelessWidget {
       onTap: () {
         Clipboard.setData(ClipboardData(text: id));
         unawaited(getIt<AnalyticsService>().trackUserIdCopied());
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text('User ID copied')));
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(context.l10n.profileUserIdCopied)),
+        );
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
@@ -170,7 +172,7 @@ class _ThemeModeSelector extends StatelessWidget {
             children: ThemeMode.values.map((option) {
               return RadioListTile<ThemeMode>(
                 value: option,
-                title: Text(_labelFor(option)),
+                title: Text(_labelFor(context, option)),
                 secondary: Icon(_iconFor(option)),
               );
             }).toList(),
@@ -180,10 +182,10 @@ class _ThemeModeSelector extends StatelessWidget {
     );
   }
 
-  String _labelFor(ThemeMode mode) => switch (mode) {
-    ThemeMode.system => 'System default',
-    ThemeMode.light => 'Light',
-    ThemeMode.dark => 'Dark',
+  String _labelFor(BuildContext context, ThemeMode mode) => switch (mode) {
+    ThemeMode.system => context.l10n.profileThemeSystemDefault,
+    ThemeMode.light => context.l10n.profileThemeLight,
+    ThemeMode.dark => context.l10n.profileThemeDark,
   };
 
   IconData _iconFor(ThemeMode mode) => switch (mode) {
@@ -289,8 +291,13 @@ class _AppInfoTile extends StatelessWidget {
           leading: const Icon(Icons.info_outline),
           title: Text(info?.appName ?? '—'),
           subtitle: info == null
-              ? const Text('Loading…')
-              : Text('Version ${info.version} (build ${info.buildNumber})'),
+              ? Text(context.l10n.commonLoading)
+              : Text(
+                  context.l10n.profileAppVersionBuild(
+                    info.version,
+                    info.buildNumber,
+                  ),
+                ),
         );
       },
     );
@@ -307,7 +314,7 @@ class _SignOutButton extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20),
       child: AppButton(
-        label: 'Sign out',
+        label: context.l10n.commonSignOut,
         icon: Icons.logout,
         variant: AppButtonVariant.tonal,
         expand: true,
@@ -318,19 +325,20 @@ class _SignOutButton extends StatelessWidget {
   }
 
   Future<void> _confirmSignOut(BuildContext context) async {
+    final l10n = context.l10n;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Sign out'),
-        content: const Text('Are you sure you want to sign out?'),
+        title: Text(l10n.commonSignOut),
+        content: Text(l10n.profileSignOutConfirmMessage),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('Cancel'),
+            child: Text(l10n.commonCancel),
           ),
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('Sign out'),
+            child: Text(l10n.commonSignOut),
           ),
         ],
       ),

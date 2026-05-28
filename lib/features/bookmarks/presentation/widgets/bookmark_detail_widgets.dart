@@ -16,6 +16,7 @@ import '../../../../core/widgets/widgets.dart';
 import '../../domain/entities/bookmark.dart';
 import '../cubit/bookmark_detail/bookmark_detail_cubit.dart';
 import '../cubit/bookmark_detail/bookmark_detail_state.dart';
+import 'bookmark_failure_messages.dart';
 
 Future<void> _shareBookmark(Bookmark bookmark) async {
   unawaited(
@@ -38,7 +39,7 @@ class BookmarkDetailView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
-      title: 'Bookmark',
+      title: context.l10n.bookmarkAppBarTitle,
       padding: EdgeInsets.zero,
       actions: [
         BlocBuilder<BookmarkDetailCubit, BookmarkDetailState>(
@@ -47,17 +48,17 @@ class BookmarkDetailView extends StatelessWidget {
             return Row(
               children: [
                 IconButton(
-                  tooltip: 'Share',
+                  tooltip: context.l10n.commonShare,
                   icon: const Icon(Icons.share),
                   onPressed: () => _shareBookmark(state.bookmark),
                 ),
                 IconButton(
-                  tooltip: 'Edit',
+                  tooltip: context.l10n.commonEdit,
                   icon: const Icon(Icons.edit),
                   onPressed: () => _openEditor(context),
                 ),
                 IconButton(
-                  tooltip: 'Delete',
+                  tooltip: context.l10n.commonDelete,
                   icon: const Icon(Icons.delete_outline),
                   onPressed: () => _confirmAndDelete(context, state.bookmark),
                 ),
@@ -71,7 +72,7 @@ class BookmarkDetailView extends StatelessWidget {
           return switch (state) {
             BookmarkDetailLoading() => const AppLoading(),
             BookmarkDetailFailure(:final failure) => AppErrorView(
-              message: failure.message,
+              message: bookmarkFailureMessage(context, failure),
               onRetry: () => context.read<BookmarkDetailCubit>().load(id),
             ),
             BookmarkDetailReady(:final bookmark) => _DetailBody(
@@ -91,19 +92,20 @@ class BookmarkDetailView extends StatelessWidget {
   }
 
   Future<void> _confirmAndDelete(BuildContext context, Bookmark b) async {
+    final l10n = context.l10n;
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Delete bookmark?'),
-        content: Text('"${b.title}" will be removed.'),
+        title: Text(l10n.bookmarkDeleteDialogTitle),
+        content: Text(l10n.bookmarkDeleteDialogMessage(b.title)),
         actions: [
           AppButton(
-            label: 'Cancel',
+            label: l10n.commonCancel,
             variant: AppButtonVariant.text,
             onPressed: () => Navigator.of(ctx).pop(false),
           ),
           AppButton(
-            label: 'Delete',
+            label: l10n.commonDelete,
             variant: AppButtonVariant.tonal,
             onPressed: () => Navigator.of(ctx).pop(true),
           ),
@@ -174,7 +176,7 @@ class _DetailBody extends StatelessWidget {
           ],
           const SizedBox(height: 24),
           AppButton(
-            label: 'Open URL',
+            label: context.l10n.bookmarkOpenUrl,
             icon: Icons.open_in_new,
             expand: true,
             onPressed: () => _openUrl(context, bookmark),
@@ -187,7 +189,7 @@ class _DetailBody extends StatelessWidget {
   Future<void> _openUrl(BuildContext context, Bookmark bookmark) async {
     final uri = Uri.tryParse(bookmark.url);
     if (uri == null) {
-      _toast(context, 'Invalid URL');
+      _toast(context, context.l10n.bookmarkInvalidUrl);
       return;
     }
     unawaited(
@@ -198,7 +200,7 @@ class _DetailBody extends StatelessWidget {
     );
     final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
     if (!launched && context.mounted) {
-      _toast(context, 'Could not open URL');
+      _toast(context, context.l10n.bookmarkCouldNotOpenUrl);
     }
   }
 

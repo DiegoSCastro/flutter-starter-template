@@ -15,18 +15,20 @@ import '../../domain/entities/bookmark.dart';
 import '../../domain/services/bookmarks_sync_controller.dart';
 import '../cubit/bookmarks_list/bookmarks_list_cubit.dart';
 import '../cubit/bookmarks_list/bookmarks_list_state.dart';
+import 'bookmark_failure_messages.dart';
 
 Future<void> _showItemMenu(BuildContext context, Bookmark bookmark) async {
+  final l10n = context.l10n;
   final result = await showModalBottomSheet<String>(
     context: context,
-    builder: (_) => SafeArea(
+    builder: (sheetContext) => SafeArea(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           ListTile(
             leading: const Icon(Icons.share),
-            title: const Text('Share'),
-            onTap: () => Navigator.pop(context, 'share'),
+            title: Text(l10n.commonShare),
+            onTap: () => Navigator.pop(sheetContext, 'share'),
           ),
         ],
       ),
@@ -87,7 +89,7 @@ class _BookmarksListViewState extends State<BookmarksListView> {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
-      title: 'Bookmarks',
+      title: context.l10n.bookmarksAppBarTitle,
       padding: EdgeInsets.zero,
       actions: [
         BlocBuilder<BookmarksListCubit, BookmarksListState>(
@@ -106,7 +108,7 @@ class _BookmarksListViewState extends State<BookmarksListView> {
             padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
             child: AppTextField(
               controller: _searchController,
-              hint: 'Search title, URL, or tag',
+              hint: context.l10n.bookmarksSearchHint,
               prefixIcon: Icons.search,
               onChanged: _onSearchChanged,
             ),
@@ -119,7 +121,7 @@ class _BookmarksListViewState extends State<BookmarksListView> {
                 }
                 if (state.failure != null && state.items.isEmpty) {
                   return AppErrorView(
-                    message: state.failure!.message,
+                    message: bookmarkFailureMessage(context, state.failure!),
                     onRetry: () => context.read<BookmarksListCubit>().load(),
                   );
                 }
@@ -130,10 +132,12 @@ class _BookmarksListViewState extends State<BookmarksListView> {
                     icon: isFiltered
                         ? Icons.search_off
                         : Icons.bookmark_outline,
-                    title: isFiltered ? 'No matches' : 'No bookmarks yet',
+                    title: isFiltered
+                        ? context.l10n.bookmarksNoMatchesTitle
+                        : context.l10n.bookmarksEmptyTitle,
                     message: isFiltered
-                        ? 'No bookmarks match your search.'
-                        : 'Tap + to add your first bookmark.',
+                        ? context.l10n.bookmarksNoMatchesMessage
+                        : context.l10n.bookmarksEmptyMessage,
                   );
                 }
                 return RefreshIndicator(
@@ -156,7 +160,9 @@ class _BookmarksListViewState extends State<BookmarksListView> {
                                 );
                                 if (!shouldDelete || !context.mounted) return;
                                 unawaited(
-                                  context.read<BookmarksListCubit>().delete(b.id),
+                                  context.read<BookmarksListCubit>().delete(
+                                    b.id,
+                                  ),
                                 );
                               },
                             ),
@@ -164,7 +170,7 @@ class _BookmarksListViewState extends State<BookmarksListView> {
                           child: ListTile(
                             leading: b.isPendingSync
                                 ? Tooltip(
-                                    message: 'Not yet synced',
+                                    message: context.l10n.bookmarksNotYetSynced,
                                     child: Icon(
                                       Icons.cloud_off,
                                       color: context.colorScheme.outline,
@@ -199,19 +205,20 @@ class _BookmarksListViewState extends State<BookmarksListView> {
   }
 
   Future<bool> _confirmDelete(BuildContext context, String title) async {
+    final l10n = context.l10n;
     return await showDialog<bool>(
           context: context,
           builder: (ctx) => AlertDialog(
-            title: const Text('Delete bookmark?'),
-            content: Text('"$title" will be removed.'),
+            title: Text(l10n.bookmarkDeleteDialogTitle),
+            content: Text(l10n.bookmarkDeleteDialogMessage(title)),
             actions: [
               AppButton(
-                label: 'Cancel',
+                label: l10n.commonCancel,
                 variant: AppButtonVariant.text,
                 onPressed: () => Navigator.of(ctx).pop(false),
               ),
               AppButton(
-                label: 'Delete',
+                label: l10n.commonDelete,
                 variant: AppButtonVariant.tonal,
                 onPressed: () => Navigator.of(ctx).pop(true),
               ),
@@ -245,7 +252,7 @@ class _SyncStatusIcon extends StatelessWidget {
         ),
       ),
       BookmarksSyncStatus.error => IconButton(
-        tooltip: 'Sync failed — tap to retry',
+        tooltip: context.l10n.bookmarksSyncFailedRetryTooltip,
         icon: const Icon(Icons.cloud_off),
         onPressed: () => context.read<BookmarksListCubit>().retrySync(),
       ),

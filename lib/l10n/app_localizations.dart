@@ -146,11 +146,77 @@ abstract class AppLocalizations {
   /// **'Please enter a username and password.'**
   String get errorInvalidCredentials;
 
+  /// No description provided for @errorInvalidInput.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid input.'**
+  String get errorInvalidInput;
+
   /// No description provided for @errorUnknown.
   ///
   /// In en, this message translates to:
   /// **'Something went wrong.'**
   String get errorUnknown;
+
+  /// No description provided for @commonCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get commonCancel;
+
+  /// No description provided for @commonCreate.
+  ///
+  /// In en, this message translates to:
+  /// **'Create'**
+  String get commonCreate;
+
+  /// No description provided for @commonDelete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get commonDelete;
+
+  /// No description provided for @commonEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit'**
+  String get commonEdit;
+
+  /// No description provided for @commonImageLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load image'**
+  String get commonImageLoadFailed;
+
+  /// No description provided for @commonLoading.
+  ///
+  /// In en, this message translates to:
+  /// **'Loading…'**
+  String get commonLoading;
+
+  /// No description provided for @commonRetry.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get commonRetry;
+
+  /// No description provided for @commonSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get commonSave;
+
+  /// No description provided for @commonShare.
+  ///
+  /// In en, this message translates to:
+  /// **'Share'**
+  String get commonShare;
+
+  /// No description provided for @commonSignOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Sign out'**
+  String get commonSignOut;
 
   /// No description provided for @homeAppBarTitle.
   ///
@@ -163,6 +229,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sign out'**
   String get homeSignOutTooltip;
+
+  /// No description provided for @homeMyBookmarks.
+  ///
+  /// In en, this message translates to:
+  /// **'My bookmarks'**
+  String get homeMyBookmarks;
+
+  /// No description provided for @homeNoDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'No description'**
+  String get homeNoDescription;
+
+  /// No description provided for @homeProfileTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get homeProfileTooltip;
 
   /// No description provided for @homeWelcome.
   ///
@@ -205,6 +289,216 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Tags'**
   String get homeStatsTags;
+
+  /// No description provided for @profileAppBarTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get profileAppBarTitle;
+
+  /// No description provided for @profileSectionAppearance.
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance'**
+  String get profileSectionAppearance;
+
+  /// No description provided for @profileSectionAbout.
+  ///
+  /// In en, this message translates to:
+  /// **'About'**
+  String get profileSectionAbout;
+
+  /// No description provided for @profileUserIdCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'User ID copied'**
+  String get profileUserIdCopied;
+
+  /// No description provided for @profileThemeSystemDefault.
+  ///
+  /// In en, this message translates to:
+  /// **'System default'**
+  String get profileThemeSystemDefault;
+
+  /// No description provided for @profileThemeLight.
+  ///
+  /// In en, this message translates to:
+  /// **'Light'**
+  String get profileThemeLight;
+
+  /// No description provided for @profileThemeDark.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark'**
+  String get profileThemeDark;
+
+  /// No description provided for @profileAppVersionBuild.
+  ///
+  /// In en, this message translates to:
+  /// **'Version {version} (build {buildNumber})'**
+  String profileAppVersionBuild(String version, String buildNumber);
+
+  /// No description provided for @profileSignOutConfirmMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to sign out?'**
+  String get profileSignOutConfirmMessage;
+
+  /// No description provided for @bookmarksAppBarTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmarks'**
+  String get bookmarksAppBarTitle;
+
+  /// No description provided for @bookmarksSearchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search title, URL, or tag'**
+  String get bookmarksSearchHint;
+
+  /// No description provided for @bookmarksNoMatchesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No matches'**
+  String get bookmarksNoMatchesTitle;
+
+  /// No description provided for @bookmarksNoMatchesMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'No bookmarks match your search.'**
+  String get bookmarksNoMatchesMessage;
+
+  /// No description provided for @bookmarksEmptyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'No bookmarks yet'**
+  String get bookmarksEmptyTitle;
+
+  /// No description provided for @bookmarksEmptyMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Tap + to add your first bookmark.'**
+  String get bookmarksEmptyMessage;
+
+  /// No description provided for @bookmarksNotYetSynced.
+  ///
+  /// In en, this message translates to:
+  /// **'Not yet synced'**
+  String get bookmarksNotYetSynced;
+
+  /// No description provided for @bookmarksSyncFailedRetryTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync failed - tap to retry'**
+  String get bookmarksSyncFailedRetryTooltip;
+
+  /// No description provided for @bookmarkAppBarTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmark'**
+  String get bookmarkAppBarTitle;
+
+  /// No description provided for @bookmarkNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmark not found.'**
+  String get bookmarkNotFound;
+
+  /// No description provided for @bookmarkDeleteDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete bookmark?'**
+  String get bookmarkDeleteDialogTitle;
+
+  /// No description provided for @bookmarkDeleteDialogMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'\"{title}\" will be removed.'**
+  String bookmarkDeleteDialogMessage(String title);
+
+  /// No description provided for @bookmarkOpenUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Open URL'**
+  String get bookmarkOpenUrl;
+
+  /// No description provided for @bookmarkInvalidUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid URL'**
+  String get bookmarkInvalidUrl;
+
+  /// No description provided for @bookmarkCouldNotOpenUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not open URL'**
+  String get bookmarkCouldNotOpenUrl;
+
+  /// No description provided for @bookmarkFormEditTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit bookmark'**
+  String get bookmarkFormEditTitle;
+
+  /// No description provided for @bookmarkFormNewTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'New bookmark'**
+  String get bookmarkFormNewTitle;
+
+  /// No description provided for @bookmarkFormLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load bookmark.'**
+  String get bookmarkFormLoadFailed;
+
+  /// No description provided for @bookmarkTitleLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get bookmarkTitleLabel;
+
+  /// No description provided for @bookmarkUrlLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'URL'**
+  String get bookmarkUrlLabel;
+
+  /// No description provided for @bookmarkDescriptionLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Description (optional)'**
+  String get bookmarkDescriptionLabel;
+
+  /// No description provided for @bookmarkTagsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Tags'**
+  String get bookmarkTagsLabel;
+
+  /// No description provided for @bookmarkTagsHint.
+  ///
+  /// In en, this message translates to:
+  /// **'comma, separated, values'**
+  String get bookmarkTagsHint;
+
+  /// No description provided for @bookmarkTitleRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'Title is required'**
+  String get bookmarkTitleRequired;
+
+  /// No description provided for @bookmarkUrlRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'URL is required'**
+  String get bookmarkUrlRequired;
+
+  /// No description provided for @bookmarkUrlInvalid.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a valid URL (https://…)'**
+  String get bookmarkUrlInvalid;
 }
 
 class _AppLocalizationsDelegate

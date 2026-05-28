@@ -7,10 +7,15 @@ import 'package:flutter_starter_template/core/widgets/app_loading.dart';
 import 'package:flutter_starter_template/core/widgets/app_scaffold.dart';
 import 'package:flutter_starter_template/core/widgets/app_slidable.dart';
 import 'package:flutter_starter_template/core/widgets/app_text_field.dart';
+import 'package:flutter_starter_template/l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Widget materialApp(Widget child) {
-  return MaterialApp(home: Scaffold(body: child));
+  return MaterialApp(
+    localizationsDelegates: AppLocalizations.localizationsDelegates,
+    supportedLocales: AppLocalizations.supportedLocales,
+    home: Scaffold(body: child),
+  );
 }
 
 void main() {

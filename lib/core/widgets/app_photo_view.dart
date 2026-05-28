@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
+import '../build_context_extensions.dart';
+
 /// A wrapper widget for [PhotoView] that simplifies image zooming,
 /// supports different image sources (network, asset, file, custom provider),
 /// and integrates customizable loading and error states.
@@ -264,7 +266,7 @@ class _AppPhotoViewState extends State<AppPhotoView> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Failed to load image',
+                  context.l10n.commonImageLoadFailed,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: Theme.of(context).colorScheme.error,
                   ),

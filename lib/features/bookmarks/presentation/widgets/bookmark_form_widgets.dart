@@ -3,9 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/animation/widget_animations.dart';
+import '../../../../core/build_context_extensions.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../cubit/bookmark_form/bookmark_form_cubit.dart';
 import '../cubit/bookmark_form/bookmark_form_state.dart';
+import 'bookmark_failure_messages.dart';
 
 class BookmarkFormView extends StatefulWidget {
   const BookmarkFormView({super.key, required this.isEditing});
@@ -45,7 +47,9 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
-      title: widget.isEditing ? 'Edit bookmark' : 'New bookmark',
+      title: widget.isEditing
+          ? context.l10n.bookmarkFormEditTitle
+          : context.l10n.bookmarkFormNewTitle,
       padding: EdgeInsets.zero,
       body: BlocConsumer<BookmarkFormCubit, BookmarkFormState>(
         listenWhen: (prev, curr) => prev.status != curr.status,
@@ -55,9 +59,11 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
           }
           if (state.status == BookmarkFormStatus.idle &&
               state.failure != null) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.failure!.message)));
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(bookmarkFailureMessage(context, state.failure!)),
+              ),
+            );
           }
         },
         builder: (context, state) {
@@ -66,7 +72,9 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
           }
           if (state.status == BookmarkFormStatus.loadFailed) {
             return AppErrorView(
-              message: state.failure?.message ?? 'Failed to load bookmark.',
+              message: state.failure == null
+                  ? context.l10n.bookmarkFormLoadFailed
+                  : bookmarkFailureMessage(context, state.failure!),
             );
           }
           _hydrateFromState(state);
@@ -80,27 +88,27 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
                 children: [
                   AppTextField(
                     controller: _title,
-                    label: 'Title',
+                    label: context.l10n.bookmarkTitleLabel,
                     textInputAction: TextInputAction.next,
                     validator: (v) => (v == null || v.trim().isEmpty)
-                        ? 'Title is required'
+                        ? context.l10n.bookmarkTitleRequired
                         : null,
                     onChanged: context.read<BookmarkFormCubit>().setTitle,
                   ).animateSlideLeft(),
                   const SizedBox(height: 12),
                   AppTextField(
                     controller: _url,
-                    label: 'URL',
+                    label: context.l10n.bookmarkUrlLabel,
                     hint: 'https://example.com',
                     keyboardType: TextInputType.url,
                     textInputAction: TextInputAction.next,
-                    validator: _validateUrl,
+                    validator: (value) => _validateUrl(context, value),
                     onChanged: context.read<BookmarkFormCubit>().setUrl,
                   ).animateSlideLeft(delay: 50.ms),
                   const SizedBox(height: 12),
                   AppTextField(
                     controller: _description,
-                    label: 'Description (optional)',
+                    label: context.l10n.bookmarkDescriptionLabel,
                     minLines: 2,
                     maxLines: 4,
                     onChanged: context.read<BookmarkFormCubit>().setDescription,
@@ -108,13 +116,15 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
                   const SizedBox(height: 12),
                   AppTextField(
                     controller: _tags,
-                    label: 'Tags',
-                    hint: 'comma, separated, values',
+                    label: context.l10n.bookmarkTagsLabel,
+                    hint: context.l10n.bookmarkTagsHint,
                     onChanged: context.read<BookmarkFormCubit>().setTagsFromCsv,
                   ).animateSlideLeft(delay: 150.ms),
                   const SizedBox(height: 24),
                   AppButton(
-                    label: widget.isEditing ? 'Save' : 'Create',
+                    label: widget.isEditing
+                        ? context.l10n.commonSave
+                        : context.l10n.commonCreate,
                     isLoading: isSubmitting,
                     expand: true,
                     onPressed: () {
@@ -131,11 +141,13 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
     );
   }
 
-  String? _validateUrl(String? value) {
-    if (value == null || value.trim().isEmpty) return 'URL is required';
+  String? _validateUrl(BuildContext context, String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return context.l10n.bookmarkUrlRequired;
+    }
     final uri = Uri.tryParse(value.trim());
     if (uri == null || !uri.hasScheme || !uri.isAbsolute) {
-      return 'Enter a valid URL (https://…)';
+      return context.l10n.bookmarkUrlInvalid;
     }
     return null;
   }
