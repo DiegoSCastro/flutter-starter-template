@@ -2,70 +2,70 @@ import 'package:flutter_starter_template/core/error/failure.dart';
 import 'package:flutter_starter_template/core/utils/result.dart';
 import 'package:flutter_starter_template/features/auth/domain/entities/auth_user.dart';
 import 'package:flutter_starter_template/features/bookmarks/domain/entities/bookmark.dart';
-import 'package:flutter_starter_template/features/home/presentation/cubit/home_cubit.dart';
+import 'package:flutter_starter_template/features/home/presentation/bloc/home_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../../../../test_utils.dart';
 
 void main() {
-  group('HomeCubit', () {
+  group('HomeBloc', () {
     test('initial state is default', () async {
-      final cubit = HomeCubit(_authRepository(), MockListBookmarks());
+      final bloc = HomeBloc(_authRepository(), MockListBookmarks());
 
-      expect(cubit.state.username, '');
-      expect(cubit.state.totalBookmarks, 0);
-      expect(cubit.state.recentBookmarks, 0);
-      expect(cubit.state.uniqueTags, 0);
-      expect(cubit.state.recentItems, isEmpty);
-      expect(cubit.state.isLoading, false);
+      expect(bloc.state.username, '');
+      expect(bloc.state.totalBookmarks, 0);
+      expect(bloc.state.recentBookmarks, 0);
+      expect(bloc.state.uniqueTags, 0);
+      expect(bloc.state.recentItems, isEmpty);
+      expect(bloc.state.isLoading, false);
 
-      await cubit.close();
+      await bloc.close();
     });
 
     test('aggregates auth and bookmark data on load', () async {
       final listBookmarks = _listBookmarks(Ok([testBookmark, testBookmark2]));
-      final cubit = HomeCubit(
+      final bloc = HomeBloc(
         _authRepository(currentUser: testUser),
         listBookmarks,
       );
 
-      await cubit.load();
+      await bloc.load();
 
-      expect(cubit.state.username, 'alice');
-      expect(cubit.state.totalBookmarks, 2);
-      expect(cubit.state.uniqueTags, 2);
-      expect(cubit.state.recentItems.length, 2);
+      expect(bloc.state.username, 'alice');
+      expect(bloc.state.totalBookmarks, 2);
+      expect(bloc.state.uniqueTags, 2);
+      expect(bloc.state.recentItems.length, 2);
 
-      await cubit.close();
+      await bloc.close();
     });
 
     test('handles empty bookmarks', () async {
-      final cubit = HomeCubit(_authRepository(), _listBookmarks(const Ok([])));
-      await cubit.load();
+      final bloc = HomeBloc(_authRepository(), _listBookmarks(const Ok([])));
+      await bloc.load();
 
-      expect(cubit.state.totalBookmarks, 0);
-      expect(cubit.state.recentBookmarks, 0);
-      expect(cubit.state.uniqueTags, 0);
-      expect(cubit.state.recentItems, isEmpty);
+      expect(bloc.state.totalBookmarks, 0);
+      expect(bloc.state.recentBookmarks, 0);
+      expect(bloc.state.uniqueTags, 0);
+      expect(bloc.state.recentItems, isEmpty);
 
-      await cubit.close();
+      await bloc.close();
     });
 
     test('stores failure when bookmark load fails', () async {
       const failure = UnknownFailure('Failed');
-      final cubit = HomeCubit(
+      final bloc = HomeBloc(
         _authRepository(currentUser: testUser),
         _listBookmarks(const Err(failure)),
       );
 
-      await cubit.load();
+      await bloc.load();
 
-      expect(cubit.state.username, 'alice');
-      expect(cubit.state.isLoading, false);
-      expect(cubit.state.failure, failure);
+      expect(bloc.state.username, 'alice');
+      expect(bloc.state.isLoading, false);
+      expect(bloc.state.failure, failure);
 
-      await cubit.close();
+      await bloc.close();
     });
   });
 }

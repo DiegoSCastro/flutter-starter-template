@@ -2,8 +2,8 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_starter_template/core/error/failure.dart';
 import 'package:flutter_starter_template/core/utils/result.dart';
 import 'package:flutter_starter_template/features/bookmarks/domain/usecases/update_bookmark.dart';
-import 'package:flutter_starter_template/features/bookmarks/presentation/cubit/bookmark_form/bookmark_form_cubit.dart';
-import 'package:flutter_starter_template/features/bookmarks/presentation/cubit/bookmark_form/bookmark_form_state.dart';
+import 'package:flutter_starter_template/features/bookmarks/presentation/bloc/bookmark_form/bookmark_form_bloc.dart';
+import 'package:flutter_starter_template/features/bookmarks/presentation/bloc/bookmark_form/bookmark_form_state.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -32,25 +32,25 @@ void main() {
     stubAnalyticsService(mockAnalytics);
   });
 
-  BookmarkFormCubit buildCubit() =>
-      BookmarkFormCubit(mockGet, mockCreate, mockUpdate, mockAnalytics);
+  BookmarkFormBloc buildBloc() =>
+      BookmarkFormBloc(mockGet, mockCreate, mockUpdate, mockAnalytics);
 
-  group('BookmarkFormCubit', () {
+  group('BookmarkFormBloc', () {
     group('initialize', () {
-      blocTest<BookmarkFormCubit, BookmarkFormState>(
+      blocTest<BookmarkFormBloc, BookmarkFormState>(
         'stays idle with empty state for create mode (null id)',
-        build: buildCubit,
-        act: (cubit) => cubit.initialize(null),
+        build: buildBloc,
+        act: (bloc) => bloc.initialize(null),
         expect: () => [const BookmarkFormState()],
       );
 
-      blocTest<BookmarkFormCubit, BookmarkFormState>(
+      blocTest<BookmarkFormBloc, BookmarkFormState>(
         'loads existing bookmark for edit mode',
         setUp: () {
           when(() => mockGet('1')).thenAnswer((_) async => Ok(testBookmark));
         },
-        build: buildCubit,
-        act: (cubit) => cubit.initialize('1'),
+        build: buildBloc,
+        act: (bloc) => bloc.initialize('1'),
         expect: () => [
           predicate<BookmarkFormState>(
             (s) => s.status == BookmarkFormStatus.loading,
@@ -64,15 +64,15 @@ void main() {
         ],
       );
 
-      blocTest<BookmarkFormCubit, BookmarkFormState>(
+      blocTest<BookmarkFormBloc, BookmarkFormState>(
         'emits loadFailed when bookmark not found',
         setUp: () {
           when(
             () => mockGet('1'),
           ).thenAnswer((_) async => const Err(NotFoundFailure('Not found')));
         },
-        build: buildCubit,
-        act: (cubit) => cubit.initialize('1'),
+        build: buildBloc,
+        act: (bloc) => bloc.initialize('1'),
         expect: () => [
           predicate<BookmarkFormState>(
             (s) => s.status == BookmarkFormStatus.loading,
@@ -85,58 +85,58 @@ void main() {
     });
 
     group('field setters', () {
-      test('setTitle updates title', () {
-        final cubit = buildCubit();
-        cubit.setTitle('Dart');
-        expect(cubit.state.title, 'Dart');
-        cubit.close();
+      test('setTitle updates title', () async {
+        final bloc = buildBloc();
+        await bloc.setTitle('Dart');
+        expect(bloc.state.title, 'Dart');
+        await bloc.close();
       });
 
-      test('setUrl updates url', () {
-        final cubit = buildCubit();
-        cubit.setUrl('https://dart.dev');
-        expect(cubit.state.url, 'https://dart.dev');
-        cubit.close();
+      test('setUrl updates url', () async {
+        final bloc = buildBloc();
+        await bloc.setUrl('https://dart.dev');
+        expect(bloc.state.url, 'https://dart.dev');
+        await bloc.close();
       });
 
-      test('setDescription updates description', () {
-        final cubit = buildCubit();
-        cubit.setDescription('The Dart language');
-        expect(cubit.state.description, 'The Dart language');
-        cubit.close();
+      test('setDescription updates description', () async {
+        final bloc = buildBloc();
+        await bloc.setDescription('The Dart language');
+        expect(bloc.state.description, 'The Dart language');
+        await bloc.close();
       });
 
-      test('setTagsFromCsv parses comma-separated tags', () {
-        final cubit = buildCubit();
-        cubit.setTagsFromCsv('a, b, c ,');
-        expect(cubit.state.tags, ['a', 'b', 'c']);
-        cubit.close();
+      test('setTagsFromCsv parses comma-separated tags', () async {
+        final bloc = buildBloc();
+        await bloc.setTagsFromCsv('a, b, c ,');
+        expect(bloc.state.tags, ['a', 'b', 'c']);
+        await bloc.close();
       });
 
-      test('setTagsFromCsv with empty string yields empty list', () {
-        final cubit = buildCubit();
-        cubit.setTagsFromCsv('');
-        expect(cubit.state.tags, isEmpty);
-        cubit.close();
+      test('setTagsFromCsv with empty string yields empty list', () async {
+        final bloc = buildBloc();
+        await bloc.setTagsFromCsv('');
+        expect(bloc.state.tags, isEmpty);
+        await bloc.close();
       });
     });
 
     group('submit', () {
-      blocTest<BookmarkFormCubit, BookmarkFormState>(
+      blocTest<BookmarkFormBloc, BookmarkFormState>(
         'creates new bookmark on success',
         setUp: () {
           when(
             () => mockCreate(any()),
           ).thenAnswer((_) async => Ok(testBookmark));
         },
-        build: buildCubit,
+        build: buildBloc,
         seed: () => const BookmarkFormState(
           title: 'Flutter',
           url: 'https://flutter.dev',
           description: 'Flutter website',
           tags: ['dev'],
         ),
-        act: (cubit) => cubit.submit(),
+        act: (bloc) => bloc.submit(),
         expect: () => [
           predicate<BookmarkFormState>(
             (s) => s.status == BookmarkFormStatus.submitting,
@@ -155,14 +155,14 @@ void main() {
         },
       );
 
-      blocTest<BookmarkFormCubit, BookmarkFormState>(
+      blocTest<BookmarkFormBloc, BookmarkFormState>(
         'updates existing bookmark on success',
         setUp: () {
           when(
             () => mockUpdate(any<UpdateBookmarkParams>()),
           ).thenAnswer((_) async => Ok(testBookmark));
         },
-        build: buildCubit,
+        build: buildBloc,
         seed: () => const BookmarkFormState(
           id: '1',
           title: 'Flutter',
@@ -170,7 +170,7 @@ void main() {
           description: 'Flutter website',
           tags: ['dev'],
         ),
-        act: (cubit) => cubit.submit(),
+        act: (bloc) => bloc.submit(),
         expect: () => [
           predicate<BookmarkFormState>(
             (s) => s.status == BookmarkFormStatus.submitting,
@@ -189,16 +189,16 @@ void main() {
         },
       );
 
-      blocTest<BookmarkFormCubit, BookmarkFormState>(
+      blocTest<BookmarkFormBloc, BookmarkFormState>(
         'returns to idle with failure on error',
         setUp: () {
           when(
             () => mockCreate(any()),
           ).thenAnswer((_) async => const Err(ValidationFailure('Invalid')));
         },
-        build: buildCubit,
+        build: buildBloc,
         seed: () => const BookmarkFormState(title: '.', url: '.'),
-        act: (cubit) => cubit.submit(),
+        act: (bloc) => bloc.submit(),
         expect: () => [
           predicate<BookmarkFormState>(
             (s) => s.status == BookmarkFormStatus.submitting,
@@ -209,11 +209,12 @@ void main() {
         ],
       );
 
-      blocTest<BookmarkFormCubit, BookmarkFormState>(
+      blocTest<BookmarkFormBloc, BookmarkFormState>(
         'does nothing when already submitting',
-        build: buildCubit,
-        seed: () => const BookmarkFormState(status: BookmarkFormStatus.submitting),
-        act: (cubit) => cubit.submit(),
+        build: buildBloc,
+        seed: () =>
+            const BookmarkFormState(status: BookmarkFormStatus.submitting),
+        act: (bloc) => bloc.submit(),
         expect: () => <BookmarkFormState>[],
       );
     });

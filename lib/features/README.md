@@ -22,7 +22,7 @@ The outermost layer responsible for data retrieval and persistence. This layer i
 
 ### 3. `presentation/`
 The UI layer responsible for displaying information to the user and capturing user input.
-- **State Management:** Cubits or BLoCs that manage the state of the UI and interact with domain services.
+- **State Management:** BLoCs that manage the state of the UI and interact with domain services.
 - **Screens / Pages:** Full-screen widgets representing a complete view.
 - **Widgets:** Smaller, reusable UI components specific to this feature.
 

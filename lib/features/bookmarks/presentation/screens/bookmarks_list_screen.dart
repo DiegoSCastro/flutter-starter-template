@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/di/injection.dart';
-import '../cubit/bookmarks_list/bookmarks_list_cubit.dart';
+import '../bloc/bookmarks_list/bookmarks_list_bloc.dart';
 import '../widgets/bookmarks_list_widgets.dart';
 
 class BookmarksListScreen extends StatelessWidget {
@@ -11,7 +11,7 @@ class BookmarksListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => getIt<BookmarksListCubit>()..load(),
+      create: (_) => getIt<BookmarksListBloc>()..load(),
       child: const BookmarksListView(),
     );
   }

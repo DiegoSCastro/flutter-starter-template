@@ -35,7 +35,7 @@ Release modes against `lib/main.dart`.
 - Use the feature-first Clean Architecture layout already present under
   `lib/features/<feature>/{data,domain,presentation}`.
 - Keep reusable cross-feature code under `lib/core`.
-- Prefer Cubit/BLoC state patterns already used in the project.
+- Prefer BLoC state patterns already used in the project.
 - Use immutable models and Freezed unions where the surrounding code does.
 - Do not hand-edit generated files such as `*.freezed.dart`, `*.g.dart`,
   `router.g.dart`, `injection.config.dart`, or `objectbox.g.dart`; update the
@@ -119,4 +119,3 @@ Ask the user:
 > I notice this project does not have CodeGraph initialized. Want me to run
 > `codegraph init -i` to build the index?
 <!-- CODEGRAPH_END -->
-

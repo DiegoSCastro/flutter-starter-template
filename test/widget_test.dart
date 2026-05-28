@@ -3,12 +3,12 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_starter_template/app/app.dart';
 import 'package:flutter_starter_template/core/di/injection.dart';
-import 'package:flutter_starter_template/core/theme/theme_cubit.dart';
+import 'package:flutter_starter_template/core/theme/theme_bloc.dart';
 import 'package:flutter_starter_template/core/utils/result.dart';
 import 'package:flutter_starter_template/features/auth/domain/entities/auth_user.dart';
-import 'package:flutter_starter_template/features/auth/presentation/cubit/auth_cubit.dart';
+import 'package:flutter_starter_template/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:flutter_starter_template/features/bookmarks/domain/services/bookmarks_sync_controller.dart';
-import 'package:flutter_starter_template/features/home/presentation/cubit/home_cubit.dart';
+import 'package:flutter_starter_template/features/home/presentation/bloc/home_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,9 +19,9 @@ void main() {
   late StreamController<BookmarksSyncStatus> syncStatusController;
   late MockBookmarksSyncController sync;
   late MockAnalyticsService analytics;
-  late AuthCubit authCubit;
-  late ThemeCubit themeCubit;
-  HomeCubit? homeCubit;
+  late AuthBloc authBloc;
+  late ThemeBloc themeBloc;
+  HomeBloc? homeBloc;
 
   setUp(() async {
     await getIt.reset();
@@ -61,43 +61,55 @@ void main() {
     final authRepository = MockAuthRepository();
     when(() => authRepository.currentUser).thenAnswer((_) => currentUser);
 
-    authCubit = AuthCubit(
+    authBloc = AuthBloc(
       signIn: signIn,
       signOut: signOut,
       restoreSession: restoreSession,
       analytics: analytics,
     );
-    themeCubit = ThemeCubit(await SharedPreferences.getInstance(), analytics);
+    themeBloc = ThemeBloc(await SharedPreferences.getInstance(), analytics);
 
-    getIt.registerFactory<HomeCubit>(() {
-      final cubit = HomeCubit(authRepository, listBookmarks);
-      homeCubit = cubit;
-      return cubit;
+    getIt.registerFactory<HomeBloc>(() {
+      final bloc = HomeBloc(authRepository, listBookmarks);
+      homeBloc = bloc;
+      return bloc;
     });
   });
 
   tearDown(() async {
     await getIt.reset();
-    final cubit = homeCubit;
-    if (cubit != null && !cubit.isClosed) {
-      await cubit.close();
+    final bloc = homeBloc;
+    if (bloc != null && !bloc.isClosed) {
+      await bloc.close();
     }
-    await themeCubit.close();
-    await authCubit.close();
+    await themeBloc.close();
+    await authBloc.close();
     await syncStatusController.close();
   });
 
   testWidgets('signs in and lands on home screen', (tester) async {
     await tester.pumpWidget(
       App(
-        authCubit: authCubit,
-        themeCubit: themeCubit,
+        authBloc: authBloc,
+        themeBloc: themeBloc,
         bookmarksSync: sync,
         navigatorObservers: const [],
       ),
     );
-    await tester.pump(const Duration(seconds: 3));
     await tester.pump();
+    await tester.idle();
+    await tester.runAsync(() async {
+      await Future<void>.delayed(Duration.zero);
+    });
+    await tester.pump(const Duration(seconds: 3));
+    await tester.idle();
+    await tester.runAsync(() async {
+      await Future<void>.delayed(Duration.zero);
+    });
+    await tester.pump();
+    for (var i = 0; i < 40 && find.text('Sign in').evaluate().isEmpty; i++) {
+      await tester.pump(const Duration(milliseconds: 100));
+    }
 
     expect(find.text('Sign in'), findsWidgets);
 
@@ -105,9 +117,15 @@ void main() {
     await tester.enterText(find.byType(TextFormField).at(1), 'hunter2');
 
     await tester.tap(find.widgetWithText(FilledButton, 'Sign in'));
+    await tester.runAsync(() async {
+      await Future<void>.delayed(Duration.zero);
+    });
     await tester.pumpAndSettle();
+    for (var i = 0; i < 20 && find.text('Home').evaluate().isEmpty; i++) {
+      await tester.pump(const Duration(milliseconds: 100));
+    }
 
     expect(find.text('Home'), findsOneWidget);
-    expect(homeCubit?.state.username, 'alice');
+    expect(homeBloc?.state.username, 'alice');
   });
 }

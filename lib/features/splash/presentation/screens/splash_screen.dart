@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../app/router.dart';
-import '../../../auth/presentation/cubit/auth_cubit.dart';
+import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../widgets/splash_widgets.dart';
 
-/// Bootstrap screen shown while [AuthCubit.restoreSession] runs.
+/// Bootstrap screen shown while [AuthBloc.restoreSession] runs.
 ///
 /// Owns the post-restore redirect: routes to `/` on success, `/login`
 /// otherwise. Enforces a minimum display time so the splash never flashes.
@@ -26,9 +26,9 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _bootstrap() async {
-    final cubit = context.read<AuthCubit>();
+    final bloc = context.read<AuthBloc>();
     await Future.wait<void>([
-      cubit.restoreSession(),
+      bloc.restoreSession(),
       Future<void>.delayed(SplashScreen._minDisplay),
     ]);
     if (!mounted) return;

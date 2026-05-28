@@ -8,10 +8,10 @@ import '../core/analytics/analytics_route_observer.dart';
 import '../core/build_context_extensions.dart';
 import '../core/di/injection.dart';
 import '../core/theme/app_theme.dart';
-import '../core/theme/theme_cubit.dart';
+import '../core/theme/theme_bloc.dart';
 import '../core/theme/theme_state.dart';
-import '../features/auth/presentation/cubit/auth_cubit.dart';
-import '../features/auth/presentation/cubit/auth_state.dart';
+import '../features/auth/presentation/bloc/auth_bloc.dart';
+import '../features/auth/presentation/bloc/auth_state.dart';
 import '../features/bookmarks/domain/services/bookmarks_sync_controller.dart';
 import '../l10n/app_localizations.dart';
 import 'router.dart';
@@ -19,14 +19,14 @@ import 'router.dart';
 class App extends StatefulWidget {
   const App({
     super.key,
-    this.authCubit,
-    this.themeCubit,
+    this.authBloc,
+    this.themeBloc,
     this.bookmarksSync,
     this.navigatorObservers,
   });
 
-  final AuthCubit? authCubit;
-  final ThemeCubit? themeCubit;
+  final AuthBloc? authBloc;
+  final ThemeBloc? themeBloc;
   final BookmarksSyncController? bookmarksSync;
   final List<NavigatorObserver>? navigatorObservers;
 
@@ -35,8 +35,8 @@ class App extends StatefulWidget {
 }
 
 class _AppState extends State<App> {
-  late final AuthCubit _authCubit;
-  late final ThemeCubit _themeCubit;
+  late final AuthBloc _authBloc;
+  late final ThemeBloc _themeBloc;
   late final GoRouter _router;
   late final DeepLinkState _deepLink;
   late final BookmarksSyncController _sync;
@@ -45,16 +45,16 @@ class _AppState extends State<App> {
   @override
   void initState() {
     super.initState();
-    _authCubit = widget.authCubit ?? getIt<AuthCubit>();
-    _themeCubit = widget.themeCubit ?? getIt<ThemeCubit>();
+    _authBloc = widget.authBloc ?? getIt<AuthBloc>();
+    _themeBloc = widget.themeBloc ?? getIt<ThemeBloc>();
     final result = buildRouterWithDeepLink(
-      _authCubit,
+      _authBloc,
       observers: widget.navigatorObservers ?? [getIt<AnalyticsRouteObserver>()],
     );
     _router = result.router;
     _deepLink = result.deepLink;
     _sync = widget.bookmarksSync ?? getIt<BookmarksSyncController>();
-    _authSub = _authCubit.stream.listen(_onAuthChanged);
+    _authSub = _authBloc.stream.listen(_onAuthChanged);
     // Session restoration is driven by SplashScreen so it can gate routing
     // on completion instead of racing the redirect.
   }
@@ -81,10 +81,10 @@ class _AppState extends State<App> {
       deepLink: _deepLink,
       child: MultiBlocProvider(
         providers: [
-          BlocProvider.value(value: _authCubit),
-          BlocProvider.value(value: _themeCubit),
+          BlocProvider.value(value: _authBloc),
+          BlocProvider.value(value: _themeBloc),
         ],
-        child: BlocBuilder<ThemeCubit, ThemeState>(
+        child: BlocBuilder<ThemeBloc, ThemeState>(
           builder: (context, themeState) => MaterialApp.router(
             onGenerateTitle: (context) => context.l10n.appTitle,
             theme: AppTheme.light(scheme: themeState.scheme),

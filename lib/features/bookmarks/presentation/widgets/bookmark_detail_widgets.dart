@@ -14,8 +14,8 @@ import '../../../../core/di/injection.dart';
 import '../../../../core/share/share_service.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../domain/entities/bookmark.dart';
-import '../cubit/bookmark_detail/bookmark_detail_cubit.dart';
-import '../cubit/bookmark_detail/bookmark_detail_state.dart';
+import '../bloc/bookmark_detail/bookmark_detail_bloc.dart';
+import '../bloc/bookmark_detail/bookmark_detail_state.dart';
 import 'bookmark_failure_messages.dart';
 
 Future<void> _shareBookmark(Bookmark bookmark) async {
@@ -42,7 +42,7 @@ class BookmarkDetailView extends StatelessWidget {
       title: context.l10n.bookmarkAppBarTitle,
       padding: EdgeInsets.zero,
       actions: [
-        BlocBuilder<BookmarkDetailCubit, BookmarkDetailState>(
+        BlocBuilder<BookmarkDetailBloc, BookmarkDetailState>(
           builder: (context, state) {
             if (state is! BookmarkDetailReady) return const SizedBox.shrink();
             return Row(
@@ -67,13 +67,13 @@ class BookmarkDetailView extends StatelessWidget {
           },
         ),
       ],
-      body: BlocBuilder<BookmarkDetailCubit, BookmarkDetailState>(
+      body: BlocBuilder<BookmarkDetailBloc, BookmarkDetailState>(
         builder: (context, state) {
           return switch (state) {
             BookmarkDetailLoading() => const AppLoading(),
             BookmarkDetailFailure(:final failure) => AppErrorView(
               message: bookmarkFailureMessage(context, failure),
-              onRetry: () => context.read<BookmarkDetailCubit>().load(id),
+              onRetry: () => context.read<BookmarkDetailBloc>().load(id),
             ),
             BookmarkDetailReady(:final bookmark) => _DetailBody(
               bookmark: bookmark,
@@ -87,7 +87,7 @@ class BookmarkDetailView extends StatelessWidget {
   Future<void> _openEditor(BuildContext context) async {
     final changed = await BookmarkEditRoute(id).push<bool>(context);
     if (changed == true && context.mounted) {
-      await context.read<BookmarkDetailCubit>().load(id);
+      await context.read<BookmarkDetailBloc>().load(id);
     }
   }
 
@@ -114,7 +114,7 @@ class BookmarkDetailView extends StatelessWidget {
     );
     if (confirmed != true) return;
     if (!context.mounted) return;
-    final ok = await context.read<BookmarkDetailCubit>().delete(b.id);
+    final ok = await context.read<BookmarkDetailBloc>().delete(b.id);
     if (!ok || !context.mounted) return;
     context.pop(true);
   }

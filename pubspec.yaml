@@ -34,8 +34,10 @@ dependencies:
   # iOS-style icon set, used via the CupertinoIcons class.
   cupertino_icons: ^1.0.8
 
-  # State management: BLoC/Cubit pattern (BlocProvider, BlocBuilder, BlocListener).
+  # State management: BLoC pattern (BlocProvider, BlocBuilder, BlocListener).
   flutter_bloc: ^9.1.1
+  # Event transformers for Bloc handlers.
+  bloc_concurrency: ^0.3.0
 
   # Declarative routing with deep-linking and auth-redirect support.
   # Pairs with go_router_builder for typed routes.
@@ -157,7 +159,7 @@ dev_dependencies:
   # Mocking library for tests — uses real callable objects without codegen.
   mocktail: ^1.0.5
 
-  # High-level testing utilities for Bloc/Cubit: blocTest helper, wait
+  # High-level testing utilities for Bloc: blocTest helper, wait
   # for states, and verify exact emission sequences.
   bloc_test: ^10.0.0
 

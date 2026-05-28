@@ -28,7 +28,7 @@
 |                           |                            |
 |---------------------------|----------------------------|
 | 🏛 **Clean Architecture** | Data / domain / presentation layers with full dependency inversion |
-| 🧩 **BLoC + Freezed**     | Cubit pattern with sealed state unions and exhaustive `when` |
+| 🧩 **BLoC + Freezed**     | Bloc pattern with sealed state unions and exhaustive `when` |
 | 📶 **Offline‑First**      | ObjectBox local writes → bidirectional sync on reconnect → share → link previews |
 | 🔐 **JWT Auth**           | Access + refresh tokens, auto‑refresh interceptor, secure storage |
 | 🧭 **Declarative Routing**| `go_router` with typed routes, auth guards, Universal Links & App Links |
@@ -66,7 +66,7 @@ lib/
 │   ├── notifications/                # flutter_local_notifications
 │   ├── permissions/                  # Runtime permission request handling
 │   ├── share/                        # share_plus wrapper
-│   ├── theme/                        # ThemeCubit + light/dark ThemeData
+│   ├── theme/                        # ThemeBloc + light/dark ThemeData
 │   ├── usecases/                     # Abstract UseCase base class
 │   ├── utils/                        # Result<T> type
 │   └── widgets/                      # Reusable UI components
@@ -95,7 +95,7 @@ feature/
 │   ├── repositories/       Abstract interfaces
 │   └── usecases/           Single‑purpose, injectable
 └── presentation/
-    ├── cubit/              Cubit + freezed state
+    ├── bloc/               Bloc + freezed state
     └── screens/            Stateless/Stateful widgets
 ```
 
@@ -281,7 +281,7 @@ All shared components in `lib/core/widgets/`:
 
 | Layer              | Packages                                                                                           |
 |--------------------|----------------------------------------------------------------------------------------------------|
-| **State**          | `flutter_bloc` (Cubit)                                                                             |
+| **State**          | `flutter_bloc` (Bloc)                                                                              |
 | **Routing**        | `go_router` · `go_router_builder`                                                                  |
 | **DI**             | `get_it` · `injectable`                                                                            |
 | **Networking**     | `Dio` · `Retrofit`                                                                                 |

@@ -7,7 +7,7 @@ This directory serves as the root configuration layer for the Flutter applicatio
 ### `app.dart`
 This file contains the `App` widget, which is the root of the Flutter widget tree. 
 It is responsible for:
-- Wrapping the application in global state providers (like `ThemeCubit`, `AuthCubit`, etc.).
+- Wrapping the application in global state providers (like `ThemeBloc`, `AuthBloc`, etc.).
 - Configuring the `MaterialApp.router` with the central router instance.
 - Applying global theming and localization delegates.
 - Setting up navigation observers (e.g., for analytics tracking).

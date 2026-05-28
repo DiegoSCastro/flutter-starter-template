@@ -13,8 +13,8 @@ import '../../../../core/share/share_service.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../domain/entities/bookmark.dart';
 import '../../domain/services/bookmarks_sync_controller.dart';
-import '../cubit/bookmarks_list/bookmarks_list_cubit.dart';
-import '../cubit/bookmarks_list/bookmarks_list_state.dart';
+import '../bloc/bookmarks_list/bookmarks_list_bloc.dart';
+import '../bloc/bookmarks_list/bookmarks_list_state.dart';
 import 'bookmark_failure_messages.dart';
 
 Future<void> _showItemMenu(BuildContext context, Bookmark bookmark) async {
@@ -68,21 +68,21 @@ class _BookmarksListViewState extends State<BookmarksListView> {
   void _onSearchChanged(String value) {
     _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 250), () {
-      context.read<BookmarksListCubit>().setQuery(value);
+      context.read<BookmarksListBloc>().setQuery(value);
     });
   }
 
   Future<void> _openNew() async {
     final changed = await const BookmarkNewRoute().push<bool>(context);
     if (changed == true && mounted) {
-      await context.read<BookmarksListCubit>().load();
+      await context.read<BookmarksListBloc>().load();
     }
   }
 
   Future<void> _openDetail(Bookmark bookmark) async {
     final changed = await BookmarkDetailRoute(bookmark.id).push<bool>(context);
     if (changed == true && mounted) {
-      await context.read<BookmarksListCubit>().load();
+      await context.read<BookmarksListBloc>().load();
     }
   }
 
@@ -92,7 +92,7 @@ class _BookmarksListViewState extends State<BookmarksListView> {
       title: context.l10n.bookmarksAppBarTitle,
       padding: EdgeInsets.zero,
       actions: [
-        BlocBuilder<BookmarksListCubit, BookmarksListState>(
+        BlocBuilder<BookmarksListBloc, BookmarksListState>(
           buildWhen: (a, b) => a.syncStatus != b.syncStatus,
           builder: (context, state) =>
               _SyncStatusIcon(status: state.syncStatus),
@@ -114,7 +114,7 @@ class _BookmarksListViewState extends State<BookmarksListView> {
             ),
           ).animateSlideDown(duration: 300.ms),
           Expanded(
-            child: BlocBuilder<BookmarksListCubit, BookmarksListState>(
+            child: BlocBuilder<BookmarksListBloc, BookmarksListState>(
               builder: (context, state) {
                 if (state.isLoading && state.items.isEmpty) {
                   return const AppLoading();
@@ -122,7 +122,7 @@ class _BookmarksListViewState extends State<BookmarksListView> {
                 if (state.failure != null && state.items.isEmpty) {
                   return AppErrorView(
                     message: bookmarkFailureMessage(context, state.failure!),
-                    onRetry: () => context.read<BookmarksListCubit>().load(),
+                    onRetry: () => context.read<BookmarksListBloc>().load(),
                   );
                 }
                 final visible = state.visibleItems;
@@ -141,7 +141,7 @@ class _BookmarksListViewState extends State<BookmarksListView> {
                   );
                 }
                 return RefreshIndicator(
-                  onRefresh: () => context.read<BookmarksListCubit>().load(),
+                  onRefresh: () => context.read<BookmarksListBloc>().load(),
                   child: AppSlidableAutoCloseGroup(
                     child: ListView.separated(
                       itemCount: visible.length,
@@ -160,7 +160,7 @@ class _BookmarksListViewState extends State<BookmarksListView> {
                                 );
                                 if (!shouldDelete || !context.mounted) return;
                                 unawaited(
-                                  context.read<BookmarksListCubit>().delete(
+                                  context.read<BookmarksListBloc>().delete(
                                     b.id,
                                   ),
                                 );
@@ -254,7 +254,7 @@ class _SyncStatusIcon extends StatelessWidget {
       BookmarksSyncStatus.error => IconButton(
         tooltip: context.l10n.bookmarksSyncFailedRetryTooltip,
         icon: const Icon(Icons.cloud_off),
-        onPressed: () => context.read<BookmarksListCubit>().retrySync(),
+        onPressed: () => context.read<BookmarksListBloc>().retrySync(),
       ),
       BookmarksSyncStatus.idle => const SizedBox.shrink(),
     };

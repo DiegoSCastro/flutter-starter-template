@@ -8,7 +8,6 @@ part 'bookmarks_list_state.freezed.dart';
 
 @freezed
 abstract class BookmarksListState with _$BookmarksListState {
-
   const factory BookmarksListState({
     @Default(false) bool isLoading,
     @Default(BookmarksSyncStatus.idle) BookmarksSyncStatus syncStatus,

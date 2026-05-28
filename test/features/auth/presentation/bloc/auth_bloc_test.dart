@@ -1,7 +1,7 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_starter_template/core/utils/result.dart';
-import 'package:flutter_starter_template/features/auth/presentation/cubit/auth_cubit.dart';
-import 'package:flutter_starter_template/features/auth/presentation/cubit/auth_state.dart';
+import 'package:flutter_starter_template/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:flutter_starter_template/features/auth/presentation/bloc/auth_state.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -12,7 +12,7 @@ void main() {
   late MockSignOut mockSignOut;
   late MockRestoreSession mockRestoreSession;
   late MockAnalyticsService mockAnalytics;
-  late AuthCubit cubit;
+  late AuthBloc bloc;
 
   setUp(() {
     mockSignIn = MockSignIn();
@@ -20,7 +20,7 @@ void main() {
     mockRestoreSession = MockRestoreSession();
     mockAnalytics = MockAnalyticsService();
     stubAnalyticsService(mockAnalytics);
-    cubit = AuthCubit(
+    bloc = AuthBloc(
       signIn: mockSignIn,
       signOut: mockSignOut,
       restoreSession: mockRestoreSession,
@@ -29,39 +29,39 @@ void main() {
   });
 
   tearDown(() {
-    cubit.close();
+    bloc.close();
   });
 
-  group('AuthCubit', () {
+  group('AuthBloc', () {
     test('initial state is AuthInitial', () {
-      expect(cubit.state, const AuthState.initial());
+      expect(bloc.state, const AuthState.initial());
     });
 
     group('restoreSession', () {
-      blocTest<AuthCubit, AuthState>(
+      blocTest<AuthBloc, AuthState>(
         'emits authenticated when session is restored',
         build: () {
           when(
             () => mockRestoreSession(),
           ).thenAnswer((_) async => const Ok(testUser));
-          return cubit;
+          return bloc;
         },
-        act: (cubit) => cubit.restoreSession(),
+        act: (bloc) => bloc.restoreSession(),
         expect: () => [const AuthState.authenticated(testUser)],
         verify: (_) {
           verify(() => mockAnalytics.setCurrentUser(testUser.id)).called(1);
         },
       );
 
-      blocTest<AuthCubit, AuthState>(
+      blocTest<AuthBloc, AuthState>(
         'emits initial when restore fails',
         build: () {
           when(
             () => mockRestoreSession(),
           ).thenAnswer((_) async => const Err(testFailure));
-          return cubit;
+          return bloc;
         },
-        act: (cubit) => cubit.restoreSession(),
+        act: (bloc) => bloc.restoreSession(),
         expect: () => [const AuthState.initial()],
         verify: (_) {
           verify(() => mockAnalytics.setCurrentUser(null)).called(1);
@@ -70,15 +70,15 @@ void main() {
     });
 
     group('signIn', () {
-      blocTest<AuthCubit, AuthState>(
+      blocTest<AuthBloc, AuthState>(
         'emits submitting then authenticated on success',
         build: () {
           when(
             () => mockSignIn((username: 'alice', password: 'pass')),
           ).thenAnswer((_) async => const Ok(testUser));
-          return cubit;
+          return bloc;
         },
-        act: (cubit) => cubit.signIn(username: 'alice', password: 'pass'),
+        act: (bloc) => bloc.signIn(username: 'alice', password: 'pass'),
         expect: () => [
           const AuthState.submitting(),
           const AuthState.authenticated(testUser),
@@ -89,15 +89,15 @@ void main() {
         },
       );
 
-      blocTest<AuthCubit, AuthState>(
+      blocTest<AuthBloc, AuthState>(
         'emits submitting then failure on error',
         build: () {
           when(
             () => mockSignIn((username: 'bob', password: 'bad')),
           ).thenAnswer((_) async => const Err(testFailure));
-          return cubit;
+          return bloc;
         },
-        act: (cubit) => cubit.signIn(username: 'bob', password: 'bad'),
+        act: (bloc) => bloc.signIn(username: 'bob', password: 'bad'),
         expect: () => [
           const AuthState.submitting(),
           const AuthState.failure(testFailure),
@@ -112,29 +112,29 @@ void main() {
         },
       );
 
-      blocTest<AuthCubit, AuthState>(
+      blocTest<AuthBloc, AuthState>(
         'does nothing when already submitting',
         build: () {
           when(
             () => mockSignIn((username: 'alice', password: 'pass')),
           ).thenAnswer((_) async => const Ok(testUser));
-          return cubit;
+          return bloc;
         },
         seed: () => const AuthState.submitting(),
-        act: (cubit) => cubit.signIn(username: 'alice', password: 'pass'),
+        act: (bloc) => bloc.signIn(username: 'alice', password: 'pass'),
         expect: () => <AuthState>[],
       );
     });
 
     group('signOut', () {
-      blocTest<AuthCubit, AuthState>(
+      blocTest<AuthBloc, AuthState>(
         'emits initial on successful sign out',
         build: () {
           when(() => mockSignOut()).thenAnswer((_) async => const Ok(null));
-          return cubit;
+          return bloc;
         },
         seed: () => const AuthState.authenticated(testUser),
-        act: (cubit) => cubit.signOut(),
+        act: (bloc) => bloc.signOut(),
         expect: () => [const AuthState.initial()],
         verify: (_) {
           verify(() => mockAnalytics.logEvent('sign_out')).called(1);
@@ -142,16 +142,16 @@ void main() {
         },
       );
 
-      blocTest<AuthCubit, AuthState>(
+      blocTest<AuthBloc, AuthState>(
         'does nothing when sign out returns Err',
         build: () {
           when(
             () => mockSignOut(),
           ).thenAnswer((_) async => const Err(testFailure));
-          return cubit;
+          return bloc;
         },
         seed: () => const AuthState.authenticated(testUser),
-        act: (cubit) => cubit.signOut(),
+        act: (bloc) => bloc.signOut(),
         expect: () => <AuthState>[],
       );
     });

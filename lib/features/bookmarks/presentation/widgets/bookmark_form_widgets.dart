@@ -5,8 +5,8 @@ import 'package:go_router/go_router.dart';
 import '../../../../core/animation/widget_animations.dart';
 import '../../../../core/build_context_extensions.dart';
 import '../../../../core/widgets/widgets.dart';
-import '../cubit/bookmark_form/bookmark_form_cubit.dart';
-import '../cubit/bookmark_form/bookmark_form_state.dart';
+import '../bloc/bookmark_form/bookmark_form_bloc.dart';
+import '../bloc/bookmark_form/bookmark_form_state.dart';
 import 'bookmark_failure_messages.dart';
 
 class BookmarkFormView extends StatefulWidget {
@@ -51,7 +51,7 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
           ? context.l10n.bookmarkFormEditTitle
           : context.l10n.bookmarkFormNewTitle,
       padding: EdgeInsets.zero,
-      body: BlocConsumer<BookmarkFormCubit, BookmarkFormState>(
+      body: BlocConsumer<BookmarkFormBloc, BookmarkFormState>(
         listenWhen: (prev, curr) => prev.status != curr.status,
         listener: (context, state) {
           if (state.status == BookmarkFormStatus.submitted) {
@@ -93,7 +93,7 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
                     validator: (v) => (v == null || v.trim().isEmpty)
                         ? context.l10n.bookmarkTitleRequired
                         : null,
-                    onChanged: context.read<BookmarkFormCubit>().setTitle,
+                    onChanged: context.read<BookmarkFormBloc>().setTitle,
                   ).animateSlideLeft(),
                   const SizedBox(height: 12),
                   AppTextField(
@@ -103,7 +103,7 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
                     keyboardType: TextInputType.url,
                     textInputAction: TextInputAction.next,
                     validator: (value) => _validateUrl(context, value),
-                    onChanged: context.read<BookmarkFormCubit>().setUrl,
+                    onChanged: context.read<BookmarkFormBloc>().setUrl,
                   ).animateSlideLeft(delay: 50.ms),
                   const SizedBox(height: 12),
                   AppTextField(
@@ -111,14 +111,14 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
                     label: context.l10n.bookmarkDescriptionLabel,
                     minLines: 2,
                     maxLines: 4,
-                    onChanged: context.read<BookmarkFormCubit>().setDescription,
+                    onChanged: context.read<BookmarkFormBloc>().setDescription,
                   ).animateSlideLeft(delay: 100.ms),
                   const SizedBox(height: 12),
                   AppTextField(
                     controller: _tags,
                     label: context.l10n.bookmarkTagsLabel,
                     hint: context.l10n.bookmarkTagsHint,
-                    onChanged: context.read<BookmarkFormCubit>().setTagsFromCsv,
+                    onChanged: context.read<BookmarkFormBloc>().setTagsFromCsv,
                   ).animateSlideLeft(delay: 150.ms),
                   const SizedBox(height: 24),
                   AppButton(
@@ -129,7 +129,7 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
                     expand: true,
                     onPressed: () {
                       if (_formKey.currentState?.validate() != true) return;
-                      context.read<BookmarkFormCubit>().submit();
+                      context.read<BookmarkFormBloc>().submit();
                     },
                   ).animateSlideUp(delay: 200.ms),
                 ],

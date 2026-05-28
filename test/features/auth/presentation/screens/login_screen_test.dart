@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_starter_template/features/auth/presentation/cubit/auth_cubit.dart';
-import 'package:flutter_starter_template/features/auth/presentation/cubit/auth_state.dart';
+import 'package:flutter_starter_template/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:flutter_starter_template/features/auth/presentation/bloc/auth_state.dart';
 import 'package:flutter_starter_template/features/auth/presentation/screens/login_screen.dart';
 import 'package:flutter_starter_template/l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -9,33 +9,33 @@ import 'package:mocktail/mocktail.dart';
 
 import '../../../../test_utils.dart';
 
-class MockAuthCubit extends Mock implements AuthCubit {}
+class MockAuthBloc extends Mock implements AuthBloc {}
 
-Widget wrapWithDependencies(AuthCubit cubit) {
+Widget wrapWithDependencies(AuthBloc bloc) {
   return MaterialApp(
     localizationsDelegates: AppLocalizations.localizationsDelegates,
     supportedLocales: AppLocalizations.supportedLocales,
-    home: BlocProvider<AuthCubit>.value(
-      value: cubit,
+    home: BlocProvider<AuthBloc>.value(
+      value: bloc,
       child: const LoginScreen(),
     ),
   );
 }
 
 void main() {
-  late MockAuthCubit mockCubit;
+  late MockAuthBloc mockBloc;
 
   setUp(() {
-    mockCubit = MockAuthCubit();
-    when(() => mockCubit.state).thenReturn(const AuthState.initial());
+    mockBloc = MockAuthBloc();
+    when(() => mockBloc.state).thenReturn(const AuthState.initial());
     when(
-      () => mockCubit.stream,
+      () => mockBloc.stream,
     ).thenAnswer((_) => Stream.value(const AuthState.initial()));
   });
 
   group('LoginScreen', () {
     testWidgets('renders login form fields', (tester) async {
-      await tester.pumpWidget(wrapWithDependencies(mockCubit));
+      await tester.pumpWidget(wrapWithDependencies(mockBloc));
       await tester.pump(const Duration(seconds: 1));
 
       expect(find.text('Username'), findsOneWidget);
@@ -44,7 +44,7 @@ void main() {
     });
 
     testWidgets('shows validation errors on empty submit', (tester) async {
-      await tester.pumpWidget(wrapWithDependencies(mockCubit));
+      await tester.pumpWidget(wrapWithDependencies(mockBloc));
       await tester.pump(const Duration(seconds: 1));
 
       await tester.tap(find.widgetWithText(FilledButton, 'Sign in'));
@@ -55,10 +55,10 @@ void main() {
 
     testWidgets('calls signIn with entered credentials', (tester) async {
       when(
-        () => mockCubit.signIn(username: 'alice', password: 'hunter2'),
+        () => mockBloc.signIn(username: 'alice', password: 'hunter2'),
       ).thenAnswer((_) async {});
 
-      await tester.pumpWidget(wrapWithDependencies(mockCubit));
+      await tester.pumpWidget(wrapWithDependencies(mockBloc));
       await tester.pump(const Duration(seconds: 1));
 
       await tester.enterText(find.byType(TextFormField).at(0), 'alice');
@@ -67,19 +67,19 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
 
       verify(
-        () => mockCubit.signIn(username: 'alice', password: 'hunter2'),
+        () => mockBloc.signIn(username: 'alice', password: 'hunter2'),
       ).called(1);
     });
 
     testWidgets('shows CircularProgressIndicator while submitting', (
       tester,
     ) async {
-      when(() => mockCubit.state).thenReturn(const AuthState.submitting());
+      when(() => mockBloc.state).thenReturn(const AuthState.submitting());
       when(
-        () => mockCubit.stream,
+        () => mockBloc.stream,
       ).thenAnswer((_) => Stream.value(const AuthState.submitting()));
 
-      await tester.pumpWidget(wrapWithDependencies(mockCubit));
+      await tester.pumpWidget(wrapWithDependencies(mockBloc));
       await tester.pump(const Duration(seconds: 1));
 
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
@@ -87,13 +87,13 @@ void main() {
 
     testWidgets('shows error message on auth failure', (tester) async {
       when(
-        () => mockCubit.state,
+        () => mockBloc.state,
       ).thenReturn(const AuthState.failure(testFailure));
       when(
-        () => mockCubit.stream,
+        () => mockBloc.stream,
       ).thenAnswer((_) => Stream.value(const AuthState.failure(testFailure)));
 
-      await tester.pumpWidget(wrapWithDependencies(mockCubit));
+      await tester.pumpWidget(wrapWithDependencies(mockBloc));
       await tester.pump(const Duration(seconds: 1));
 
       expect(find.text('Something went wrong.'), findsOneWidget);

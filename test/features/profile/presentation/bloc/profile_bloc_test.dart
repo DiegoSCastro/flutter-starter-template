@@ -1,7 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_starter_template/core/utils/result.dart';
-import 'package:flutter_starter_template/features/auth/presentation/cubit/auth_cubit.dart';
-import 'package:flutter_starter_template/features/profile/presentation/cubit/profile_cubit.dart';
+import 'package:flutter_starter_template/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:flutter_starter_template/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -10,18 +10,18 @@ import '../../../../test_utils.dart';
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
-  group('ProfileCubit', () {
+  group('ProfileBloc', () {
     test('initial state is default', () async {
-      final authCubit = _authCubit();
-      final cubit = ProfileCubit(authCubit);
+      final authBloc = _authBloc();
+      final bloc = ProfileBloc(authBloc);
 
-      expect(cubit.state.username, '');
-      expect(cubit.state.userId, '');
-      expect(cubit.state.isSigningOut, false);
-      expect(cubit.state.packageInfo, isNull);
+      expect(bloc.state.username, '');
+      expect(bloc.state.userId, '');
+      expect(bloc.state.isSigningOut, false);
+      expect(bloc.state.packageInfo, isNull);
 
-      await cubit.close();
-      await authCubit.close();
+      await bloc.close();
+      await authBloc.close();
     });
 
     test('load populates packageInfo', () async {
@@ -39,15 +39,15 @@ void main() {
             return null;
           });
 
-      final cubit = ProfileCubit(_authCubit());
-      await cubit.load();
+      final bloc = ProfileBloc(_authBloc());
+      await bloc.load();
 
-      expect(cubit.state.packageInfo, isNotNull);
-      expect(cubit.state.packageInfo!.appName, 'TestApp');
-      expect(cubit.state.packageInfo!.version, '1.0.0');
-      expect(cubit.state.packageInfo!.buildNumber, '42');
+      expect(bloc.state.packageInfo, isNotNull);
+      expect(bloc.state.packageInfo!.appName, 'TestApp');
+      expect(bloc.state.packageInfo!.version, '1.0.0');
+      expect(bloc.state.packageInfo!.buildNumber, '42');
 
-      await cubit.close();
+      await bloc.close();
     });
 
     test('reacts to auth authenticated state', () async {
@@ -56,17 +56,17 @@ void main() {
         () => mockSignIn((username: 'alice', password: 'pass')),
       ).thenAnswer((_) async => const Ok(testUser));
 
-      final authCubit = _authCubit(signIn: mockSignIn);
-      final cubit = ProfileCubit(authCubit);
+      final authBloc = _authBloc(signIn: mockSignIn);
+      final bloc = ProfileBloc(authBloc);
 
-      await authCubit.signIn(username: 'alice', password: 'pass');
+      await authBloc.signIn(username: 'alice', password: 'pass');
       await Future<void>.delayed(const Duration(milliseconds: 10));
 
-      expect(cubit.state.username, 'alice');
-      expect(cubit.state.userId, testUser.id);
+      expect(bloc.state.username, 'alice');
+      expect(bloc.state.userId, testUser.id);
 
-      await cubit.close();
-      await authCubit.close();
+      await bloc.close();
+      await authBloc.close();
     });
 
     test('reacts to auth signed out state', () async {
@@ -78,64 +78,64 @@ void main() {
       final mockSignOut = MockSignOut();
       when(mockSignOut.call).thenAnswer((_) async => const Ok(null));
 
-      final authCubit = _authCubit(signIn: mockSignIn, signOut: mockSignOut);
-      final cubit = ProfileCubit(authCubit);
+      final authBloc = _authBloc(signIn: mockSignIn, signOut: mockSignOut);
+      final bloc = ProfileBloc(authBloc);
 
-      await authCubit.signIn(username: 'alice', password: 'pass');
+      await authBloc.signIn(username: 'alice', password: 'pass');
       await Future<void>.delayed(const Duration(milliseconds: 10));
-      expect(cubit.state.username, 'alice');
+      expect(bloc.state.username, 'alice');
 
-      await authCubit.signOut();
+      await authBloc.signOut();
       await Future<void>.delayed(const Duration(milliseconds: 10));
 
-      expect(cubit.state.username, '');
-      expect(cubit.state.userId, '');
+      expect(bloc.state.username, '');
+      expect(bloc.state.userId, '');
 
-      await cubit.close();
-      await authCubit.close();
+      await bloc.close();
+      await authBloc.close();
     });
 
     test('signOut sets isSigningOut and delegates', () async {
       final mockSignOut = MockSignOut();
       when(mockSignOut.call).thenAnswer((_) async => const Ok(null));
 
-      final authCubit = _authCubit(signOut: mockSignOut);
-      final cubit = ProfileCubit(authCubit);
+      final authBloc = _authBloc(signOut: mockSignOut);
+      final bloc = ProfileBloc(authBloc);
 
-      await cubit.signOut();
+      await bloc.signOut();
       // After signOut resolves, isSigningOut is still true since
       // we don't reset it — auth state change to initial handles cleanup.
-      expect(cubit.state.username, '');
+      expect(bloc.state.username, '');
 
-      await cubit.close();
-      await authCubit.close();
+      await bloc.close();
+      await authBloc.close();
     });
 
     test('close cancels auth subscription', () async {
-      final authCubit = _authCubit();
-      final cubit = ProfileCubit(authCubit);
-      await cubit.close();
+      final authBloc = _authBloc();
+      final bloc = ProfileBloc(authBloc);
+      await bloc.close();
 
       final mockSignIn = MockSignIn();
       when(
         () => mockSignIn((username: 'bob', password: 'pass')),
       ).thenAnswer((_) async => const Ok(testUser));
 
-      final authCubit2 = _authCubit(signIn: mockSignIn);
-      await authCubit2.signIn(username: 'bob', password: 'pass');
+      final authBloc2 = _authBloc(signIn: mockSignIn);
+      await authBloc2.signIn(username: 'bob', password: 'pass');
 
-      // Closed cubit should not react to new auth changes
-      expect(cubit.state.username, '');
+      // Closed bloc should not react to new auth changes
+      expect(bloc.state.username, '');
 
-      await authCubit2.close();
+      await authBloc2.close();
     });
   });
 }
 
-AuthCubit _authCubit({MockSignIn? signIn, MockSignOut? signOut}) {
+AuthBloc _authBloc({MockSignIn? signIn, MockSignOut? signOut}) {
   final analytics = MockAnalyticsService();
   stubAnalyticsService(analytics);
-  return AuthCubit(
+  return AuthBloc(
     signIn: signIn ?? MockSignIn(),
     signOut: signOut ?? MockSignOut(),
     restoreSession: MockRestoreSession(),

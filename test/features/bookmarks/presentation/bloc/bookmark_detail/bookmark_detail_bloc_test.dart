@@ -1,8 +1,8 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_starter_template/core/error/failure.dart';
 import 'package:flutter_starter_template/core/utils/result.dart';
-import 'package:flutter_starter_template/features/bookmarks/presentation/cubit/bookmark_detail/bookmark_detail_cubit.dart';
-import 'package:flutter_starter_template/features/bookmarks/presentation/cubit/bookmark_detail/bookmark_detail_state.dart';
+import 'package:flutter_starter_template/features/bookmarks/presentation/bloc/bookmark_detail/bookmark_detail_bloc.dart';
+import 'package:flutter_starter_template/features/bookmarks/presentation/bloc/bookmark_detail/bookmark_detail_state.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -20,23 +20,23 @@ void main() {
     stubAnalyticsService(mockAnalytics);
   });
 
-  group('BookmarkDetailCubit', () {
-    blocTest<BookmarkDetailCubit, BookmarkDetailState>(
+  group('BookmarkDetailBloc', () {
+    blocTest<BookmarkDetailBloc, BookmarkDetailState>(
       'initial state is loading',
-      build: () => BookmarkDetailCubit(mockGet, mockDelete, mockAnalytics),
-      verify: (cubit) {
-        expect(cubit.state, const BookmarkDetailState.loading());
+      build: () => BookmarkDetailBloc(mockGet, mockDelete, mockAnalytics),
+      verify: (bloc) {
+        expect(bloc.state, const BookmarkDetailState.loading());
       },
     );
 
     group('load', () {
-      blocTest<BookmarkDetailCubit, BookmarkDetailState>(
+      blocTest<BookmarkDetailBloc, BookmarkDetailState>(
         'emits loading then ready on success',
         build: () {
           when(() => mockGet('1')).thenAnswer((_) async => Ok(testBookmark));
-          return BookmarkDetailCubit(mockGet, mockDelete, mockAnalytics);
+          return BookmarkDetailBloc(mockGet, mockDelete, mockAnalytics);
         },
-        act: (cubit) => cubit.load('1'),
+        act: (bloc) => bloc.load('1'),
         expect: () => [
           const BookmarkDetailState.loading(),
           BookmarkDetailState.ready(testBookmark),
@@ -51,15 +51,15 @@ void main() {
         },
       );
 
-      blocTest<BookmarkDetailCubit, BookmarkDetailState>(
+      blocTest<BookmarkDetailBloc, BookmarkDetailState>(
         'emits loading then failure on error',
         build: () {
           when(
             () => mockGet('1'),
           ).thenAnswer((_) async => const Err(NotFoundFailure('Not found')));
-          return BookmarkDetailCubit(mockGet, mockDelete, mockAnalytics);
+          return BookmarkDetailBloc(mockGet, mockDelete, mockAnalytics);
         },
-        act: (cubit) => cubit.load('1'),
+        act: (bloc) => bloc.load('1'),
         expect: () => [
           const BookmarkDetailState.loading(),
           predicate<BookmarkDetailState>((s) => s is BookmarkDetailFailure),
@@ -70,8 +70,8 @@ void main() {
     group('delete', () {
       test('returns true on success', () async {
         when(() => mockDelete('1')).thenAnswer((_) async => const Ok(null));
-        final cubit = BookmarkDetailCubit(mockGet, mockDelete, mockAnalytics);
-        final ok = await cubit.delete('1');
+        final bloc = BookmarkDetailBloc(mockGet, mockDelete, mockAnalytics);
+        final ok = await bloc.delete('1');
         expect(ok, true);
         verify(
           () => mockAnalytics.logEvent(
@@ -79,15 +79,15 @@ void main() {
             parameters: any(named: 'parameters'),
           ),
         ).called(1);
-        await cubit.close();
+        await bloc.close();
       });
 
       test('returns false on failure', () async {
         when(
           () => mockDelete('1'),
         ).thenAnswer((_) async => const Err(UnknownFailure('Failed')));
-        final cubit = BookmarkDetailCubit(mockGet, mockDelete, mockAnalytics);
-        final ok = await cubit.delete('1');
+        final bloc = BookmarkDetailBloc(mockGet, mockDelete, mockAnalytics);
+        final ok = await bloc.delete('1');
         expect(ok, false);
         verify(
           () => mockAnalytics.logEvent(
@@ -95,7 +95,7 @@ void main() {
             parameters: any(named: 'parameters'),
           ),
         ).called(1);
-        await cubit.close();
+        await bloc.close();
       });
     });
   });

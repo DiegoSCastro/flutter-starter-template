@@ -4,8 +4,8 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_starter_template/core/error/failure.dart';
 import 'package:flutter_starter_template/core/utils/result.dart';
 import 'package:flutter_starter_template/features/bookmarks/domain/services/bookmarks_sync_controller.dart';
-import 'package:flutter_starter_template/features/bookmarks/presentation/cubit/bookmarks_list/bookmarks_list_cubit.dart';
-import 'package:flutter_starter_template/features/bookmarks/presentation/cubit/bookmarks_list/bookmarks_list_state.dart';
+import 'package:flutter_starter_template/features/bookmarks/presentation/bloc/bookmarks_list/bookmarks_list_bloc.dart';
+import 'package:flutter_starter_template/features/bookmarks/presentation/bloc/bookmarks_list/bookmarks_list_state.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -34,28 +34,28 @@ void main() {
     statusController.close();
   });
 
-  BookmarksListCubit buildCubit() =>
-      BookmarksListCubit(mockList, mockDelete, mockSync, mockAnalytics);
+  BookmarksListBloc buildBloc() =>
+      BookmarksListBloc(mockList, mockDelete, mockSync, mockAnalytics);
 
-  group('BookmarksListCubit', () {
+  group('BookmarksListBloc', () {
     test('initial state is empty', () {
-      final cubit = buildCubit();
-      expect(cubit.state.items, isEmpty);
-      expect(cubit.state.isLoading, false);
-      expect(cubit.state.query, '');
-      cubit.close();
+      final bloc = buildBloc();
+      expect(bloc.state.items, isEmpty);
+      expect(bloc.state.isLoading, false);
+      expect(bloc.state.query, '');
+      bloc.close();
     });
 
     group('load', () {
-      blocTest<BookmarksListCubit, BookmarksListState>(
+      blocTest<BookmarksListBloc, BookmarksListState>(
         'emits loading then items on success',
         setUp: () {
           when(
             () => mockList(),
           ).thenAnswer((_) async => Ok([testBookmark, testBookmark2]));
         },
-        build: buildCubit,
-        act: (cubit) => cubit.load(),
+        build: buildBloc,
+        act: (bloc) => bloc.load(),
         expect: () => [
           predicate<BookmarksListState>((s) => s.isLoading && s.items.isEmpty),
           predicate<BookmarksListState>(
@@ -64,15 +64,15 @@ void main() {
         ],
       );
 
-      blocTest<BookmarksListCubit, BookmarksListState>(
+      blocTest<BookmarksListBloc, BookmarksListState>(
         'emits loading then failure on error',
         setUp: () {
           when(
             () => mockList(),
           ).thenAnswer((_) async => const Err(UnknownFailure('Failed')));
         },
-        build: buildCubit,
-        act: (cubit) => cubit.load(),
+        build: buildBloc,
+        act: (bloc) => bloc.load(),
         expect: () => [
           predicate<BookmarksListState>((s) => s.isLoading),
           predicate<BookmarksListState>((s) => s.failure != null),
@@ -81,11 +81,11 @@ void main() {
     });
 
     group('setQuery', () {
-      blocTest<BookmarksListCubit, BookmarksListState>(
+      blocTest<BookmarksListBloc, BookmarksListState>(
         'updates query and filters visibleItems',
-        build: buildCubit,
+        build: buildBloc,
         seed: () => BookmarksListState(items: [testBookmark, testBookmark2]),
-        act: (cubit) => cubit.setQuery('Dart'),
+        act: (bloc) => bloc.setQuery('Dart'),
         expect: () => [
           predicate<BookmarksListState>(
             (s) => s.query == 'Dart' && s.visibleItems.length == 1,
@@ -101,24 +101,24 @@ void main() {
         },
       );
 
-      blocTest<BookmarksListCubit, BookmarksListState>(
+      blocTest<BookmarksListBloc, BookmarksListState>(
         'does nothing when query is unchanged',
-        build: buildCubit,
+        build: buildBloc,
         seed: () => BookmarksListState(items: [testBookmark], query: 'flutter'),
-        act: (cubit) => cubit.setQuery('flutter'),
+        act: (bloc) => bloc.setQuery('flutter'),
         expect: () => <BookmarksListState>[],
       );
     });
 
     group('delete', () {
-      blocTest<BookmarksListCubit, BookmarksListState>(
+      blocTest<BookmarksListBloc, BookmarksListState>(
         'optimistically removes item',
         setUp: () {
           when(() => mockDelete('1')).thenAnswer((_) async => const Ok(null));
         },
-        build: buildCubit,
+        build: buildBloc,
         seed: () => BookmarksListState(items: [testBookmark]),
-        act: (cubit) => cubit.delete('1'),
+        act: (bloc) => bloc.delete('1'),
         expect: () => [predicate<BookmarksListState>((s) => s.items.isEmpty)],
         verify: (_) {
           verify(
@@ -130,7 +130,7 @@ void main() {
         },
       );
 
-      blocTest<BookmarksListCubit, BookmarksListState>(
+      blocTest<BookmarksListBloc, BookmarksListState>(
         'restores item and reloads on delete failure',
         setUp: () {
           when(
@@ -138,9 +138,9 @@ void main() {
           ).thenAnswer((_) async => const Err(UnknownFailure('Failed')));
           when(() => mockList()).thenAnswer((_) async => Ok([testBookmark]));
         },
-        build: buildCubit,
+        build: buildBloc,
         seed: () => BookmarksListState(items: [testBookmark]),
-        act: (cubit) => cubit.delete('1'),
+        act: (bloc) => bloc.delete('1'),
         expect: () => [
           predicate<BookmarksListState>((s) => s.items.isEmpty),
           predicate<BookmarksListState>((s) => s.items.length == 1),

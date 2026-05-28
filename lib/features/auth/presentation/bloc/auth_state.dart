@@ -5,7 +5,7 @@ import '../../domain/entities/auth_user.dart';
 
 part 'auth_state.freezed.dart';
 
-/// State surface for `AuthCubit`. Pattern-match exhaustively at call sites.
+/// State surface for `AuthBloc`. Pattern-match exhaustively at call sites.
 @freezed
 sealed class AuthState with _$AuthState {
   const factory AuthState.initial() = AuthInitial;

@@ -1,7 +1,7 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_starter_template/core/theme/theme_cubit.dart';
+import 'package:flutter_starter_template/core/theme/theme_bloc.dart';
 import 'package:flutter_starter_template/core/theme/theme_state.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -11,7 +11,7 @@ import '../../test_utils.dart';
 void main() {
   late MockSharedPreferences mockPrefs;
   late MockAnalyticsService mockAnalytics;
-  late ThemeCubit cubit;
+  late ThemeBloc bloc;
 
   setUp(() {
     mockPrefs = MockSharedPreferences();
@@ -20,34 +20,34 @@ void main() {
     registerFallbackValue('');
     when(() => mockPrefs.getString(any())).thenReturn(null);
     when(() => mockPrefs.setString(any(), any())).thenAnswer((_) async => true);
-    cubit = ThemeCubit(mockPrefs, mockAnalytics);
+    bloc = ThemeBloc(mockPrefs, mockAnalytics);
   });
 
   tearDown(() {
-    cubit.close();
+    bloc.close();
   });
 
-  group('ThemeCubit', () {
+  group('ThemeBloc', () {
     test('initial state has default scheme and system mode when no prefs', () {
-      expect(cubit.state.mode, ThemeMode.system);
-      expect(cubit.state.scheme, ThemeState.defaultScheme);
+      expect(bloc.state.mode, ThemeMode.system);
+      expect(bloc.state.scheme, ThemeState.defaultScheme);
     });
 
     test('reads initial state from SharedPreferences', () {
       when(() => mockPrefs.getString('app.theme_mode')).thenReturn('dark');
       when(() => mockPrefs.getString('app.theme_scheme')).thenReturn('indigo');
 
-      final c = ThemeCubit(mockPrefs, mockAnalytics);
+      final c = ThemeBloc(mockPrefs, mockAnalytics);
       expect(c.state.mode, ThemeMode.dark);
       expect(c.state.scheme, FlexScheme.indigo);
       c.close();
     });
 
     group('setMode', () {
-      blocTest<ThemeCubit, ThemeState>(
+      blocTest<ThemeBloc, ThemeState>(
         'emits new mode and persists to prefs',
-        build: () => cubit,
-        act: (cubit) => cubit.setMode(ThemeMode.dark),
+        build: () => bloc,
+        act: (bloc) => bloc.setMode(ThemeMode.dark),
         expect: () => [
           predicate<ThemeState>(
             (s) =>
@@ -72,19 +72,19 @@ void main() {
         },
       );
 
-      blocTest<ThemeCubit, ThemeState>(
+      blocTest<ThemeBloc, ThemeState>(
         'does nothing when mode is unchanged',
-        build: () => cubit,
-        act: (cubit) => cubit.setMode(ThemeMode.system),
+        build: () => bloc,
+        act: (bloc) => bloc.setMode(ThemeMode.system),
         expect: () => <ThemeState>[],
       );
     });
 
     group('setScheme', () {
-      blocTest<ThemeCubit, ThemeState>(
+      blocTest<ThemeBloc, ThemeState>(
         'emits new scheme and persists to prefs',
-        build: () => cubit,
-        act: (cubit) => cubit.setScheme(FlexScheme.mango),
+        build: () => bloc,
+        act: (bloc) => bloc.setScheme(FlexScheme.mango),
         expect: () => [
           predicate<ThemeState>(
             (s) => s.mode == ThemeMode.system && s.scheme == FlexScheme.mango,
@@ -106,10 +106,10 @@ void main() {
         },
       );
 
-      blocTest<ThemeCubit, ThemeState>(
+      blocTest<ThemeBloc, ThemeState>(
         'does nothing when scheme is unchanged',
-        build: () => cubit,
-        act: (cubit) => cubit.setScheme(ThemeState.defaultScheme),
+        build: () => bloc,
+        act: (bloc) => bloc.setScheme(ThemeState.defaultScheme),
         expect: () => <ThemeState>[],
       );
     });

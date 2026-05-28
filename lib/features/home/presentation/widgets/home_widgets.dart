@@ -6,8 +6,8 @@ import '../../../../core/animation/widget_animations.dart';
 import '../../../../core/build_context_extensions.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../bookmarks/domain/entities/bookmark.dart';
-import '../cubit/home_cubit.dart';
-import '../cubit/home_state.dart';
+import '../bloc/home_bloc.dart';
+import '../bloc/home_state.dart';
 
 class HomeBody extends StatelessWidget {
   const HomeBody({super.key});
@@ -17,7 +17,7 @@ class HomeBody extends StatelessWidget {
     return AppScaffold(
       title: context.l10n.homeAppBarTitle,
       actions: const [_ProfileAvatarButton()],
-      body: BlocBuilder<HomeCubit, HomeState>(
+      body: BlocBuilder<HomeBloc, HomeState>(
         builder: (context, state) {
           return SingleChildScrollView(
             padding: const EdgeInsets.all(24),
@@ -301,7 +301,7 @@ class _ProfileAvatarButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HomeCubit, HomeState>(
+    return BlocBuilder<HomeBloc, HomeState>(
       builder: (context, state) {
         final username = state.username;
         final initial = username.isNotEmpty ? username[0].toUpperCase() : '?';

@@ -5,8 +5,8 @@ import '../../../../core/animation/widget_animations.dart';
 import '../../../../core/build_context_extensions.dart';
 import '../../../../core/error/failure.dart';
 import '../../../../core/widgets/widgets.dart';
-import '../cubit/auth_cubit.dart';
-import '../cubit/auth_state.dart';
+import '../bloc/auth_bloc.dart';
+import '../bloc/auth_state.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -29,7 +29,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
-    await context.read<AuthCubit>().signIn(
+    await context.read<AuthBloc>().signIn(
       username: _usernameController.text.trim(),
       password: _passwordController.text,
     );
@@ -50,7 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
           constraints: const BoxConstraints(maxWidth: 360),
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(24),
-            child: BlocBuilder<AuthCubit, AuthState>(
+            child: BlocBuilder<AuthBloc, AuthState>(
               builder: (context, state) {
                 final isSubmitting = state is AuthSubmitting;
                 final errorMessage = state is AuthFailure

@@ -38,7 +38,7 @@ import 'package:flutter_starter_template/core/permissions/permission_service.dar
 import 'package:flutter_starter_template/core/share/share_module.dart' as _i390;
 import 'package:flutter_starter_template/core/share/share_service.dart'
     as _i580;
-import 'package:flutter_starter_template/core/theme/theme_cubit.dart' as _i848;
+import 'package:flutter_starter_template/core/theme/theme_bloc.dart' as _i652;
 import 'package:flutter_starter_template/features/auth/data/datasources/auth_local_data_source.dart'
     as _i297;
 import 'package:flutter_starter_template/features/auth/data/datasources/auth_remote_data_source.dart'
@@ -57,8 +57,8 @@ import 'package:flutter_starter_template/features/auth/domain/usecases/sign_in.d
     as _i1001;
 import 'package:flutter_starter_template/features/auth/domain/usecases/sign_out.dart'
     as _i926;
-import 'package:flutter_starter_template/features/auth/presentation/cubit/auth_cubit.dart'
-    as _i867;
+import 'package:flutter_starter_template/features/auth/presentation/bloc/auth_bloc.dart'
+    as _i269;
 import 'package:flutter_starter_template/features/bookmarks/data/datasources/bookmarks_remote_data_source.dart'
     as _i729;
 import 'package:flutter_starter_template/features/bookmarks/data/datasources/bookmarks_remote_module.dart'
@@ -85,16 +85,16 @@ import 'package:flutter_starter_template/features/bookmarks/domain/usecases/list
     as _i568;
 import 'package:flutter_starter_template/features/bookmarks/domain/usecases/update_bookmark.dart'
     as _i412;
-import 'package:flutter_starter_template/features/bookmarks/presentation/cubit/bookmark_detail/bookmark_detail_cubit.dart'
-    as _i368;
-import 'package:flutter_starter_template/features/bookmarks/presentation/cubit/bookmark_form/bookmark_form_cubit.dart'
-    as _i885;
-import 'package:flutter_starter_template/features/bookmarks/presentation/cubit/bookmarks_list/bookmarks_list_cubit.dart'
-    as _i230;
-import 'package:flutter_starter_template/features/home/presentation/cubit/home_cubit.dart'
-    as _i1034;
-import 'package:flutter_starter_template/features/profile/presentation/cubit/profile_cubit.dart'
-    as _i656;
+import 'package:flutter_starter_template/features/bookmarks/presentation/bloc/bookmark_detail/bookmark_detail_bloc.dart'
+    as _i373;
+import 'package:flutter_starter_template/features/bookmarks/presentation/bloc/bookmark_form/bookmark_form_bloc.dart'
+    as _i540;
+import 'package:flutter_starter_template/features/bookmarks/presentation/bloc/bookmarks_list/bookmarks_list_bloc.dart'
+    as _i566;
+import 'package:flutter_starter_template/features/home/presentation/bloc/home_bloc.dart'
+    as _i423;
+import 'package:flutter_starter_template/features/profile/presentation/bloc/profile_bloc.dart'
+    as _i1013;
 import 'package:flutter_starter_template/objectbox.g.dart' as _i831;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
@@ -162,8 +162,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i838.AnalyticsService>(
       () => _i838.FirebaseAnalyticsService(gh<_i398.FirebaseAnalytics>()),
     );
-    gh.lazySingleton<_i848.ThemeCubit>(
-      () => _i848.ThemeCubit(
+    gh.lazySingleton<_i652.ThemeBloc>(
+      () => _i652.ThemeBloc(
         gh<_i460.SharedPreferences>(),
         gh<_i838.AnalyticsService>(),
       ),
@@ -228,8 +228,8 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i1001.SignIn>(() => _i1001.SignIn(gh<_i987.AuthRepository>()));
     gh.factory<_i926.SignOut>(() => _i926.SignOut(gh<_i987.AuthRepository>()));
-    gh.lazySingleton<_i867.AuthCubit>(
-      () => _i867.AuthCubit(
+    gh.lazySingleton<_i269.AuthBloc>(
+      () => _i269.AuthBloc(
         signIn: gh<_i1001.SignIn>(),
         signOut: gh<_i926.SignOut>(),
         restoreSession: gh<_i271.RestoreSession>(),
@@ -243,8 +243,8 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i706.Uuid>(),
       ),
     );
-    gh.factory<_i656.ProfileCubit>(
-      () => _i656.ProfileCubit(gh<_i867.AuthCubit>()),
+    gh.factory<_i1013.ProfileBloc>(
+      () => _i1013.ProfileBloc(gh<_i269.AuthBloc>()),
     );
     gh.factory<_i632.CreateBookmark>(
       () => _i632.CreateBookmark(gh<_i630.BookmarksRepository>()),
@@ -261,29 +261,27 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i412.UpdateBookmark>(
       () => _i412.UpdateBookmark(gh<_i630.BookmarksRepository>()),
     );
-    gh.factory<_i1034.HomeCubit>(
-      () => _i1034.HomeCubit(
-        gh<_i987.AuthRepository>(),
-        gh<_i568.ListBookmarks>(),
-      ),
+    gh.factory<_i423.HomeBloc>(
+      () =>
+          _i423.HomeBloc(gh<_i987.AuthRepository>(), gh<_i568.ListBookmarks>()),
     );
-    gh.factory<_i885.BookmarkFormCubit>(
-      () => _i885.BookmarkFormCubit(
+    gh.factory<_i540.BookmarkFormBloc>(
+      () => _i540.BookmarkFormBloc(
         gh<_i690.GetBookmark>(),
         gh<_i632.CreateBookmark>(),
         gh<_i412.UpdateBookmark>(),
         gh<_i838.AnalyticsService>(),
       ),
     );
-    gh.factory<_i368.BookmarkDetailCubit>(
-      () => _i368.BookmarkDetailCubit(
+    gh.factory<_i373.BookmarkDetailBloc>(
+      () => _i373.BookmarkDetailBloc(
         gh<_i690.GetBookmark>(),
         gh<_i244.DeleteBookmark>(),
         gh<_i838.AnalyticsService>(),
       ),
     );
-    gh.factory<_i230.BookmarksListCubit>(
-      () => _i230.BookmarksListCubit(
+    gh.factory<_i566.BookmarksListBloc>(
+      () => _i566.BookmarksListBloc(
         gh<_i568.ListBookmarks>(),
         gh<_i244.DeleteBookmark>(),
         gh<_i627.BookmarksSyncController>(),
@@ -294,7 +292,7 @@ extension GetItInjectableX on _i174.GetIt {
   }
 }
 
-class _$SharedPreferencesModule extends _i848.SharedPreferencesModule {}
+class _$SharedPreferencesModule extends _i652.SharedPreferencesModule {}
 
 class _$ObjectBoxModule extends _i319.ObjectBoxModule {}
 

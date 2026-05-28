@@ -1,0 +1,80 @@
+import 'dart:async';
+
+import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:injectable/injectable.dart';
+
+import '../../../../core/bloc/event_completion.dart';
+import '../../../../core/utils/result.dart';
+import '../../../auth/domain/repositories/auth_repository.dart';
+import '../../../bookmarks/domain/entities/bookmark.dart';
+import '../../../bookmarks/domain/usecases/list_bookmarks.dart';
+import 'home_state.dart';
+
+@injectable
+class HomeBloc extends Bloc<HomeEvent, HomeState> {
+  HomeBloc(this._authRepository, this._listBookmarks)
+    : super(const HomeState()) {
+    on<HomeLoadRequested>(_onLoadRequested, transformer: sequential());
+  }
+
+  final AuthRepository _authRepository;
+  final ListBookmarks _listBookmarks;
+
+  Future<void> load() {
+    final completer = Completer<void>();
+    add(HomeLoadRequested(completer: completer));
+    return completer.future;
+  }
+
+  Future<void> _onLoadRequested(
+    HomeLoadRequested event,
+    Emitter<HomeState> emit,
+  ) async {
+    try {
+      emit(state.copyWith(isLoading: true, failure: null));
+      final result = await _listBookmarks();
+      switch (result) {
+        case Ok(value: final items):
+          emit(_recomputedState(items));
+        case Err(:final failure):
+          emit(
+            state.copyWith(
+              isLoading: false,
+              username: _authRepository.currentUser?.username ?? '',
+              failure: failure,
+            ),
+          );
+      }
+      event.completer.completeVoidIfPending();
+    } catch (error, stackTrace) {
+      event.completer.completeErrorIfPending(error, stackTrace);
+      rethrow;
+    }
+  }
+
+  HomeState _recomputedState(List<Bookmark> items) {
+    final now = DateTime.now();
+    final weekAgo = now.subtract(const Duration(days: 7));
+
+    return state.copyWith(
+      isLoading: false,
+      failure: null,
+      username: _authRepository.currentUser?.username ?? '',
+      totalBookmarks: items.length,
+      recentBookmarks: items.where((b) => b.createdAt.isAfter(weekAgo)).length,
+      uniqueTags: items.expand((b) => b.tags).toSet().length,
+      recentItems: items.take(3).toList(growable: false),
+    );
+  }
+}
+
+sealed class HomeEvent {
+  const HomeEvent();
+}
+
+final class HomeLoadRequested extends HomeEvent {
+  const HomeLoadRequested({this.completer});
+
+  final Completer<void>? completer;
+}

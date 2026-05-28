@@ -10,18 +10,18 @@ import '../../../../core/analytics/analytics_service.dart';
 import '../../../../core/animation/widget_animations.dart';
 import '../../../../core/build_context_extensions.dart';
 import '../../../../core/di/injection.dart';
-import '../../../../core/theme/theme_cubit.dart';
+import '../../../../core/theme/theme_bloc.dart';
 import '../../../../core/theme/theme_state.dart';
 import '../../../../core/widgets/widgets.dart';
-import '../cubit/profile_cubit.dart';
-import '../cubit/profile_state.dart';
+import '../bloc/profile_bloc.dart';
+import '../bloc/profile_state.dart';
 
 class ProfileBody extends StatelessWidget {
   const ProfileBody({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ProfileCubit, ProfileState>(
+    return BlocBuilder<ProfileBloc, ProfileState>(
       builder: (context, state) {
         return AppScaffold(
           title: context.l10n.profileAppBarTitle,
@@ -60,7 +60,7 @@ class _ProfileHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return BlocBuilder<ProfileCubit, ProfileState>(
+    return BlocBuilder<ProfileBloc, ProfileState>(
       builder: (context, state) {
         final initial = state.username.isNotEmpty
             ? state.username[0].toUpperCase()
@@ -159,13 +159,13 @@ class _ThemeModeSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ThemeCubit, ThemeState>(
+    return BlocBuilder<ThemeBloc, ThemeState>(
       builder: (context, state) {
         return RadioGroup<ThemeMode>(
           groupValue: state.mode,
           onChanged: (selected) {
             if (selected != null) {
-              context.read<ThemeCubit>().setMode(selected);
+              context.read<ThemeBloc>().setMode(selected);
             }
           },
           child: Column(
@@ -215,7 +215,7 @@ class _ColorSchemeSelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ThemeCubit, ThemeState>(
+    return BlocBuilder<ThemeBloc, ThemeState>(
       builder: (context, state) {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -225,7 +225,7 @@ class _ColorSchemeSelector extends StatelessWidget {
             children: _schemes.map((scheme) {
               final isActive = scheme == state.scheme;
               return GestureDetector(
-                onTap: () => context.read<ThemeCubit>().setScheme(scheme),
+                onTap: () => context.read<ThemeBloc>().setScheme(scheme),
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
                   width: 40,
@@ -284,7 +284,7 @@ class _AppInfoTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ProfileCubit, ProfileState>(
+    return BlocBuilder<ProfileBloc, ProfileState>(
       builder: (context, state) {
         final info = state.packageInfo;
         return ListTile(
@@ -344,7 +344,7 @@ class _SignOutButton extends StatelessWidget {
       ),
     );
     if (confirmed == true && context.mounted) {
-      unawaited(context.read<ProfileCubit>().signOut());
+      unawaited(context.read<ProfileBloc>().signOut());
     }
   }
 }

@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
-import '../features/auth/presentation/cubit/auth_cubit.dart';
-import '../features/auth/presentation/cubit/auth_state.dart';
+import '../features/auth/presentation/bloc/auth_bloc.dart';
+import '../features/auth/presentation/bloc/auth_state.dart';
 import '../features/auth/presentation/screens/login_screen.dart';
 import '../features/bookmarks/presentation/screens/bookmark_detail_screen.dart';
 import '../features/bookmarks/presentation/screens/bookmark_form_screen.dart';
@@ -122,9 +122,9 @@ class DeepLinkScope extends InheritedWidget {
       deepLink != oldWidget.deepLink;
 }
 
-/// Builds the app router and wires auth redirects to [cubit] state changes.
+/// Builds the app router and wires auth redirects to [bloc] state changes.
 ({GoRouter router, DeepLinkState deepLink}) buildRouterWithDeepLink(
-  AuthCubit cubit, {
+  AuthBloc bloc, {
   List<NavigatorObserver>? observers,
 }) {
   final deepLink = DeepLinkState();
@@ -138,10 +138,10 @@ class DeepLinkScope extends InheritedWidget {
     // through splash / auth.
     routes: $appRoutes,
     observers: observers,
-    refreshListenable: _CubitListenable(cubit.stream),
+    refreshListenable: _BlocListenable(bloc.stream),
     redirect: (context, state) {
       final location = state.matchedLocation;
-      final auth = cubit.state;
+      final auth = bloc.state;
 
       // ── Phase 1: Before splash completes ──
       // Intercept every navigation until restoreSession runs.  The splash
@@ -185,8 +185,8 @@ class DeepLinkScope extends InheritedWidget {
 
 /// Adapts a [Stream] to the [Listenable] contract GoRouter needs for
 /// `refreshListenable`.
-class _CubitListenable extends ChangeNotifier {
-  _CubitListenable(Stream<dynamic> stream) {
+class _BlocListenable extends ChangeNotifier {
+  _BlocListenable(Stream<dynamic> stream) {
     _subscription = stream.listen((_) => notifyListeners());
   }
 
