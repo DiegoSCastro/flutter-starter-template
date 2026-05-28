@@ -8,3 +8,4 @@ export 'app_loading.dart';
 export 'app_scaffold.dart';
 export 'app_slidable.dart';
 export 'app_text_field.dart';
+export 'app_photo_view.dart';
