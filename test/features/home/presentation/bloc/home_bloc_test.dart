@@ -12,7 +12,6 @@ void main() {
     test('initial state is default', () async {
       final bloc = HomeBloc(MockListBookmarks());
 
-      expect(bloc.state.username, '');
       expect(bloc.state.totalBookmarks, 0);
       expect(bloc.state.recentBookmarks, 0);
       expect(bloc.state.uniqueTags, 0);
@@ -22,14 +21,13 @@ void main() {
       await bloc.close();
     });
 
-    test('aggregates auth and bookmark data on load', () async {
+    test('aggregates bookmark data on load', () async {
       final listBookmarks = _listBookmarks(Ok([testBookmark, testBookmark2]));
       final bloc = HomeBloc(listBookmarks);
 
-      bloc.add(const HomeLoadRequested(username: 'alice'));
+      bloc.add(const HomeLoadRequested());
       await bloc.stream.firstWhere((state) => !state.isLoading);
 
-      expect(bloc.state.username, 'alice');
       expect(bloc.state.totalBookmarks, 2);
       expect(bloc.state.uniqueTags, 2);
       expect(bloc.state.recentItems.length, 2);
@@ -56,10 +54,9 @@ void main() {
         _listBookmarks(const Err(failure)),
       );
 
-      bloc.add(const HomeLoadRequested(username: 'alice'));
+      bloc.add(const HomeLoadRequested());
       await bloc.stream.firstWhere((state) => !state.isLoading);
 
-      expect(bloc.state.username, 'alice');
       expect(bloc.state.isLoading, false);
       expect(bloc.state.failure, failure);
 

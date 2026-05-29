@@ -40,8 +40,6 @@ class BookmarksRepositoryImpl implements BookmarksRepository {
 
   @override
   Future<Result<Bookmark>> create(BookmarkInput input) async {
-    final validation = _validate(input);
-    if (validation != null) return Err(validation);
     final normalized = _normalize(input);
     final now = DateTime.now().toUtc();
     final entity = BookmarkEntity(
@@ -63,8 +61,6 @@ class BookmarksRepositoryImpl implements BookmarksRepository {
 
   @override
   Future<Result<Bookmark>> update(String id, BookmarkInput input) async {
-    final validation = _validate(input);
-    if (validation != null) return Err(validation);
     final existing = await _local.getByUuid(id);
     if (existing == null || existing.syncState == SyncState.pendingDelete) {
       return const Err(NotFoundFailure('Bookmark not found.'));
@@ -98,16 +94,6 @@ class BookmarksRepositoryImpl implements BookmarksRepository {
     await _local.put(existing);
     _sync.sync().uw();
     return const Ok(null);
-  }
-
-  Failure? _validate(BookmarkInput input) {
-    if (input.title.trim().isEmpty) {
-      return const ValidationFailure('Title is required.');
-    }
-    if (input.url.trim().isEmpty) {
-      return const ValidationFailure('URL is required.');
-    }
-    return null;
   }
 
   /// Trim + dedupe tags so storage matches what the server would compute.

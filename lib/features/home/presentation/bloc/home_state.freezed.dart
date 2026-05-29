@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$HomeState {
 
- String get username; int get totalBookmarks; int get recentBookmarks; int get uniqueTags; List<Bookmark> get recentItems; bool get isLoading; Failure? get failure;
+ int get totalBookmarks; int get recentBookmarks; int get uniqueTags; List<Bookmark> get recentItems; bool get isLoading; Failure? get failure;
 /// Create a copy of HomeState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $HomeStateCopyWith<HomeState> get copyWith => _$HomeStateCopyWithImpl<HomeState>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeState&&(identical(other.username, username) || other.username == username)&&(identical(other.totalBookmarks, totalBookmarks) || other.totalBookmarks == totalBookmarks)&&(identical(other.recentBookmarks, recentBookmarks) || other.recentBookmarks == recentBookmarks)&&(identical(other.uniqueTags, uniqueTags) || other.uniqueTags == uniqueTags)&&const DeepCollectionEquality().equals(other.recentItems, recentItems)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.failure, failure) || other.failure == failure));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is HomeState&&(identical(other.totalBookmarks, totalBookmarks) || other.totalBookmarks == totalBookmarks)&&(identical(other.recentBookmarks, recentBookmarks) || other.recentBookmarks == recentBookmarks)&&(identical(other.uniqueTags, uniqueTags) || other.uniqueTags == uniqueTags)&&const DeepCollectionEquality().equals(other.recentItems, recentItems)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.failure, failure) || other.failure == failure));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,username,totalBookmarks,recentBookmarks,uniqueTags,const DeepCollectionEquality().hash(recentItems),isLoading,failure);
+int get hashCode => Object.hash(runtimeType,totalBookmarks,recentBookmarks,uniqueTags,const DeepCollectionEquality().hash(recentItems),isLoading,failure);
 
 @override
 String toString() {
-  return 'HomeState(username: $username, totalBookmarks: $totalBookmarks, recentBookmarks: $recentBookmarks, uniqueTags: $uniqueTags, recentItems: $recentItems, isLoading: $isLoading, failure: $failure)';
+  return 'HomeState(totalBookmarks: $totalBookmarks, recentBookmarks: $recentBookmarks, uniqueTags: $uniqueTags, recentItems: $recentItems, isLoading: $isLoading, failure: $failure)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $HomeStateCopyWith<$Res>  {
   factory $HomeStateCopyWith(HomeState value, $Res Function(HomeState) _then) = _$HomeStateCopyWithImpl;
 @useResult
 $Res call({
- String username, int totalBookmarks, int recentBookmarks, int uniqueTags, List<Bookmark> recentItems, bool isLoading, Failure? failure
+ int totalBookmarks, int recentBookmarks, int uniqueTags, List<Bookmark> recentItems, bool isLoading, Failure? failure
 });
 
 
@@ -62,10 +62,9 @@ class _$HomeStateCopyWithImpl<$Res>
 
 /// Create a copy of HomeState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? username = null,Object? totalBookmarks = null,Object? recentBookmarks = null,Object? uniqueTags = null,Object? recentItems = null,Object? isLoading = null,Object? failure = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? totalBookmarks = null,Object? recentBookmarks = null,Object? uniqueTags = null,Object? recentItems = null,Object? isLoading = null,Object? failure = freezed,}) {
   return _then(_self.copyWith(
-username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
-as String,totalBookmarks: null == totalBookmarks ? _self.totalBookmarks : totalBookmarks // ignore: cast_nullable_to_non_nullable
+totalBookmarks: null == totalBookmarks ? _self.totalBookmarks : totalBookmarks // ignore: cast_nullable_to_non_nullable
 as int,recentBookmarks: null == recentBookmarks ? _self.recentBookmarks : recentBookmarks // ignore: cast_nullable_to_non_nullable
 as int,uniqueTags: null == uniqueTags ? _self.uniqueTags : uniqueTags // ignore: cast_nullable_to_non_nullable
 as int,recentItems: null == recentItems ? _self.recentItems : recentItems // ignore: cast_nullable_to_non_nullable
@@ -156,10 +155,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String username,  int totalBookmarks,  int recentBookmarks,  int uniqueTags,  List<Bookmark> recentItems,  bool isLoading,  Failure? failure)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int totalBookmarks,  int recentBookmarks,  int uniqueTags,  List<Bookmark> recentItems,  bool isLoading,  Failure? failure)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _HomeState() when $default != null:
-return $default(_that.username,_that.totalBookmarks,_that.recentBookmarks,_that.uniqueTags,_that.recentItems,_that.isLoading,_that.failure);case _:
+return $default(_that.totalBookmarks,_that.recentBookmarks,_that.uniqueTags,_that.recentItems,_that.isLoading,_that.failure);case _:
   return orElse();
 
 }
@@ -177,10 +176,10 @@ return $default(_that.username,_that.totalBookmarks,_that.recentBookmarks,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String username,  int totalBookmarks,  int recentBookmarks,  int uniqueTags,  List<Bookmark> recentItems,  bool isLoading,  Failure? failure)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int totalBookmarks,  int recentBookmarks,  int uniqueTags,  List<Bookmark> recentItems,  bool isLoading,  Failure? failure)  $default,) {final _that = this;
 switch (_that) {
 case _HomeState():
-return $default(_that.username,_that.totalBookmarks,_that.recentBookmarks,_that.uniqueTags,_that.recentItems,_that.isLoading,_that.failure);case _:
+return $default(_that.totalBookmarks,_that.recentBookmarks,_that.uniqueTags,_that.recentItems,_that.isLoading,_that.failure);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -197,10 +196,10 @@ return $default(_that.username,_that.totalBookmarks,_that.recentBookmarks,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String username,  int totalBookmarks,  int recentBookmarks,  int uniqueTags,  List<Bookmark> recentItems,  bool isLoading,  Failure? failure)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int totalBookmarks,  int recentBookmarks,  int uniqueTags,  List<Bookmark> recentItems,  bool isLoading,  Failure? failure)?  $default,) {final _that = this;
 switch (_that) {
 case _HomeState() when $default != null:
-return $default(_that.username,_that.totalBookmarks,_that.recentBookmarks,_that.uniqueTags,_that.recentItems,_that.isLoading,_that.failure);case _:
+return $default(_that.totalBookmarks,_that.recentBookmarks,_that.uniqueTags,_that.recentItems,_that.isLoading,_that.failure);case _:
   return null;
 
 }
@@ -212,10 +211,9 @@ return $default(_that.username,_that.totalBookmarks,_that.recentBookmarks,_that.
 
 
 class _HomeState implements HomeState {
-  const _HomeState({this.username = '', this.totalBookmarks = 0, this.recentBookmarks = 0, this.uniqueTags = 0, final  List<Bookmark> recentItems = const [], this.isLoading = false, this.failure}): _recentItems = recentItems;
+  const _HomeState({this.totalBookmarks = 0, this.recentBookmarks = 0, this.uniqueTags = 0, final  List<Bookmark> recentItems = const [], this.isLoading = false, this.failure}): _recentItems = recentItems;
   
 
-@override@JsonKey() final  String username;
 @override@JsonKey() final  int totalBookmarks;
 @override@JsonKey() final  int recentBookmarks;
 @override@JsonKey() final  int uniqueTags;
@@ -239,16 +237,16 @@ _$HomeStateCopyWith<_HomeState> get copyWith => __$HomeStateCopyWithImpl<_HomeSt
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HomeState&&(identical(other.username, username) || other.username == username)&&(identical(other.totalBookmarks, totalBookmarks) || other.totalBookmarks == totalBookmarks)&&(identical(other.recentBookmarks, recentBookmarks) || other.recentBookmarks == recentBookmarks)&&(identical(other.uniqueTags, uniqueTags) || other.uniqueTags == uniqueTags)&&const DeepCollectionEquality().equals(other._recentItems, _recentItems)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.failure, failure) || other.failure == failure));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _HomeState&&(identical(other.totalBookmarks, totalBookmarks) || other.totalBookmarks == totalBookmarks)&&(identical(other.recentBookmarks, recentBookmarks) || other.recentBookmarks == recentBookmarks)&&(identical(other.uniqueTags, uniqueTags) || other.uniqueTags == uniqueTags)&&const DeepCollectionEquality().equals(other._recentItems, _recentItems)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.failure, failure) || other.failure == failure));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,username,totalBookmarks,recentBookmarks,uniqueTags,const DeepCollectionEquality().hash(_recentItems),isLoading,failure);
+int get hashCode => Object.hash(runtimeType,totalBookmarks,recentBookmarks,uniqueTags,const DeepCollectionEquality().hash(_recentItems),isLoading,failure);
 
 @override
 String toString() {
-  return 'HomeState(username: $username, totalBookmarks: $totalBookmarks, recentBookmarks: $recentBookmarks, uniqueTags: $uniqueTags, recentItems: $recentItems, isLoading: $isLoading, failure: $failure)';
+  return 'HomeState(totalBookmarks: $totalBookmarks, recentBookmarks: $recentBookmarks, uniqueTags: $uniqueTags, recentItems: $recentItems, isLoading: $isLoading, failure: $failure)';
 }
 
 
@@ -259,7 +257,7 @@ abstract mixin class _$HomeStateCopyWith<$Res> implements $HomeStateCopyWith<$Re
   factory _$HomeStateCopyWith(_HomeState value, $Res Function(_HomeState) _then) = __$HomeStateCopyWithImpl;
 @override @useResult
 $Res call({
- String username, int totalBookmarks, int recentBookmarks, int uniqueTags, List<Bookmark> recentItems, bool isLoading, Failure? failure
+ int totalBookmarks, int recentBookmarks, int uniqueTags, List<Bookmark> recentItems, bool isLoading, Failure? failure
 });
 
 
@@ -276,10 +274,9 @@ class __$HomeStateCopyWithImpl<$Res>
 
 /// Create a copy of HomeState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? username = null,Object? totalBookmarks = null,Object? recentBookmarks = null,Object? uniqueTags = null,Object? recentItems = null,Object? isLoading = null,Object? failure = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? totalBookmarks = null,Object? recentBookmarks = null,Object? uniqueTags = null,Object? recentItems = null,Object? isLoading = null,Object? failure = freezed,}) {
   return _then(_HomeState(
-username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
-as String,totalBookmarks: null == totalBookmarks ? _self.totalBookmarks : totalBookmarks // ignore: cast_nullable_to_non_nullable
+totalBookmarks: null == totalBookmarks ? _self.totalBookmarks : totalBookmarks // ignore: cast_nullable_to_non_nullable
 as int,recentBookmarks: null == recentBookmarks ? _self.recentBookmarks : recentBookmarks // ignore: cast_nullable_to_non_nullable
 as int,uniqueTags: null == uniqueTags ? _self.uniqueTags : uniqueTags // ignore: cast_nullable_to_non_nullable
 as int,recentItems: null == recentItems ? _self._recentItems : recentItems // ignore: cast_nullable_to_non_nullable

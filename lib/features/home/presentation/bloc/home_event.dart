@@ -5,7 +5,5 @@ sealed class HomeEvent {
 }
 
 final class HomeLoadRequested extends HomeEvent {
-  const HomeLoadRequested({this.username = ''});
-
-  final String username;
+  const HomeLoadRequested();
 }

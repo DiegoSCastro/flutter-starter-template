@@ -12,7 +12,7 @@ part 'home_event.dart';
 @injectable
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc(this._listBookmarks) : super(const HomeState()) {
-    on<HomeLoadRequested>(_onLoadRequested, transformer: sequential());
+    on<HomeLoadRequested>(_onLoadRequested, transformer: droppable());
   }
 
   final ListBookmarks _listBookmarks;
@@ -21,36 +21,23 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     HomeLoadRequested event,
     Emitter<HomeState> emit,
   ) async {
-    emit(
-      state.copyWith(
-        isLoading: true,
-        username: event.username,
-        failure: null,
-      ),
-    );
+    emit(state.copyWith(isLoading: true, failure: null));
     final result = await _listBookmarks();
     switch (result) {
       case Ok(value: final items):
-        emit(_recomputedState(items, username: event.username));
+        emit(_recomputedState(items));
       case Err(:final failure):
-        emit(
-          state.copyWith(
-            isLoading: false,
-            username: event.username,
-            failure: failure,
-          ),
-        );
+        emit(state.copyWith(isLoading: false, failure: failure));
     }
   }
 
-  HomeState _recomputedState(List<Bookmark> items, {required String username}) {
+  HomeState _recomputedState(List<Bookmark> items) {
     final now = DateTime.now();
     final weekAgo = now.subtract(const Duration(days: 7));
 
     return state.copyWith(
       isLoading: false,
       failure: null,
-      username: username,
       totalBookmarks: items.length,
       recentBookmarks: items.where((b) => b.createdAt.isAfter(weekAgo)).length,
       uniqueTags: items.expand((b) => b.tags).toSet().length,

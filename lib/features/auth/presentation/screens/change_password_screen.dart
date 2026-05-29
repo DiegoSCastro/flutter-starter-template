@@ -66,14 +66,12 @@ class _ChangePasswordViewState extends State<_ChangePasswordView> {
   Widget build(BuildContext context) {
     return BlocListener<ChangePasswordCubit, ChangePasswordState>(
       listener: (context, state) {
-        state.whenOrNull(
-          success: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(context.l10n.changePasswordSuccessMessage)),
-            );
-            Navigator.of(context).pop();
-          },
-        );
+        if (state is ChangePasswordSuccess) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(context.l10n.changePasswordSuccessMessage)),
+          );
+          Navigator.of(context).pop();
+        }
       },
       child: AppScaffold(
         title: context.l10n.changePasswordAppBarTitle,
@@ -85,14 +83,10 @@ class _ChangePasswordViewState extends State<_ChangePasswordView> {
               padding: const EdgeInsets.all(24),
               child: BlocBuilder<ChangePasswordCubit, ChangePasswordState>(
                 builder: (context, state) {
-                  final isSubmitting = state.maybeWhen(
-                    submitting: () => true,
-                    orElse: () => false,
-                  );
-                  final errorMessage = state.maybeWhen(
-                    failure: _localizeFailure,
-                    orElse: () => null,
-                  );
+                  final isSubmitting = state is ChangePasswordSubmitting;
+                  final errorMessage = state is ChangePasswordFailure
+                      ? _localizeFailure(state.failure)
+                      : null;
 
                   return Form(
                     key: _formKey,

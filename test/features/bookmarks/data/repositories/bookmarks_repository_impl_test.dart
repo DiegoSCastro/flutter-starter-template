@@ -130,38 +130,6 @@ void main() {
       tags: ['dev'],
     );
 
-    test('returns ValidationFailure when title is empty', () async {
-      final result = await repository.create(
-        const BookmarkInput(
-          title: '',
-          url: 'https://flutter.dev',
-          description: '',
-          tags: [],
-        ),
-      );
-
-      expect(result, isA<Err<Bookmark>>());
-      final err = result as Err<Bookmark>;
-      expect(err.failure, isA<ValidationFailure>());
-      expect(err.failure.message, 'Title is required.');
-    });
-
-    test('returns ValidationFailure when url is empty', () async {
-      final result = await repository.create(
-        const BookmarkInput(
-          title: 'Flutter',
-          url: '',
-          description: '',
-          tags: [],
-        ),
-      );
-
-      expect(result, isA<Err<Bookmark>>());
-      final err = result as Err<Bookmark>;
-      expect(err.failure, isA<ValidationFailure>());
-      expect(err.failure.message, 'URL is required.');
-    });
-
     test('creates entity with trimmed and normalized input', () async {
       when(() => mockUuid.v4()).thenReturn('new-uuid');
       when(() => mockLocal.putNew(any())).thenAnswer(
@@ -214,22 +182,6 @@ void main() {
       description: 'Updated desc',
       tags: ['updated'],
     );
-
-    test('returns ValidationFailure when title is empty', () async {
-      final result = await repository.update(
-        'b-1',
-        const BookmarkInput(
-          title: '',
-          url: 'https://flutter.dev',
-          description: '',
-          tags: [],
-        ),
-      );
-
-      expect(result, isA<Err<Bookmark>>());
-      final err = result as Err<Bookmark>;
-      expect(err.failure, isA<ValidationFailure>());
-    });
 
     test('returns NotFoundFailure when bookmark not found', () async {
       when(() => mockLocal.getByUuid('b-1')).thenAnswer((_) async => null);

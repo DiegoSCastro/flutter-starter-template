@@ -29,11 +29,6 @@ class AuthRepositoryImpl implements AuthRepository {
     required String username,
     required String password,
   }) async {
-    if (username.isEmpty || password.isEmpty) {
-      return const Err(
-        InvalidCredentialsFailure('Username and password are required.'),
-      );
-    }
     try {
       final response = await _remote.signIn(
         SignInRequest(username: username, password: password),
@@ -55,11 +50,6 @@ class AuthRepositoryImpl implements AuthRepository {
     required String username,
     required String password,
   }) async {
-    if (username.isEmpty || password.isEmpty) {
-      return const Err(
-        InvalidCredentialsFailure('Username and password are required.'),
-      );
-    }
     try {
       final response = await _remote.register(
         RegisterRequest(username: username, password: password),
@@ -81,11 +71,6 @@ class AuthRepositoryImpl implements AuthRepository {
     required String currentPassword,
     required String newPassword,
   }) async {
-    if (currentPassword.isEmpty || newPassword.isEmpty) {
-      return const Err(
-        InvalidCredentialsFailure('Both passwords are required.'),
-      );
-    }
     try {
       await _remote.changePassword(
         ChangePasswordRequest(

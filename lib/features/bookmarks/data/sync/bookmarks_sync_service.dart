@@ -238,18 +238,25 @@ class BookmarksSyncService implements BookmarksSyncController {
           _uploadSingleMedia(paths[i]).then((url) => results[i] = url),
       ]);
     }
-    return [
-      for (final url in results) ?url,
-    ];
+    return [for (final url in results) url!];
   }
 
-  Future<String?> _uploadSingleMedia(String path) async {
+  Future<String> _uploadSingleMedia(String path) async {
     if (path.startsWith('http://') || path.startsWith('https://')) {
       return path;
     }
     final file = await MultipartFile.fromFile(path);
     final res = await _remote.upload(file);
-    return res['url'];
+    final url = res['url'];
+    if (url == null || url.isEmpty) {
+      // Surface as DioException so the outer _run() catch leaves the row
+      // pending for retry instead of silently dropping the attachment.
+      throw DioException(
+        requestOptions: RequestOptions(path: '/api/upload'),
+        error: 'Upload response missing url for $path',
+      );
+    }
+    return url;
   }
 
   Future<String?> _uploadVideoFile(String? path) async {

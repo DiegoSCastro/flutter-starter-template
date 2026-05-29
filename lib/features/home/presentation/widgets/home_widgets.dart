@@ -5,6 +5,8 @@ import '../../../../app/router.dart';
 import '../../../../core/animation/widget_animations.dart';
 import '../../../../core/build_context_extensions.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../auth/presentation/bloc/auth_bloc.dart';
+import '../../../auth/presentation/bloc/auth_state.dart';
 import '../../../bookmarks/domain/entities/bookmark.dart';
 import '../bloc/home_bloc.dart';
 import '../bloc/home_state.dart';
@@ -25,7 +27,7 @@ class HomeBody extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(height: 24),
-                _WelcomeSection(username: state.username),
+                const _WelcomeSection(),
                 const SizedBox(height: 32),
                 _StatsDashboard(state: state),
                 const SizedBox(height: 32),
@@ -51,42 +53,50 @@ class HomeBody extends StatelessWidget {
 }
 
 class _WelcomeSection extends StatelessWidget {
-  const _WelcomeSection({required this.username});
-
-  final String username;
+  const _WelcomeSection();
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        CircleAvatar(
-          radius: 40,
-          backgroundColor: context.colorScheme.primaryContainer,
-          child: Icon(
-            Icons.person,
-            size: 40,
-            color: context.colorScheme.onPrimaryContainer,
-          ),
-        ).animateScale(delay: 100.ms),
-        const SizedBox(height: 16),
-        AppAnimatedText(
-          text: context.l10n.homeWelcome(username),
-          type: AppAnimatedTextType.typewriter,
-          textStyle: context.textTheme.headlineSmall,
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 8),
-        AppAnimatedText(
-          text: context.l10n.homeSignedInBody,
-          type: AppAnimatedTextType.fade,
-          textStyle: context.textTheme.bodyMedium,
-          textAlign: TextAlign.center,
-        ),
-      ],
+    return BlocSelector<AuthBloc, AuthState, String>(
+      selector: _usernameFrom,
+      builder: (context, username) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircleAvatar(
+              radius: 40,
+              backgroundColor: context.colorScheme.primaryContainer,
+              child: Icon(
+                Icons.person,
+                size: 40,
+                color: context.colorScheme.onPrimaryContainer,
+              ),
+            ).animateScale(delay: 100.ms),
+            const SizedBox(height: 16),
+            AppAnimatedText(
+              text: context.l10n.homeWelcome(username),
+              type: AppAnimatedTextType.typewriter,
+              textStyle: context.textTheme.headlineSmall,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 8),
+            AppAnimatedText(
+              text: context.l10n.homeSignedInBody,
+              type: AppAnimatedTextType.fade,
+              textStyle: context.textTheme.bodyMedium,
+              textAlign: TextAlign.center,
+            ),
+          ],
+        );
+      },
     );
   }
 }
+
+String _usernameFrom(AuthState state) => switch (state) {
+  AuthAuthenticated(:final user) || AuthSigningOut(:final user) => user.username,
+  _ => '',
+};
 
 class _StatsDashboard extends StatelessWidget {
   const _StatsDashboard({required this.state});
@@ -301,9 +311,9 @@ class _ProfileAvatarButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HomeBloc, HomeState>(
-      builder: (context, state) {
-        final username = state.username;
+    return BlocSelector<AuthBloc, AuthState, String>(
+      selector: _usernameFrom,
+      builder: (context, username) {
         final initial = username.isNotEmpty ? username[0].toUpperCase() : '?';
         return Padding(
           padding: const EdgeInsets.only(right: 8),

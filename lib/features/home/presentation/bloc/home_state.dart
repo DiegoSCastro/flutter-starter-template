@@ -8,7 +8,6 @@ part 'home_state.freezed.dart';
 @freezed
 abstract class HomeState with _$HomeState {
   const factory HomeState({
-    @Default('') String username,
     @Default(0) int totalBookmarks,
     @Default(0) int recentBookmarks,
     @Default(0) int uniqueTags,

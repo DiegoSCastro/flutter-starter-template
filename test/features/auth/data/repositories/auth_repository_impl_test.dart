@@ -53,23 +53,6 @@ void main() {
   });
 
   group('signIn', () {
-    test('returns ValidationFailure when username is empty', () async {
-      final result = await repository.signIn(username: '', password: 'pass');
-
-      expect(result, isA<Err<AuthUser>>());
-      final err = result as Err<AuthUser>;
-      expect(err.failure, isA<InvalidCredentialsFailure>());
-      expect(err.failure.message, 'Username and password are required.');
-    });
-
-    test('returns ValidationFailure when password is empty', () async {
-      final result = await repository.signIn(username: 'alice', password: '');
-
-      expect(result, isA<Err<AuthUser>>());
-      final err = result as Err<AuthUser>;
-      expect(err.failure, isA<InvalidCredentialsFailure>());
-    });
-
     test('returns Ok with user and persists session on success', () async {
       when(
         () => mockRemote.signIn(any()),

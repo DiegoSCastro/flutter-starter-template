@@ -55,13 +55,13 @@ extension ChangePasswordStatePatterns on ChangePasswordState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Initial value)?  initial,TResult Function( _Submitting value)?  submitting,TResult Function( _Success value)?  success,TResult Function( _Failure value)?  failure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( ChangePasswordInitial value)?  initial,TResult Function( ChangePasswordSubmitting value)?  submitting,TResult Function( ChangePasswordSuccess value)?  success,TResult Function( ChangePasswordFailure value)?  failure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _Initial() when initial != null:
-return initial(_that);case _Submitting() when submitting != null:
-return submitting(_that);case _Success() when success != null:
-return success(_that);case _Failure() when failure != null:
+case ChangePasswordInitial() when initial != null:
+return initial(_that);case ChangePasswordSubmitting() when submitting != null:
+return submitting(_that);case ChangePasswordSuccess() when success != null:
+return success(_that);case ChangePasswordFailure() when failure != null:
 return failure(_that);case _:
   return orElse();
 
@@ -80,17 +80,14 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Initial value)  initial,required TResult Function( _Submitting value)  submitting,required TResult Function( _Success value)  success,required TResult Function( _Failure value)  failure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( ChangePasswordInitial value)  initial,required TResult Function( ChangePasswordSubmitting value)  submitting,required TResult Function( ChangePasswordSuccess value)  success,required TResult Function( ChangePasswordFailure value)  failure,}){
 final _that = this;
 switch (_that) {
-case _Initial():
-return initial(_that);case _Submitting():
-return submitting(_that);case _Success():
-return success(_that);case _Failure():
-return failure(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+case ChangePasswordInitial():
+return initial(_that);case ChangePasswordSubmitting():
+return submitting(_that);case ChangePasswordSuccess():
+return success(_that);case ChangePasswordFailure():
+return failure(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -104,13 +101,13 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Initial value)?  initial,TResult? Function( _Submitting value)?  submitting,TResult? Function( _Success value)?  success,TResult? Function( _Failure value)?  failure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( ChangePasswordInitial value)?  initial,TResult? Function( ChangePasswordSubmitting value)?  submitting,TResult? Function( ChangePasswordSuccess value)?  success,TResult? Function( ChangePasswordFailure value)?  failure,}){
 final _that = this;
 switch (_that) {
-case _Initial() when initial != null:
-return initial(_that);case _Submitting() when submitting != null:
-return submitting(_that);case _Success() when success != null:
-return success(_that);case _Failure() when failure != null:
+case ChangePasswordInitial() when initial != null:
+return initial(_that);case ChangePasswordSubmitting() when submitting != null:
+return submitting(_that);case ChangePasswordSuccess() when success != null:
+return success(_that);case ChangePasswordFailure() when failure != null:
 return failure(_that);case _:
   return null;
 
@@ -130,10 +127,10 @@ return failure(_that);case _:
 
 @optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  submitting,TResult Function()?  success,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _Initial() when initial != null:
-return initial();case _Submitting() when submitting != null:
-return submitting();case _Success() when success != null:
-return success();case _Failure() when failure != null:
+case ChangePasswordInitial() when initial != null:
+return initial();case ChangePasswordSubmitting() when submitting != null:
+return submitting();case ChangePasswordSuccess() when success != null:
+return success();case ChangePasswordFailure() when failure != null:
 return failure(_that.failure);case _:
   return orElse();
 
@@ -154,14 +151,11 @@ return failure(_that.failure);case _:
 
 @optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  submitting,required TResult Function()  success,required TResult Function( Failure failure)  failure,}) {final _that = this;
 switch (_that) {
-case _Initial():
-return initial();case _Submitting():
-return submitting();case _Success():
-return success();case _Failure():
-return failure(_that.failure);case _:
-  throw StateError('Unexpected subclass');
-
-}
+case ChangePasswordInitial():
+return initial();case ChangePasswordSubmitting():
+return submitting();case ChangePasswordSuccess():
+return success();case ChangePasswordFailure():
+return failure(_that.failure);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -177,10 +171,10 @@ return failure(_that.failure);case _:
 
 @optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  submitting,TResult? Function()?  success,TResult? Function( Failure failure)?  failure,}) {final _that = this;
 switch (_that) {
-case _Initial() when initial != null:
-return initial();case _Submitting() when submitting != null:
-return submitting();case _Success() when success != null:
-return success();case _Failure() when failure != null:
+case ChangePasswordInitial() when initial != null:
+return initial();case ChangePasswordSubmitting() when submitting != null:
+return submitting();case ChangePasswordSuccess() when success != null:
+return success();case ChangePasswordFailure() when failure != null:
 return failure(_that.failure);case _:
   return null;
 
@@ -192,8 +186,8 @@ return failure(_that.failure);case _:
 /// @nodoc
 
 
-class _Initial implements ChangePasswordState {
-  const _Initial();
+class ChangePasswordInitial implements ChangePasswordState {
+  const ChangePasswordInitial();
   
 
 
@@ -203,7 +197,7 @@ class _Initial implements ChangePasswordState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Initial);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChangePasswordInitial);
 }
 
 
@@ -224,8 +218,8 @@ String toString() {
 /// @nodoc
 
 
-class _Submitting implements ChangePasswordState {
-  const _Submitting();
+class ChangePasswordSubmitting implements ChangePasswordState {
+  const ChangePasswordSubmitting();
   
 
 
@@ -235,7 +229,7 @@ class _Submitting implements ChangePasswordState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Submitting);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChangePasswordSubmitting);
 }
 
 
@@ -256,8 +250,8 @@ String toString() {
 /// @nodoc
 
 
-class _Success implements ChangePasswordState {
-  const _Success();
+class ChangePasswordSuccess implements ChangePasswordState {
+  const ChangePasswordSuccess();
   
 
 
@@ -267,7 +261,7 @@ class _Success implements ChangePasswordState {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Success);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChangePasswordSuccess);
 }
 
 
@@ -288,8 +282,8 @@ String toString() {
 /// @nodoc
 
 
-class _Failure implements ChangePasswordState {
-  const _Failure(this.failure);
+class ChangePasswordFailure implements ChangePasswordState {
+  const ChangePasswordFailure(this.failure);
   
 
  final  Failure failure;
@@ -298,13 +292,13 @@ class _Failure implements ChangePasswordState {
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$FailureCopyWith<_Failure> get copyWith => __$FailureCopyWithImpl<_Failure>(this, _$identity);
+$ChangePasswordFailureCopyWith<ChangePasswordFailure> get copyWith => _$ChangePasswordFailureCopyWithImpl<ChangePasswordFailure>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Failure&&(identical(other.failure, failure) || other.failure == failure));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ChangePasswordFailure&&(identical(other.failure, failure) || other.failure == failure));
 }
 
 
@@ -320,8 +314,8 @@ String toString() {
 }
 
 /// @nodoc
-abstract mixin class _$FailureCopyWith<$Res> implements $ChangePasswordStateCopyWith<$Res> {
-  factory _$FailureCopyWith(_Failure value, $Res Function(_Failure) _then) = __$FailureCopyWithImpl;
+abstract mixin class $ChangePasswordFailureCopyWith<$Res> implements $ChangePasswordStateCopyWith<$Res> {
+  factory $ChangePasswordFailureCopyWith(ChangePasswordFailure value, $Res Function(ChangePasswordFailure) _then) = _$ChangePasswordFailureCopyWithImpl;
 @useResult
 $Res call({
  Failure failure
@@ -332,17 +326,17 @@ $Res call({
 
 }
 /// @nodoc
-class __$FailureCopyWithImpl<$Res>
-    implements _$FailureCopyWith<$Res> {
-  __$FailureCopyWithImpl(this._self, this._then);
+class _$ChangePasswordFailureCopyWithImpl<$Res>
+    implements $ChangePasswordFailureCopyWith<$Res> {
+  _$ChangePasswordFailureCopyWithImpl(this._self, this._then);
 
-  final _Failure _self;
-  final $Res Function(_Failure) _then;
+  final ChangePasswordFailure _self;
+  final $Res Function(ChangePasswordFailure) _then;
 
 /// Create a copy of ChangePasswordState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? failure = null,}) {
-  return _then(_Failure(
+  return _then(ChangePasswordFailure(
 null == failure ? _self.failure : failure // ignore: cast_nullable_to_non_nullable
 as Failure,
   ));

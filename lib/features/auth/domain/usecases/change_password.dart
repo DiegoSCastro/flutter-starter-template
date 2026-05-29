@@ -1,5 +1,6 @@
 import 'package:injectable/injectable.dart';
 
+import '../../../../core/error/failure.dart';
 import '../../../../core/usecases/use_case.dart';
 import '../../../../core/utils/result.dart';
 import '../repositories/auth_repository.dart';
@@ -14,6 +15,11 @@ class ChangePassword extends UseCase<ChangePasswordParams, void> {
 
   @override
   Future<Result<void>> call(ChangePasswordParams param) {
+    if (param.currentPassword.isEmpty || param.newPassword.isEmpty) {
+      return Future.value(
+        const Err(InvalidCredentialsFailure('Both passwords are required.')),
+      );
+    }
     return runResultGuarded(
       () => _repository.changePassword(
         currentPassword: param.currentPassword,

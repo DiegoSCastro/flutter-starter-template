@@ -1,5 +1,6 @@
 import 'package:injectable/injectable.dart';
 
+import '../../../../core/error/failure.dart';
 import '../../../../core/usecases/use_case.dart';
 import '../../../../core/utils/result.dart';
 import '../entities/auth_user.dart';
@@ -15,6 +16,13 @@ class Register extends UseCase<RegisterParams, AuthUser> {
 
   @override
   Future<Result<AuthUser>> call(RegisterParams param) {
+    if (param.username.isEmpty || param.password.isEmpty) {
+      return Future.value(
+        const Err(
+          InvalidCredentialsFailure('Username and password are required.'),
+        ),
+      );
+    }
     return runResultGuarded(
       () => _repository.register(
         username: param.username,

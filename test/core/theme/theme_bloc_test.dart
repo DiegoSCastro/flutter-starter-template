@@ -57,12 +57,9 @@ void main() {
         ],
         verify: (_) {
           verify(() => mockPrefs.setString('app.theme_mode', 'dark')).called(1);
-          verify(
-            () => mockPrefs.setString(
-              'app.theme_scheme',
-              ThemeState.defaultScheme.name,
-            ),
-          ).called(1);
+          verifyNever(
+            () => mockPrefs.setString('app.theme_scheme', any()),
+          );
           verify(
             () => mockAnalytics.logEvent(
               'theme_mode_changed',
@@ -91,9 +88,7 @@ void main() {
           ),
         ],
         verify: (_) {
-          verify(
-            () => mockPrefs.setString('app.theme_mode', 'system'),
-          ).called(1);
+          verifyNever(() => mockPrefs.setString('app.theme_mode', any()));
           verify(
             () => mockPrefs.setString('app.theme_scheme', 'mango'),
           ).called(1);

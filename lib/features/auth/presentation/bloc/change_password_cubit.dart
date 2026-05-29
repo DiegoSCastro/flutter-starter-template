@@ -16,7 +16,7 @@ class ChangePasswordCubit extends Cubit<ChangePasswordState> {
     required String currentPassword,
     required String newPassword,
   }) async {
-    if (state == const ChangePasswordState.submitting()) return;
+    if (state is ChangePasswordSubmitting) return;
 
     emit(const ChangePasswordState.submitting());
 
