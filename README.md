@@ -74,6 +74,8 @@ lib/
 │   ├── di/                           # get_it + injectable
 │   ├── error/                        # Failure hierarchy
 │   ├── firebase/                     # Firebase initialization & global Crashlytics/Messaging setup
+│   ├── future_extensions.dart        # Future helpers (e.g. .uw() fire-and-forget)
+│   ├── layout/                       # Responsive breakpoints (AppBreakpoints)
 │   ├── media/                        # Camera, Image Picker, and Video Player wrapper services
 │   ├── network/                      # Dio clients, auth interceptor, token refresh
 │   ├── notifications/                # flutter_local_notifications
@@ -87,7 +89,8 @@ lib/
 │   ├── auth/                         # Sign-in, sign-out, session restore
 │   ├── bookmarks/                    # CRUD, offline sync, list/detail/form
 │   ├── home/                         # Welcome screen
-│   ├── profile/                      # User info, theme toggle, notifications
+│   ├── profile/                      # User info + notification controls
+│   ├── settings/                     # Theme mode, color scheme, sign-out
 │   └── splash/                       # Session restoration gate
 ├── gen/                              # flutter_gen asset references
 └── l10n/                             # ARB translation files
@@ -128,16 +131,21 @@ feature/
 |---------|---------|-------|
 | Flutter | ≥ 3.44  | Managed via [FVM](https://fvm.app/) — see `.fvmrc` |
 | Go      | ≥ 1.25  | Backend server |
+| Node.js | ≥ 18    | Optional — only for the `firebase` MCP server (`npx`) |
 
 ### ⚡ Install & Generate
 
 ```bash
-git clone https://github.com/kido-luci/flutter-starter-template.git
+# --recurse-submodules pulls the companion Go backend (a git submodule)
+git clone --recurse-submodules https://github.com/kido-luci/flutter-starter-template.git
 cd flutter-starter-template
 
 fvm flutter pub get
 fvm dart run build_runner build --delete-conflicting-outputs
 ```
+
+> 💡 **Already cloned without submodules?** Run
+> `git submodule update --init --recursive` to fetch the backend.
 
 ### 🍎 iOS one-time setup
 
@@ -153,6 +161,9 @@ fvm flutter config --no-enable-swift-package-manager
 ```
 
 ### 🖥 Start Backend
+
+The backend lives in the [`simple_backend_server`](simple_backend_server) git
+submodule. If it's empty, run `git submodule update --init --recursive` first.
 
 ```bash
 cd simple_backend_server
@@ -215,7 +226,7 @@ fvm flutter analyze
 fvm dart fix --apply
 
 # Format all Dart files
-fvm flutter format .
+fvm dart format .
 ```
 
 <br>
@@ -412,6 +423,7 @@ Project‑scoped MCP servers in `.mcp.json` give agents direct access to:
 |-------------|------------------------------------------------|----------------------------------------------|
 | `dart`      | `fvm dart mcp-server`                          | Static analysis, formatting, packages, tests |
 | `codegraph` | `codegraph serve --mcp --path <project-root>` | Symbol search, callers/callees, code context |
+| `firebase`  | `npx -y firebase-tools@latest mcp`             | Crashlytics, project config, deploy, security rules |
 
 > 💡 **Tip** — If the CodeGraph index is missing or out of sync, build/update it by running:
 > ```bash
@@ -431,7 +443,7 @@ Project‑scoped MCP servers in `.mcp.json` give agents direct access to:
 
 ### 🛠 Agent Skills
 
-Official playbooks from `flutter/skills` and `dart-lang/skills` are vendored in `.agents/skills/` and pinned in `skills-lock.json`.
+Official playbooks from `flutter/skills`, `dart-lang/skills`, and `firebase/agent-skills` are vendored in `.agents/skills/` and pinned in `skills-lock.json`.
 
 <details>
 <summary><b>🦋 Flutter Skills</b> (10)</summary>
@@ -467,6 +479,26 @@ Official playbooks from `flutter/skills` and `dart-lang/skills` are vendored in 
 | `dart-resolve-package-conflicts`     | `pub get` conflict resolution          |
 | `dart-migrate-to-checks-package`     | `matcher` → `checks` migration         |
 | `dart-use-pattern-matching`          | Switch expressions · pattern matching  |
+
+</details>
+
+<details>
+<summary><b>🔥 Firebase Skills</b> (11)</summary>
+<br>
+
+| Skill                              | Focus                                  |
+|------------------------------------|----------------------------------------|
+| `firebase-basics`                  | Firebase project fundamentals          |
+| `firebase-auth-basics`             | Authentication setup                   |
+| `firebase-crashlytics`             | Crash reporting integration            |
+| `firebase-firestore`               | Cloud Firestore data modeling          |
+| `firebase-data-connect`            | Data Connect (Postgres) integration    |
+| `firebase-remote-config-basics`    | Remote Config flags                     |
+| `firebase-ai-logic-basics`         | Firebase AI Logic (Gemini)             |
+| `firebase-hosting-basics`          | Static web hosting                     |
+| `firebase-app-hosting-basics`      | App Hosting for dynamic apps           |
+| `firebase-security-rules-auditor`  | Security rules review                  |
+| `xcode-project-setup`              | iOS/Xcode project configuration        |
 
 </details>
 
