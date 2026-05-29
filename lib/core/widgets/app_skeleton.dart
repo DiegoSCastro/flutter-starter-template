@@ -189,7 +189,11 @@ class AppSkeletonListTile extends StatelessWidget {
 
 /// A shimmering list of [AppSkeletonListTile]s for full-screen list loading.
 class AppSkeletonList extends StatelessWidget {
-  const AppSkeletonList({super.key, this.itemCount = 8, this.hasLeading = true});
+  const AppSkeletonList({
+    super.key,
+    this.itemCount = 8,
+    this.hasLeading = true,
+  });
 
   final int itemCount;
   final bool hasLeading;

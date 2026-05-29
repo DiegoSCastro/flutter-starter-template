@@ -64,7 +64,10 @@ class _LoadingDots extends StatelessWidget {
       children: [
         for (var i = 0; i < _count; i++) ...[
           if (i > 0) const SizedBox(width: AppSpacing.sm),
-          _Dot(color: color, delay: Duration(milliseconds: i * 160)),
+          _Dot(
+            color: color,
+            delay: Duration(milliseconds: i * 160),
+          ),
         ],
       ],
     );
