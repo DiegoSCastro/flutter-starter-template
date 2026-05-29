@@ -79,7 +79,9 @@ class BookmarkDetailView extends StatelessWidget {
               BookmarkDetailLoading() => const AppLoading(),
               BookmarkDetailFailure(:final failure) => AppErrorView(
                 message: bookmarkFailureMessage(context, failure),
-                onRetry: () => context.read<BookmarkDetailBloc>().load(id),
+                onRetry: () => context.read<BookmarkDetailBloc>().add(
+                  BookmarkDetailLoadRequested(id),
+                ),
               ),
               BookmarkDetailReady(:final bookmark) ||
               BookmarkDetailDeleting(:final bookmark) => _DetailBody(
@@ -96,7 +98,7 @@ class BookmarkDetailView extends StatelessWidget {
   Future<void> _openEditor(BuildContext context) async {
     final changed = await BookmarkEditRoute(id).push<bool>(context);
     if (changed == true && context.mounted) {
-      await context.read<BookmarkDetailBloc>().load(id);
+      context.read<BookmarkDetailBloc>().add(BookmarkDetailLoadRequested(id));
     }
   }
 
@@ -123,7 +125,7 @@ class BookmarkDetailView extends StatelessWidget {
     );
     if (confirmed != true) return;
     if (!context.mounted) return;
-    unawaited(context.read<BookmarkDetailBloc>().delete(b.id));
+    context.read<BookmarkDetailBloc>().add(BookmarkDetailDeleteRequested(b.id));
   }
 }
 

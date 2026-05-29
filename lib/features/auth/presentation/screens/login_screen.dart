@@ -28,11 +28,13 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  Future<void> _submit() async {
+  void _submit() {
     if (!_formKey.currentState!.validate()) return;
-    await context.read<AuthBloc>().signIn(
-      username: _usernameController.text.trim(),
-      password: _passwordController.text,
+    context.read<AuthBloc>().add(
+      AuthSignInRequested(
+        username: _usernameController.text.trim(),
+        password: _passwordController.text,
+      ),
     );
   }
 

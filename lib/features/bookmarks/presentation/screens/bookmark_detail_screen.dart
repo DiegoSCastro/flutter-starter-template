@@ -13,7 +13,8 @@ class BookmarkDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => getIt<BookmarkDetailBloc>()..load(id),
+      create: (_) =>
+          getIt<BookmarkDetailBloc>()..add(BookmarkDetailLoadRequested(id)),
       child: BookmarkDetailView(id: id),
     );
   }

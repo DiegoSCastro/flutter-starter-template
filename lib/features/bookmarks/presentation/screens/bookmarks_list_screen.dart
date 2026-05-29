@@ -11,7 +11,8 @@ class BookmarksListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => getIt<BookmarksListBloc>()..load(),
+      create: (_) =>
+          getIt<BookmarksListBloc>()..add(const BookmarksListLoadRequested()),
       child: const BookmarksListView(),
     );
   }

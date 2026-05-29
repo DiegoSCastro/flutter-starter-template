@@ -68,21 +68,28 @@ class _BookmarksListViewState extends State<BookmarksListView> {
   void _onSearchChanged(String value) {
     _debounce?.cancel();
     _debounce = Timer(const Duration(milliseconds: 250), () {
-      context.read<BookmarksListBloc>().setQuery(value);
+      context.read<BookmarksListBloc>().add(BookmarksListQueryChanged(value));
     });
+  }
+
+  Future<void> _reload() {
+    final bloc = context.read<BookmarksListBloc>();
+    final completion = bloc.stream.firstWhere((state) => !state.isLoading);
+    bloc.add(const BookmarksListLoadRequested());
+    return completion.then((_) {});
   }
 
   Future<void> _openNew() async {
     final changed = await const BookmarkNewRoute().push<bool>(context);
     if (changed == true && mounted) {
-      await context.read<BookmarksListBloc>().load();
+      await _reload();
     }
   }
 
   Future<void> _openDetail(Bookmark bookmark) async {
     final changed = await BookmarkDetailRoute(bookmark.id).push<bool>(context);
     if (changed == true && mounted) {
-      await context.read<BookmarksListBloc>().load();
+      await _reload();
     }
   }
 
@@ -122,7 +129,9 @@ class _BookmarksListViewState extends State<BookmarksListView> {
                 if (state.failure != null && state.items.isEmpty) {
                   return AppErrorView(
                     message: bookmarkFailureMessage(context, state.failure!),
-                    onRetry: () => context.read<BookmarksListBloc>().load(),
+                    onRetry: () => context.read<BookmarksListBloc>().add(
+                      const BookmarksListLoadRequested(),
+                    ),
                   );
                 }
                 final visible = state.visibleItems;
@@ -141,7 +150,7 @@ class _BookmarksListViewState extends State<BookmarksListView> {
                   );
                 }
                 return RefreshIndicator(
-                  onRefresh: () => context.read<BookmarksListBloc>().load(),
+                  onRefresh: _reload,
                   child: AppSlidableAutoCloseGroup(
                     child: ListView.separated(
                       itemCount: visible.length,
@@ -159,10 +168,8 @@ class _BookmarksListViewState extends State<BookmarksListView> {
                                   b.title,
                                 );
                                 if (!shouldDelete || !context.mounted) return;
-                                unawaited(
-                                  context.read<BookmarksListBloc>().delete(
-                                    b.id,
-                                  ),
+                                context.read<BookmarksListBloc>().add(
+                                  BookmarksListDeleteRequested(b.id),
                                 );
                               },
                             ),
@@ -254,7 +261,9 @@ class _SyncStatusIcon extends StatelessWidget {
       BookmarksSyncStatus.error => IconButton(
         tooltip: context.l10n.bookmarksSyncFailedRetryTooltip,
         icon: const Icon(Icons.cloud_off),
-        onPressed: () => context.read<BookmarksListBloc>().retrySync(),
+        onPressed: () => context.read<BookmarksListBloc>().add(
+          const BookmarksListSyncRetried(),
+        ),
       ),
       BookmarksSyncStatus.idle => const SizedBox.shrink(),
     };

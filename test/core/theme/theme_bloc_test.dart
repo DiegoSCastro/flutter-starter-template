@@ -47,7 +47,7 @@ void main() {
       blocTest<ThemeBloc, ThemeState>(
         'emits new mode and persists to prefs',
         build: () => bloc,
-        act: (bloc) => bloc.setMode(ThemeMode.dark),
+        act: (bloc) => bloc.add(const ThemeModeChanged(ThemeMode.dark)),
         expect: () => [
           predicate<ThemeState>(
             (s) =>
@@ -75,7 +75,7 @@ void main() {
       blocTest<ThemeBloc, ThemeState>(
         'does nothing when mode is unchanged',
         build: () => bloc,
-        act: (bloc) => bloc.setMode(ThemeMode.system),
+        act: (bloc) => bloc.add(const ThemeModeChanged(ThemeMode.system)),
         expect: () => <ThemeState>[],
       );
     });
@@ -84,7 +84,7 @@ void main() {
       blocTest<ThemeBloc, ThemeState>(
         'emits new scheme and persists to prefs',
         build: () => bloc,
-        act: (bloc) => bloc.setScheme(FlexScheme.mango),
+        act: (bloc) => bloc.add(const ThemeSchemeChanged(FlexScheme.mango)),
         expect: () => [
           predicate<ThemeState>(
             (s) => s.mode == ThemeMode.system && s.scheme == FlexScheme.mango,
@@ -109,7 +109,8 @@ void main() {
       blocTest<ThemeBloc, ThemeState>(
         'does nothing when scheme is unchanged',
         build: () => bloc,
-        act: (bloc) => bloc.setScheme(ThemeState.defaultScheme),
+        act: (bloc) =>
+            bloc.add(const ThemeSchemeChanged(ThemeState.defaultScheme)),
         expect: () => <ThemeState>[],
       );
     });

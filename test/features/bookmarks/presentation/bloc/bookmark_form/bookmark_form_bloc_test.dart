@@ -51,7 +51,7 @@ void main() {
       blocTest<BookmarkFormBloc, BookmarkFormState>(
         'stays idle with empty state for create mode (null id)',
         build: buildBloc,
-        act: (bloc) => bloc.initialize(null),
+        act: (bloc) => bloc.add(const BookmarkFormInitialized(null)),
         expect: () => [const BookmarkFormState()],
       );
 
@@ -61,7 +61,7 @@ void main() {
           when(() => mockGet('1')).thenAnswer((_) async => Ok(testBookmark));
         },
         build: buildBloc,
-        act: (bloc) => bloc.initialize('1'),
+        act: (bloc) => bloc.add(const BookmarkFormInitialized('1')),
         expect: () => [
           predicate<BookmarkFormState>(
             (s) => s.status == BookmarkFormStatus.loading,
@@ -83,7 +83,7 @@ void main() {
           ).thenAnswer((_) async => const Err(NotFoundFailure('Not found')));
         },
         build: buildBloc,
-        act: (bloc) => bloc.initialize('1'),
+        act: (bloc) => bloc.add(const BookmarkFormInitialized('1')),
         expect: () => [
           predicate<BookmarkFormState>(
             (s) => s.status == BookmarkFormStatus.loading,
@@ -98,35 +98,40 @@ void main() {
     group('field setters', () {
       test('setTitle updates title', () async {
         final bloc = buildBloc();
-        await bloc.setTitle('Dart');
+        bloc.add(const BookmarkFormTitleChanged('Dart'));
+        await bloc.stream.first;
         expect(bloc.state.title, 'Dart');
         await bloc.close();
       });
 
       test('setUrl updates url', () async {
         final bloc = buildBloc();
-        await bloc.setUrl('https://dart.dev');
+        bloc.add(const BookmarkFormUrlChanged('https://dart.dev'));
+        await bloc.stream.first;
         expect(bloc.state.url, 'https://dart.dev');
         await bloc.close();
       });
 
       test('setDescription updates description', () async {
         final bloc = buildBloc();
-        await bloc.setDescription('The Dart language');
+        bloc.add(const BookmarkFormDescriptionChanged('The Dart language'));
+        await bloc.stream.first;
         expect(bloc.state.description, 'The Dart language');
         await bloc.close();
       });
 
       test('setTagsFromCsv parses comma-separated tags', () async {
         final bloc = buildBloc();
-        await bloc.setTagsFromCsv('a, b, c ,');
+        bloc.add(const BookmarkFormTagsChanged('a, b, c ,'));
+        await bloc.stream.first;
         expect(bloc.state.tags, ['a', 'b', 'c']);
         await bloc.close();
       });
 
       test('setTagsFromCsv with empty string yields empty list', () async {
         final bloc = buildBloc();
-        await bloc.setTagsFromCsv('');
+        bloc.add(const BookmarkFormTagsChanged(''));
+        await bloc.stream.first;
         expect(bloc.state.tags, isEmpty);
         await bloc.close();
       });
@@ -147,7 +152,7 @@ void main() {
           description: 'Flutter website',
           tags: ['dev'],
         ),
-        act: (bloc) => bloc.submit(),
+        act: (bloc) => bloc.add(const BookmarkFormSubmitted()),
         expect: () => [
           predicate<BookmarkFormState>(
             (s) => s.status == BookmarkFormStatus.submitting,
@@ -181,7 +186,7 @@ void main() {
           description: 'Flutter website',
           tags: ['dev'],
         ),
-        act: (bloc) => bloc.submit(),
+        act: (bloc) => bloc.add(const BookmarkFormSubmitted()),
         expect: () => [
           predicate<BookmarkFormState>(
             (s) => s.status == BookmarkFormStatus.submitting,
@@ -209,7 +214,7 @@ void main() {
         },
         build: buildBloc,
         seed: () => const BookmarkFormState(title: '.', url: '.'),
-        act: (bloc) => bloc.submit(),
+        act: (bloc) => bloc.add(const BookmarkFormSubmitted()),
         expect: () => [
           predicate<BookmarkFormState>(
             (s) => s.status == BookmarkFormStatus.submitting,
@@ -225,7 +230,7 @@ void main() {
         build: buildBloc,
         seed: () =>
             const BookmarkFormState(status: BookmarkFormStatus.submitting),
-        act: (bloc) => bloc.submit(),
+        act: (bloc) => bloc.add(const BookmarkFormSubmitted()),
         expect: () => <BookmarkFormState>[],
       );
     });
@@ -244,7 +249,7 @@ void main() {
           ).thenAnswer((_) async => [mockFile]);
         },
         build: buildBloc,
-        act: (bloc) => bloc.pickImages(),
+        act: (bloc) => bloc.add(const BookmarkFormImagesPicked()),
         expect: () => [
           predicate<BookmarkFormState>(
             (s) =>
@@ -267,7 +272,7 @@ void main() {
           ).thenAnswer((_) async => [mockFile]);
         },
         build: buildBloc,
-        act: (bloc) => bloc.pickImages(),
+        act: (bloc) => bloc.add(const BookmarkFormImagesPicked()),
         expect: () => [
           predicate<BookmarkFormState>(
             (s) =>
@@ -287,7 +292,7 @@ void main() {
           ).thenAnswer((_) async => false);
         },
         build: buildBloc,
-        act: (bloc) => bloc.pickImages(),
+        act: (bloc) => bloc.add(const BookmarkFormImagesPicked()),
         expect: () => [
           predicate<BookmarkFormState>(
             (s) => s.failure is PermissionFailure,
@@ -306,7 +311,7 @@ void main() {
           ).thenAnswer((_) async => mockFile);
         },
         build: buildBloc,
-        act: (bloc) => bloc.takeImageFromCamera(),
+        act: (bloc) => bloc.add(const BookmarkFormCameraImageTaken()),
         expect: () => [
           predicate<BookmarkFormState>(
             (s) =>
@@ -329,7 +334,7 @@ void main() {
           ).thenAnswer((_) async => mockFile);
         },
         build: buildBloc,
-        act: (bloc) => bloc.takeImageFromCamera(),
+        act: (bloc) => bloc.add(const BookmarkFormCameraImageTaken()),
         expect: () => [
           predicate<BookmarkFormState>(
             (s) =>
@@ -349,7 +354,7 @@ void main() {
           ).thenAnswer((_) async => false);
         },
         build: buildBloc,
-        act: (bloc) => bloc.takeImageFromCamera(),
+        act: (bloc) => bloc.add(const BookmarkFormCameraImageTaken()),
         expect: () => [
           predicate<BookmarkFormState>(
             (s) => s.failure is CameraPermissionFailure,
@@ -361,7 +366,8 @@ void main() {
         'removes image successfully',
         build: buildBloc,
         seed: () => const BookmarkFormState(imageUrls: ['test/path.png']),
-        act: (bloc) => bloc.removeImage('test/path.png'),
+        act: (bloc) =>
+            bloc.add(const BookmarkFormImageRemoved('test/path.png')),
         expect: () => [
           predicate<BookmarkFormState>((s) => s.imageUrls.isEmpty),
         ],
@@ -382,7 +388,7 @@ void main() {
           ).thenAnswer((_) async => mockVideo);
         },
         build: buildBloc,
-        act: (bloc) => bloc.pickVideo(),
+        act: (bloc) => bloc.add(const BookmarkFormVideoPicked()),
         expect: () => [
           predicate<BookmarkFormState>(
             (s) => s.videoUrl == 'test/video.mp4',
@@ -401,7 +407,7 @@ void main() {
           ).thenAnswer((_) async => mockVideo);
         },
         build: buildBloc,
-        act: (bloc) => bloc.recordVideoFromCamera(),
+        act: (bloc) => bloc.add(const BookmarkFormCameraVideoTaken()),
         expect: () => [
           predicate<BookmarkFormState>(
             (s) => s.videoUrl == 'test/video.mp4',
@@ -413,7 +419,7 @@ void main() {
         'removes video successfully',
         build: buildBloc,
         seed: () => const BookmarkFormState(videoUrl: 'test/video.mp4'),
-        act: (bloc) => bloc.removeVideo(),
+        act: (bloc) => bloc.add(const BookmarkFormVideoRemoved()),
         expect: () => [
           predicate<BookmarkFormState>((s) => s.videoUrl == null),
         ],

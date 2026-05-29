@@ -42,20 +42,6 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
     return ThemeState(mode: mode, scheme: scheme);
   }
 
-  Future<void> setMode(ThemeMode mode) {
-    if (mode == state.mode) return Future<void>.value();
-    final completion = stream.firstWhere((state) => state.mode == mode);
-    add(ThemeModeChanged(mode));
-    return completion.then((_) {});
-  }
-
-  Future<void> setScheme(FlexScheme scheme) {
-    if (scheme == state.scheme) return Future<void>.value();
-    final completion = stream.firstWhere((state) => state.scheme == scheme);
-    add(ThemeSchemeChanged(scheme));
-    return completion.then((_) {});
-  }
-
   Future<void> _onModeChanged(
     ThemeModeChanged event,
     Emitter<ThemeState> emit,

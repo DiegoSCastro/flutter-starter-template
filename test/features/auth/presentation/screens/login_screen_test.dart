@@ -5,6 +5,7 @@ import 'package:flutter_starter_template/features/auth/presentation/bloc/auth_st
 import 'package:flutter_starter_template/features/auth/presentation/screens/login_screen.dart';
 import 'package:flutter_starter_template/l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mocktail/mocktail.dart';
 
 import '../../../../test_utils.dart';
@@ -12,12 +13,19 @@ import '../../../../test_utils.dart';
 class MockAuthBloc extends Mock implements AuthBloc {}
 
 Widget wrapWithDependencies(AuthBloc bloc) {
-  return MaterialApp(
+  return MaterialApp.router(
     localizationsDelegates: AppLocalizations.localizationsDelegates,
     supportedLocales: AppLocalizations.supportedLocales,
-    home: BlocProvider<AuthBloc>.value(
-      value: bloc,
-      child: const LoginScreen(),
+    routerConfig: GoRouter(
+      routes: [
+        GoRoute(
+          path: '/',
+          builder: (context, state) => BlocProvider<AuthBloc>.value(
+            value: bloc,
+            child: const LoginScreen(),
+          ),
+        ),
+      ],
     ),
   );
 }
@@ -25,12 +33,19 @@ Widget wrapWithDependencies(AuthBloc bloc) {
 void main() {
   late MockAuthBloc mockBloc;
 
+  setUpAll(() {
+    registerFallbackValue(
+      const AuthSignInRequested(username: '', password: ''),
+    );
+  });
+
   setUp(() {
     mockBloc = MockAuthBloc();
     when(() => mockBloc.state).thenReturn(const AuthState.initial());
     when(
       () => mockBloc.stream,
     ).thenAnswer((_) => Stream.value(const AuthState.initial()));
+    when(() => mockBloc.add(any())).thenReturn(null);
   });
 
   group('LoginScreen', () {
@@ -54,10 +69,6 @@ void main() {
     });
 
     testWidgets('calls signIn with entered credentials', (tester) async {
-      when(
-        () => mockBloc.signIn(username: 'alice', password: 'hunter2'),
-      ).thenAnswer((_) async {});
-
       await tester.pumpWidget(wrapWithDependencies(mockBloc));
       await tester.pump(const Duration(seconds: 1));
 
@@ -67,7 +78,13 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
 
       verify(
-        () => mockBloc.signIn(username: 'alice', password: 'hunter2'),
+        () => mockBloc.add(
+          any(
+            that: isA<AuthSignInRequested>()
+                .having((event) => event.username, 'username', 'alice')
+                .having((event) => event.password, 'password', 'hunter2'),
+          ),
+        ),
       ).called(1);
     });
 

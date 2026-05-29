@@ -29,17 +29,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
     super.dispose();
   }
 
-  Future<void> _submit() async {
+  void _submit() {
     if (!_formKey.currentState!.validate()) return;
-    
+
     if (_passwordController.text != _confirmPasswordController.text) {
-       // Ideally handled by validator, but double check
-       return;
+      return;
     }
 
-    await context.read<AuthBloc>().register(
-      username: _usernameController.text.trim(),
-      password: _passwordController.text,
+    context.read<AuthBloc>().add(
+      AuthRegisterRequested(
+        username: _usernameController.text.trim(),
+        password: _passwordController.text,
+      ),
     );
   }
 

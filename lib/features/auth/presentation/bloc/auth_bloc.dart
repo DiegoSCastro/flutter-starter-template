@@ -38,74 +38,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final SignOut _signOut;
   final RestoreSession _restoreSession;
   final AnalyticsService _analytics;
-  bool _signInInFlight = false;
-  bool _registerInFlight = false;
+  bool _credentialsRequestInFlight = false;
   bool _signOutInFlight = false;
-
-  /// Called once during app bootstrap. Tries to rehydrate a persisted session;
-  /// silently lands on [AuthState.initial] if there isn't one or it expired.
-  Future<void> restoreSession() {
-    final completion = stream
-        .firstWhere(
-          (state) =>
-              state is AuthAuthenticated ||
-              state is AuthInitial ||
-              state is AuthFailure,
-        )
-        .then((_) {});
-    add(const AuthSessionRestoreRequested());
-    return completion;
-  }
-
-  Future<void> signIn({
-    required String username,
-    required String password,
-  }) {
-    if (state is AuthSubmitting || _signInInFlight) return Future<void>.value();
-    _signInInFlight = true;
-    final completion = stream
-        .firstWhere((state) => state is! AuthSubmitting)
-        .then((_) {});
-    add(
-      AuthSignInRequested(
-        username: username,
-        password: password,
-      ),
-    );
-    return completion.whenComplete(() => _signInInFlight = false);
-  }
-
-  Future<void> register({
-    required String username,
-    required String password,
-  }) {
-    if (state is AuthSubmitting || _registerInFlight) {
-      return Future<void>.value();
-    }
-    _registerInFlight = true;
-    final completion = stream
-        .firstWhere((state) => state is! AuthSubmitting)
-        .then((_) {});
-    add(
-      AuthRegisterRequested(
-        username: username,
-        password: password,
-      ),
-    );
-    return completion.whenComplete(() => _registerInFlight = false);
-  }
-
-  Future<void> signOut() {
-    if (_signOutInFlight) return Future<void>.value();
-    _signOutInFlight = true;
-    final completion = stream
-        .firstWhere(
-          (state) => state is AuthInitial || state is AuthFailure,
-        )
-        .then((_) {});
-    add(const AuthSignOutRequested());
-    return completion.whenComplete(() => _signOutInFlight = false);
-  }
 
   Future<void> _onSessionRestoreRequested(
     AuthSessionRestoreRequested event,
@@ -131,6 +65,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthSignInRequested event,
     Emitter<AuthState> emit,
   ) async {
+    if (_credentialsRequestInFlight) return;
+    _credentialsRequestInFlight = true;
     try {
       if (state is AuthSubmitting) {
         return;
@@ -156,6 +92,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     } catch (_) {
       rethrow;
+    } finally {
+      _credentialsRequestInFlight = false;
     }
   }
 
@@ -163,6 +101,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthRegisterRequested event,
     Emitter<AuthState> emit,
   ) async {
+    if (_credentialsRequestInFlight) return;
+    _credentialsRequestInFlight = true;
     try {
       if (state is AuthSubmitting) {
         return;
@@ -188,6 +128,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     } catch (_) {
       rethrow;
+    } finally {
+      _credentialsRequestInFlight = false;
     }
   }
 
@@ -195,6 +137,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthSignOutRequested event,
     Emitter<AuthState> emit,
   ) async {
+    if (_signOutInFlight) return;
+    _signOutInFlight = true;
     try {
       final result = await _signOut();
       switch (result) {
@@ -208,6 +152,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       }
     } catch (_) {
       rethrow;
+    } finally {
+      _signOutInFlight = false;
     }
   }
 }

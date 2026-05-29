@@ -20,12 +20,6 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final AuthRepository _authRepository;
   final ListBookmarks _listBookmarks;
 
-  Future<void> load() {
-    final completion = stream.firstWhere((state) => !state.isLoading);
-    add(const HomeLoadRequested());
-    return completion.then((_) {});
-  }
-
   Future<void> _onLoadRequested(
     HomeLoadRequested event,
     Emitter<HomeState> emit,

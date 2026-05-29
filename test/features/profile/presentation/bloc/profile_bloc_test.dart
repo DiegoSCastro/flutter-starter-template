@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_starter_template/core/utils/result.dart';
 import 'package:flutter_starter_template/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:flutter_starter_template/features/auth/presentation/bloc/auth_state.dart';
 import 'package:flutter_starter_template/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -40,7 +41,8 @@ void main() {
           });
 
       final bloc = ProfileBloc(_authBloc());
-      await bloc.load();
+      bloc.add(const ProfileLoaded());
+      await bloc.stream.firstWhere((state) => state.packageInfo != null);
 
       expect(bloc.state.packageInfo, isNotNull);
       expect(bloc.state.packageInfo!.appName, 'TestApp');
@@ -59,7 +61,10 @@ void main() {
       final authBloc = _authBloc(signIn: mockSignIn);
       final bloc = ProfileBloc(authBloc);
 
-      await authBloc.signIn(username: 'alice', password: 'pass');
+      authBloc.add(
+        const AuthSignInRequested(username: 'alice', password: 'pass'),
+      );
+      await authBloc.stream.firstWhere((state) => state is AuthAuthenticated);
       await Future<void>.delayed(const Duration(milliseconds: 10));
 
       expect(bloc.state.username, 'alice');
@@ -81,11 +86,15 @@ void main() {
       final authBloc = _authBloc(signIn: mockSignIn, signOut: mockSignOut);
       final bloc = ProfileBloc(authBloc);
 
-      await authBloc.signIn(username: 'alice', password: 'pass');
+      authBloc.add(
+        const AuthSignInRequested(username: 'alice', password: 'pass'),
+      );
+      await authBloc.stream.firstWhere((state) => state is AuthAuthenticated);
       await Future<void>.delayed(const Duration(milliseconds: 10));
       expect(bloc.state.username, 'alice');
 
-      await authBloc.signOut();
+      authBloc.add(const AuthSignOutRequested());
+      await authBloc.stream.firstWhere((state) => state is AuthInitial);
       await Future<void>.delayed(const Duration(milliseconds: 10));
 
       expect(bloc.state.username, '');
@@ -102,9 +111,8 @@ void main() {
       final authBloc = _authBloc(signOut: mockSignOut);
       final bloc = ProfileBloc(authBloc);
 
-      await bloc.signOut();
-      // After signOut resolves, isSigningOut is still true since
-      // we don't reset it — auth state change to initial handles cleanup.
+      bloc.add(const ProfileSignOutRequested());
+      await Future<void>.delayed(const Duration(milliseconds: 10));
       expect(bloc.state.username, '');
 
       await bloc.close();
@@ -122,7 +130,10 @@ void main() {
       ).thenAnswer((_) async => const Ok(testUser));
 
       final authBloc2 = _authBloc(signIn: mockSignIn);
-      await authBloc2.signIn(username: 'bob', password: 'pass');
+      authBloc2.add(
+        const AuthSignInRequested(username: 'bob', password: 'pass'),
+      );
+      await authBloc2.stream.firstWhere((state) => state is AuthAuthenticated);
 
       // Closed bloc should not react to new auth changes
       expect(bloc.state.username, '');

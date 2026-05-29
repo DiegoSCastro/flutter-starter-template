@@ -32,19 +32,6 @@ class BookmarkDetailBloc
   final DeleteBookmark _delete;
   final AnalyticsService _analytics;
 
-  Future<void> load(String id) {
-    final completion = stream.firstWhere(
-      (state) => state is BookmarkDetailReady || state is BookmarkDetailFailure,
-    );
-    add(BookmarkDetailLoadRequested(id));
-    return completion.then((_) {});
-  }
-
-  Future<void> delete(String id) {
-    add(BookmarkDetailDeleteRequested(id));
-    return Future<void>.delayed(Duration.zero);
-  }
-
   Future<void> _onLoadRequested(
     BookmarkDetailLoadRequested event,
     Emitter<BookmarkDetailState> emit,

@@ -14,7 +14,8 @@ class BookmarkFormScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => getIt<BookmarkFormBloc>()..initialize(id),
+      create: (_) =>
+          getIt<BookmarkFormBloc>()..add(BookmarkFormInitialized(id)),
       child: BookmarkFormView(isEditing: id != null),
     );
   }

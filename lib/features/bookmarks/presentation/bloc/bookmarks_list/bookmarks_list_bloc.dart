@@ -54,32 +54,6 @@ class BookmarksListBloc extends Bloc<BookmarksListEvent, BookmarksListState> {
   late final StreamSubscription<BookmarksSyncStatus> _syncSub;
   BookmarksSyncStatus _lastSyncStatus = BookmarksSyncStatus.idle;
 
-  Future<void> load() {
-    final completion = stream.firstWhere((state) => !state.isLoading);
-    add(const BookmarksListLoadRequested());
-    return completion.then((_) {});
-  }
-
-  Future<void> retrySync() {
-    add(const BookmarksListSyncRetried());
-    return Future<void>.delayed(Duration.zero);
-  }
-
-  /// Updates the search query. Filtering is derived in the state itself
-  /// ([BookmarksListState.visibleItems]), so this is a single state update.
-  Future<void> setQuery(String query) {
-    if (query == state.query) return Future<void>.value();
-    add(BookmarksListQueryChanged(query));
-    return Future<void>.delayed(Duration.zero);
-  }
-
-  /// Optimistically removes the row, then issues the delete (which marks
-  /// tombstone locally + queues the server call).
-  Future<void> delete(String id) {
-    add(BookmarksListDeleteRequested(id));
-    return Future<void>.delayed(Duration.zero);
-  }
-
   Future<void> _onLoadRequested(
     BookmarksListLoadRequested event,
     Emitter<BookmarksListState> emit,

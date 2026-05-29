@@ -171,7 +171,7 @@ class _ThemeModeSelector extends StatelessWidget {
           groupValue: state.mode,
           onChanged: (selected) {
             if (selected != null) {
-              context.read<ThemeBloc>().setMode(selected);
+              context.read<ThemeBloc>().add(ThemeModeChanged(selected));
             }
           },
           child: Column(
@@ -231,7 +231,8 @@ class _ColorSchemeSelector extends StatelessWidget {
             children: _schemes.map((scheme) {
               final isActive = scheme == state.scheme;
               return GestureDetector(
-                onTap: () => context.read<ThemeBloc>().setScheme(scheme),
+                onTap: () =>
+                    context.read<ThemeBloc>().add(ThemeSchemeChanged(scheme)),
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
                   width: 40,
@@ -350,7 +351,7 @@ class _SignOutButton extends StatelessWidget {
       ),
     );
     if (confirmed == true && context.mounted) {
-      unawaited(context.read<ProfileBloc>().signOut());
+      context.read<ProfileBloc>().add(const ProfileSignOutRequested());
     }
   }
 }

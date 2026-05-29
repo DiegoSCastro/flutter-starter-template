@@ -121,7 +121,9 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
                     validator: (v) => (v == null || v.trim().isEmpty)
                         ? context.l10n.bookmarkTitleRequired
                         : null,
-                    onChanged: context.read<BookmarkFormBloc>().setTitle,
+                    onChanged: (value) => context.read<BookmarkFormBloc>().add(
+                      BookmarkFormTitleChanged(value),
+                    ),
                   ).animateSlideLeft(),
                   const SizedBox(height: 12),
                   AppTextField(
@@ -131,7 +133,9 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
                     keyboardType: TextInputType.url,
                     textInputAction: TextInputAction.next,
                     validator: (value) => _validateUrl(context, value),
-                    onChanged: context.read<BookmarkFormBloc>().setUrl,
+                    onChanged: (value) => context.read<BookmarkFormBloc>().add(
+                      BookmarkFormUrlChanged(value),
+                    ),
                   ).animateSlideLeft(delay: 50.ms),
                   const SizedBox(height: 12),
                   AppTextField(
@@ -139,17 +143,24 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
                     label: context.l10n.bookmarkDescriptionLabel,
                     minLines: 2,
                     maxLines: 4,
-                    onChanged: context.read<BookmarkFormBloc>().setDescription,
+                    onChanged: (value) => context.read<BookmarkFormBloc>().add(
+                      BookmarkFormDescriptionChanged(value),
+                    ),
                   ).animateSlideLeft(delay: 100.ms),
                   const SizedBox(height: 12),
                   AppTextField(
                     controller: _tags,
                     label: context.l10n.bookmarkTagsLabel,
                     hint: context.l10n.bookmarkTagsHint,
-                    onChanged: context.read<BookmarkFormBloc>().setTagsFromCsv,
+                    onChanged: (value) => context.read<BookmarkFormBloc>().add(
+                      BookmarkFormTagsChanged(value),
+                    ),
                   ).animateSlideLeft(delay: 150.ms),
                   const SizedBox(height: 16),
-                  _buildImageSection(context, state).animateSlideLeft(delay: 175.ms),
+                  _buildImageSection(
+                    context,
+                    state,
+                  ).animateSlideLeft(delay: 175.ms),
                   const SizedBox(height: 24),
                   AppButton(
                     label: widget.isEditing
@@ -159,7 +170,9 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
                     expand: true,
                     onPressed: () {
                       if (_formKey.currentState?.validate() != true) return;
-                      context.read<BookmarkFormBloc>().submit();
+                      context.read<BookmarkFormBloc>().add(
+                        const BookmarkFormSubmitted(),
+                      );
                     },
                   ).animateSlideUp(delay: 200.ms),
                 ],
@@ -222,16 +235,20 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
                       top: 4,
                       right: 4,
                       child: GestureDetector(
-                        onTap: () => context
-                            .read<BookmarkFormBloc>()
-                            .removeImage(path),
+                        onTap: () => context.read<BookmarkFormBloc>().add(
+                          BookmarkFormImageRemoved(path),
+                        ),
                         child: Container(
                           padding: const EdgeInsets.all(2),
                           decoration: const BoxDecoration(
                             color: Colors.black54,
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(Icons.close, size: 16, color: Colors.white),
+                          child: const Icon(
+                            Icons.close,
+                            size: 16,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
@@ -265,8 +282,9 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
                 top: 8,
                 right: 8,
                 child: GestureDetector(
-                  onTap: () =>
-                      context.read<BookmarkFormBloc>().removeVideo(),
+                  onTap: () => context.read<BookmarkFormBloc>().add(
+                    const BookmarkFormVideoRemoved(),
+                  ),
                   child: Container(
                     padding: const EdgeInsets.all(4),
                     decoration: const BoxDecoration(
@@ -289,7 +307,9 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
           children: [
             Expanded(
               child: OutlinedButton.icon(
-                onPressed: () => context.read<BookmarkFormBloc>().pickImages(),
+                onPressed: () => context.read<BookmarkFormBloc>().add(
+                  const BookmarkFormImagesPicked(),
+                ),
                 icon: const Icon(Icons.add_photo_alternate),
                 label: const Text('Add Images'),
               ),
@@ -297,8 +317,9 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
             const SizedBox(width: 12),
             Expanded(
               child: OutlinedButton.icon(
-                onPressed: () =>
-                    context.read<BookmarkFormBloc>().takeImageFromCamera(),
+                onPressed: () => context.read<BookmarkFormBloc>().add(
+                  const BookmarkFormCameraImageTaken(),
+                ),
                 icon: const Icon(Icons.camera_alt),
                 label: const Text('Take Photo'),
               ),
@@ -310,7 +331,9 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
           children: [
             Expanded(
               child: OutlinedButton.icon(
-                onPressed: () => context.read<BookmarkFormBloc>().pickVideo(),
+                onPressed: () => context.read<BookmarkFormBloc>().add(
+                  const BookmarkFormVideoPicked(),
+                ),
                 icon: const Icon(Icons.video_library),
                 label: const Text('Add Video'),
               ),
@@ -318,8 +341,9 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
             const SizedBox(width: 12),
             Expanded(
               child: OutlinedButton.icon(
-                onPressed: () =>
-                    context.read<BookmarkFormBloc>().recordVideoFromCamera(),
+                onPressed: () => context.read<BookmarkFormBloc>().add(
+                  const BookmarkFormCameraVideoTaken(),
+                ),
                 icon: const Icon(Icons.videocam),
                 label: const Text('Record Video'),
               ),

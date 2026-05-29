@@ -36,7 +36,7 @@ void main() {
           when(() => mockGet('1')).thenAnswer((_) async => Ok(testBookmark));
           return BookmarkDetailBloc(mockGet, mockDelete, mockAnalytics);
         },
-        act: (bloc) => bloc.load('1'),
+        act: (bloc) => bloc.add(const BookmarkDetailLoadRequested('1')),
         expect: () => [
           const BookmarkDetailState.loading(),
           BookmarkDetailState.ready(testBookmark),
@@ -59,7 +59,7 @@ void main() {
           ).thenAnswer((_) async => const Err(NotFoundFailure('Not found')));
           return BookmarkDetailBloc(mockGet, mockDelete, mockAnalytics);
         },
-        act: (bloc) => bloc.load('1'),
+        act: (bloc) => bloc.add(const BookmarkDetailLoadRequested('1')),
         expect: () => [
           const BookmarkDetailState.loading(),
           predicate<BookmarkDetailState>((s) => s is BookmarkDetailFailure),
@@ -75,7 +75,7 @@ void main() {
         },
         build: () => BookmarkDetailBloc(mockGet, mockDelete, mockAnalytics),
         seed: () => BookmarkDetailState.ready(testBookmark),
-        act: (bloc) => bloc.delete('1'),
+        act: (bloc) => bloc.add(const BookmarkDetailDeleteRequested('1')),
         expect: () => [
           BookmarkDetailState.deleting(testBookmark),
           const BookmarkDetailState.deleted(),
@@ -99,7 +99,7 @@ void main() {
         },
         build: () => BookmarkDetailBloc(mockGet, mockDelete, mockAnalytics),
         seed: () => BookmarkDetailState.ready(testBookmark),
-        act: (bloc) => bloc.delete('1'),
+        act: (bloc) => bloc.add(const BookmarkDetailDeleteRequested('1')),
         expect: () => [
           BookmarkDetailState.deleting(testBookmark),
           predicate<BookmarkDetailState>((s) => s is BookmarkDetailFailure),

@@ -55,7 +55,7 @@ void main() {
           ).thenAnswer((_) async => Ok([testBookmark, testBookmark2]));
         },
         build: buildBloc,
-        act: (bloc) => bloc.load(),
+        act: (bloc) => bloc.add(const BookmarksListLoadRequested()),
         expect: () => [
           predicate<BookmarksListState>((s) => s.isLoading && s.items.isEmpty),
           predicate<BookmarksListState>(
@@ -72,7 +72,7 @@ void main() {
           ).thenAnswer((_) async => const Err(UnknownFailure('Failed')));
         },
         build: buildBloc,
-        act: (bloc) => bloc.load(),
+        act: (bloc) => bloc.add(const BookmarksListLoadRequested()),
         expect: () => [
           predicate<BookmarksListState>((s) => s.isLoading),
           predicate<BookmarksListState>((s) => s.failure != null),
@@ -85,7 +85,7 @@ void main() {
         'updates query and filters visibleItems',
         build: buildBloc,
         seed: () => BookmarksListState(items: [testBookmark, testBookmark2]),
-        act: (bloc) => bloc.setQuery('Dart'),
+        act: (bloc) => bloc.add(const BookmarksListQueryChanged('Dart')),
         expect: () => [
           predicate<BookmarksListState>(
             (s) => s.query == 'Dart' && s.visibleItems.length == 1,
@@ -105,7 +105,7 @@ void main() {
         'does nothing when query is unchanged',
         build: buildBloc,
         seed: () => BookmarksListState(items: [testBookmark], query: 'flutter'),
-        act: (bloc) => bloc.setQuery('flutter'),
+        act: (bloc) => bloc.add(const BookmarksListQueryChanged('flutter')),
         expect: () => <BookmarksListState>[],
       );
     });
@@ -118,7 +118,7 @@ void main() {
         },
         build: buildBloc,
         seed: () => BookmarksListState(items: [testBookmark]),
-        act: (bloc) => bloc.delete('1'),
+        act: (bloc) => bloc.add(const BookmarksListDeleteRequested('1')),
         expect: () => [predicate<BookmarksListState>((s) => s.items.isEmpty)],
         verify: (_) {
           verify(
@@ -140,7 +140,7 @@ void main() {
         },
         build: buildBloc,
         seed: () => BookmarksListState(items: [testBookmark]),
-        act: (bloc) => bloc.delete('1'),
+        act: (bloc) => bloc.add(const BookmarksListDeleteRequested('1')),
         expect: () => [
           predicate<BookmarksListState>((s) => s.items.isEmpty),
           predicate<BookmarksListState>((s) => s.items.length == 1),

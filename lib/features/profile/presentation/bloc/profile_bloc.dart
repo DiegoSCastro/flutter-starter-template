@@ -30,19 +30,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   final AuthBloc _authBloc;
   late final StreamSubscription<AuthState> _authSub;
 
-  Future<void> load() {
-    final completion = stream.firstWhere((state) => state.packageInfo != null);
-    add(const ProfileLoaded());
-    return completion.then((_) {});
-  }
-
-  Future<void> signOut() {
-    if (state.isSigningOut) return Future<void>.value();
-    final completion = stream.firstWhere((state) => !state.isSigningOut);
-    add(const ProfileSignOutRequested());
-    return completion.then((_) {});
-  }
-
   Future<void> _onLoaded(
     ProfileLoaded event,
     Emitter<ProfileState> emit,
@@ -64,10 +51,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         return;
       }
       emit(state.copyWith(isSigningOut: true));
-      await _authBloc.signOut();
-      if (state.isSigningOut) {
-        emit(state.copyWith(isSigningOut: false));
-      }
+      _authBloc.add(const AuthSignOutRequested());
     } catch (_) {
       if (state.isSigningOut) {
         emit(state.copyWith(isSigningOut: false));

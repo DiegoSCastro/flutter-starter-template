@@ -49,7 +49,7 @@ void main() {
           ).thenAnswer((_) async => const Ok(testUser));
           return bloc;
         },
-        act: (bloc) => bloc.restoreSession(),
+        act: (bloc) => bloc.add(const AuthSessionRestoreRequested()),
         expect: () => [
           const AuthState.submitting(),
           const AuthState.authenticated(testUser),
@@ -67,7 +67,7 @@ void main() {
           ).thenAnswer((_) async => const Err(testFailure));
           return bloc;
         },
-        act: (bloc) => bloc.restoreSession(),
+        act: (bloc) => bloc.add(const AuthSessionRestoreRequested()),
         expect: () => [
           const AuthState.submitting(),
           const AuthState.initial(),
@@ -87,7 +87,9 @@ void main() {
           ).thenAnswer((_) async => const Ok(testUser));
           return bloc;
         },
-        act: (bloc) => bloc.signIn(username: 'alice', password: 'pass'),
+        act: (bloc) => bloc.add(
+          const AuthSignInRequested(username: 'alice', password: 'pass'),
+        ),
         expect: () => [
           const AuthState.submitting(),
           const AuthState.authenticated(testUser),
@@ -106,7 +108,9 @@ void main() {
           ).thenAnswer((_) async => const Err(testFailure));
           return bloc;
         },
-        act: (bloc) => bloc.signIn(username: 'bob', password: 'bad'),
+        act: (bloc) => bloc.add(
+          const AuthSignInRequested(username: 'bob', password: 'bad'),
+        ),
         expect: () => [
           const AuthState.submitting(),
           const AuthState.failure(testFailure),
@@ -130,7 +134,9 @@ void main() {
           return bloc;
         },
         seed: () => const AuthState.submitting(),
-        act: (bloc) => bloc.signIn(username: 'alice', password: 'pass'),
+        act: (bloc) => bloc.add(
+          const AuthSignInRequested(username: 'alice', password: 'pass'),
+        ),
         expect: () => <AuthState>[],
       );
     });
@@ -143,7 +149,7 @@ void main() {
           return bloc;
         },
         seed: () => const AuthState.authenticated(testUser),
-        act: (bloc) => bloc.signOut(),
+        act: (bloc) => bloc.add(const AuthSignOutRequested()),
         expect: () => [const AuthState.initial()],
         verify: (_) {
           verify(() => mockAnalytics.logEvent('sign_out')).called(1);
@@ -160,7 +166,7 @@ void main() {
           return bloc;
         },
         seed: () => const AuthState.authenticated(testUser),
-        act: (bloc) => bloc.signOut(),
+        act: (bloc) => bloc.add(const AuthSignOutRequested()),
         expect: () => [const AuthState.initial()],
       );
     });

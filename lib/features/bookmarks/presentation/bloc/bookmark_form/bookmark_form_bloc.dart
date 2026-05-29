@@ -60,83 +60,6 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
   final PermissionService _permissionService;
   bool _submitInFlight = false;
 
-  /// For create flows, pass `null`. For edit flows, fetches the existing
-  /// bookmark and seeds the form.
-  Future<void> initialize(String? id) {
-    final completion = stream.firstWhere(
-      (state) =>
-          state.status == BookmarkFormStatus.idle ||
-          state.status == BookmarkFormStatus.loadFailed,
-    );
-    add(BookmarkFormInitialized(id));
-    return completion.then((_) {});
-  }
-
-  Future<void> setTitle(String value) {
-    add(BookmarkFormTitleChanged(value));
-    return Future<void>.delayed(Duration.zero);
-  }
-
-  Future<void> setUrl(String value) {
-    add(BookmarkFormUrlChanged(value));
-    return Future<void>.delayed(Duration.zero);
-  }
-
-  Future<void> setDescription(String value) {
-    add(BookmarkFormDescriptionChanged(value));
-    return Future<void>.delayed(Duration.zero);
-  }
-
-  Future<void> setTagsFromCsv(String csv) {
-    add(BookmarkFormTagsChanged(csv));
-    return Future<void>.delayed(Duration.zero);
-  }
-
-  Future<void> pickImages() {
-    add(const BookmarkFormImagesPicked());
-    return Future<void>.delayed(Duration.zero);
-  }
-
-  Future<void> takeImageFromCamera() {
-    add(const BookmarkFormCameraImageTaken());
-    return Future<void>.delayed(Duration.zero);
-  }
-
-  Future<void> removeImage(String path) {
-    add(BookmarkFormImageRemoved(path));
-    return Future<void>.delayed(Duration.zero);
-  }
-
-  Future<void> pickVideo() {
-    add(const BookmarkFormVideoPicked());
-    return Future<void>.delayed(Duration.zero);
-  }
-
-  Future<void> recordVideoFromCamera() {
-    add(const BookmarkFormCameraVideoTaken());
-    return Future<void>.delayed(Duration.zero);
-  }
-
-  Future<void> removeVideo() {
-    add(const BookmarkFormVideoRemoved());
-    return Future<void>.delayed(Duration.zero);
-  }
-
-  /// Returns `true` if submit succeeded so the screen can pop.
-  Future<bool> submit() {
-    if (state.status == BookmarkFormStatus.submitting || _submitInFlight) {
-      return Future<bool>.value(false);
-    }
-    _submitInFlight = true;
-    final completion = stream.firstWhere(
-      (state) => state.status != BookmarkFormStatus.submitting,
-    );
-    add(const BookmarkFormSubmitted());
-    return completion
-        .then((state) => state.status == BookmarkFormStatus.submitted)
-        .whenComplete(() => _submitInFlight = false);
-  }
-
   Future<void> _onInitialized(
     BookmarkFormInitialized event,
     Emitter<BookmarkFormState> emit,
@@ -351,6 +274,8 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
     BookmarkFormSubmitted event,
     Emitter<BookmarkFormState> emit,
   ) async {
+    if (_submitInFlight) return;
+    _submitInFlight = true;
     try {
       if (state.status == BookmarkFormStatus.submitting) {
         return;
@@ -392,6 +317,8 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
       }
     } catch (_) {
       rethrow;
+    } finally {
+      _submitInFlight = false;
     }
   }
 }

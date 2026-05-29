@@ -30,7 +30,8 @@ void main() {
         listBookmarks,
       );
 
-      await bloc.load();
+      bloc.add(const HomeLoadRequested());
+      await bloc.stream.firstWhere((state) => !state.isLoading);
 
       expect(bloc.state.username, 'alice');
       expect(bloc.state.totalBookmarks, 2);
@@ -42,7 +43,8 @@ void main() {
 
     test('handles empty bookmarks', () async {
       final bloc = HomeBloc(_authRepository(), _listBookmarks(const Ok([])));
-      await bloc.load();
+      bloc.add(const HomeLoadRequested());
+      await bloc.stream.firstWhere((state) => !state.isLoading);
 
       expect(bloc.state.totalBookmarks, 0);
       expect(bloc.state.recentBookmarks, 0);
@@ -59,7 +61,8 @@ void main() {
         _listBookmarks(const Err(failure)),
       );
 
-      await bloc.load();
+      bloc.add(const HomeLoadRequested());
+      await bloc.stream.firstWhere((state) => !state.isLoading);
 
       expect(bloc.state.username, 'alice');
       expect(bloc.state.isLoading, false);
