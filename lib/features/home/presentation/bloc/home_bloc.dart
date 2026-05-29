@@ -11,6 +11,8 @@ import '../../../bookmarks/domain/entities/bookmark.dart';
 import '../../../bookmarks/domain/usecases/list_bookmarks.dart';
 import 'home_state.dart';
 
+part 'home_event.dart';
+
 @injectable
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
   HomeBloc(this._authRepository, this._listBookmarks)
@@ -67,14 +69,4 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
       recentItems: items.take(3).toList(growable: false),
     );
   }
-}
-
-sealed class HomeEvent {
-  const HomeEvent();
-}
-
-final class HomeLoadRequested extends HomeEvent {
-  const HomeLoadRequested({this.completer});
-
-  final Completer<void>? completer;
 }

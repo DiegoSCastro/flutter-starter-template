@@ -14,6 +14,8 @@ import '../../domain/usecases/sign_in.dart';
 import '../../domain/usecases/sign_out.dart';
 import 'auth_state.dart';
 
+part 'auth_event.dart';
+
 @lazySingleton
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc({
@@ -69,7 +71,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required String username,
     required String password,
   }) {
-    if (state is AuthSubmitting || _registerInFlight) return Future<void>.value();
+    if (state is AuthSubmitting || _registerInFlight) {
+      return Future<void>.value();
+    }
     _registerInFlight = true;
     final completer = Completer<void>();
     add(
@@ -196,44 +200,4 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       rethrow;
     }
   }
-}
-
-sealed class AuthEvent {
-  const AuthEvent();
-}
-
-final class AuthSessionRestoreRequested extends AuthEvent {
-  const AuthSessionRestoreRequested({this.completer});
-
-  final Completer<void>? completer;
-}
-
-final class AuthSignInRequested extends AuthEvent {
-  const AuthSignInRequested({
-    required this.username,
-    required this.password,
-    this.completer,
-  });
-
-  final String username;
-  final String password;
-  final Completer<void>? completer;
-}
-
-final class AuthRegisterRequested extends AuthEvent {
-  const AuthRegisterRequested({
-    required this.username,
-    required this.password,
-    this.completer,
-  });
-
-  final String username;
-  final String password;
-  final Completer<void>? completer;
-}
-
-final class AuthSignOutRequested extends AuthEvent {
-  const AuthSignOutRequested({this.completer});
-
-  final Completer<void>? completer;
 }

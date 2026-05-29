@@ -18,6 +18,8 @@ import '../../../domain/usecases/get_bookmark.dart';
 import '../../../domain/usecases/update_bookmark.dart';
 import 'bookmark_form_state.dart';
 
+part 'bookmark_form_event.dart';
+
 @injectable
 class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
   BookmarkFormBloc(
@@ -298,8 +300,8 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
     try {
       final hasPermission = await _permissionService.hasGalleryPermission();
       if (!hasPermission) {
-        final requestResult =
-            await _permissionService.requestGalleryPermission();
+        final requestResult = await _permissionService
+            .requestGalleryPermission();
         if (!requestResult) {
           emit(
             state.copyWith(
@@ -331,8 +333,8 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
     try {
       final hasPermission = await _permissionService.hasCameraPermission();
       if (!hasPermission) {
-        final requestResult =
-            await _permissionService.requestCameraPermission();
+        final requestResult = await _permissionService
+            .requestCameraPermission();
         if (!requestResult) {
           emit(
             state.copyWith(
@@ -416,86 +418,4 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
       rethrow;
     }
   }
-}
-
-sealed class BookmarkFormEvent {
-  const BookmarkFormEvent();
-}
-
-final class BookmarkFormInitialized extends BookmarkFormEvent {
-  const BookmarkFormInitialized(this.id, {this.completer});
-
-  final String? id;
-  final Completer<void>? completer;
-}
-
-final class BookmarkFormTitleChanged extends BookmarkFormEvent {
-  const BookmarkFormTitleChanged(this.value, {this.completer});
-
-  final String value;
-  final Completer<void>? completer;
-}
-
-final class BookmarkFormUrlChanged extends BookmarkFormEvent {
-  const BookmarkFormUrlChanged(this.value, {this.completer});
-
-  final String value;
-  final Completer<void>? completer;
-}
-
-final class BookmarkFormDescriptionChanged extends BookmarkFormEvent {
-  const BookmarkFormDescriptionChanged(this.value, {this.completer});
-
-  final String value;
-  final Completer<void>? completer;
-}
-
-final class BookmarkFormTagsChanged extends BookmarkFormEvent {
-  const BookmarkFormTagsChanged(this.csv, {this.completer});
-
-  final String csv;
-  final Completer<void>? completer;
-}
-
-final class BookmarkFormImagesPicked extends BookmarkFormEvent {
-  const BookmarkFormImagesPicked({this.completer});
-
-  final Completer<void>? completer;
-}
-
-final class BookmarkFormCameraImageTaken extends BookmarkFormEvent {
-  const BookmarkFormCameraImageTaken({this.completer});
-
-  final Completer<void>? completer;
-}
-
-final class BookmarkFormImageRemoved extends BookmarkFormEvent {
-  const BookmarkFormImageRemoved(this.path, {this.completer});
-
-  final String path;
-  final Completer<void>? completer;
-}
-
-final class BookmarkFormVideoPicked extends BookmarkFormEvent {
-  const BookmarkFormVideoPicked({this.completer});
-
-  final Completer<void>? completer;
-}
-
-final class BookmarkFormCameraVideoTaken extends BookmarkFormEvent {
-  const BookmarkFormCameraVideoTaken({this.completer});
-
-  final Completer<void>? completer;
-}
-
-final class BookmarkFormVideoRemoved extends BookmarkFormEvent {
-  const BookmarkFormVideoRemoved({this.completer});
-
-  final Completer<void>? completer;
-}
-
-final class BookmarkFormSubmitted extends BookmarkFormEvent {
-  const BookmarkFormSubmitted({this.completer});
-
-  final Completer<bool>? completer;
 }

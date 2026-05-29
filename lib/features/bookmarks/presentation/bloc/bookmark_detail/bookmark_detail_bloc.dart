@@ -12,6 +12,8 @@ import '../../../domain/usecases/delete_bookmark.dart';
 import '../../../domain/usecases/get_bookmark.dart';
 import 'bookmark_detail_state.dart';
 
+part 'bookmark_detail_event.dart';
+
 @injectable
 class BookmarkDetailBloc
     extends Bloc<BookmarkDetailEvent, BookmarkDetailState> {
@@ -101,22 +103,4 @@ class BookmarkDetailBloc
       rethrow;
     }
   }
-}
-
-sealed class BookmarkDetailEvent {
-  const BookmarkDetailEvent();
-}
-
-final class BookmarkDetailLoadRequested extends BookmarkDetailEvent {
-  const BookmarkDetailLoadRequested(this.id, {this.completer});
-
-  final String id;
-  final Completer<void>? completer;
-}
-
-final class BookmarkDetailDeleteRequested extends BookmarkDetailEvent {
-  const BookmarkDetailDeleteRequested(this.id, {this.completer});
-
-  final String id;
-  final Completer<bool>? completer;
 }

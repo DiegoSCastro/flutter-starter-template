@@ -12,6 +12,8 @@ import '../analytics/analytics_service.dart';
 import '../bloc/event_completion.dart';
 import 'theme_state.dart';
 
+part 'theme_event.dart';
+
 const _kThemeModeKey = 'app.theme_mode';
 const _kThemeSchemeKey = 'app.theme_scheme';
 
@@ -99,24 +101,6 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
     await _prefs.setString(_kThemeModeKey, next.mode.name);
     await _prefs.setString(_kThemeSchemeKey, next.scheme.name);
   }
-}
-
-sealed class ThemeEvent {
-  const ThemeEvent();
-}
-
-final class ThemeModeChanged extends ThemeEvent {
-  const ThemeModeChanged(this.mode, {this.completer});
-
-  final ThemeMode mode;
-  final Completer<void>? completer;
-}
-
-final class ThemeSchemeChanged extends ThemeEvent {
-  const ThemeSchemeChanged(this.scheme, {this.completer});
-
-  final FlexScheme scheme;
-  final Completer<void>? completer;
 }
 
 @module

@@ -10,6 +10,8 @@ import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/bloc/auth_state.dart';
 import 'profile_state.dart';
 
+part 'profile_event.dart';
+
 @injectable
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   ProfileBloc(this._authBloc)
@@ -99,26 +101,4 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     _authSub.cancel();
     return super.close();
   }
-}
-
-sealed class ProfileEvent {
-  const ProfileEvent();
-}
-
-final class ProfileLoaded extends ProfileEvent {
-  const ProfileLoaded({this.completer});
-
-  final Completer<void>? completer;
-}
-
-final class ProfileSignOutRequested extends ProfileEvent {
-  const ProfileSignOutRequested({this.completer});
-
-  final Completer<void>? completer;
-}
-
-final class _ProfileAuthChanged extends ProfileEvent {
-  const _ProfileAuthChanged(this.authState);
-
-  final AuthState authState;
 }
