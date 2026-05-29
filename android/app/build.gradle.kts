@@ -16,6 +16,12 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
+    buildFeatures {
+        // Flavors below define custom resource values via resValue(...).
+        // AGP 9 disables this feature by default, so opt in explicitly.
+        resValues = true
+    }
+
     flavorDimensions += "environment"
     productFlavors {
         create("dev") {
