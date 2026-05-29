@@ -231,6 +231,37 @@ fvm dart format .
 
 <br>
 
+## 🔄 Git Workflow & PRs
+
+The `main` branch is protected. Direct pushes to `main` are disabled, and all changes must be merged via Pull Requests.
+
+### 1. Create a Branch
+Branch names should follow conventions:
+* `feat/your-feature-name` or `feature/your-feature-name`
+* `fix/bug-description`
+* `docs/documentation-update`
+
+### 2. Verify Locally
+Before pushing your branch, run local checks to ensure the CI will pass:
+```bash
+fvm dart format .
+fvm flutter analyze
+fvm flutter test
+```
+
+### 3. Open a Pull Request
+Push your branch to the remote and create a Pull Request (PR) targeting `main`.
+* The **`Analyze & Test`** GitHub Actions workflow will run automatically.
+* Once the check passes, the PR can be merged.
+
+### 4. Cleanup
+After merging, delete the remote branch. You can prune your local tracking branches with:
+```bash
+git fetch --prune
+```
+
+<br>
+
 ---
 
 <br>
