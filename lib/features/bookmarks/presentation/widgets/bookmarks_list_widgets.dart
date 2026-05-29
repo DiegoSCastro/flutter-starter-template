@@ -169,7 +169,7 @@ class _BookmarksListViewState extends State<BookmarksListView> {
           child: BlocBuilder<BookmarksListBloc, BookmarksListState>(
             builder: (context, state) {
               if (state.isLoading && state.items.isEmpty) {
-                return const AppLoading();
+                return const AppSkeletonList(hasLeading: false);
               }
               if (state.failure != null && state.items.isEmpty) {
                 return AppErrorView(
