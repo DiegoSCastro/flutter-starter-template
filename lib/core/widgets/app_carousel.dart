@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
 import '../build_context_extensions.dart';
+import '../theme/app_spacing.dart';
 
 final class AppCarousel extends StatefulWidget {
   const AppCarousel({
@@ -55,14 +56,14 @@ class _AppCarouselState extends State<AppCarousel> {
           ),
         ),
         if (widget.showIndicators && widget.items.length > 1) ...[
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpacing.md),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(widget.items.length, (i) {
               final isActive = i == _current;
               return AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
-                margin: const EdgeInsets.symmetric(horizontal: 4),
+                margin: const EdgeInsets.symmetric(horizontal: AppSpacing.xs),
                 width: isActive ? 24 : 8,
                 height: 8,
                 decoration: BoxDecoration(

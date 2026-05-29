@@ -5,6 +5,7 @@ import '../../../../core/animation/widget_animations.dart';
 import '../../../../core/build_context_extensions.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/error/failure.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../bloc/change_password_cubit.dart';
 import '../bloc/change_password_state.dart';
@@ -50,17 +51,17 @@ class _ChangePasswordViewState extends State<_ChangePasswordView> {
     }
 
     await context.read<ChangePasswordCubit>().submit(
-          currentPassword: _currentPasswordController.text,
-          newPassword: _newPasswordController.text,
-        );
+      currentPassword: _currentPasswordController.text,
+      newPassword: _newPasswordController.text,
+    );
   }
 
   void _submitText(String _) => _submit();
 
   String _localizeFailure(Failure failure) => switch (failure) {
-        InvalidCredentialsFailure() => context.l10n.errorInvalidInput,
-        _ => context.l10n.errorUnknown,
-      };
+    InvalidCredentialsFailure() => context.l10n.errorInvalidInput,
+    _ => context.l10n.errorUnknown,
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +81,7 @@ class _ChangePasswordViewState extends State<_ChangePasswordView> {
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 360),
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(24),
+              padding: const EdgeInsets.all(AppSpacing.xxl),
               child: BlocBuilder<ChangePasswordCubit, ChangePasswordState>(
                 builder: (context, state) {
                   final isSubmitting = state is ChangePasswordSubmitting;
@@ -99,24 +100,22 @@ class _ChangePasswordViewState extends State<_ChangePasswordView> {
                           prefixIcon: Icons.lock_outline,
                           obscureText: true,
                           textInputAction: TextInputAction.next,
-                          validator: (value) =>
-                              (value == null || value.isEmpty)
-                                  ? context.l10n.fieldRequired
-                                  : null,
+                          validator: (value) => (value == null || value.isEmpty)
+                              ? context.l10n.fieldRequired
+                              : null,
                         ).animateSlideLeft(delay: 100.ms),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpacing.lg),
                         AppTextField(
                           controller: _newPasswordController,
                           label: context.l10n.changePasswordNewLabel,
                           prefixIcon: Icons.lock_reset,
                           obscureText: true,
                           textInputAction: TextInputAction.next,
-                          validator: (value) =>
-                              (value == null || value.isEmpty)
-                                  ? context.l10n.fieldRequired
-                                  : null,
+                          validator: (value) => (value == null || value.isEmpty)
+                              ? context.l10n.fieldRequired
+                              : null,
                         ).animateSlideLeft(delay: 200.ms),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpacing.lg),
                         AppTextField(
                           controller: _confirmPasswordController,
                           label: context.l10n.changePasswordConfirmLabel,
@@ -135,14 +134,14 @@ class _ChangePasswordViewState extends State<_ChangePasswordView> {
                           },
                         ).animateSlideLeft(delay: 300.ms),
                         if (errorMessage != null) ...[
-                          const SizedBox(height: 12),
+                          const SizedBox(height: AppSpacing.md),
                           Text(
                             errorMessage,
                             style: TextStyle(color: context.colorScheme.error),
                             textAlign: TextAlign.center,
                           ).animateShake(),
                         ],
-                        const SizedBox(height: 24),
+                        const SizedBox(height: AppSpacing.xxl),
                         AppButton(
                           label: context.l10n.changePasswordSubmit,
                           onPressed: _submit,

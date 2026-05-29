@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../build_context_extensions.dart';
+import '../theme/app_spacing.dart';
 
 /// Centered circular progress indicator with consistent sizing.
 class AppLoading extends StatelessWidget {
@@ -21,7 +22,7 @@ class AppLoading extends StatelessWidget {
             child: const CircularProgressIndicator(strokeWidth: 3),
           ),
           if (label != null) ...[
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
             Text(label!, style: context.textTheme.bodyMedium),
           ],
         ],

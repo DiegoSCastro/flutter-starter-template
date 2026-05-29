@@ -4,6 +4,7 @@ import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
 import '../build_context_extensions.dart';
+import '../theme/app_spacing.dart';
 
 /// A wrapper widget for [PhotoView] that simplifies image zooming,
 /// supports different image sources (network, asset, file, custom provider),
@@ -264,7 +265,7 @@ class _AppPhotoViewState extends State<AppPhotoView> {
                   color: Theme.of(context).colorScheme.error,
                   size: 40,
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 Text(
                   context.l10n.commonImageLoadFailed,
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
@@ -494,7 +495,7 @@ class _AppPhotoViewFullScreenPageState
                             onPressed: () => Navigator.of(context).pop(),
                           ),
                           if (hasGallery) ...[
-                            const SizedBox(width: 12),
+                            const SizedBox(width: AppSpacing.md),
                             Text(
                               '${_currentIndex + 1} / $totalImages',
                               style: const TextStyle(

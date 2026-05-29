@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../build_context_extensions.dart';
+import '../theme/app_spacing.dart';
 
 enum AppButtonVariant { primary, tonal, outlined, text }
 
@@ -119,15 +120,15 @@ class AppButton extends StatelessWidget {
   ButtonStyle _style() {
     final padding = switch (size) {
       AppButtonSize.small => const EdgeInsets.symmetric(
-        horizontal: 16,
-        vertical: 8,
+        horizontal: AppSpacing.lg,
+        vertical: AppSpacing.sm,
       ),
       AppButtonSize.medium => const EdgeInsets.symmetric(
-        horizontal: 24,
+        horizontal: AppSpacing.xxl,
         vertical: 14,
       ),
       AppButtonSize.large => const EdgeInsets.symmetric(
-        horizontal: 32,
+        horizontal: AppSpacing.xxxl,
         vertical: 18,
       ),
     };

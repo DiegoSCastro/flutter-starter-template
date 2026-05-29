@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../theme/app_spacing.dart';
+
 /// Themed [TextFormField] with consistent border styling, an optional leading
 /// icon, an optional trailing widget (e.g. a password reveal button), and
 /// built-in support for [obscureText], validators, and error text.
@@ -102,8 +104,8 @@ class AppTextField extends StatelessWidget {
           context,
         ).colorScheme.onSurface.withValues(alpha: 0.05),
         contentPadding: const EdgeInsets.symmetric(
-          horizontal: 20,
-          vertical: 16,
+          horizontal: AppSpacing.xl,
+          vertical: AppSpacing.lg,
         ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),

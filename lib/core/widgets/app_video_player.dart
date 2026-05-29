@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:video_player/video_player.dart';
 import '../media/video_player_service.dart';
+import '../theme/app_spacing.dart';
 
 /// A premium, highly customizable, and responsive video player widget.
 ///
@@ -144,7 +145,7 @@ class _AppVideoPlayerState extends State<AppVideoPlayer> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(Icons.video_library, color: Colors.white70, size: 48),
-              SizedBox(height: 8),
+              SizedBox(height: AppSpacing.sm),
               Text(
                 'Mock Video Player View',
                 style: TextStyle(color: Colors.white70),
@@ -184,9 +185,9 @@ class _AppVideoPlayerState extends State<AppVideoPlayer> {
 
             // Loading/Buffering Indicator
             if (widget.controller.value.isBuffering)
-              const CircularProgressIndicator()
-                  .animate()
-                  .fade(duration: 200.ms),
+              const CircularProgressIndicator().animate().fade(
+                duration: 200.ms,
+              ),
 
             // Controls HUD Overlay
             AnimatedOpacity(
@@ -207,8 +208,12 @@ class _AppVideoPlayerState extends State<AppVideoPlayer> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Icon(Icons.error_outline_rounded, color: Colors.redAccent, size: 48),
-        const SizedBox(height: 12),
+        const Icon(
+          Icons.error_outline_rounded,
+          color: Colors.redAccent,
+          size: 48,
+        ),
+        const SizedBox(height: AppSpacing.md),
         Text(
           widget.controller.value.errorDescription ?? 'Failed to load video',
           style: const TextStyle(color: Colors.white70, fontSize: 14),
@@ -218,7 +223,10 @@ class _AppVideoPlayerState extends State<AppVideoPlayer> {
     );
   }
 
-  Widget _buildControlsOverlay(BuildContext context, VideoPlayerController raw) {
+  Widget _buildControlsOverlay(
+    BuildContext context,
+    VideoPlayerController raw,
+  ) {
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -242,7 +250,10 @@ class _AppVideoPlayerState extends State<AppVideoPlayer> {
                 child: CircleAvatar(
                   backgroundColor: Colors.black45,
                   child: IconButton(
-                    icon: const Icon(Icons.arrow_back_rounded, color: Colors.white),
+                    icon: const Icon(
+                      Icons.arrow_back_rounded,
+                      color: Colors.white,
+                    ),
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                 ),
@@ -251,30 +262,35 @@ class _AppVideoPlayerState extends State<AppVideoPlayer> {
 
           // Central Play/Pause Tap Target Overlay
           Center(
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: _togglePlay,
-                customBorder: const CircleBorder(),
-                child: Container(
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.black.withValues(alpha: 0.5),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    widget.controller.value.isPlaying
-                        ? Icons.pause_rounded
-                        : Icons.play_arrow_rounded,
-                    color: Colors.white,
-                    size: 48,
-                  ),
-                ),
-              ),
-            )
-                .animate(target: widget.controller.value.isPlaying ? 1 : 0)
-                .scale(begin: const Offset(0.9, 0.9), end: const Offset(1, 1), duration: 150.ms)
-                .fade(duration: 150.ms),
+            child:
+                Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        onTap: _togglePlay,
+                        customBorder: const CircleBorder(),
+                        child: Container(
+                          padding: const EdgeInsets.all(AppSpacing.lg),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withValues(alpha: 0.5),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(
+                            widget.controller.value.isPlaying
+                                ? Icons.pause_rounded
+                                : Icons.play_arrow_rounded,
+                            color: Colors.white,
+                            size: 48,
+                          ),
+                        ),
+                      ),
+                    )
+                    .animate(target: widget.controller.value.isPlaying ? 1 : 0)
+                    .scale(
+                      begin: const Offset(0.9, 0.9),
+                      end: const Offset(1, 1),
+                      duration: 150.ms,
+                    )
+                    .fade(duration: 150.ms),
           ),
 
           // Bottom Controls HUD Panel
@@ -286,7 +302,10 @@ class _AppVideoPlayerState extends State<AppVideoPlayer> {
               top: false,
               bottom: widget.isFullscreen,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.lg,
+                  vertical: AppSpacing.sm,
+                ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -296,13 +315,14 @@ class _AppVideoPlayerState extends State<AppVideoPlayer> {
                       child: VideoProgressIndicator(
                         raw,
                         allowScrubbing: true,
-                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: AppSpacing.sm,
+                        ),
                         colors: VideoProgressColors(
                           playedColor: Theme.of(context).colorScheme.primary,
-                          bufferedColor: Theme.of(context)
-                              .colorScheme
-                              .primaryContainer
-                              .withValues(alpha: 0.4),
+                          bufferedColor: Theme.of(
+                            context,
+                          ).colorScheme.primaryContainer.withValues(alpha: 0.4),
                           backgroundColor: Colors.white24,
                         ),
                       ),
@@ -328,8 +348,8 @@ class _AppVideoPlayerState extends State<AppVideoPlayer> {
                             _isMuted
                                 ? Icons.volume_off_rounded
                                 : widget.controller.value.volume < 0.5
-                                    ? Icons.volume_down_rounded
-                                    : Icons.volume_up_rounded,
+                                ? Icons.volume_down_rounded
+                                : Icons.volume_up_rounded,
                             color: Colors.white,
                           ),
                           onPressed: _toggleMute,
@@ -338,7 +358,10 @@ class _AppVideoPlayerState extends State<AppVideoPlayer> {
                         // Timeline Clock (Elapsed / Duration)
                         Text(
                           '${_formatDuration(widget.controller.value.position)} / ${_formatDuration(widget.controller.value.duration)}',
-                          style: const TextStyle(color: Colors.white, fontSize: 13),
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 13,
+                          ),
                         ),
 
                         const Spacer(),
@@ -349,14 +372,21 @@ class _AppVideoPlayerState extends State<AppVideoPlayer> {
                           tooltip: 'Playback speed',
                           onSelected: _setSpeed,
                           itemBuilder: (context) => [
-                            for (final speed in [0.5, 0.75, 1.0, 1.25, 1.5, 2.0])
+                            for (final speed in [
+                              0.5,
+                              0.75,
+                              1.0,
+                              1.25,
+                              1.5,
+                              2.0,
+                            ])
                               PopupMenuItem(
                                 value: speed,
                                 child: Text('${speed}x'),
                               ),
                           ],
                           child: Padding(
-                            padding: const EdgeInsets.all(8),
+                            padding: const EdgeInsets.all(AppSpacing.sm),
                             child: Text(
                               '${_playbackSpeed}x',
                               style: const TextStyle(
@@ -367,7 +397,7 @@ class _AppVideoPlayerState extends State<AppVideoPlayer> {
                           ),
                         ),
 
-                        const SizedBox(width: 8),
+                        const SizedBox(width: AppSpacing.sm),
 
                         // Fullscreen Action
                         IconButton(

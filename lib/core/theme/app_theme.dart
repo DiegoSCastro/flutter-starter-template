@@ -2,6 +2,7 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'semantic_colors.dart';
 import 'theme_state.dart';
 
 class AppTheme {
@@ -12,6 +13,8 @@ class AppTheme {
       scheme: scheme,
       textTheme: GoogleFonts.interTextTheme(),
       useMaterial3: true,
+    ).copyWith(
+      extensions: const [SemanticColors.light],
     );
   }
 
@@ -20,6 +23,8 @@ class AppTheme {
       scheme: scheme,
       textTheme: GoogleFonts.interTextTheme(),
       useMaterial3: true,
+    ).copyWith(
+      extensions: const [SemanticColors.dark],
     );
   }
 }

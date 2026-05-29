@@ -7,6 +7,7 @@ import '../../../../core/animation/widget_animations.dart';
 import '../../../../core/build_context_extensions.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/media/video_player_service.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/app_video_player.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../bloc/bookmark_form/bookmark_form_bloc.dart';
@@ -108,7 +109,7 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
           _updateVideoController(state.videoUrl);
           final isSubmitting = state.status == BookmarkFormStatus.submitting;
           return SingleChildScrollView(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(AppSpacing.xl),
             child: Form(
               key: _formKey,
               child: Column(
@@ -125,7 +126,7 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
                       BookmarkFormTitleChanged(value),
                     ),
                   ).animateSlideLeft(),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.md),
                   AppTextField(
                     controller: _url,
                     label: context.l10n.bookmarkUrlLabel,
@@ -137,7 +138,7 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
                       BookmarkFormUrlChanged(value),
                     ),
                   ).animateSlideLeft(delay: 50.ms),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.md),
                   AppTextField(
                     controller: _description,
                     label: context.l10n.bookmarkDescriptionLabel,
@@ -147,7 +148,7 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
                       BookmarkFormDescriptionChanged(value),
                     ),
                   ).animateSlideLeft(delay: 100.ms),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpacing.md),
                   AppTextField(
                     controller: _tags,
                     label: context.l10n.bookmarkTagsLabel,
@@ -156,12 +157,12 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
                       BookmarkFormTagsChanged(value),
                     ),
                   ).animateSlideLeft(delay: 150.ms),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: AppSpacing.lg),
                   _buildImageSection(
                     context,
                     state,
                   ).animateSlideLeft(delay: 175.ms),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: AppSpacing.xxl),
                   AppButton(
                     label: widget.isEditing
                         ? context.l10n.commonSave
@@ -203,14 +204,14 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
           'Attachments',
           style: context.textTheme.titleMedium,
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         if (state.imageUrls.isNotEmpty)
           SizedBox(
             height: 100,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: state.imageUrls.length,
-              separatorBuilder: (_, _) => const SizedBox(width: 8),
+              separatorBuilder: (_, _) => const SizedBox(width: AppSpacing.sm),
               itemBuilder: (context, index) {
                 final path = state.imageUrls[index];
                 return Stack(
@@ -239,7 +240,7 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
                           BookmarkFormImageRemoved(path),
                         ),
                         child: Container(
-                          padding: const EdgeInsets.all(2),
+                          padding: const EdgeInsets.all(AppSpacing.xxs),
                           decoration: const BoxDecoration(
                             color: Colors.black54,
                             shape: BoxShape.circle,
@@ -257,7 +258,7 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
               },
             ),
           ),
-        if (state.imageUrls.isNotEmpty) const SizedBox(height: 8),
+        if (state.imageUrls.isNotEmpty) const SizedBox(height: AppSpacing.sm),
         if (state.videoUrl != null && state.videoUrl!.isNotEmpty) ...[
           Text(
             'Attached Video',
@@ -265,7 +266,7 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
               fontWeight: FontWeight.bold,
             ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpacing.xs),
           Stack(
             children: [
               ClipRRect(
@@ -286,7 +287,7 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
                     const BookmarkFormVideoRemoved(),
                   ),
                   child: Container(
-                    padding: const EdgeInsets.all(4),
+                    padding: const EdgeInsets.all(AppSpacing.xs),
                     decoration: const BoxDecoration(
                       color: Colors.black54,
                       shape: BoxShape.circle,
@@ -301,7 +302,7 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
               ),
             ],
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
         ],
         Row(
           children: [
@@ -314,7 +315,7 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
                 label: const Text('Add Images'),
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.md),
             Expanded(
               child: OutlinedButton.icon(
                 onPressed: () => context.read<BookmarkFormBloc>().add(
@@ -326,7 +327,7 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
             ),
           ],
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         Row(
           children: [
             Expanded(
@@ -338,7 +339,7 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
                 label: const Text('Add Video'),
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpacing.md),
             Expanded(
               child: OutlinedButton.icon(
                 onPressed: () => context.read<BookmarkFormBloc>().add(

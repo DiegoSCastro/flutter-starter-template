@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../build_context_extensions.dart';
+import '../theme/app_spacing.dart';
 
 /// Full-screen placeholder for empty lists or states with no data yet.
 class AppEmptyView extends StatelessWidget {
@@ -21,19 +22,19 @@ class AppEmptyView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(AppSpacing.xxl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(icon, size: 56, color: context.colorScheme.onSurfaceVariant),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             if (title != null) ...[
               Text(
                 title!,
                 style: context.textTheme.titleLarge,
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
             ],
             Text(
               message,
@@ -42,7 +43,10 @@ class AppEmptyView extends StatelessWidget {
               ),
               textAlign: TextAlign.center,
             ),
-            if (action != null) ...[const SizedBox(height: 24), action!],
+            if (action != null) ...[
+              const SizedBox(height: AppSpacing.xxl),
+              action!,
+            ],
           ],
         ),
       ),

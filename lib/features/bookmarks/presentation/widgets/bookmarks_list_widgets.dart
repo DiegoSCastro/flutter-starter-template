@@ -11,6 +11,7 @@ import '../../../../core/build_context_extensions.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/future_extensions.dart';
 import '../../../../core/share/share_service.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../domain/entities/bookmark.dart';
 import '../../domain/services/bookmarks_sync_controller.dart';
@@ -113,7 +114,12 @@ class _BookmarksListViewState extends State<BookmarksListView> {
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.lg,
+              AppSpacing.md,
+              AppSpacing.lg,
+              AppSpacing.xs,
+            ),
             child: AppTextField(
               controller: _searchController,
               hint: context.l10n.bookmarksSearchHint,
@@ -246,7 +252,7 @@ class _SyncStatusIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     return switch (status) {
       BookmarksSyncStatus.syncing => const Padding(
-        padding: EdgeInsets.only(right: 12),
+        padding: EdgeInsets.only(right: AppSpacing.md),
         child: SizedBox(
           width: 18,
           height: 18,

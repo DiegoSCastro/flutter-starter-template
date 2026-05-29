@@ -10,6 +10,7 @@ import '../../../../core/animation/widget_animations.dart';
 import '../../../../core/build_context_extensions.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/future_extensions.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/theme_bloc.dart';
 import '../../../../core/theme/theme_state.dart';
 import '../../../../core/widgets/widgets.dart';
@@ -28,27 +29,27 @@ class ProfileBody extends StatelessWidget {
       title: context.l10n.profileAppBarTitle,
       padding: EdgeInsets.zero,
       body: ListView(
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
         children: [
           const _ProfileHeader(),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.xxl),
           _SectionLabel(
             context.l10n.profileSectionAccount,
           ).animateSlideRight(delay: 300.ms),
           const _ChangePasswordTile().animateSlideRight(delay: 325.ms),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.xxl),
           _SectionLabel(
             context.l10n.profileSectionAppearance,
           ).animateSlideRight(delay: 350.ms),
           const _ThemeModeSelector().animateSlideRight(delay: 400.ms),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           const _ColorSchemeSelector().animateSlideRight(delay: 450.ms),
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.xxl),
           _SectionLabel(
             context.l10n.profileSectionAbout,
           ).animateSlideRight(delay: 500.ms),
           const _AppInfoTile().animateSlideRight(delay: 550.ms),
-          const SizedBox(height: 32),
+          const SizedBox(height: AppSpacing.xxxl),
           const _SignOutButton().animateSlideUp(delay: 600.ms),
         ],
       ),
@@ -82,12 +83,12 @@ class _ProfileHeader extends StatelessWidget {
                 ),
               ),
             ).animateScale(),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpacing.md),
             Text(
               username,
               style: theme.textTheme.titleLarge,
             ).animateSlideDown(delay: 150.ms),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpacing.xs),
             _CopyableId(id: user?.id ?? '').animateFadeIn(delay: 250.ms),
           ],
         );
@@ -115,7 +116,10 @@ class _CopyableId extends StatelessWidget {
         );
       },
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.sm,
+          vertical: AppSpacing.xs,
+        ),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -125,7 +129,7 @@ class _CopyableId extends StatelessWidget {
                 color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
-            const SizedBox(width: 4),
+            const SizedBox(width: AppSpacing.xs),
             Icon(
               Icons.copy,
               size: 14,
@@ -147,7 +151,12 @@ class _SectionLabel extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 4, 20, 8),
+      padding: const EdgeInsets.fromLTRB(
+        AppSpacing.xl,
+        AppSpacing.xs,
+        AppSpacing.xl,
+        AppSpacing.sm,
+      ),
       child: Text(
         text.toUpperCase(),
         style: theme.textTheme.labelSmall?.copyWith(
@@ -223,7 +232,7 @@ class _ColorSchemeSelector extends StatelessWidget {
     return BlocBuilder<ThemeBloc, ThemeState>(
       builder: (context, state) {
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
           child: Wrap(
             spacing: 10,
             runSpacing: 10,
@@ -319,7 +328,7 @@ class _SignOutButton extends StatelessWidget {
       selector: (state) => state is AuthSigningOut,
       builder: (context, isLoading) {
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
           child: AppButton(
             label: context.l10n.commonSignOut,
             icon: Icons.logout,

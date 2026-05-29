@@ -14,6 +14,7 @@ import '../../../../core/di/injection.dart';
 import '../../../../core/future_extensions.dart';
 import '../../../../core/media/video_player_service.dart';
 import '../../../../core/share/share_service.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/app_video_player.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../domain/entities/bookmark.dart';
@@ -137,7 +138,7 @@ class _DetailBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(AppSpacing.xl),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -145,7 +146,7 @@ class _DetailBody extends StatelessWidget {
             bookmark.title,
             style: context.textTheme.headlineSmall,
           ).animateSlideDown(),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpacing.sm),
           InkWell(
             onTap: () => _openUrl(context, bookmark),
             child: Text(
@@ -157,13 +158,13 @@ class _DetailBody extends StatelessWidget {
             ),
           ).animateFadeIn(delay: 100.ms),
           if (bookmark.description.isNotEmpty) ...[
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             Text(
               bookmark.description,
               style: context.textTheme.bodyMedium,
             ).animateFadeIn(delay: 200.ms),
           ],
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpacing.lg),
           AppLinkPreview(
             url: bookmark.url,
             maxWidth: double.infinity,
@@ -174,13 +175,14 @@ class _DetailBody extends StatelessWidget {
               videoUrl: bookmark.videoUrl!,
             ).animateFadeIn(delay: 275.ms),
           if (bookmark.imageUrls.isNotEmpty) ...[
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             SizedBox(
               height: 200,
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: bookmark.imageUrls.length,
-                separatorBuilder: (_, _) => const SizedBox(width: 8),
+                separatorBuilder: (_, _) =>
+                    const SizedBox(width: AppSpacing.sm),
                 itemBuilder: (context, index) {
                   final path = bookmark.imageUrls[index];
                   return ClipRRect(
@@ -204,7 +206,7 @@ class _DetailBody extends StatelessWidget {
             ).animateFadeIn(delay: 300.ms),
           ],
           if (bookmark.tags.isNotEmpty) ...[
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             Wrap(
               spacing: 8,
               runSpacing: 8,
@@ -217,7 +219,7 @@ class _DetailBody extends StatelessWidget {
               ],
             ),
           ],
-          const SizedBox(height: 24),
+          const SizedBox(height: AppSpacing.xxl),
           AppButton(
             label: context.l10n.bookmarkOpenUrl,
             icon: Icons.open_in_new,
@@ -295,12 +297,12 @@ class _VideoSectionState extends State<_VideoSection> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.lg),
         Text(
           'Attached Video',
           style: context.textTheme.titleMedium,
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpacing.sm),
         ClipRRect(
           borderRadius: BorderRadius.circular(8),
           child: AppVideoPlayer(controller: controller),

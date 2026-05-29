@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/animation/widget_animations.dart';
 import '../../../../core/build_context_extensions.dart';
 import '../../../../core/error/failure.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_state.dart';
@@ -58,7 +59,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 360),
           child: SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(AppSpacing.xxl),
             child: BlocBuilder<AuthBloc, AuthState>(
               builder: (context, state) {
                 final isSubmitting = state is AuthSubmitting;
@@ -75,7 +76,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         textAlign: TextAlign.center,
                         style: context.textTheme.headlineSmall,
                       ).animateSlideDown(),
-                      const SizedBox(height: 24),
+                      const SizedBox(height: AppSpacing.xxl),
                       AppTextField(
                         controller: _usernameController,
                         label: context.l10n.registerUsernameLabel,
@@ -87,7 +88,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ? context.l10n.fieldRequired
                             : null,
                       ).animateSlideLeft(delay: 100.ms),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.lg),
                       AppTextField(
                         controller: _passwordController,
                         label: context.l10n.registerPasswordLabel,
@@ -99,7 +100,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ? context.l10n.fieldRequired
                             : null,
                       ).animateSlideLeft(delay: 200.ms),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpacing.lg),
                       AppTextField(
                         controller: _confirmPasswordController,
                         label: context.l10n.registerConfirmPasswordLabel,
@@ -118,14 +119,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         },
                       ).animateSlideLeft(delay: 300.ms),
                       if (errorMessage != null) ...[
-                        const SizedBox(height: 12),
+                        const SizedBox(height: AppSpacing.md),
                         Text(
                           errorMessage,
                           style: TextStyle(color: context.colorScheme.error),
                           textAlign: TextAlign.center,
                         ).animateShake(),
                       ],
-                      const SizedBox(height: 24),
+                      const SizedBox(height: AppSpacing.xxl),
                       AppButton(
                         label: context.l10n.registerSubmit,
                         onPressed: _submit,

@@ -2,6 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
+import '../theme/app_spacing.dart';
+
 import 'app_loading.dart';
 
 /// Wraps [Scaffold] with consistent app-bar styling and an optional full-screen
@@ -17,7 +19,7 @@ class AppScaffold extends StatelessWidget {
     this.floatingActionButton,
     this.bottomNavigationBar,
     this.drawer,
-    this.padding = const EdgeInsets.all(16),
+    this.padding = const EdgeInsets.all(AppSpacing.lg),
     this.safeArea = true,
     this.isLoading = false,
     this.backgroundColor,
@@ -102,8 +104,8 @@ class AppScaffold extends StatelessWidget {
                       Center(
                         child: Container(
                           padding: const EdgeInsets.symmetric(
-                            horizontal: 40,
-                            vertical: 32,
+                            horizontal: AppSpacing.xxxxl,
+                            vertical: AppSpacing.xxxl,
                           ),
                           decoration: BoxDecoration(
                             color: Theme.of(context).cardColor,

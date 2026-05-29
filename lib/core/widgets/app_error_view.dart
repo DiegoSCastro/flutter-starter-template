@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../build_context_extensions.dart';
+import '../theme/app_spacing.dart';
 
 /// Full-screen error placeholder with an icon, message, and optional retry.
 class AppErrorView extends StatelessWidget {
@@ -30,19 +31,19 @@ class AppErrorView extends StatelessWidget {
         : null;
     return Center(
       child: Padding(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.all(AppSpacing.xxl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(icon, size: 56, color: context.colorScheme.error),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             if (title != null) ...[
               Text(
                 title!,
                 style: context.textTheme.titleLarge,
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
             ],
             Text(
               message,
@@ -50,7 +51,7 @@ class AppErrorView extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             if (onRetry != null) ...[
-              const SizedBox(height: 24),
+              const SizedBox(height: AppSpacing.xxl),
               FilledButton.tonalIcon(
                 onPressed: effectiveOnRetry,
                 icon: const Icon(Icons.refresh),

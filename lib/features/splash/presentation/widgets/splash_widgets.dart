@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/build_context_extensions.dart';
+import '../../../../core/theme/app_spacing.dart';
 
 class SplashContent extends StatelessWidget {
   const SplashContent({super.key});
@@ -20,7 +21,7 @@ class SplashContent extends StatelessWidget {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpacing.xxl),
             CircularProgressIndicator(color: context.colorScheme.primary),
           ],
         ),

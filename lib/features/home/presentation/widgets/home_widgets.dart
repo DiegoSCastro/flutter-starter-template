@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../app/router.dart';
 import '../../../../core/animation/widget_animations.dart';
 import '../../../../core/build_context_extensions.dart';
+import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/bloc/auth_state.dart';
@@ -22,22 +23,22 @@ class HomeBody extends StatelessWidget {
       body: BlocBuilder<HomeBloc, HomeState>(
         builder: (context, state) {
           return SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
+            padding: const EdgeInsets.all(AppSpacing.xxl),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const SizedBox(height: 24),
+                const SizedBox(height: AppSpacing.xxl),
                 const _WelcomeSection(),
-                const SizedBox(height: 32),
+                const SizedBox(height: AppSpacing.xxxl),
                 _StatsDashboard(state: state),
-                const SizedBox(height: 32),
+                const SizedBox(height: AppSpacing.xxxl),
                 AppButton(
                   label: context.l10n.homeMyBookmarks,
                   icon: Icons.bookmark_outline,
                   onPressed: () =>
                       const BookmarksListRoute().push<void>(context),
                 ).animateSlideUp(delay: 400.ms),
-                const SizedBox(height: 40),
+                const SizedBox(height: AppSpacing.xxxxl),
                 _RecentBookmarksSection(
                   recentItems: state.recentItems,
                   isEmpty: state.totalBookmarks == 0,
@@ -72,14 +73,14 @@ class _WelcomeSection extends StatelessWidget {
                 color: context.colorScheme.onPrimaryContainer,
               ),
             ).animateScale(delay: 100.ms),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpacing.lg),
             AppAnimatedText(
               text: context.l10n.homeWelcome(username),
               type: AppAnimatedTextType.typewriter,
               textStyle: context.textTheme.headlineSmall,
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             AppAnimatedText(
               text: context.l10n.homeSignedInBody,
               type: AppAnimatedTextType.fade,
@@ -94,7 +95,8 @@ class _WelcomeSection extends StatelessWidget {
 }
 
 String _usernameFrom(AuthState state) => switch (state) {
-  AuthAuthenticated(:final user) || AuthSigningOut(:final user) => user.username,
+  AuthAuthenticated(:final user) ||
+  AuthSigningOut(:final user) => user.username,
   _ => '',
 };
 
@@ -114,7 +116,7 @@ class _StatsDashboard extends StatelessWidget {
             label: context.l10n.homeStatsTotal,
           ).animateSlideLeft(delay: 200.ms),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: AppSpacing.md),
         Expanded(
           child: _StatCard(
             icon: Icons.schedule,
@@ -122,7 +124,7 @@ class _StatsDashboard extends StatelessWidget {
             label: context.l10n.homeStatsRecent,
           ).animateSlideUp(delay: 300.ms),
         ),
-        const SizedBox(width: 12),
+        const SizedBox(width: AppSpacing.md),
         Expanded(
           child: _StatCard(
             icon: Icons.label_outline,
@@ -152,12 +154,15 @@ class _StatCard extends StatelessWidget {
       elevation: 2,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 12),
+        padding: const EdgeInsets.symmetric(
+          vertical: AppSpacing.xl,
+          horizontal: AppSpacing.md,
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(icon, size: 28, color: context.colorScheme.primary),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpacing.sm),
             Text(
               value,
               style: context.textTheme.headlineSmall?.copyWith(
@@ -165,7 +170,7 @@ class _StatCard extends StatelessWidget {
                 color: context.colorScheme.primary,
               ),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpacing.xs),
             Text(
               label,
               style: context.textTheme.labelMedium?.copyWith(
@@ -212,7 +217,7 @@ class _RecentBookmarksSection extends StatelessWidget {
             ),
           ),
         ).animateFadeIn(delay: animationDelay),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpacing.lg),
         AppCarousel(
           items: recentItems
               .map((b) => _BookmarkCarouselCard(bookmark: b))
@@ -239,7 +244,7 @@ class _BookmarkCarouselCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         onTap: () => BookmarkDetailRoute(bookmark.id).push<void>(context),
         child: Padding(
-          padding: const EdgeInsets.all(20),
+          padding: const EdgeInsets.all(AppSpacing.xl),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -260,7 +265,7 @@ class _BookmarkCarouselCard extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpacing.sm),
               Expanded(
                 child: Text(
                   bookmark.description.isNotEmpty
@@ -274,15 +279,15 @@ class _BookmarkCarouselCard extends StatelessWidget {
                 ),
               ),
               if (bookmark.tags.isNotEmpty) ...[
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpacing.sm),
                 Wrap(
                   spacing: 6,
                   runSpacing: 4,
                   children: bookmark.tags.map((tag) {
                     return Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 2,
+                        horizontal: AppSpacing.sm,
+                        vertical: AppSpacing.xxs,
                       ),
                       decoration: BoxDecoration(
                         color: context.colorScheme.secondaryContainer,
@@ -316,7 +321,7 @@ class _ProfileAvatarButton extends StatelessWidget {
       builder: (context, username) {
         final initial = username.isNotEmpty ? username[0].toUpperCase() : '?';
         return Padding(
-          padding: const EdgeInsets.only(right: 8),
+          padding: const EdgeInsets.only(right: AppSpacing.sm),
           child: IconButton(
             tooltip: context.l10n.homeProfileTooltip,
             onPressed: () => const ProfileRoute().push<void>(context),
