@@ -206,6 +206,10 @@ dev_dependencies:
   flutter_gen_runner: ^5.14.1
   very_good_analysis: ^10.2.0
 
+  # Generates native launcher icons for all platforms from a single source
+  # image. Run: dart run flutter_launcher_icons (config below).
+  flutter_launcher_icons: ^0.14.3
+
 flutter_gen:
   output: lib/gen/
   line_length: 80
@@ -218,6 +222,24 @@ flutter_gen:
       style: dot-delimiter
   fonts:
     enabled: true
+
+# Native launcher icons. Source images live in tool/launcher_icons/ (build-time
+# only, so they are not bundled into the app). Regenerate after editing them:
+#   dart run flutter_launcher_icons
+# `image_path` is a full-bleed square (iOS/Android/web mask their own corners);
+# Android adaptive icons use a solid brand background plus a padded foreground.
+flutter_launcher_icons:
+  image_path: "tool/launcher_icons/app_icon.png"
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  min_sdk_android: 21
+  adaptive_icon_background: "#095D9E"
+  adaptive_icon_foreground: "tool/launcher_icons/app_icon_foreground.png"
+  web:
+    generate: true
+    background_color: "#095D9E"
+    theme_color: "#095D9E"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
