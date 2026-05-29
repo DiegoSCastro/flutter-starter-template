@@ -61,13 +61,7 @@ class BookmarksListBloc extends Bloc<BookmarksListEvent, BookmarksListState> {
   Future<void> _onLoadRequested(
     BookmarksListLoadRequested event,
     Emitter<BookmarksListState> emit,
-  ) async {
-    try {
-      await _loadAndEmit(emit);
-    } catch (_) {
-      rethrow;
-    }
-  }
+  ) => _loadAndEmit(emit);
 
   Future<void> _loadAndEmit(Emitter<BookmarksListState> emit) async {
     emit(state.copyWith(isLoading: true, failure: null));
@@ -109,12 +103,8 @@ class BookmarksListBloc extends Bloc<BookmarksListEvent, BookmarksListState> {
     BookmarksListSyncRetried event,
     Emitter<BookmarksListState> emit,
   ) async {
-    try {
-      _analytics.trackBookmarkSyncRetried().uw();
-      await _sync.sync();
-    } catch (_) {
-      rethrow;
-    }
+    _analytics.trackBookmarkSyncRetried().uw();
+    await _sync.sync();
   }
 
   void _onQueryChanged(
@@ -147,34 +137,30 @@ class BookmarksListBloc extends Bloc<BookmarksListEvent, BookmarksListState> {
   ) async {
     final id = event.id;
     final previous = state.items;
-    try {
-      emit(
-        state.copyWith(
-          items: previous.where((b) => b.id != id).toList(growable: false),
-        ),
-      );
-      final result = await _delete(id);
-      switch (result) {
-        case Ok<void>():
-          _analytics
-              .trackBookmarkDeleted(
-                bookmarkId: id,
-                source: AnalyticsSources.list,
-              )
-              .uw();
-        case Err(:final failure):
-          _analytics
-              .trackBookmarkDeleteFailed(
-                bookmarkId: id,
-                source: AnalyticsSources.list,
-                errorType: failure.runtimeType.toString(),
-              )
-              .uw();
-          emit(state.copyWith(items: previous));
-          await _loadAndEmit(emit);
-      }
-    } catch (_) {
-      rethrow;
+    emit(
+      state.copyWith(
+        items: previous.where((b) => b.id != id).toList(growable: false),
+      ),
+    );
+    final result = await _delete(id);
+    switch (result) {
+      case Ok<void>():
+        _analytics
+            .trackBookmarkDeleted(
+              bookmarkId: id,
+              source: AnalyticsSources.list,
+            )
+            .uw();
+      case Err(:final failure):
+        _analytics
+            .trackBookmarkDeleteFailed(
+              bookmarkId: id,
+              source: AnalyticsSources.list,
+              errorType: failure.runtimeType.toString(),
+            )
+            .uw();
+        emit(state.copyWith(items: previous));
+        await _loadAndEmit(emit);
     }
   }
 

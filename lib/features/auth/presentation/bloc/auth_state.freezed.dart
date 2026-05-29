@@ -55,14 +55,15 @@ extension AuthStatePatterns on AuthState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( AuthInitial value)?  initial,TResult Function( AuthRestoring value)?  restoring,TResult Function( AuthSubmitting value)?  submitting,TResult Function( AuthAuthenticated value)?  authenticated,TResult Function( AuthFailure value)?  failure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( AuthInitial value)?  initial,TResult Function( AuthRestoring value)?  restoring,TResult Function( AuthSubmitting value)?  submitting,TResult Function( AuthAuthenticated value)?  authenticated,TResult Function( AuthSigningOut value)?  signingOut,TResult Function( AuthFailure value)?  failure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case AuthInitial() when initial != null:
 return initial(_that);case AuthRestoring() when restoring != null:
 return restoring(_that);case AuthSubmitting() when submitting != null:
 return submitting(_that);case AuthAuthenticated() when authenticated != null:
-return authenticated(_that);case AuthFailure() when failure != null:
+return authenticated(_that);case AuthSigningOut() when signingOut != null:
+return signingOut(_that);case AuthFailure() when failure != null:
 return failure(_that);case _:
   return orElse();
 
@@ -81,14 +82,15 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( AuthInitial value)  initial,required TResult Function( AuthRestoring value)  restoring,required TResult Function( AuthSubmitting value)  submitting,required TResult Function( AuthAuthenticated value)  authenticated,required TResult Function( AuthFailure value)  failure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( AuthInitial value)  initial,required TResult Function( AuthRestoring value)  restoring,required TResult Function( AuthSubmitting value)  submitting,required TResult Function( AuthAuthenticated value)  authenticated,required TResult Function( AuthSigningOut value)  signingOut,required TResult Function( AuthFailure value)  failure,}){
 final _that = this;
 switch (_that) {
 case AuthInitial():
 return initial(_that);case AuthRestoring():
 return restoring(_that);case AuthSubmitting():
 return submitting(_that);case AuthAuthenticated():
-return authenticated(_that);case AuthFailure():
+return authenticated(_that);case AuthSigningOut():
+return signingOut(_that);case AuthFailure():
 return failure(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
@@ -103,14 +105,15 @@ return failure(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( AuthInitial value)?  initial,TResult? Function( AuthRestoring value)?  restoring,TResult? Function( AuthSubmitting value)?  submitting,TResult? Function( AuthAuthenticated value)?  authenticated,TResult? Function( AuthFailure value)?  failure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( AuthInitial value)?  initial,TResult? Function( AuthRestoring value)?  restoring,TResult? Function( AuthSubmitting value)?  submitting,TResult? Function( AuthAuthenticated value)?  authenticated,TResult? Function( AuthSigningOut value)?  signingOut,TResult? Function( AuthFailure value)?  failure,}){
 final _that = this;
 switch (_that) {
 case AuthInitial() when initial != null:
 return initial(_that);case AuthRestoring() when restoring != null:
 return restoring(_that);case AuthSubmitting() when submitting != null:
 return submitting(_that);case AuthAuthenticated() when authenticated != null:
-return authenticated(_that);case AuthFailure() when failure != null:
+return authenticated(_that);case AuthSigningOut() when signingOut != null:
+return signingOut(_that);case AuthFailure() when failure != null:
 return failure(_that);case _:
   return null;
 
@@ -128,13 +131,14 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  restoring,TResult Function()?  submitting,TResult Function( AuthUser user)?  authenticated,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  restoring,TResult Function()?  submitting,TResult Function( AuthUser user)?  authenticated,TResult Function( AuthUser user)?  signingOut,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case AuthInitial() when initial != null:
 return initial();case AuthRestoring() when restoring != null:
 return restoring();case AuthSubmitting() when submitting != null:
 return submitting();case AuthAuthenticated() when authenticated != null:
-return authenticated(_that.user);case AuthFailure() when failure != null:
+return authenticated(_that.user);case AuthSigningOut() when signingOut != null:
+return signingOut(_that.user);case AuthFailure() when failure != null:
 return failure(_that.failure);case _:
   return orElse();
 
@@ -153,13 +157,14 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  restoring,required TResult Function()  submitting,required TResult Function( AuthUser user)  authenticated,required TResult Function( Failure failure)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  restoring,required TResult Function()  submitting,required TResult Function( AuthUser user)  authenticated,required TResult Function( AuthUser user)  signingOut,required TResult Function( Failure failure)  failure,}) {final _that = this;
 switch (_that) {
 case AuthInitial():
 return initial();case AuthRestoring():
 return restoring();case AuthSubmitting():
 return submitting();case AuthAuthenticated():
-return authenticated(_that.user);case AuthFailure():
+return authenticated(_that.user);case AuthSigningOut():
+return signingOut(_that.user);case AuthFailure():
 return failure(_that.failure);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -174,13 +179,14 @@ return failure(_that.failure);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  restoring,TResult? Function()?  submitting,TResult? Function( AuthUser user)?  authenticated,TResult? Function( Failure failure)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  restoring,TResult? Function()?  submitting,TResult? Function( AuthUser user)?  authenticated,TResult? Function( AuthUser user)?  signingOut,TResult? Function( Failure failure)?  failure,}) {final _that = this;
 switch (_that) {
 case AuthInitial() when initial != null:
 return initial();case AuthRestoring() when restoring != null:
 return restoring();case AuthSubmitting() when submitting != null:
 return submitting();case AuthAuthenticated() when authenticated != null:
-return authenticated(_that.user);case AuthFailure() when failure != null:
+return authenticated(_that.user);case AuthSigningOut() when signingOut != null:
+return signingOut(_that.user);case AuthFailure() when failure != null:
 return failure(_that.failure);case _:
   return null;
 
@@ -343,6 +349,72 @@ class _$AuthAuthenticatedCopyWithImpl<$Res>
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? user = null,}) {
   return _then(AuthAuthenticated(
+null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
+as AuthUser,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class AuthSigningOut implements AuthState {
+  const AuthSigningOut(this.user);
+  
+
+ final  AuthUser user;
+
+/// Create a copy of AuthState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AuthSigningOutCopyWith<AuthSigningOut> get copyWith => _$AuthSigningOutCopyWithImpl<AuthSigningOut>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthSigningOut&&(identical(other.user, user) || other.user == user));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,user);
+
+@override
+String toString() {
+  return 'AuthState.signingOut(user: $user)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $AuthSigningOutCopyWith<$Res> implements $AuthStateCopyWith<$Res> {
+  factory $AuthSigningOutCopyWith(AuthSigningOut value, $Res Function(AuthSigningOut) _then) = _$AuthSigningOutCopyWithImpl;
+@useResult
+$Res call({
+ AuthUser user
+});
+
+
+
+
+}
+/// @nodoc
+class _$AuthSigningOutCopyWithImpl<$Res>
+    implements $AuthSigningOutCopyWith<$Res> {
+  _$AuthSigningOutCopyWithImpl(this._self, this._then);
+
+  final AuthSigningOut _self;
+  final $Res Function(AuthSigningOut) _then;
+
+/// Create a copy of AuthState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? user = null,}) {
+  return _then(AuthSigningOut(
 null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
 as AuthUser,
   ));

@@ -210,7 +210,7 @@ void main() {
       when(() => mockLocal.load()).thenAnswer((_) async {});
     });
 
-    test('returns Err when no user persisted', () async {
+    test('returns NoSessionFailure when no user persisted', () async {
       when(() => mockLocal.currentUser).thenReturn(null);
       when(() => mockLocal.refreshToken).thenReturn('refresh');
 
@@ -218,29 +218,36 @@ void main() {
 
       expect(result, isA<Err<AuthUser>>());
       final err = result as Err<AuthUser>;
-      expect(err.failure.message, 'No persisted session.');
+      expect(err.failure, isA<NoSessionFailure>());
     });
 
-    test('returns Err when no refresh token', () async {
+    test('returns NoSessionFailure when no refresh token', () async {
       when(() => mockLocal.currentUser).thenReturn(testUser);
       when(() => mockLocal.refreshToken).thenReturn(null);
 
       final result = await repository.restoreSession();
 
       expect(result, isA<Err<AuthUser>>());
+      expect((result as Err<AuthUser>).failure, isA<NoSessionFailure>());
     });
 
-    test('returns Err when token refresh fails', () async {
-      when(() => mockLocal.currentUser).thenReturn(testUser);
-      when(() => mockLocal.refreshToken).thenReturn('refresh');
-      when(() => mockRefresher.refresh()).thenAnswer((_) async => false);
+    test(
+      'returns NoSessionFailure and clears session when token refresh fails',
+      () async {
+        when(() => mockLocal.currentUser).thenReturn(testUser);
+        when(() => mockLocal.refreshToken).thenReturn('refresh');
+        when(() => mockRefresher.refresh()).thenAnswer((_) async => false);
+        when(() => mockLocal.clearSession()).thenAnswer((_) async {});
 
-      final result = await repository.restoreSession();
+        final result = await repository.restoreSession();
 
-      expect(result, isA<Err<AuthUser>>());
-      final err = result as Err<AuthUser>;
-      expect(err.failure.message, 'Session expired.');
-    });
+        expect(result, isA<Err<AuthUser>>());
+        final err = result as Err<AuthUser>;
+        expect(err.failure, isA<NoSessionFailure>());
+        expect(err.failure.message, 'Session expired.');
+        verify(() => mockLocal.clearSession()).called(1);
+      },
+    );
 
     test('returns Ok with user on successful session restore', () async {
       when(() => mockLocal.currentUser).thenReturn(testUser);

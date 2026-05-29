@@ -13,7 +13,9 @@ import '../../../../core/future_extensions.dart';
 import '../../../../core/theme/theme_bloc.dart';
 import '../../../../core/theme/theme_state.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../auth/domain/entities/auth_user.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
+import '../../../auth/presentation/bloc/auth_state.dart';
 import '../bloc/profile_bloc.dart';
 import '../bloc/profile_state.dart';
 
@@ -22,46 +24,33 @@ class ProfileBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<ProfileBloc, ProfileState>(
-      listenWhen: (previous, current) =>
-          !previous.signOutSucceeded && current.signOutSucceeded,
-      listener: (context, state) {
-        context.read<AuthBloc>().add(const AuthSessionCleared());
-      },
-      child: BlocBuilder<ProfileBloc, ProfileState>(
-        builder: (context, state) {
-          return AppScaffold(
-            title: context.l10n.profileAppBarTitle,
-            padding: EdgeInsets.zero,
-            body: ListView(
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              children: [
-                const _ProfileHeader(),
-                const SizedBox(height: 24),
-                _SectionLabel(
-                  context.l10n.profileSectionAccount,
-                ).animateSlideRight(delay: 300.ms),
-                const _ChangePasswordTile().animateSlideRight(delay: 325.ms),
-                const SizedBox(height: 24),
-                _SectionLabel(
-                  context.l10n.profileSectionAppearance,
-                ).animateSlideRight(delay: 350.ms),
-                const _ThemeModeSelector().animateSlideRight(delay: 400.ms),
-                const SizedBox(height: 8),
-                const _ColorSchemeSelector().animateSlideRight(delay: 450.ms),
-                const SizedBox(height: 24),
-                _SectionLabel(
-                  context.l10n.profileSectionAbout,
-                ).animateSlideRight(delay: 500.ms),
-                const _AppInfoTile().animateSlideRight(delay: 550.ms),
-                const SizedBox(height: 32),
-                _SignOutButton(
-                  isLoading: state.isSigningOut,
-                ).animateSlideUp(delay: 600.ms),
-              ],
-            ),
-          );
-        },
+    return AppScaffold(
+      title: context.l10n.profileAppBarTitle,
+      padding: EdgeInsets.zero,
+      body: ListView(
+        padding: const EdgeInsets.symmetric(vertical: 16),
+        children: [
+          const _ProfileHeader(),
+          const SizedBox(height: 24),
+          _SectionLabel(
+            context.l10n.profileSectionAccount,
+          ).animateSlideRight(delay: 300.ms),
+          const _ChangePasswordTile().animateSlideRight(delay: 325.ms),
+          const SizedBox(height: 24),
+          _SectionLabel(
+            context.l10n.profileSectionAppearance,
+          ).animateSlideRight(delay: 350.ms),
+          const _ThemeModeSelector().animateSlideRight(delay: 400.ms),
+          const SizedBox(height: 8),
+          const _ColorSchemeSelector().animateSlideRight(delay: 450.ms),
+          const SizedBox(height: 24),
+          _SectionLabel(
+            context.l10n.profileSectionAbout,
+          ).animateSlideRight(delay: 500.ms),
+          const _AppInfoTile().animateSlideRight(delay: 550.ms),
+          const SizedBox(height: 32),
+          const _SignOutButton().animateSlideUp(delay: 600.ms),
+        ],
       ),
     );
   }
@@ -73,11 +62,14 @@ class _ProfileHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return BlocBuilder<ProfileBloc, ProfileState>(
-      builder: (context, state) {
-        final initial = state.username.isNotEmpty
-            ? state.username[0].toUpperCase()
-            : '?';
+    return BlocSelector<AuthBloc, AuthState, AuthUser?>(
+      selector: (state) => switch (state) {
+        AuthAuthenticated(:final user) || AuthSigningOut(:final user) => user,
+        _ => null,
+      },
+      builder: (context, user) {
+        final username = user?.username ?? '';
+        final initial = username.isNotEmpty ? username[0].toUpperCase() : '?';
         return Column(
           children: [
             CircleAvatar(
@@ -92,11 +84,11 @@ class _ProfileHeader extends StatelessWidget {
             ).animateScale(),
             const SizedBox(height: 12),
             Text(
-              state.username,
+              username,
               style: theme.textTheme.titleLarge,
             ).animateSlideDown(delay: 150.ms),
             const SizedBox(height: 4),
-            _CopyableId(id: state.userId).animateFadeIn(delay: 250.ms),
+            _CopyableId(id: user?.id ?? '').animateFadeIn(delay: 250.ms),
           ],
         );
       },
@@ -319,22 +311,25 @@ class _AppInfoTile extends StatelessWidget {
 }
 
 class _SignOutButton extends StatelessWidget {
-  const _SignOutButton({required this.isLoading});
-
-  final bool isLoading;
+  const _SignOutButton();
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: AppButton(
-        label: context.l10n.commonSignOut,
-        icon: Icons.logout,
-        variant: AppButtonVariant.tonal,
-        expand: true,
-        isLoading: isLoading,
-        onPressed: () => _confirmSignOut(context),
-      ),
+    return BlocSelector<AuthBloc, AuthState, bool>(
+      selector: (state) => state is AuthSigningOut,
+      builder: (context, isLoading) {
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          child: AppButton(
+            label: context.l10n.commonSignOut,
+            icon: Icons.logout,
+            variant: AppButtonVariant.tonal,
+            expand: true,
+            isLoading: isLoading,
+            onPressed: isLoading ? null : () => _confirmSignOut(context),
+          ),
+        );
+      },
     );
   }
 
@@ -358,7 +353,7 @@ class _SignOutButton extends StatelessWidget {
       ),
     );
     if (confirmed == true && context.mounted) {
-      context.read<ProfileBloc>().add(const ProfileSignOutRequested());
+      context.read<AuthBloc>().add(const AuthSignOutRequested());
     }
   }
 }

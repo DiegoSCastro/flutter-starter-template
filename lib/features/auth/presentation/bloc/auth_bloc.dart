@@ -4,6 +4,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../core/analytics/analytics_extensions.dart';
 import '../../../../core/analytics/analytics_service.dart';
+import '../../../../core/error/failure.dart';
 import '../../../../core/future_extensions.dart';
 import '../../../../core/utils/result.dart';
 import '../../domain/usecases/register.dart';
@@ -25,12 +26,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }) : super(const AuthState.initial()) {
     on<AuthSessionRestoreRequested>(
       _onSessionRestoreRequested,
-      transformer: sequential(),
+      transformer: droppable(),
     );
-    on<AuthSessionCleared>(_onSessionCleared, transformer: sequential());
-    on<AuthSignInRequested>(_onSignInRequested, transformer: sequential());
-    on<AuthRegisterRequested>(_onRegisterRequested, transformer: sequential());
-    on<AuthSignOutRequested>(_onSignOutRequested, transformer: sequential());
+    on<AuthSessionCleared>(_onSessionCleared);
+    on<AuthSignInRequested>(_onSignInRequested, transformer: droppable());
+    on<AuthRegisterRequested>(_onRegisterRequested, transformer: droppable());
+    on<AuthSignOutRequested>(_onSignOutRequested, transformer: droppable());
   }
 
   final SignIn _signIn;
@@ -38,26 +39,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final SignOut _signOut;
   final RestoreSession _restoreSession;
   final AnalyticsService _analytics;
-  bool _credentialsRequestInFlight = false;
-  bool _signOutInFlight = false;
 
   Future<void> _onSessionRestoreRequested(
     AuthSessionRestoreRequested event,
     Emitter<AuthState> emit,
   ) async {
-    try {
-      emit(const AuthState.restoring());
-      final result = await _restoreSession();
-      switch (result) {
-        case Ok(value: final user):
-          _analytics.setCurrentUser(user.id).uw();
-          emit(AuthState.authenticated(user));
-        case Err():
-          _analytics.setCurrentUser(null).uw();
-          emit(const AuthState.initial());
-      }
-    } catch (_) {
-      rethrow;
+    emit(const AuthState.restoring());
+    final result = await _restoreSession();
+    switch (result) {
+      case Ok(value: final user):
+        _analytics.setCurrentUser(user.id).uw();
+        emit(AuthState.authenticated(user));
+      case Err(failure: NoSessionFailure()):
+        // Expected on first launch / after sign-out — not an error.
+        _analytics.setCurrentUser(null).uw();
+        emit(const AuthState.initial());
+      case Err(:final failure):
+        _analytics.setCurrentUser(null).uw();
+        emit(AuthState.failure(failure));
     }
   }
 
@@ -72,33 +71,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthSignInRequested event,
     Emitter<AuthState> emit,
   ) async {
-    if (_credentialsRequestInFlight) return;
-    _credentialsRequestInFlight = true;
-    try {
-      if (state is AuthSubmitting) {
-        return;
-      }
-      emit(const AuthState.submitting());
-
-      final result = await _signIn((
-        username: event.username,
-        password: event.password,
-      ));
-      switch (result) {
-        case Ok(value: final user):
-          _analytics.setCurrentUser(user.id).uw();
-          _analytics.logLogin(method: 'password').uw();
-          emit(AuthState.authenticated(user));
-        case Err(:final failure):
-          _analytics
-              .trackLoginFailed(errorType: failure.runtimeType.toString())
-              .uw();
-          emit(AuthState.failure(failure));
-      }
-    } catch (_) {
-      rethrow;
-    } finally {
-      _credentialsRequestInFlight = false;
+    emit(const AuthState.submitting());
+    final result = await _signIn((
+      username: event.username,
+      password: event.password,
+    ));
+    switch (result) {
+      case Ok(value: final user):
+        _analytics.setCurrentUser(user.id).uw();
+        _analytics.logLogin(method: 'password').uw();
+        emit(AuthState.authenticated(user));
+      case Err(:final failure):
+        _analytics
+            .trackLoginFailed(errorType: failure.runtimeType.toString())
+            .uw();
+        emit(AuthState.failure(failure));
     }
   }
 
@@ -106,33 +93,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthRegisterRequested event,
     Emitter<AuthState> emit,
   ) async {
-    if (_credentialsRequestInFlight) return;
-    _credentialsRequestInFlight = true;
-    try {
-      if (state is AuthSubmitting) {
-        return;
-      }
-      emit(const AuthState.submitting());
-
-      final result = await _register((
-        username: event.username,
-        password: event.password,
-      ));
-      switch (result) {
-        case Ok(value: final user):
-          _analytics.setCurrentUser(user.id).uw();
-          _analytics.logSignUp(signUpMethod: 'password').uw();
-          emit(AuthState.authenticated(user));
-        case Err(:final failure):
-          _analytics
-              .trackLoginFailed(errorType: failure.runtimeType.toString())
-              .uw();
-          emit(AuthState.failure(failure));
-      }
-    } catch (_) {
-      rethrow;
-    } finally {
-      _credentialsRequestInFlight = false;
+    emit(const AuthState.submitting());
+    final result = await _register((
+      username: event.username,
+      password: event.password,
+    ));
+    switch (result) {
+      case Ok(value: final user):
+        _analytics.setCurrentUser(user.id).uw();
+        _analytics.logSignUp(signUpMethod: 'password').uw();
+        emit(AuthState.authenticated(user));
+      case Err(:final failure):
+        _analytics
+            .trackLoginFailed(errorType: failure.runtimeType.toString())
+            .uw();
+        emit(AuthState.failure(failure));
     }
   }
 
@@ -140,23 +115,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     AuthSignOutRequested event,
     Emitter<AuthState> emit,
   ) async {
-    if (_signOutInFlight) return;
-    _signOutInFlight = true;
-    try {
-      final result = await _signOut();
-      switch (result) {
-        case Ok<void>():
-          _analytics.trackSignOut().uw();
-          _analytics.setCurrentUser(null).uw();
-          emit(const AuthState.initial());
-        case Err():
-          _analytics.setCurrentUser(null).uw();
-          emit(const AuthState.initial());
-      }
-    } catch (_) {
-      rethrow;
-    } finally {
-      _signOutInFlight = false;
+    final current = state;
+    if (current is AuthAuthenticated) {
+      emit(AuthState.signingOut(current.user));
     }
+    final result = await _signOut();
+    _analytics.setCurrentUser(null).uw();
+    if (result case Ok<void>()) {
+      _analytics.trackSignOut().uw();
+    }
+    // Sign-out is best-effort: drop session locally regardless of result so the
+    // user isn't stuck if the server call failed.
+    emit(const AuthState.initial());
   }
 }

@@ -120,11 +120,14 @@ class AuthRepositoryImpl implements AuthRepository {
     final user = _local.currentUser;
     final refreshToken = _local.refreshToken;
     if (user == null || refreshToken == null) {
-      return const Err(UnknownFailure('No persisted session.'));
+      return const Err(NoSessionFailure());
     }
     final refreshed = await _refresher.refresh();
     if (!refreshed) {
-      return const Err(UnknownFailure('Session expired.'));
+      // Tokens existed but the refresh cycle failed — drop the dead session so
+      // the next cold start doesn't loop through the same failed refresh.
+      await _local.clearSession();
+      return const Err(NoSessionFailure('Session expired.'));
     }
     return Ok(user);
   }

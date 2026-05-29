@@ -21,29 +21,25 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     HomeLoadRequested event,
     Emitter<HomeState> emit,
   ) async {
-    try {
-      emit(
-        state.copyWith(
-          isLoading: true,
-          username: event.username,
-          failure: null,
-        ),
-      );
-      final result = await _listBookmarks();
-      switch (result) {
-        case Ok(value: final items):
-          emit(_recomputedState(items, username: event.username));
-        case Err(:final failure):
-          emit(
-            state.copyWith(
-              isLoading: false,
-              username: event.username,
-              failure: failure,
-            ),
-          );
-      }
-    } catch (_) {
-      rethrow;
+    emit(
+      state.copyWith(
+        isLoading: true,
+        username: event.username,
+        failure: null,
+      ),
+    );
+    final result = await _listBookmarks();
+    switch (result) {
+      case Ok(value: final items):
+        emit(_recomputedState(items, username: event.username));
+      case Err(:final failure):
+        emit(
+          state.copyWith(
+            isLoading: false,
+            username: event.username,
+            failure: failure,
+          ),
+        );
     }
   }
 

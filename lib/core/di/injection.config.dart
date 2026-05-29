@@ -138,6 +138,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => sharedPreferencesModule.provideSharedPreferences(),
       preResolve: true,
     );
+    gh.factory<_i1013.ProfileBloc>(() => _i1013.ProfileBloc());
     gh.singleton<_i689.EnvConfig>(() => const _i689.EnvConfig());
     gh.singleton<_i999.FirebaseService>(() => _i999.FirebaseService());
     await gh.singletonAsync<_i319.ObjectBox>(
@@ -263,10 +264,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i627.BookmarksSyncController>(),
         gh<_i706.Uuid>(),
       ),
-    );
-    gh.factory<_i1013.ProfileBloc>(
-      () =>
-          _i1013.ProfileBloc(gh<_i926.SignOut>(), gh<_i838.AnalyticsService>()),
     );
     gh.factory<_i11.ChangePasswordCubit>(
       () => _i11.ChangePasswordCubit(gh<_i780.ChangePassword>()),

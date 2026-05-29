@@ -226,12 +226,33 @@ void main() {
       );
 
       blocTest<BookmarkFormBloc, BookmarkFormState>(
-        'does nothing when already submitting',
+        'drops duplicate submit while one is in flight',
+        setUp: () {
+          when(() => mockCreate.call(any())).thenAnswer(
+            (_) => Future.delayed(
+              const Duration(milliseconds: 50),
+              () => Ok(testBookmark),
+            ),
+          );
+        },
         build: buildBloc,
-        seed: () =>
-            const BookmarkFormState(status: BookmarkFormStatus.submitting),
-        act: (bloc) => bloc.add(const BookmarkFormSubmitted()),
-        expect: () => <BookmarkFormState>[],
+        act: (bloc) {
+          bloc
+            ..add(const BookmarkFormSubmitted())
+            ..add(const BookmarkFormSubmitted());
+        },
+        wait: const Duration(milliseconds: 100),
+        expect: () => [
+          predicate<BookmarkFormState>(
+            (s) => s.status == BookmarkFormStatus.submitting,
+          ),
+          predicate<BookmarkFormState>(
+            (s) => s.status == BookmarkFormStatus.submitted,
+          ),
+        ],
+        verify: (_) {
+          verify(() => mockCreate.call(any())).called(1);
+        },
       );
     });
 
@@ -301,7 +322,7 @@ void main() {
       );
 
       blocTest<BookmarkFormBloc, BookmarkFormState>(
-        'emits failure when image picker throws',
+        'emits MediaPickFailure when image picker throws',
         setUp: () {
           when(
             () => mockPermission.hasGalleryPermission(),
@@ -314,7 +335,7 @@ void main() {
         act: (bloc) => bloc.add(const BookmarkFormImagesPicked()),
         expect: () => [
           predicate<BookmarkFormState>(
-            (s) => s.failure is UnknownFailure,
+            (s) => s.failure is MediaPickFailure,
           ),
         ],
         errors: () => [isA<Exception>()],

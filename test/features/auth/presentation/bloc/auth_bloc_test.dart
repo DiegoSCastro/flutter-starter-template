@@ -1,4 +1,5 @@
 import 'package:bloc_test/bloc_test.dart';
+import 'package:flutter_starter_template/core/error/failure.dart';
 import 'package:flutter_starter_template/core/utils/result.dart';
 import 'package:flutter_starter_template/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:flutter_starter_template/features/auth/presentation/bloc/auth_state.dart';
@@ -60,7 +61,25 @@ void main() {
       );
 
       blocTest<AuthBloc, AuthState>(
-        'emits initial when restore fails',
+        'emits initial when no persisted session',
+        build: () {
+          when(
+            () => mockRestoreSession(),
+          ).thenAnswer((_) async => const Err(NoSessionFailure()));
+          return bloc;
+        },
+        act: (bloc) => bloc.add(const AuthSessionRestoreRequested()),
+        expect: () => [
+          const AuthState.restoring(),
+          const AuthState.initial(),
+        ],
+        verify: (_) {
+          verify(() => mockAnalytics.setCurrentUser(null)).called(1);
+        },
+      );
+
+      blocTest<AuthBloc, AuthState>(
+        'emits failure when restore returns a real error',
         build: () {
           when(
             () => mockRestoreSession(),
@@ -70,7 +89,7 @@ void main() {
         act: (bloc) => bloc.add(const AuthSessionRestoreRequested()),
         expect: () => [
           const AuthState.restoring(),
-          const AuthState.initial(),
+          const AuthState.failure(testFailure),
         ],
         verify: (_) {
           verify(() => mockAnalytics.setCurrentUser(null)).called(1);
@@ -137,31 +156,53 @@ void main() {
       );
 
       blocTest<AuthBloc, AuthState>(
-        'does nothing when already submitting',
+        'drops duplicate sign-in while one is in flight',
         build: () {
           when(
             () => mockSignIn((username: 'alice', password: 'pass')),
-          ).thenAnswer((_) async => const Ok(testUser));
+          ).thenAnswer(
+            (_) => Future.delayed(
+              const Duration(milliseconds: 50),
+              () => const Ok(testUser),
+            ),
+          );
           return bloc;
         },
-        seed: () => const AuthState.submitting(),
-        act: (bloc) => bloc.add(
-          const AuthSignInRequested(username: 'alice', password: 'pass'),
-        ),
-        expect: () => <AuthState>[],
+        act: (bloc) {
+          bloc
+            ..add(
+              const AuthSignInRequested(username: 'alice', password: 'pass'),
+            )
+            ..add(
+              const AuthSignInRequested(username: 'alice', password: 'pass'),
+            );
+        },
+        wait: const Duration(milliseconds: 100),
+        expect: () => [
+          const AuthState.submitting(),
+          const AuthState.authenticated(testUser),
+        ],
+        verify: (_) {
+          verify(
+            () => mockSignIn((username: 'alice', password: 'pass')),
+          ).called(1);
+        },
       );
     });
 
     group('signOut', () {
       blocTest<AuthBloc, AuthState>(
-        'emits initial on successful sign out',
+        'transitions through signingOut to initial on success',
         build: () {
           when(() => mockSignOut()).thenAnswer((_) async => const Ok(null));
           return bloc;
         },
         seed: () => const AuthState.authenticated(testUser),
         act: (bloc) => bloc.add(const AuthSignOutRequested()),
-        expect: () => [const AuthState.initial()],
+        expect: () => [
+          const AuthState.signingOut(testUser),
+          const AuthState.initial(),
+        ],
         verify: (_) {
           verify(() => mockAnalytics.logEvent('sign_out')).called(1);
           verify(() => mockAnalytics.setCurrentUser(null)).called(1);
@@ -169,7 +210,7 @@ void main() {
       );
 
       blocTest<AuthBloc, AuthState>(
-        'clears auth state when sign out returns Err',
+        'still lands on initial when sign-out returns Err',
         build: () {
           when(
             () => mockSignOut(),
@@ -178,7 +219,10 @@ void main() {
         },
         seed: () => const AuthState.authenticated(testUser),
         act: (bloc) => bloc.add(const AuthSignOutRequested()),
-        expect: () => [const AuthState.initial()],
+        expect: () => [
+          const AuthState.signingOut(testUser),
+          const AuthState.initial(),
+        ],
       );
     });
   });

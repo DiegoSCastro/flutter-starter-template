@@ -35,24 +35,20 @@ class BookmarkDetailBloc
     BookmarkDetailLoadRequested event,
     Emitter<BookmarkDetailState> emit,
   ) async {
-    try {
-      emit(const BookmarkDetailState.loading());
-      final result = await _get(event.id);
-      switch (result) {
-        case Ok(value: final bookmark):
-          _analytics
-              .trackBookmarkViewed(
-                bookmarkId: bookmark.id,
-                tagCount: bookmark.tags.length,
-                hasDescription: bookmark.description.isNotEmpty,
-              )
-              .uw();
-          emit(BookmarkDetailState.ready(bookmark));
-        case Err(:final failure):
-          emit(BookmarkDetailState.failure(failure));
-      }
-    } catch (_) {
-      rethrow;
+    emit(const BookmarkDetailState.loading());
+    final result = await _get(event.id);
+    switch (result) {
+      case Ok(value: final bookmark):
+        _analytics
+            .trackBookmarkViewed(
+              bookmarkId: bookmark.id,
+              tagCount: bookmark.tags.length,
+              hasDescription: bookmark.description.isNotEmpty,
+            )
+            .uw();
+        emit(BookmarkDetailState.ready(bookmark));
+      case Err(:final failure):
+        emit(BookmarkDetailState.failure(failure));
     }
   }
 
@@ -60,33 +56,29 @@ class BookmarkDetailBloc
     BookmarkDetailDeleteRequested event,
     Emitter<BookmarkDetailState> emit,
   ) async {
-    try {
-      final previous = state;
-      if (previous is BookmarkDetailReady) {
-        emit(BookmarkDetailState.deleting(previous.bookmark));
-      }
-      final result = await _delete(event.id);
-      switch (result) {
-        case Ok<void>():
-          _analytics
-              .trackBookmarkDeleted(
-                bookmarkId: event.id,
-                source: AnalyticsSources.detail,
-              )
-              .uw();
-          emit(const BookmarkDetailState.deleted());
-        case Err(:final failure):
-          _analytics
-              .trackBookmarkDeleteFailed(
-                bookmarkId: event.id,
-                source: AnalyticsSources.detail,
-                errorType: failure.runtimeType.toString(),
-              )
-              .uw();
-          emit(BookmarkDetailState.failure(failure));
-      }
-    } catch (_) {
-      rethrow;
+    final previous = state;
+    if (previous is BookmarkDetailReady) {
+      emit(BookmarkDetailState.deleting(previous.bookmark));
+    }
+    final result = await _delete(event.id);
+    switch (result) {
+      case Ok<void>():
+        _analytics
+            .trackBookmarkDeleted(
+              bookmarkId: event.id,
+              source: AnalyticsSources.detail,
+            )
+            .uw();
+        emit(const BookmarkDetailState.deleted());
+      case Err(:final failure):
+        _analytics
+            .trackBookmarkDeleteFailed(
+              bookmarkId: event.id,
+              source: AnalyticsSources.detail,
+              errorType: failure.runtimeType.toString(),
+            )
+            .uw();
+        emit(BookmarkDetailState.failure(failure));
     }
   }
 }

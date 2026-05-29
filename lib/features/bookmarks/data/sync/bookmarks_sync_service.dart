@@ -40,17 +40,23 @@ class BookmarksSyncService implements BookmarksSyncController {
   final BookmarksRemoteDataSource _remote;
   final Connectivity _connectivity;
 
+  /// Bound on concurrent media uploads per row. Picked so the server isn't
+  /// swamped by a row with many attachments, while still finishing notably
+  /// faster than a serial drain.
+  static const int _maxUploadConcurrency = 3;
+
   final _status = StreamController<BookmarksSyncStatus>.broadcast();
   StreamSubscription<List<ConnectivityResult>>? _connectivitySub;
   Future<void>? _inflight;
   bool _wasOnline = true;
+  BookmarksSyncStatus _statusNow = BookmarksSyncStatus.idle;
 
   /// UI subscribes to drive the AppBar indicator. The latest value is also
   /// available via [statusNow].
   @override
   Stream<BookmarksSyncStatus> get statusStream => _status.stream;
   @override
-  BookmarksSyncStatus statusNow = BookmarksSyncStatus.idle;
+  BookmarksSyncStatus get statusNow => _statusNow;
 
   /// Begin reacting to connectivity changes and run an initial sync. Idempotent.
   @override
@@ -104,7 +110,7 @@ class BookmarksSyncService implements BookmarksSyncController {
   }
 
   void _emit(BookmarksSyncStatus s) {
-    statusNow = s;
+    _statusNow = s;
     _status.add(s);
   }
 
@@ -222,29 +228,32 @@ class BookmarksSyncService implements BookmarksSyncController {
   }
 
   Future<List<String>> _uploadMediaFiles(List<String> paths) async {
-    final remoteUrls = <String>[];
-    for (final path in paths) {
-      if (path.startsWith('http://') || path.startsWith('https://')) {
-        remoteUrls.add(path);
-      } else {
-        final file = await MultipartFile.fromFile(path);
-        final res = await _remote.upload(file);
-        final url = res['url'];
-        if (url != null) {
-          remoteUrls.add(url);
-        }
-      }
+    // Uploads run in bounded-parallel chunks to finish a multi-attachment
+    // row faster without flooding the server. Order is preserved.
+    final results = List<String?>.filled(paths.length, null);
+    for (var start = 0; start < paths.length; start += _maxUploadConcurrency) {
+      final end = (start + _maxUploadConcurrency).clamp(0, paths.length);
+      await Future.wait(<Future<void>>[
+        for (var i = start; i < end; i++)
+          _uploadSingleMedia(paths[i]).then((url) => results[i] = url),
+      ]);
     }
-    return remoteUrls;
+    return [
+      for (final url in results) ?url,
+    ];
   }
 
-  Future<String?> _uploadVideoFile(String? path) async {
-    if (path == null) return null;
+  Future<String?> _uploadSingleMedia(String path) async {
     if (path.startsWith('http://') || path.startsWith('https://')) {
       return path;
     }
     final file = await MultipartFile.fromFile(path);
     final res = await _remote.upload(file);
     return res['url'];
+  }
+
+  Future<String?> _uploadVideoFile(String? path) async {
+    if (path == null) return null;
+    return _uploadSingleMedia(path);
   }
 }

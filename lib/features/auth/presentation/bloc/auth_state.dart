@@ -12,5 +12,6 @@ sealed class AuthState with _$AuthState {
   const factory AuthState.restoring() = AuthRestoring;
   const factory AuthState.submitting() = AuthSubmitting;
   const factory AuthState.authenticated(AuthUser user) = AuthAuthenticated;
+  const factory AuthState.signingOut(AuthUser user) = AuthSigningOut;
   const factory AuthState.failure(Failure failure) = AuthFailure;
 }

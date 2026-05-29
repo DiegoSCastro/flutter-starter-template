@@ -190,8 +190,10 @@ class DeepLinkScope extends InheritedWidget {
         return loginLocation;
       }
 
-      // ── Phase 3: Authenticated ──
-      if (auth is AuthAuthenticated) {
+      // ── Phase 3: Authenticated (incl. mid-sign-out) ──
+      // AuthSigningOut still holds a user; let the screen stay put until the
+      // op completes and AuthBloc emits AuthInitial.
+      if (auth is AuthAuthenticated || auth is AuthSigningOut) {
         final target = deepLink.pendingRedirect;
         if (target != null) {
           deepLink.pendingRedirect = null;

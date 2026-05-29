@@ -12,6 +12,12 @@ class UnknownFailure extends Failure {
   const UnknownFailure([super.message = 'Unknown error']);
 }
 
+/// Expected absence of a persisted session — not an error.
+/// Use to distinguish "user never signed in" from real restore failures.
+class NoSessionFailure extends Failure {
+  const NoSessionFailure([super.message = 'No persisted session']);
+}
+
 class InvalidCredentialsFailure extends Failure {
   const InvalidCredentialsFailure([super.message = 'Invalid credentials']);
 }
@@ -30,4 +36,8 @@ class PermissionFailure extends Failure {
 
 class CameraPermissionFailure extends PermissionFailure {
   const CameraPermissionFailure([super.message = 'Camera permission denied']);
+}
+
+class MediaPickFailure extends Failure {
+  const MediaPickFailure([super.message = 'Failed to pick media']);
 }

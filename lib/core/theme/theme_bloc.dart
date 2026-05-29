@@ -45,34 +45,22 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
     ThemeModeChanged event,
     Emitter<ThemeState> emit,
   ) async {
-    try {
-      if (event.mode == state.mode) {
-        return;
-      }
-      final next = state.copyWith(mode: event.mode);
-      emit(next);
-      await _persist(next);
-      _analytics.trackThemeModeChanged(event.mode.name).uw();
-    } catch (_) {
-      rethrow;
-    }
+    if (event.mode == state.mode) return;
+    final next = state.copyWith(mode: event.mode);
+    emit(next);
+    await _persist(next);
+    _analytics.trackThemeModeChanged(event.mode.name).uw();
   }
 
   Future<void> _onSchemeChanged(
     ThemeSchemeChanged event,
     Emitter<ThemeState> emit,
   ) async {
-    try {
-      if (event.scheme == state.scheme) {
-        return;
-      }
-      final next = state.copyWith(scheme: event.scheme);
-      emit(next);
-      await _persist(next);
-      _analytics.trackThemeSchemeChanged(event.scheme.name).uw();
-    } catch (_) {
-      rethrow;
-    }
+    if (event.scheme == state.scheme) return;
+    final next = state.copyWith(scheme: event.scheme);
+    emit(next);
+    await _persist(next);
+    _analytics.trackThemeSchemeChanged(event.scheme.name).uw();
   }
 
   Future<void> _persist(ThemeState next) async {

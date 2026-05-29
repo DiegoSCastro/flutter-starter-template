@@ -28,27 +28,29 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
     this._imagePickerService,
     this._permissionService,
   ) : super(const BookmarkFormState()) {
-    on<BookmarkFormInitialized>(_onInitialized, transformer: sequential());
-    on<BookmarkFormTitleChanged>(_onTitleChanged, transformer: sequential());
-    on<BookmarkFormUrlChanged>(_onUrlChanged, transformer: sequential());
-    on<BookmarkFormDescriptionChanged>(
-      _onDescriptionChanged,
-      transformer: sequential(),
-    );
-    on<BookmarkFormTagsChanged>(_onTagsChanged, transformer: sequential());
+    // Load: only one initial load matters; drop concurrent re-inits.
+    on<BookmarkFormInitialized>(_onInitialized, transformer: droppable());
+    // Field updates are synchronous and ordering-sensitive — default
+    // transformer (concurrent in registration order) is correct.
+    on<BookmarkFormTitleChanged>(_onTitleChanged);
+    on<BookmarkFormUrlChanged>(_onUrlChanged);
+    on<BookmarkFormDescriptionChanged>(_onDescriptionChanged);
+    on<BookmarkFormTagsChanged>(_onTagsChanged);
+    on<BookmarkFormImageRemoved>(_onImageRemoved);
+    on<BookmarkFormVideoRemoved>(_onVideoRemoved);
+    // Media picks: serialize so two pickers don't open simultaneously.
     on<BookmarkFormImagesPicked>(_onImagesPicked, transformer: sequential());
     on<BookmarkFormCameraImageTaken>(
       _onCameraImageTaken,
       transformer: sequential(),
     );
-    on<BookmarkFormImageRemoved>(_onImageRemoved, transformer: sequential());
     on<BookmarkFormVideoPicked>(_onVideoPicked, transformer: sequential());
     on<BookmarkFormCameraVideoTaken>(
       _onCameraVideoTaken,
       transformer: sequential(),
     );
-    on<BookmarkFormVideoRemoved>(_onVideoRemoved, transformer: sequential());
-    on<BookmarkFormSubmitted>(_onSubmitted, transformer: sequential());
+    // Submit: drop double-taps while in flight.
+    on<BookmarkFormSubmitted>(_onSubmitted, transformer: droppable());
   }
 
   final GetBookmark _get;
@@ -57,44 +59,39 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
   final AnalyticsService _analytics;
   final ImagePickerService _imagePickerService;
   final PermissionService _permissionService;
-  bool _submitInFlight = false;
 
   Future<void> _onInitialized(
     BookmarkFormInitialized event,
     Emitter<BookmarkFormState> emit,
   ) async {
-    try {
-      final id = event.id;
-      if (id == null) {
-        emit(const BookmarkFormState());
-        return;
-      }
-      emit(state.copyWith(id: id, status: BookmarkFormStatus.loading));
-      final result = await _get(id);
-      switch (result) {
-        case Ok(value: final b):
-          emit(
-            BookmarkFormState(
-              id: b.id,
-              status: BookmarkFormStatus.idle,
-              title: b.title,
-              url: b.url,
-              description: b.description,
-              tags: List.of(b.tags),
-              imageUrls: List.of(b.imageUrls),
-              videoUrl: b.videoUrl,
-            ),
-          );
-        case Err(:final failure):
-          emit(
-            state.copyWith(
-              status: BookmarkFormStatus.loadFailed,
-              failure: failure,
-            ),
-          );
-      }
-    } on Object {
-      rethrow;
+    final id = event.id;
+    if (id == null) {
+      emit(const BookmarkFormState());
+      return;
+    }
+    emit(state.copyWith(id: id, status: BookmarkFormStatus.loading));
+    final result = await _get(id);
+    switch (result) {
+      case Ok(value: final b):
+        emit(
+          BookmarkFormState(
+            id: b.id,
+            status: BookmarkFormStatus.idle,
+            title: b.title,
+            url: b.url,
+            description: b.description,
+            tags: List.of(b.tags),
+            imageUrls: List.of(b.imageUrls),
+            videoUrl: b.videoUrl,
+          ),
+        );
+      case Err(:final failure):
+        emit(
+          state.copyWith(
+            status: BookmarkFormStatus.loadFailed,
+            failure: failure,
+          ),
+        );
     }
   }
 
@@ -135,22 +132,8 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
     BookmarkFormImagesPicked event,
     Emitter<BookmarkFormState> emit,
   ) async {
+    if (!await _ensureGalleryPermission(emit)) return;
     try {
-      final hasPermission = await _permissionService.hasGalleryPermission();
-      if (!hasPermission) {
-        final requestResult = await _permissionService
-            .requestGalleryPermission();
-        if (!requestResult) {
-          emit(
-            state.copyWith(
-              status: BookmarkFormStatus.idle,
-              failure: const PermissionFailure(),
-            ),
-          );
-          return;
-        }
-      }
-
       final images = await _imagePickerService.pickMultiImage();
       if (images.isNotEmpty) {
         final newPaths = images.map((e) => e.path).toList();
@@ -158,7 +141,7 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
       }
     } on Object catch (error, stackTrace) {
       addError(error, stackTrace);
-      _emitMediaFailure(emit, error);
+      _emitMediaFailure(emit);
     }
   }
 
@@ -166,22 +149,8 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
     BookmarkFormCameraImageTaken event,
     Emitter<BookmarkFormState> emit,
   ) async {
+    if (!await _ensureCameraPermission(emit)) return;
     try {
-      final hasPermission = await _permissionService.hasCameraPermission();
-      if (!hasPermission) {
-        final requestResult = await _permissionService
-            .requestCameraPermission();
-        if (!requestResult) {
-          emit(
-            state.copyWith(
-              status: BookmarkFormStatus.idle,
-              failure: const CameraPermissionFailure(),
-            ),
-          );
-          return;
-        }
-      }
-
       final image = await _imagePickerService.pickImage(
         source: ImageSource.camera,
       );
@@ -190,7 +159,7 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
       }
     } on Object catch (error, stackTrace) {
       addError(error, stackTrace);
-      _emitMediaFailure(emit, error);
+      _emitMediaFailure(emit);
     }
   }
 
@@ -206,22 +175,8 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
     BookmarkFormVideoPicked event,
     Emitter<BookmarkFormState> emit,
   ) async {
+    if (!await _ensureGalleryPermission(emit)) return;
     try {
-      final hasPermission = await _permissionService.hasGalleryPermission();
-      if (!hasPermission) {
-        final requestResult = await _permissionService
-            .requestGalleryPermission();
-        if (!requestResult) {
-          emit(
-            state.copyWith(
-              status: BookmarkFormStatus.idle,
-              failure: const PermissionFailure(),
-            ),
-          );
-          return;
-        }
-      }
-
       final video = await _imagePickerService.pickVideo(
         source: ImageSource.gallery,
       );
@@ -230,7 +185,7 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
       }
     } on Object catch (error, stackTrace) {
       addError(error, stackTrace);
-      _emitMediaFailure(emit, error);
+      _emitMediaFailure(emit);
     }
   }
 
@@ -238,22 +193,8 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
     BookmarkFormCameraVideoTaken event,
     Emitter<BookmarkFormState> emit,
   ) async {
+    if (!await _ensureCameraPermission(emit)) return;
     try {
-      final hasPermission = await _permissionService.hasCameraPermission();
-      if (!hasPermission) {
-        final requestResult = await _permissionService
-            .requestCameraPermission();
-        if (!requestResult) {
-          emit(
-            state.copyWith(
-              status: BookmarkFormStatus.idle,
-              failure: const CameraPermissionFailure(),
-            ),
-          );
-          return;
-        }
-      }
-
       final video = await _imagePickerService.pickVideo(
         source: ImageSource.camera,
       );
@@ -262,7 +203,7 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
       }
     } on Object catch (error, stackTrace) {
       addError(error, stackTrace);
-      _emitMediaFailure(emit, error);
+      _emitMediaFailure(emit);
     }
   }
 
@@ -277,57 +218,68 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
     BookmarkFormSubmitted event,
     Emitter<BookmarkFormState> emit,
   ) async {
-    if (_submitInFlight) return;
-    _submitInFlight = true;
-    try {
-      if (state.status == BookmarkFormStatus.submitting) {
-        return;
-      }
-      emit(
-        state.copyWith(status: BookmarkFormStatus.submitting, failure: null),
-      );
+    emit(state.copyWith(status: BookmarkFormStatus.submitting, failure: null));
 
-      final input = BookmarkInput(
-        title: state.title.trim(),
-        url: state.url.trim(),
-        description: state.description.trim(),
-        tags: state.tags,
-        imageUrls: state.imageUrls,
-        videoUrl: state.videoUrl,
-      );
-      final isEditing = state.id != null;
-      final result = !isEditing
-          ? await _create(input)
-          : await _update((id: state.id!, input: input));
+    final input = BookmarkInput(
+      title: state.title.trim(),
+      url: state.url.trim(),
+      description: state.description.trim(),
+      tags: state.tags,
+      imageUrls: state.imageUrls,
+      videoUrl: state.videoUrl,
+    );
+    final isEditing = state.id != null;
+    final result = !isEditing
+        ? await _create(input)
+        : await _update((id: state.id!, input: input));
 
-      switch (result) {
-        case Ok(value: final bookmark):
-          final trackChange = isEditing
-              ? _analytics.trackBookmarkUpdated
-              : _analytics.trackBookmarkCreated;
-          trackChange(
-            bookmarkId: bookmark.id,
-            tagCount: bookmark.tags.length,
-            hasDescription: bookmark.description.isNotEmpty,
-          ).uw();
-          emit(state.copyWith(status: BookmarkFormStatus.submitted));
-        case Err(:final failure):
-          emit(
-            state.copyWith(status: BookmarkFormStatus.idle, failure: failure),
-          );
-      }
-    } catch (_) {
-      rethrow;
-    } finally {
-      _submitInFlight = false;
+    switch (result) {
+      case Ok(value: final bookmark):
+        final trackChange = isEditing
+            ? _analytics.trackBookmarkUpdated
+            : _analytics.trackBookmarkCreated;
+        trackChange(
+          bookmarkId: bookmark.id,
+          tagCount: bookmark.tags.length,
+          hasDescription: bookmark.description.isNotEmpty,
+        ).uw();
+        emit(state.copyWith(status: BookmarkFormStatus.submitted));
+      case Err(:final failure):
+        emit(
+          state.copyWith(status: BookmarkFormStatus.idle, failure: failure),
+        );
     }
   }
 
-  void _emitMediaFailure(Emitter<BookmarkFormState> emit, Object error) {
+  Future<bool> _ensureGalleryPermission(Emitter<BookmarkFormState> emit) async {
+    if (await _permissionService.hasGalleryPermission()) return true;
+    if (await _permissionService.requestGalleryPermission()) return true;
     emit(
       state.copyWith(
         status: BookmarkFormStatus.idle,
-        failure: UnknownFailure(error.toString()),
+        failure: const PermissionFailure(),
+      ),
+    );
+    return false;
+  }
+
+  Future<bool> _ensureCameraPermission(Emitter<BookmarkFormState> emit) async {
+    if (await _permissionService.hasCameraPermission()) return true;
+    if (await _permissionService.requestCameraPermission()) return true;
+    emit(
+      state.copyWith(
+        status: BookmarkFormStatus.idle,
+        failure: const CameraPermissionFailure(),
+      ),
+    );
+    return false;
+  }
+
+  void _emitMediaFailure(Emitter<BookmarkFormState> emit) {
+    emit(
+      state.copyWith(
+        status: BookmarkFormStatus.idle,
+        failure: const MediaPickFailure(),
       ),
     );
   }

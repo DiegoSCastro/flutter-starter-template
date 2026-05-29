@@ -5,11 +5,5 @@ sealed class ProfileEvent {
 }
 
 final class ProfileLoaded extends ProfileEvent {
-  const ProfileLoaded(this.user);
-
-  final AuthUser? user;
-}
-
-final class ProfileSignOutRequested extends ProfileEvent {
-  const ProfileSignOutRequested();
+  const ProfileLoaded();
 }
