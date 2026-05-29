@@ -2,6 +2,7 @@ import 'package:flutter_starter_template/core/analytics/analytics_service.dart';
 import 'package:flutter_starter_template/core/media/image_picker_service.dart';
 import 'package:flutter_starter_template/core/permissions/permission_service.dart';
 import 'package:flutter_starter_template/features/auth/domain/repositories/auth_repository.dart';
+import 'package:flutter_starter_template/features/auth/domain/usecases/delete_account.dart';
 import 'package:flutter_starter_template/features/auth/domain/usecases/register.dart';
 import 'package:flutter_starter_template/features/auth/domain/usecases/restore_session.dart';
 import 'package:flutter_starter_template/features/auth/domain/usecases/sign_in.dart';
@@ -21,6 +22,8 @@ class MockSignIn extends Mock implements SignIn {}
 class MockRegister extends Mock implements Register {}
 
 class MockSignOut extends Mock implements SignOut {}
+
+class MockDeleteAccount extends Mock implements DeleteAccount {}
 
 class MockRestoreSession extends Mock implements RestoreSession {}
 

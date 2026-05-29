@@ -12,6 +12,9 @@ extension AuthAnalytics on AnalyticsService {
   }
 
   Future<void> trackSignOut() => logEvent(AnalyticsEvents.signOut);
+
+  Future<void> trackAccountDeleted() =>
+      logEvent(AnalyticsEvents.accountDeleted);
 }
 
 extension ThemeAnalytics on AnalyticsService {

@@ -100,6 +100,19 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<Result<void>> deleteAccount() async {
+    try {
+      await _remote.deleteAccount();
+      // Only drop the local session once the server confirms deletion, so a
+      // failed request leaves the user signed in to retry.
+      await _local.clearSession();
+      return const Ok(null);
+    } on DioException catch (e) {
+      return Err(_mapDioError(e));
+    }
+  }
+
+  @override
   Future<Result<AuthUser>> restoreSession() async {
     await _local.load();
     final user = _local.currentUser;

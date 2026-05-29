@@ -44,6 +44,20 @@
   "profileSectionAppearance": "Giao diện",
   "profileSectionAccount": "Tài khoản",
   "profileChangePassword": "Đổi mật khẩu",
+  "profileDeleteAccount": "Xóa tài khoản",
+  "profileDeleteAccountDialogTitle": "Xóa tài khoản?",
+  "profileDeleteAccountDialogMessage": "Thao tác này sẽ xóa vĩnh viễn tài khoản và toàn bộ dữ liệu của bạn. Không thể hoàn tác.",
+  "profileDeleteAccountConfirmLabel": "Nhập \"{username}\" để xác nhận",
+  "@profileDeleteAccountConfirmLabel": {
+    "placeholders": {
+      "username": {
+        "type": "String",
+        "example": "alice"
+      }
+    }
+  },
+  "profileDeleteAccountSuccess": "Tài khoản của bạn đã được xóa.",
+  "profileDeleteAccountError": "Không thể xóa tài khoản. Vui lòng thử lại.",
   "changePasswordAppBarTitle": "Đổi mật khẩu",
   "changePasswordCurrentLabel": "Mật khẩu hiện tại",
   "changePasswordNewLabel": "Mật khẩu mới",

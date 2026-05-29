@@ -60,6 +60,8 @@ import 'package:flutter_starter_template/features/auth/domain/repositories/auth_
     as _i987;
 import 'package:flutter_starter_template/features/auth/domain/usecases/change_password.dart'
     as _i780;
+import 'package:flutter_starter_template/features/auth/domain/usecases/delete_account.dart'
+    as _i625;
 import 'package:flutter_starter_template/features/auth/domain/usecases/register.dart'
     as _i699;
 import 'package:flutter_starter_template/features/auth/domain/usecases/restore_session.dart'
@@ -72,6 +74,8 @@ import 'package:flutter_starter_template/features/auth/presentation/bloc/auth_bl
     as _i269;
 import 'package:flutter_starter_template/features/auth/presentation/bloc/change_password_cubit.dart'
     as _i11;
+import 'package:flutter_starter_template/features/auth/presentation/bloc/delete_account_cubit.dart'
+    as _i329;
 import 'package:flutter_starter_template/features/bookmarks/data/datasources/bookmarks_remote_data_source.dart'
     as _i729;
 import 'package:flutter_starter_template/features/bookmarks/data/datasources/bookmarks_remote_module.dart'
@@ -250,6 +254,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i780.ChangePassword>(
       () => _i780.ChangePassword(gh<_i987.AuthRepository>()),
     );
+    gh.factory<_i625.DeleteAccount>(
+      () => _i625.DeleteAccount(gh<_i987.AuthRepository>()),
+    );
     gh.factory<_i699.Register>(
       () => _i699.Register(gh<_i987.AuthRepository>()),
     );
@@ -267,6 +274,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i11.ChangePasswordCubit>(
       () => _i11.ChangePasswordCubit(gh<_i780.ChangePassword>()),
+    );
+    gh.factory<_i329.DeleteAccountCubit>(
+      () => _i329.DeleteAccountCubit(
+        gh<_i625.DeleteAccount>(),
+        gh<_i838.AnalyticsService>(),
+      ),
     );
     gh.lazySingleton<_i269.AuthBloc>(
       () => _i269.AuthBloc(

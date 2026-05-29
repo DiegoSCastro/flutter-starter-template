@@ -1,6 +1,7 @@
 abstract final class AnalyticsEvents {
   static const loginFailed = 'login_failed';
   static const signOut = 'sign_out';
+  static const accountDeleted = 'account_deleted';
   static const themeModeChanged = 'theme_mode_changed';
   static const themeSchemeChanged = 'theme_scheme_changed';
   static const bookmarkViewed = 'bookmark_viewed';

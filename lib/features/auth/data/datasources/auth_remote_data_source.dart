@@ -25,4 +25,7 @@ abstract class AuthRemoteDataSource {
 
   @POST('/api/auth/sign-out')
   Future<void> signOut(@Body() RefreshTokenRequest body);
+
+  @DELETE('/api/auth/account')
+  Future<void> deleteAccount();
 }

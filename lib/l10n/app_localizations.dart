@@ -362,6 +362,42 @@ abstract class AppLocalizations {
   /// **'Change Password'**
   String get profileChangePassword;
 
+  /// No description provided for @profileDeleteAccount.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Account'**
+  String get profileDeleteAccount;
+
+  /// No description provided for @profileDeleteAccountDialogTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete account?'**
+  String get profileDeleteAccountDialogTitle;
+
+  /// No description provided for @profileDeleteAccountDialogMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This permanently removes your account and all of its data. This action cannot be undone.'**
+  String get profileDeleteAccountDialogMessage;
+
+  /// No description provided for @profileDeleteAccountConfirmLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Type \"{username}\" to confirm'**
+  String profileDeleteAccountConfirmLabel(String username);
+
+  /// No description provided for @profileDeleteAccountSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Your account has been deleted.'**
+  String get profileDeleteAccountSuccess;
+
+  /// No description provided for @profileDeleteAccountError.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t delete your account. Please try again.'**
+  String get profileDeleteAccountError;
+
   /// No description provided for @changePasswordAppBarTitle.
   ///
   /// In en, this message translates to:
