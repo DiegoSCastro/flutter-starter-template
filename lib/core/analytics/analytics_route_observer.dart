@@ -1,8 +1,7 @@
-import 'dart:async';
-
 import 'package:flutter/widgets.dart';
 import 'package:injectable/injectable.dart';
 
+import '../future_extensions.dart';
 import 'analytics_service.dart';
 
 @lazySingleton
@@ -33,6 +32,6 @@ class AnalyticsRouteObserver extends NavigatorObserver {
     if (route is! PageRoute) return;
     final screenName = route.settings.name;
     if (screenName == null || screenName.isEmpty) return;
-    unawaited(_analytics.logScreenView(screenName: screenName));
+    _analytics.logScreenView(screenName: screenName).uw();
   }
 }

@@ -1,11 +1,10 @@
-import 'dart:async';
-
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/analytics/analytics_extensions.dart';
 import '../../../../core/analytics/analytics_service.dart';
+import '../../../../core/future_extensions.dart';
 import '../../../../core/utils/result.dart';
 import '../../domain/usecases/register.dart';
 import '../../domain/usecases/restore_session.dart';
@@ -50,10 +49,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final result = await _restoreSession();
       switch (result) {
         case Ok(value: final user):
-          unawaited(_analytics.setCurrentUser(user.id));
+          _analytics.setCurrentUser(user.id).uw();
           emit(AuthState.authenticated(user));
         case Err():
-          unawaited(_analytics.setCurrentUser(null));
+          _analytics.setCurrentUser(null).uw();
           emit(const AuthState.initial());
       }
     } catch (_) {
@@ -79,15 +78,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       ));
       switch (result) {
         case Ok(value: final user):
-          unawaited(_analytics.setCurrentUser(user.id));
-          unawaited(_analytics.logLogin(method: 'password'));
+          _analytics.setCurrentUser(user.id).uw();
+          _analytics.logLogin(method: 'password').uw();
           emit(AuthState.authenticated(user));
         case Err(:final failure):
-          unawaited(
-            _analytics.trackLoginFailed(
-              errorType: failure.runtimeType.toString(),
-            ),
-          );
+          _analytics
+              .trackLoginFailed(errorType: failure.runtimeType.toString())
+              .uw();
           emit(AuthState.failure(failure));
       }
     } catch (_) {
@@ -115,15 +112,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       ));
       switch (result) {
         case Ok(value: final user):
-          unawaited(_analytics.setCurrentUser(user.id));
-          unawaited(_analytics.logSignUp(signUpMethod: 'password'));
+          _analytics.setCurrentUser(user.id).uw();
+          _analytics.logSignUp(signUpMethod: 'password').uw();
           emit(AuthState.authenticated(user));
         case Err(:final failure):
-          unawaited(
-            _analytics.trackLoginFailed(
-              errorType: failure.runtimeType.toString(),
-            ),
-          );
+          _analytics
+              .trackLoginFailed(errorType: failure.runtimeType.toString())
+              .uw();
           emit(AuthState.failure(failure));
       }
     } catch (_) {
@@ -143,11 +138,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       final result = await _signOut();
       switch (result) {
         case Ok<void>():
-          unawaited(_analytics.trackSignOut());
-          unawaited(_analytics.setCurrentUser(null));
+          _analytics.trackSignOut().uw();
+          _analytics.setCurrentUser(null).uw();
           emit(const AuthState.initial());
         case Err():
-          unawaited(_analytics.setCurrentUser(null));
+          _analytics.setCurrentUser(null).uw();
           emit(const AuthState.initial());
       }
     } catch (_) {

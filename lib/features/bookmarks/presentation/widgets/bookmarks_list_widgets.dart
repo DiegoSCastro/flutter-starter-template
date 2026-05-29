@@ -9,6 +9,7 @@ import '../../../../core/analytics/analytics_service.dart';
 import '../../../../core/animation/widget_animations.dart';
 import '../../../../core/build_context_extensions.dart';
 import '../../../../core/di/injection.dart';
+import '../../../../core/future_extensions.dart';
 import '../../../../core/share/share_service.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../domain/entities/bookmark.dart';
@@ -35,12 +36,12 @@ Future<void> _showItemMenu(BuildContext context, Bookmark bookmark) async {
     ),
   );
   if (result != 'share' || !context.mounted) return;
-  unawaited(
-    getIt<AnalyticsService>().trackBookmarkShared(
-      bookmarkId: bookmark.id,
-      source: AnalyticsSources.list,
-    ),
-  );
+  getIt<AnalyticsService>()
+      .trackBookmarkShared(
+        bookmarkId: bookmark.id,
+        source: AnalyticsSources.list,
+      )
+      .uw();
   final content = bookmark.description.isNotEmpty
       ? '${bookmark.title}\n${bookmark.url}\n\n${bookmark.description}'
       : '${bookmark.title}\n${bookmark.url}';

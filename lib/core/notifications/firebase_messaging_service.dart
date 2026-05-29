@@ -7,6 +7,7 @@ import 'package:injectable/injectable.dart';
 
 import '../analytics/analytics_extensions.dart';
 import '../analytics/analytics_service.dart';
+import '../future_extensions.dart';
 import 'notifications_service.dart';
 
 typedef OnNotificationTap = void Function(Map<String, dynamic>? data);
@@ -92,9 +93,7 @@ class FirebaseMessagingService {
   }
 
   void _handleNotificationTap(Map<String, dynamic>? data) {
-    unawaited(
-      _analytics.trackNotificationOpened(payloadKeyCount: data?.length ?? 0),
-    );
+    _analytics.trackNotificationOpened(payloadKeyCount: data?.length ?? 0).uw();
     final callback = onNotificationTap;
     if (callback != null) {
       callback(data);

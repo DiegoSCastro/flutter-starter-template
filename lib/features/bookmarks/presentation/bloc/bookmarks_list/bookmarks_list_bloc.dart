@@ -6,6 +6,7 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../../core/analytics/analytics_extensions.dart';
 import '../../../../../core/analytics/analytics_service.dart';
+import '../../../../../core/future_extensions.dart';
 import '../../../../../core/utils/result.dart';
 import '../../../domain/services/bookmarks_sync_controller.dart';
 import '../../../domain/usecases/delete_bookmark.dart';
@@ -106,7 +107,7 @@ class BookmarksListBloc extends Bloc<BookmarksListEvent, BookmarksListState> {
     Emitter<BookmarksListState> emit,
   ) async {
     try {
-      unawaited(_analytics.trackBookmarkSyncRetried());
+      _analytics.trackBookmarkSyncRetried().uw();
       await _sync.sync();
     } catch (_) {
       rethrow;
@@ -126,12 +127,12 @@ class BookmarksListBloc extends Bloc<BookmarksListEvent, BookmarksListState> {
     if (normalized.isEmpty) {
       return;
     }
-    unawaited(
-      _analytics.trackBookmarkSearch(
-        queryLength: normalized.length,
-        resultCount: next.visibleItems.length,
-      ),
-    );
+    _analytics
+        .trackBookmarkSearch(
+          queryLength: normalized.length,
+          resultCount: next.visibleItems.length,
+        )
+        .uw();
   }
 
   Future<void> _onDeleteRequested(
@@ -149,20 +150,20 @@ class BookmarksListBloc extends Bloc<BookmarksListEvent, BookmarksListState> {
       final result = await _delete(id);
       switch (result) {
         case Ok<void>():
-          unawaited(
-            _analytics.trackBookmarkDeleted(
-              bookmarkId: id,
-              source: AnalyticsSources.list,
-            ),
-          );
+          _analytics
+              .trackBookmarkDeleted(
+                bookmarkId: id,
+                source: AnalyticsSources.list,
+              )
+              .uw();
         case Err(:final failure):
-          unawaited(
-            _analytics.trackBookmarkDeleteFailed(
-              bookmarkId: id,
-              source: AnalyticsSources.list,
-              errorType: failure.runtimeType.toString(),
-            ),
-          );
+          _analytics
+              .trackBookmarkDeleteFailed(
+                bookmarkId: id,
+                source: AnalyticsSources.list,
+                errorType: failure.runtimeType.toString(),
+              )
+              .uw();
           emit(state.copyWith(items: previous));
           await _loadAndEmit(emit);
       }

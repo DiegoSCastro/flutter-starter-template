@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../analytics/analytics_extensions.dart';
 import '../analytics/analytics_service.dart';
+import '../future_extensions.dart';
 import 'theme_state.dart';
 
 part 'theme_event.dart';
@@ -53,7 +52,7 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
       final next = state.copyWith(mode: event.mode);
       emit(next);
       await _persist(next);
-      unawaited(_analytics.trackThemeModeChanged(event.mode.name));
+      _analytics.trackThemeModeChanged(event.mode.name).uw();
     } catch (_) {
       rethrow;
     }
@@ -70,7 +69,7 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
       final next = state.copyWith(scheme: event.scheme);
       emit(next);
       await _persist(next);
-      unawaited(_analytics.trackThemeSchemeChanged(event.scheme.name));
+      _analytics.trackThemeSchemeChanged(event.scheme.name).uw();
     } catch (_) {
       rethrow;
     }

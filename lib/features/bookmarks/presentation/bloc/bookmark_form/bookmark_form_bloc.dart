@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -8,6 +6,7 @@ import 'package:injectable/injectable.dart';
 import '../../../../../core/analytics/analytics_extensions.dart';
 import '../../../../../core/analytics/analytics_service.dart';
 import '../../../../../core/error/failure.dart';
+import '../../../../../core/future_extensions.dart';
 import '../../../../../core/media/image_picker_service.dart';
 import '../../../../../core/permissions/permission_service.dart';
 import '../../../../../core/utils/result.dart';
@@ -302,13 +301,11 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
           final trackChange = isEditing
               ? _analytics.trackBookmarkUpdated
               : _analytics.trackBookmarkCreated;
-          unawaited(
-            trackChange(
-              bookmarkId: bookmark.id,
-              tagCount: bookmark.tags.length,
-              hasDescription: bookmark.description.isNotEmpty,
-            ),
-          );
+          trackChange(
+            bookmarkId: bookmark.id,
+            tagCount: bookmark.tags.length,
+            hasDescription: bookmark.description.isNotEmpty,
+          ).uw();
           emit(state.copyWith(status: BookmarkFormStatus.submitted));
         case Err(:final failure):
           emit(

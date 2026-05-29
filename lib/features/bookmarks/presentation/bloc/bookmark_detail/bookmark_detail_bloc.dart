@@ -1,11 +1,10 @@
-import 'dart:async';
-
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../../core/analytics/analytics_extensions.dart';
 import '../../../../../core/analytics/analytics_service.dart';
+import '../../../../../core/future_extensions.dart';
 import '../../../../../core/utils/result.dart';
 import '../../../domain/usecases/delete_bookmark.dart';
 import '../../../domain/usecases/get_bookmark.dart';
@@ -41,13 +40,13 @@ class BookmarkDetailBloc
       final result = await _get(event.id);
       switch (result) {
         case Ok(value: final bookmark):
-          unawaited(
-            _analytics.trackBookmarkViewed(
-              bookmarkId: bookmark.id,
-              tagCount: bookmark.tags.length,
-              hasDescription: bookmark.description.isNotEmpty,
-            ),
-          );
+          _analytics
+              .trackBookmarkViewed(
+                bookmarkId: bookmark.id,
+                tagCount: bookmark.tags.length,
+                hasDescription: bookmark.description.isNotEmpty,
+              )
+              .uw();
           emit(BookmarkDetailState.ready(bookmark));
         case Err(:final failure):
           emit(BookmarkDetailState.failure(failure));
@@ -69,21 +68,21 @@ class BookmarkDetailBloc
       final result = await _delete(event.id);
       switch (result) {
         case Ok<void>():
-          unawaited(
-            _analytics.trackBookmarkDeleted(
-              bookmarkId: event.id,
-              source: AnalyticsSources.detail,
-            ),
-          );
+          _analytics
+              .trackBookmarkDeleted(
+                bookmarkId: event.id,
+                source: AnalyticsSources.detail,
+              )
+              .uw();
           emit(const BookmarkDetailState.deleted());
         case Err(:final failure):
-          unawaited(
-            _analytics.trackBookmarkDeleteFailed(
-              bookmarkId: event.id,
-              source: AnalyticsSources.detail,
-              errorType: failure.runtimeType.toString(),
-            ),
-          );
+          _analytics
+              .trackBookmarkDeleteFailed(
+                bookmarkId: event.id,
+                source: AnalyticsSources.detail,
+                errorType: failure.runtimeType.toString(),
+              )
+              .uw();
           emit(BookmarkDetailState.failure(failure));
       }
     } catch (_) {

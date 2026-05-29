@@ -4,6 +4,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../../../core/future_extensions.dart';
 import '../../domain/services/bookmarks_sync_controller.dart';
 import '../datasources/bookmarks_remote_data_source.dart';
 import '../local/bookmark_entity.dart';
@@ -60,7 +61,7 @@ class BookmarksSyncService implements BookmarksSyncController {
     );
     final initial = await _connectivity.checkConnectivity();
     _wasOnline = _hasNetwork(initial);
-    unawaited(sync());
+    sync().uw();
   }
 
   /// Stop listening and reset state. Called on sign-out.
@@ -73,7 +74,7 @@ class BookmarksSyncService implements BookmarksSyncController {
   void _onConnectivity(List<ConnectivityResult> result) {
     final online = _hasNetwork(result);
     if (online && !_wasOnline) {
-      unawaited(sync());
+      sync().uw();
     }
     _wasOnline = online;
   }

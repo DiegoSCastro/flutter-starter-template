@@ -1,9 +1,8 @@
-import 'dart:async';
-
 import 'package:injectable/injectable.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../core/error/failure.dart';
+import '../../../../core/future_extensions.dart';
 import '../../../../core/utils/result.dart';
 import '../../domain/entities/bookmark.dart';
 import '../../domain/repositories/bookmarks_repository.dart';
@@ -26,7 +25,7 @@ class BookmarksRepositoryImpl implements BookmarksRepository {
   Future<Result<List<Bookmark>>> list() async {
     final rows = await _local.listVisible();
     // Trigger a refresh in the background; reads return immediately.
-    unawaited(_sync.sync());
+    _sync.sync().uw();
     return Ok(rows.map((e) => e.toDomain()).toList(growable: false));
   }
 
@@ -58,7 +57,7 @@ class BookmarksRepositoryImpl implements BookmarksRepository {
       syncStateCode: SyncState.pendingCreate.code,
     );
     await _local.putNew(entity);
-    unawaited(_sync.sync());
+    _sync.sync().uw();
     return Ok(entity.toDomain());
   }
 
@@ -78,7 +77,7 @@ class BookmarksRepositoryImpl implements BookmarksRepository {
       existing.syncState = SyncState.pendingUpdate;
     }
     await _local.put(existing);
-    unawaited(_sync.sync());
+    _sync.sync().uw();
     return Ok(existing.toDomain());
   }
 
@@ -97,7 +96,7 @@ class BookmarksRepositoryImpl implements BookmarksRepository {
     existing.syncState = SyncState.pendingDelete;
     existing.updatedAt = DateTime.now().toUtc();
     await _local.put(existing);
-    unawaited(_sync.sync());
+    _sync.sync().uw();
     return const Ok(null);
   }
 

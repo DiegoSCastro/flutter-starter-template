@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,6 +9,7 @@ import '../../../../core/analytics/analytics_service.dart';
 import '../../../../core/animation/widget_animations.dart';
 import '../../../../core/build_context_extensions.dart';
 import '../../../../core/di/injection.dart';
+import '../../../../core/future_extensions.dart';
 import '../../../../core/theme/theme_bloc.dart';
 import '../../../../core/theme/theme_state.dart';
 import '../../../../core/widgets/widgets.dart';
@@ -110,7 +109,7 @@ class _CopyableId extends StatelessWidget {
       borderRadius: BorderRadius.circular(8),
       onTap: () {
         Clipboard.setData(ClipboardData(text: id));
-        unawaited(getIt<AnalyticsService>().trackUserIdCopied());
+        getIt<AnalyticsService>().trackUserIdCopied().uw();
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(context.l10n.profileUserIdCopied)),
         );

@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -12,6 +11,7 @@ import '../../../../core/analytics/analytics_service.dart';
 import '../../../../core/animation/widget_animations.dart';
 import '../../../../core/build_context_extensions.dart';
 import '../../../../core/di/injection.dart';
+import '../../../../core/future_extensions.dart';
 import '../../../../core/media/video_player_service.dart';
 import '../../../../core/share/share_service.dart';
 import '../../../../core/widgets/app_video_player.dart';
@@ -22,12 +22,12 @@ import '../bloc/bookmark_detail/bookmark_detail_state.dart';
 import 'bookmark_failure_messages.dart';
 
 Future<void> _shareBookmark(Bookmark bookmark) async {
-  unawaited(
-    getIt<AnalyticsService>().trackBookmarkShared(
-      bookmarkId: bookmark.id,
-      source: AnalyticsSources.detail,
-    ),
-  );
+  getIt<AnalyticsService>()
+      .trackBookmarkShared(
+        bookmarkId: bookmark.id,
+        source: AnalyticsSources.detail,
+      )
+      .uw();
   final content = bookmark.description.isNotEmpty
       ? '${bookmark.title}\n${bookmark.url}\n\n${bookmark.description}'
       : '${bookmark.title}\n${bookmark.url}';
@@ -235,12 +235,12 @@ class _DetailBody extends StatelessWidget {
       _toast(context, context.l10n.bookmarkInvalidUrl);
       return;
     }
-    unawaited(
-      getIt<AnalyticsService>().trackBookmarkOpened(
-        bookmarkId: bookmark.id,
-        source: AnalyticsSources.detail,
-      ),
-    );
+    getIt<AnalyticsService>()
+        .trackBookmarkOpened(
+          bookmarkId: bookmark.id,
+          source: AnalyticsSources.detail,
+        )
+        .uw();
     final launched = await launchUrl(uri, mode: LaunchMode.externalApplication);
     if (!launched && context.mounted) {
       _toast(context, context.l10n.bookmarkCouldNotOpenUrl);
