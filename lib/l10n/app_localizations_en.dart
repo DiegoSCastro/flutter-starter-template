@@ -143,6 +143,28 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profileChangePassword => 'Change Password';
 
   @override
+  String get profileDeleteAccount => 'Delete Account';
+
+  @override
+  String get profileDeleteAccountDialogTitle => 'Delete account?';
+
+  @override
+  String get profileDeleteAccountDialogMessage =>
+      'This permanently removes your account and all of its data. This action cannot be undone.';
+
+  @override
+  String profileDeleteAccountConfirmLabel(String username) {
+    return 'Type \"$username\" to confirm';
+  }
+
+  @override
+  String get profileDeleteAccountSuccess => 'Your account has been deleted.';
+
+  @override
+  String get profileDeleteAccountError =>
+      'Couldn\'t delete your account. Please try again.';
+
+  @override
   String get changePasswordAppBarTitle => 'Change Password';
 
   @override

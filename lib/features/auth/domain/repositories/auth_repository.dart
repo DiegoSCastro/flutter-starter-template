@@ -19,6 +19,11 @@ abstract interface class AuthRepository {
 
   Future<Result<void>> signOut();
 
+  /// Permanently deletes the current account on the server and clears the
+  /// local session. Unlike [signOut], the local session is only cleared when
+  /// the server confirms the deletion, so a failure leaves the user signed in.
+  Future<Result<void>> deleteAccount();
+
   /// Loads any persisted session and attempts to refresh its access token.
   /// Returns `Ok(user)` if a valid session can be restored, otherwise `Err`.
   Future<Result<AuthUser>> restoreSession();

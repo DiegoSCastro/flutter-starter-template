@@ -144,6 +144,28 @@ class AppLocalizationsVi extends AppLocalizations {
   String get profileChangePassword => 'Đổi mật khẩu';
 
   @override
+  String get profileDeleteAccount => 'Xóa tài khoản';
+
+  @override
+  String get profileDeleteAccountDialogTitle => 'Xóa tài khoản?';
+
+  @override
+  String get profileDeleteAccountDialogMessage =>
+      'Thao tác này sẽ xóa vĩnh viễn tài khoản và toàn bộ dữ liệu của bạn. Không thể hoàn tác.';
+
+  @override
+  String profileDeleteAccountConfirmLabel(String username) {
+    return 'Nhập \"$username\" để xác nhận';
+  }
+
+  @override
+  String get profileDeleteAccountSuccess => 'Tài khoản của bạn đã được xóa.';
+
+  @override
+  String get profileDeleteAccountError =>
+      'Không thể xóa tài khoản. Vui lòng thử lại.';
+
+  @override
   String get changePasswordAppBarTitle => 'Đổi mật khẩu';
 
   @override

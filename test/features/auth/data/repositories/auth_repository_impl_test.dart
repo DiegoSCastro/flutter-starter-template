@@ -188,6 +188,33 @@ void main() {
     });
   });
 
+  group('deleteAccount', () {
+    test('clears local session and returns Ok on success', () async {
+      when(() => mockRemote.deleteAccount()).thenAnswer((_) async {});
+      when(() => mockLocal.clearSession()).thenAnswer((_) async {});
+
+      final result = await repository.deleteAccount();
+
+      expect(result, isA<Ok<void>>());
+      verify(() => mockLocal.clearSession()).called(1);
+    });
+
+    test('keeps session and returns Err when server call fails', () async {
+      when(() => mockRemote.deleteAccount()).thenThrow(
+        DioException(
+          requestOptions: RequestOptions(path: '/api/auth/account'),
+          message: 'Network error',
+        ),
+      );
+
+      final result = await repository.deleteAccount();
+
+      expect(result, isA<Err<void>>());
+      expect((result as Err<void>).failure, isA<UnknownFailure>());
+      verifyNever(() => mockLocal.clearSession());
+    });
+  });
+
   group('restoreSession', () {
     setUp(() {
       when(() => mockLocal.load()).thenAnswer((_) async {});
