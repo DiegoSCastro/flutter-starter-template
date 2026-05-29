@@ -7,7 +7,6 @@ part 'auth_user_dto.g.dart';
 
 @Freezed(copyWith: false, equal: false)
 abstract class AuthUserDto with _$AuthUserDto {
-
   const factory AuthUserDto({required String id, required String username}) =
       _AuthUserDto;
   const AuthUserDto._();

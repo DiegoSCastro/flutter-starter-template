@@ -35,8 +35,7 @@ void main() {
           required resolutionPreset,
           enableAudio = true,
           imageFormatGroup,
-        }) =>
-            mockController,
+        }) => mockController,
       );
 
       final cameras = await cameraService.getAvailableCameras();
@@ -98,8 +97,7 @@ void main() {
           required resolutionPreset,
           enableAudio = true,
           imageFormatGroup,
-        }) =>
-            mockController,
+        }) => mockController,
       );
 
       when(() => mockController.value).thenReturn(
@@ -142,8 +140,7 @@ void main() {
             required resolutionPreset,
             enableAudio = true,
             imageFormatGroup,
-          }) =>
-              mockController,
+          }) => mockController,
         );
 
         expect(
@@ -211,8 +208,7 @@ void main() {
           required resolutionPreset,
           enableAudio = true,
           imageFormatGroup,
-        }) =>
-            mockController,
+        }) => mockController,
       );
 
       when(() => mockController.value).thenReturn(
@@ -241,35 +237,37 @@ void main() {
 
       final fakeFile = XFile('path/to/file');
 
-      when(() => mockController.takePicture())
-          .thenAnswer((_) async => fakeFile);
+      when(
+        () => mockController.takePicture(),
+      ).thenAnswer((_) async => fakeFile);
       final picture = await cameraService.takePicture();
       expect(picture, fakeFile);
       verify(() => mockController.takePicture()).called(1);
 
-      when(() => mockController.startVideoRecording())
-          .thenAnswer((_) async {});
+      when(() => mockController.startVideoRecording()).thenAnswer((_) async {});
       await cameraService.startVideoRecording();
       verify(() => mockController.startVideoRecording()).called(1);
 
-      when(() => mockController.stopVideoRecording())
-          .thenAnswer((_) async => fakeFile);
+      when(
+        () => mockController.stopVideoRecording(),
+      ).thenAnswer((_) async => fakeFile);
       final video = await cameraService.stopVideoRecording();
       expect(video, fakeFile);
       verify(() => mockController.stopVideoRecording()).called(1);
 
-      when(() => mockController.pauseVideoRecording())
-          .thenAnswer((_) async {});
+      when(() => mockController.pauseVideoRecording()).thenAnswer((_) async {});
       await cameraService.pauseVideoRecording();
       verify(() => mockController.pauseVideoRecording()).called(1);
 
-      when(() => mockController.resumeVideoRecording())
-          .thenAnswer((_) async {});
+      when(
+        () => mockController.resumeVideoRecording(),
+      ).thenAnswer((_) async {});
       await cameraService.resumeVideoRecording();
       verify(() => mockController.resumeVideoRecording()).called(1);
 
-      when(() => mockController.setFlashMode(FlashMode.torch))
-          .thenAnswer((_) async {});
+      when(
+        () => mockController.setFlashMode(FlashMode.torch),
+      ).thenAnswer((_) async {});
       await cameraService.setFlashMode(FlashMode.torch);
       verify(() => mockController.setFlashMode(FlashMode.torch)).called(1);
 
@@ -277,41 +275,49 @@ void main() {
       await cameraService.setZoomLevel(2);
       verify(() => mockController.setZoomLevel(2)).called(1);
 
-      when(() => mockController.getMinZoomLevel())
-          .thenAnswer((_) async => 1.0);
+      when(() => mockController.getMinZoomLevel()).thenAnswer((_) async => 1.0);
       final minZoom = await cameraService.getMinZoomLevel();
       expect(minZoom, 1.0);
       verify(() => mockController.getMinZoomLevel()).called(1);
 
-      when(() => mockController.getMaxZoomLevel())
-          .thenAnswer((_) async => 8.0);
+      when(() => mockController.getMaxZoomLevel()).thenAnswer((_) async => 8.0);
       final maxZoom = await cameraService.getMaxZoomLevel();
       expect(maxZoom, 8.0);
       verify(() => mockController.getMaxZoomLevel()).called(1);
 
-      when(() => mockController.setExposureMode(ExposureMode.locked))
-          .thenAnswer((_) async {});
+      when(
+        () => mockController.setExposureMode(ExposureMode.locked),
+      ).thenAnswer((_) async {});
       await cameraService.setExposureMode(ExposureMode.locked);
-      verify(() => mockController.setExposureMode(ExposureMode.locked))
-          .called(1);
+      verify(
+        () => mockController.setExposureMode(ExposureMode.locked),
+      ).called(1);
 
-      when(() => mockController.setExposureOffset(0.5))
-          .thenAnswer((_) async => 0.5);
+      when(
+        () => mockController.setExposureOffset(0.5),
+      ).thenAnswer((_) async => 0.5);
       await cameraService.setExposureOffset(0.5);
       verify(() => mockController.setExposureOffset(0.5)).called(1);
 
-      when(() => mockController.setFocusMode(FocusMode.locked))
-          .thenAnswer((_) async {});
+      when(
+        () => mockController.setFocusMode(FocusMode.locked),
+      ).thenAnswer((_) async {});
       await cameraService.setFocusMode(FocusMode.locked);
       verify(() => mockController.setFocusMode(FocusMode.locked)).called(1);
 
-      when(() => mockController.setVideoStabilizationMode(
+      when(
+        () => mockController.setVideoStabilizationMode(
+          VideoStabilizationMode.level1,
+        ),
+      ).thenAnswer((_) async {});
+      await cameraService.setVideoStabilizationMode(
         VideoStabilizationMode.level1,
-      )).thenAnswer((_) async {});
-      await cameraService.setVideoStabilizationMode(VideoStabilizationMode.level1);
-      verify(() => mockController.setVideoStabilizationMode(
-        VideoStabilizationMode.level1,
-      )).called(1);
+      );
+      verify(
+        () => mockController.setVideoStabilizationMode(
+          VideoStabilizationMode.level1,
+        ),
+      ).called(1);
     });
   });
 }

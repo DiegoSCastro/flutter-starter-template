@@ -2,6 +2,7 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../core/animation/app_durations.dart';
 import '../../../../core/animation/widget_animations.dart';
 import '../../../../core/build_context_extensions.dart';
 import '../../../../core/theme/app_spacing.dart';
@@ -106,6 +107,9 @@ class _ThemeModeSelector extends StatelessWidget {
 class _ColorSchemeSelector extends StatelessWidget {
   const _ColorSchemeSelector();
 
+  static const double _swatchSize = 40;
+  static const double _swatchInnerSize = 28;
+
   static const List<FlexScheme> _schemes = [
     FlexScheme.material,
     FlexScheme.deepPurple,
@@ -128,17 +132,17 @@ class _ColorSchemeSelector extends StatelessWidget {
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
           child: Wrap(
-            spacing: 10,
-            runSpacing: 10,
+            spacing: AppSpacing.md,
+            runSpacing: AppSpacing.md,
             children: _schemes.map((scheme) {
               final isActive = scheme == state.scheme;
               return GestureDetector(
                 onTap: () =>
                     context.read<ThemeBloc>().add(ThemeSchemeChanged(scheme)),
                 child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  width: 40,
-                  height: 40,
+                  duration: AppDurations.xfast,
+                  width: _swatchSize,
+                  height: _swatchSize,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     border: Border.all(
@@ -150,8 +154,8 @@ class _ColorSchemeSelector extends StatelessWidget {
                   ),
                   child: Center(
                     child: Container(
-                      width: 28,
-                      height: 28,
+                      width: _swatchInnerSize,
+                      height: _swatchInnerSize,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         gradient: LinearGradient(

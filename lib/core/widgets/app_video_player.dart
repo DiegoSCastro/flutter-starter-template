@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:video_player/video_player.dart';
+import '../animation/app_durations.dart';
 import '../media/video_player_service.dart';
+import '../theme/app_icon_size.dart';
 import '../theme/app_spacing.dart';
 
 /// A premium, highly customizable, and responsive video player widget.
@@ -186,13 +188,13 @@ class _AppVideoPlayerState extends State<AppVideoPlayer> {
             // Loading/Buffering Indicator
             if (widget.controller.value.isBuffering)
               const CircularProgressIndicator().animate().fade(
-                duration: 200.ms,
+                duration: AppDurations.xfast,
               ),
 
             // Controls HUD Overlay
             AnimatedOpacity(
               opacity: _showControls ? 1.0 : 0.0,
-              duration: const Duration(milliseconds: 250),
+              duration: AppDurations.fast,
               child: IgnorePointer(
                 ignoring: !_showControls,
                 child: _buildControlsOverlay(context, raw),
@@ -211,7 +213,7 @@ class _AppVideoPlayerState extends State<AppVideoPlayer> {
         const Icon(
           Icons.error_outline_rounded,
           color: Colors.redAccent,
-          size: 48,
+          size: AppIconSize.xxxl,
         ),
         const SizedBox(height: AppSpacing.md),
         Text(

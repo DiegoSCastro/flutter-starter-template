@@ -1,6 +1,8 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 
+import '../animation/app_durations.dart';
+
 enum AppAnimatedTextType { typewriter, fade }
 
 class AppAnimatedText extends StatelessWidget {
@@ -11,7 +13,7 @@ class AppAnimatedText extends StatelessWidget {
     this.textStyle,
     this.textAlign,
     this.speed = const Duration(milliseconds: 80),
-    this.fadeDuration = const Duration(milliseconds: 600),
+    this.fadeDuration = AppDurations.xxslow,
     this.totalRepeatCount = 1,
     this.displayFullTextOnTap = true,
   });

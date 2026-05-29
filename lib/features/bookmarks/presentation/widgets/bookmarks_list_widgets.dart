@@ -11,6 +11,7 @@ import '../../../../core/build_context_extensions.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/future_extensions.dart';
 import '../../../../core/share/share_service.dart';
+import '../../../../core/theme/app_icon_size.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../domain/entities/bookmark.dart';
@@ -292,7 +293,7 @@ class _DetailPlaceholder extends StatelessWidget {
         children: [
           Icon(
             Icons.bookmark_outline,
-            size: 48,
+            size: AppIconSize.xxxl,
             color: context.colorScheme.outline,
           ),
           const SizedBox(height: AppSpacing.md),
@@ -311,6 +312,9 @@ class _DetailPlaceholder extends StatelessWidget {
 class _SyncStatusIcon extends StatelessWidget {
   const _SyncStatusIcon({required this.status});
 
+  static const double _slotSize = 18;
+  static const double _spinnerSize = 16;
+
   final BookmarksSyncStatus status;
 
   @override
@@ -319,12 +323,12 @@ class _SyncStatusIcon extends StatelessWidget {
       BookmarksSyncStatus.syncing => const Padding(
         padding: EdgeInsets.only(right: AppSpacing.md),
         child: SizedBox(
-          width: 18,
-          height: 18,
+          width: _slotSize,
+          height: _slotSize,
           child: Center(
             child: SizedBox(
-              width: 16,
-              height: 16,
+              width: _spinnerSize,
+              height: _spinnerSize,
               child: CircularProgressIndicator(strokeWidth: 2),
             ),
           ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_link_previewer/flutter_link_previewer.dart';
 
+import '../theme/app_radius.dart';
+
 class AppLinkPreview extends StatelessWidget {
   const AppLinkPreview({
     super.key,
@@ -47,7 +49,7 @@ class AppLinkPreview extends StatelessWidget {
         color: colorScheme.onSurfaceVariant,
       ),
       imageBuilder: (imageUrl) => ClipRRect(
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(AppRadius.sm),
         child: Image.network(
           imageUrl,
           fit: BoxFit.cover,

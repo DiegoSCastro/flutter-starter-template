@@ -3,10 +3,12 @@ import 'package:injectable/injectable.dart';
 
 import '../config/env_config.dart';
 
+const _apiTimeout = Duration(seconds: 10);
+
 BaseOptions apiBaseOptions(String baseUrl) => BaseOptions(
   baseUrl: baseUrl,
-  connectTimeout: const Duration(seconds: 10),
-  receiveTimeout: const Duration(seconds: 10),
+  connectTimeout: _apiTimeout,
+  receiveTimeout: _apiTimeout,
   contentType: 'application/json',
 );
 

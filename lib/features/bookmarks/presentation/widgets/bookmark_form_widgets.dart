@@ -7,6 +7,8 @@ import '../../../../core/animation/widget_animations.dart';
 import '../../../../core/build_context_extensions.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/media/video_player_service.dart';
+import '../../../../core/theme/app_icon_size.dart';
+import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/app_video_player.dart';
 import '../../../../core/widgets/widgets.dart';
@@ -24,6 +26,9 @@ class BookmarkFormView extends StatefulWidget {
 }
 
 class _BookmarkFormViewState extends State<BookmarkFormView> {
+  static const double _thumbnailSize = 100;
+  static const double _videoPreviewHeight = 180;
+
   final _formKey = GlobalKey<FormState>();
   final _title = TextEditingController();
   final _url = TextEditingController();
@@ -207,7 +212,7 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
         const SizedBox(height: AppSpacing.sm),
         if (state.imageUrls.isNotEmpty)
           SizedBox(
-            height: 100,
+            height: _thumbnailSize,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
               itemCount: state.imageUrls.length,
@@ -217,24 +222,24 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
                 return Stack(
                   children: [
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(AppRadius.sm),
                       child: path.startsWith('http')
                           ? AppNetworkImage(
                               imageUrl: path,
                               fit: BoxFit.cover,
-                              width: 100,
-                              height: 100,
+                              width: _thumbnailSize,
+                              height: _thumbnailSize,
                             )
                           : Image.file(
                               File(path),
                               fit: BoxFit.cover,
-                              width: 100,
-                              height: 100,
+                              width: _thumbnailSize,
+                              height: _thumbnailSize,
                             ),
                     ),
                     Positioned(
-                      top: 4,
-                      right: 4,
+                      top: AppSpacing.xs,
+                      right: AppSpacing.xs,
                       child: GestureDetector(
                         onTap: () => context.read<BookmarkFormBloc>().add(
                           BookmarkFormImageRemoved(path),
@@ -247,7 +252,7 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
                           ),
                           child: const Icon(
                             Icons.close,
-                            size: 16,
+                            size: AppIconSize.sm,
                             color: Colors.white,
                           ),
                         ),
@@ -270,9 +275,9 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
           Stack(
             children: [
               ClipRRect(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(AppRadius.sm),
                 child: SizedBox(
-                  height: 180,
+                  height: _videoPreviewHeight,
                   width: double.infinity,
                   child: _videoPlayerController != null
                       ? AppVideoPlayer(controller: _videoPlayerController!)
@@ -280,8 +285,8 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
                 ),
               ),
               Positioned(
-                top: 8,
-                right: 8,
+                top: AppSpacing.sm,
+                right: AppSpacing.sm,
                 child: GestureDetector(
                   onTap: () => context.read<BookmarkFormBloc>().add(
                     const BookmarkFormVideoRemoved(),
@@ -294,7 +299,7 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
                     ),
                     child: const Icon(
                       Icons.close,
-                      size: 20,
+                      size: AppIconSize.md,
                       color: Colors.white,
                     ),
                   ),

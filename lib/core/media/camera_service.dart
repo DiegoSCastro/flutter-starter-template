@@ -3,12 +3,13 @@ import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 
 typedef AvailableCamerasLoader = Future<List<CameraDescription>> Function();
-typedef CameraControllerFactory = CameraController Function({
-  required CameraDescription description,
-  required ResolutionPreset resolutionPreset,
-  bool enableAudio,
-  ImageFormatGroup? imageFormatGroup,
-});
+typedef CameraControllerFactory =
+    CameraController Function({
+      required CameraDescription description,
+      required ResolutionPreset resolutionPreset,
+      bool enableAudio,
+      ImageFormatGroup? imageFormatGroup,
+    });
 
 /// Exception thrown when a camera operation is attempted before the camera is initialized.
 class CameraNotInitializedException implements Exception {
@@ -27,21 +28,20 @@ class CameraNotInitializedException implements Exception {
 @lazySingleton
 class CameraService {
   CameraService()
-      : this.custom(
-          availableCameras,
-          ({
-            required description,
-            required resolutionPreset,
-            enableAudio = true,
-            imageFormatGroup,
-          }) =>
-              CameraController(
-            description,
-            resolutionPreset,
-            enableAudio: enableAudio,
-            imageFormatGroup: imageFormatGroup,
-          ),
-        );
+    : this.custom(
+        availableCameras,
+        ({
+          required description,
+          required resolutionPreset,
+          enableAudio = true,
+          imageFormatGroup,
+        }) => CameraController(
+          description,
+          resolutionPreset,
+          enableAudio: enableAudio,
+          imageFormatGroup: imageFormatGroup,
+        ),
+      );
 
   @visibleForTesting
   CameraService.custom(

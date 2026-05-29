@@ -14,6 +14,7 @@ import '../../../../core/di/injection.dart';
 import '../../../../core/future_extensions.dart';
 import '../../../../core/media/video_player_service.dart';
 import '../../../../core/share/share_service.dart';
+import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/app_video_player.dart';
 import '../../../../core/widgets/widgets.dart';
@@ -189,6 +190,8 @@ class BookmarkDetailView extends StatelessWidget {
 class _DetailBody extends StatelessWidget {
   const _DetailBody({required this.bookmark});
 
+  static const double _imageSize = 200;
+
   final Bookmark bookmark;
 
   @override
@@ -233,7 +236,7 @@ class _DetailBody extends StatelessWidget {
           if (bookmark.imageUrls.isNotEmpty) ...[
             const SizedBox(height: AppSpacing.lg),
             SizedBox(
-              height: 200,
+              height: _imageSize,
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: bookmark.imageUrls.length,
@@ -242,19 +245,19 @@ class _DetailBody extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final path = bookmark.imageUrls[index];
                   return ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(AppRadius.sm),
                     child: path.startsWith('http')
                         ? AppNetworkImage(
                             imageUrl: path,
                             fit: BoxFit.cover,
-                            width: 200,
-                            height: 200,
+                            width: _imageSize,
+                            height: _imageSize,
                           )
                         : Image.file(
                             File(path),
                             fit: BoxFit.cover,
-                            width: 200,
-                            height: 200,
+                            width: _imageSize,
+                            height: _imageSize,
                           ),
                   );
                 },
@@ -264,8 +267,8 @@ class _DetailBody extends StatelessWidget {
           if (bookmark.tags.isNotEmpty) ...[
             const SizedBox(height: AppSpacing.lg),
             Wrap(
-              spacing: 8,
-              runSpacing: 8,
+              spacing: AppSpacing.sm,
+              runSpacing: AppSpacing.sm,
               children: [
                 for (final tag in bookmark.tags)
                   Chip(label: Text(tag))
@@ -360,7 +363,7 @@ class _VideoSectionState extends State<_VideoSection> {
         ),
         const SizedBox(height: AppSpacing.sm),
         ClipRRect(
-          borderRadius: BorderRadius.circular(8),
+          borderRadius: BorderRadius.circular(AppRadius.sm),
           child: AppVideoPlayer(controller: controller),
         ),
       ],

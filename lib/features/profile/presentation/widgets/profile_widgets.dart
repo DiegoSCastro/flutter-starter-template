@@ -9,6 +9,7 @@ import '../../../../core/animation/widget_animations.dart';
 import '../../../../core/build_context_extensions.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/future_extensions.dart';
+import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../auth/domain/entities/auth_user.dart';
@@ -95,7 +96,7 @@ class _CopyableId extends StatelessWidget {
     final theme = Theme.of(context);
     if (id.isEmpty) return const SizedBox.shrink();
     return InkWell(
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(AppRadius.sm),
       onTap: () {
         Clipboard.setData(ClipboardData(text: id));
         getIt<AnalyticsService>().trackUserIdCopied().uw();

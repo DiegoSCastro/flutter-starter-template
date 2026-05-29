@@ -53,14 +53,18 @@ void main() {
 
     test('setLooping calls rawController.setLooping', () async {
       const looping = true;
-      when(() => mockRawController.setLooping(looping)).thenAnswer((_) async {});
+      when(
+        () => mockRawController.setLooping(looping),
+      ).thenAnswer((_) async {});
       await controller.setLooping(looping: looping);
       verify(() => mockRawController.setLooping(looping)).called(1);
     });
 
     test('setPlaybackSpeed calls rawController.setPlaybackSpeed', () async {
       const speed = 1.5;
-      when(() => mockRawController.setPlaybackSpeed(speed)).thenAnswer((_) async {});
+      when(
+        () => mockRawController.setPlaybackSpeed(speed),
+      ).thenAnswer((_) async {});
       await controller.setPlaybackSpeed(speed);
       verify(() => mockRawController.setPlaybackSpeed(speed)).called(1);
     });

@@ -13,7 +13,7 @@ void main() {
       final result = await useCase('abc');
 
       switch (result) {
-        case Ok(: final value):
+        case Ok(:final value):
           expect(value, 3);
         case Err():
           fail('Expected Ok');

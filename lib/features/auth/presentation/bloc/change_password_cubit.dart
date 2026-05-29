@@ -8,7 +8,7 @@ import 'change_password_state.dart';
 @injectable
 class ChangePasswordCubit extends Cubit<ChangePasswordState> {
   ChangePasswordCubit(this._changePassword)
-      : super(const ChangePasswordState.initial());
+    : super(const ChangePasswordState.initial());
 
   final ChangePassword _changePassword;
 

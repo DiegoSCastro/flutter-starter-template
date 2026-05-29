@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart' as slidable;
 
+import '../animation/app_durations.dart';
 import '../build_context_extensions.dart';
 
 enum AppSlidableActionTone { neutral, primary, destructive }
@@ -106,8 +107,8 @@ class AppSlidableDismiss {
     this.closeOnCancel = true,
     this.dragDismissible = true,
     this.dismissThreshold = 0.75,
-    this.dismissalDuration = const Duration(milliseconds: 300),
-    this.resizeDuration = const Duration(milliseconds: 300),
+    this.dismissalDuration = AppDurations.medium,
+    this.resizeDuration = AppDurations.medium,
   });
 
   final VoidCallback onDismissed;

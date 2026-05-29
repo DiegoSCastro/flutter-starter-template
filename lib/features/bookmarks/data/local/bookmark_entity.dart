@@ -8,7 +8,8 @@ enum SyncState {
   synced(0),
   pendingCreate(1),
   pendingUpdate(2),
-  pendingDelete(3);
+  pendingDelete(3)
+  ;
 
   const SyncState(this.code);
 

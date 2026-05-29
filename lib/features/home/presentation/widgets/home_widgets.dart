@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../app/router.dart';
 import '../../../../core/animation/widget_animations.dart';
 import '../../../../core/build_context_extensions.dart';
+import '../../../../core/theme/app_icon_size.dart';
+import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/widgets.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
@@ -64,11 +66,11 @@ class _WelcomeSection extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             CircleAvatar(
-              radius: 40,
+              radius: AppIconSize.xxl,
               backgroundColor: context.colorScheme.primaryContainer,
               child: Icon(
                 Icons.person,
-                size: 40,
+                size: AppIconSize.xxl,
                 color: context.colorScheme.onPrimaryContainer,
               ),
             ).animateScale(delay: 100.ms),
@@ -151,7 +153,9 @@ class _StatCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+      ),
       child: Padding(
         padding: const EdgeInsets.symmetric(
           vertical: AppSpacing.xl,
@@ -160,7 +164,11 @@ class _StatCard extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 28, color: context.colorScheme.primary),
+            Icon(
+              icon,
+              size: AppIconSize.xl,
+              color: context.colorScheme.primary,
+            ),
             const SizedBox(height: AppSpacing.sm),
             Text(
               value,
@@ -189,6 +197,8 @@ class _RecentBookmarksSection extends StatelessWidget {
     required this.isEmpty,
     required this.animationDelay,
   });
+
+  static const double _carouselHeight = 160;
 
   final List<Bookmark> recentItems;
   final bool isEmpty;
@@ -222,7 +232,7 @@ class _RecentBookmarksSection extends StatelessWidget {
               .map((b) => _BookmarkCarouselCard(bookmark: b))
               .toList(),
           showIndicators: recentItems.length > 1,
-          height: 160,
+          height: _carouselHeight,
         ).animateFadeIn(delay: animationDelay + 200.ms),
       ],
     );
@@ -238,9 +248,11 @@ class _BookmarkCarouselCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+      ),
       child: InkWell(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppRadius.lg),
         onTap: () => BookmarkDetailRoute(bookmark.id).push<void>(context),
         child: Padding(
           padding: const EdgeInsets.all(AppSpacing.xl),
@@ -255,7 +267,7 @@ class _BookmarkCarouselCard extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
-              const SizedBox(height: 6),
+              const SizedBox(height: AppSpacing.sm),
               Text(
                 bookmark.url,
                 style: context.textTheme.bodySmall?.copyWith(
@@ -280,8 +292,8 @@ class _BookmarkCarouselCard extends StatelessWidget {
               if (bookmark.tags.isNotEmpty) ...[
                 const SizedBox(height: AppSpacing.sm),
                 Wrap(
-                  spacing: 6,
-                  runSpacing: 4,
+                  spacing: AppSpacing.sm,
+                  runSpacing: AppSpacing.xs,
                   children: bookmark.tags.map((tag) {
                     return Container(
                       padding: const EdgeInsets.symmetric(
@@ -290,7 +302,7 @@ class _BookmarkCarouselCard extends StatelessWidget {
                       ),
                       decoration: BoxDecoration(
                         color: context.colorScheme.secondaryContainer,
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(AppRadius.sm),
                       ),
                       child: Text(
                         tag,

@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
+import '../animation/app_durations.dart';
 import '../build_context_extensions.dart';
+import '../theme/app_icon_size.dart';
 import '../theme/app_spacing.dart';
 
 /// A wrapper widget for [PhotoView] that simplifies image zooming,
@@ -244,8 +246,8 @@ class _AppPhotoViewState extends State<AppPhotoView> {
           widget.loadingBuilder ??
           (context, event) => Center(
             child: SizedBox(
-              width: 24,
-              height: 24,
+              width: AppIconSize.lg,
+              height: AppIconSize.lg,
               child: CircularProgressIndicator(
                 strokeWidth: 2,
                 value: event == null || event.expectedTotalBytes == null
@@ -263,7 +265,7 @@ class _AppPhotoViewState extends State<AppPhotoView> {
                 Icon(
                   Icons.broken_image_rounded,
                   color: Theme.of(context).colorScheme.error,
-                  size: 40,
+                  size: AppIconSize.xxl,
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 Text(
@@ -457,7 +459,7 @@ class _AppPhotoViewFullScreenPageState
           // Controls UI Overlay
           AnimatedOpacity(
             opacity: _showUI && !_isDragging ? 1.0 : 0.0,
-            duration: const Duration(milliseconds: 250),
+            duration: AppDurations.fast,
             child: IgnorePointer(
               ignoring: !_showUI || _isDragging,
               child: Stack(
@@ -490,7 +492,7 @@ class _AppPhotoViewFullScreenPageState
                             icon: const Icon(
                               Icons.close_rounded,
                               color: Colors.white,
-                              size: 28,
+                              size: AppIconSize.xl,
                             ),
                             onPressed: () => Navigator.of(context).pop(),
                           ),

@@ -2,6 +2,9 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
+import '../animation/app_durations.dart';
+import '../theme/app_icon_size.dart';
+import '../theme/app_radius.dart';
 import '../theme/app_spacing.dart';
 
 import 'app_loading.dart';
@@ -69,7 +72,7 @@ class AppScaffold extends StatelessWidget {
                               icon: const Icon(
                                 Icons.arrow_back_ios_new_rounded,
                               ),
-                              iconSize: 20,
+                              iconSize: AppIconSize.md,
                               onPressed: () => Navigator.of(context).maybePop(),
                               tooltip: MaterialLocalizations.of(
                                 context,
@@ -86,7 +89,7 @@ class AppScaffold extends StatelessWidget {
         children: [
           content,
           AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
+            duration: AppDurations.medium,
             switchInCurve: Curves.easeOutCubic,
             switchOutCurve: Curves.easeInCubic,
             child: isLoading
@@ -109,7 +112,7 @@ class AppScaffold extends StatelessWidget {
                           ),
                           decoration: BoxDecoration(
                             color: Theme.of(context).cardColor,
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: BorderRadius.circular(AppRadius.xl),
                             boxShadow: const [
                               BoxShadow(
                                 color: Colors.black12,
