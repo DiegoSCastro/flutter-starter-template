@@ -86,6 +86,7 @@ class _AppState extends State<App> {
         ],
         child: BlocBuilder<ThemeBloc, ThemeState>(
           builder: (context, themeState) => MaterialApp.router(
+            debugShowCheckedModeBanner: false,
             onGenerateTitle: (context) => context.l10n.appTitle,
             theme: AppTheme.light(scheme: themeState.scheme),
             darkTheme: AppTheme.dark(scheme: themeState.scheme),

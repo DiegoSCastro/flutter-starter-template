@@ -119,26 +119,47 @@ class AppButton extends StatelessWidget {
   ButtonStyle _style() {
     final padding = switch (size) {
       AppButtonSize.small => const EdgeInsets.symmetric(
-        horizontal: 12,
+        horizontal: 16,
         vertical: 8,
       ),
       AppButtonSize.medium => const EdgeInsets.symmetric(
-        horizontal: 20,
+        horizontal: 24,
         vertical: 14,
       ),
       AppButtonSize.large => const EdgeInsets.symmetric(
-        horizontal: 24,
+        horizontal: 32,
         vertical: 18,
       ),
     };
+
+    final radius = switch (size) {
+      AppButtonSize.small => 10.0,
+      AppButtonSize.medium => 14.0,
+      AppButtonSize.large => 16.0,
+    };
+
     return ButtonStyle(
       padding: WidgetStatePropertyAll(padding),
       minimumSize: WidgetStatePropertyAll(
         Size(0, switch (size) {
           AppButtonSize.small => 36,
-          AppButtonSize.medium => 44,
-          AppButtonSize.large => 52,
+          AppButtonSize.medium => 48,
+          AppButtonSize.large => 56,
         }),
+      ),
+      shape: WidgetStatePropertyAll(
+        RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(radius),
+        ),
+      ),
+      elevation: WidgetStatePropertyAll(
+        variant == AppButtonVariant.primary ? 2 : 0,
+      ),
+      textStyle: const WidgetStatePropertyAll(
+        TextStyle(
+          fontWeight: FontWeight.w600,
+          letterSpacing: 0.3,
+        ),
       ),
     );
   }

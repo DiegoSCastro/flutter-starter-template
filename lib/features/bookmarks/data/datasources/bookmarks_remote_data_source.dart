@@ -25,4 +25,8 @@ abstract class BookmarksRemoteDataSource {
 
   @DELETE('/api/bookmarks/{id}')
   Future<void> delete(@Path('id') String id);
+
+  @POST('/api/upload')
+  @MultiPart()
+  Future<Map<String, String>> upload(@Part(name: 'file') MultipartFile file);
 }

@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'app_loading.dart';
 
@@ -50,7 +53,30 @@ class AppScaffold extends StatelessWidget {
       appBar:
           appBar ??
           (title != null
-              ? AppBar(title: Text(title!), leading: leading, actions: actions)
+              ? AppBar(
+                  title: Text(
+                    title!,
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                  centerTitle: true,
+                  elevation: 0,
+                  scrolledUnderElevation: 0,
+                  leading:
+                      leading ??
+                      (context.canPop()
+                          ? IconButton(
+                              icon: const Icon(
+                                Icons.arrow_back_ios_new_rounded,
+                              ),
+                              iconSize: 20,
+                              onPressed: () => context.pop(),
+                              tooltip: MaterialLocalizations.of(
+                                context,
+                              ).backButtonTooltip,
+                            )
+                          : null),
+                  actions: actions,
+                )
               : null),
       drawer: drawer,
       floatingActionButton: floatingActionButton,
@@ -58,8 +84,46 @@ class AppScaffold extends StatelessWidget {
       body: Stack(
         children: [
           content,
-          if (isLoading)
-            const ColoredBox(color: Color(0x66000000), child: AppLoading()),
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 300),
+            switchInCurve: Curves.easeOutCubic,
+            switchOutCurve: Curves.easeInCubic,
+            child: isLoading
+                ? Stack(
+                    key: const ValueKey('AppScaffoldLoading'),
+                    children: [
+                      // Blurred dark overlay
+                      Positioned.fill(
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
+                          child: const ColoredBox(color: Colors.black26),
+                        ),
+                      ),
+                      // Elevated glassmorphism loading card
+                      Center(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 40,
+                            vertical: 32,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).cardColor,
+                            borderRadius: BorderRadius.circular(20),
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 24,
+                                offset: Offset(0, 8),
+                              ),
+                            ],
+                          ),
+                          child: const AppLoading(),
+                        ),
+                      ),
+                    ],
+                  )
+                : const SizedBox.shrink(),
+          ),
         ],
       ),
     );

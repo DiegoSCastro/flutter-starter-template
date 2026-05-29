@@ -1,12 +1,11 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
 	"errors"
 	"net/http"
-	"sort"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/go-chi/chi/v5"
@@ -19,6 +18,8 @@ type bookmark struct {
 	URL         string    `json:"url"`
 	Description string    `json:"description"`
 	Tags        []string  `json:"tags"`
+	ImageUrls   []string  `json:"image_urls"`
+	VideoUrl    string    `json:"video_url"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
 }
@@ -32,38 +33,59 @@ type bookmarkRequest struct {
 	URL         string   `json:"url"`
 	Description string   `json:"description"`
 	Tags        []string `json:"tags"`
+	ImageUrls   []string `json:"image_urls"`
+	VideoUrl    string   `json:"video_url"`
 }
 
 type bookmarkStore struct {
-	mu    sync.RWMutex
-	items map[string]bookmark
+	db *sql.DB
 }
 
-func newBookmarkStore() *bookmarkStore {
-	return &bookmarkStore{items: make(map[string]bookmark)}
+func newBookmarkStore(db *sql.DB) *bookmarkStore {
+	return &bookmarkStore{db: db}
 }
 
 func (s *bookmarkStore) listByOwner(ownerID string) []bookmark {
-	s.mu.RLock()
-	defer s.mu.RUnlock()
+	rows, err := s.db.Query("SELECT id, owner_id, title, url, description, tags, image_urls, video_url, created_at, updated_at FROM bookmarks WHERE owner_id = ? ORDER BY created_at DESC", ownerID)
 	out := make([]bookmark, 0)
-	for _, b := range s.items {
-		if b.OwnerID == ownerID {
+	if err != nil {
+		return out
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var b bookmark
+		var tagsJSON, imagesJSON string
+		if err := rows.Scan(&b.ID, &b.OwnerID, &b.Title, &b.URL, &b.Description, &tagsJSON, &imagesJSON, &b.VideoUrl, &b.CreatedAt, &b.UpdatedAt); err == nil {
+			_ = json.Unmarshal([]byte(tagsJSON), &b.Tags)
+			_ = json.Unmarshal([]byte(imagesJSON), &b.ImageUrls)
+			if b.Tags == nil {
+				b.Tags = []string{}
+			}
+			if b.ImageUrls == nil {
+				b.ImageUrls = []string{}
+			}
 			out = append(out, b)
 		}
 	}
-	sort.Slice(out, func(i, j int) bool {
-		return out[i].CreatedAt.After(out[j].CreatedAt)
-	})
 	return out
 }
 
 func (s *bookmarkStore) getOwned(id, ownerID string) (bookmark, bool) {
-	s.mu.RLock()
-	defer s.mu.RUnlock()
-	b, ok := s.items[id]
-	if !ok || b.OwnerID != ownerID {
+	row := s.db.QueryRow("SELECT id, owner_id, title, url, description, tags, image_urls, video_url, created_at, updated_at FROM bookmarks WHERE id = ? AND owner_id = ?", id, ownerID)
+	var b bookmark
+	var tagsJSON, imagesJSON string
+	err := row.Scan(&b.ID, &b.OwnerID, &b.Title, &b.URL, &b.Description, &tagsJSON, &imagesJSON, &b.VideoUrl, &b.CreatedAt, &b.UpdatedAt)
+	if err != nil {
 		return bookmark{}, false
+	}
+	_ = json.Unmarshal([]byte(tagsJSON), &b.Tags)
+	_ = json.Unmarshal([]byte(imagesJSON), &b.ImageUrls)
+	if b.Tags == nil {
+		b.Tags = []string{}
+	}
+	if b.ImageUrls == nil {
+		b.ImageUrls = []string{}
 	}
 	return b, true
 }
@@ -89,43 +111,60 @@ func (s *bookmarkStore) create(ownerID string, req bookmarkRequest) (bookmark, e
 		URL:         req.URL,
 		Description: req.Description,
 		Tags:        normalizeTags(req.Tags),
+		ImageUrls:   req.ImageUrls,
+		VideoUrl:    req.VideoUrl,
 		CreatedAt:   now,
 		UpdatedAt:   now,
 	}
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	if _, exists := s.items[id]; exists {
-		return bookmark{}, errBookmarkConflict
+
+	tagsJSON, _ := json.Marshal(b.Tags)
+	imagesJSON, _ := json.Marshal(b.ImageUrls)
+
+	_, err := s.db.Exec("INSERT INTO bookmarks (id, owner_id, title, url, description, tags, image_urls, video_url, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+		b.ID, b.OwnerID, b.Title, b.URL, b.Description, string(tagsJSON), string(imagesJSON), b.VideoUrl, b.CreatedAt, b.UpdatedAt)
+
+	if err != nil {
+		if strings.Contains(err.Error(), "UNIQUE constraint failed") {
+			return bookmark{}, errBookmarkConflict
+		}
+		return bookmark{}, err
 	}
-	s.items[id] = b
 	return b, nil
 }
 
 func (s *bookmarkStore) update(id, ownerID string, req bookmarkRequest) (bookmark, bool) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	existing, ok := s.items[id]
-	if !ok || existing.OwnerID != ownerID {
+	existing, ok := s.getOwned(id, ownerID)
+	if !ok {
 		return bookmark{}, false
 	}
+	
 	existing.Title = req.Title
 	existing.URL = req.URL
 	existing.Description = req.Description
 	existing.Tags = normalizeTags(req.Tags)
+	existing.ImageUrls = req.ImageUrls
+	existing.VideoUrl = req.VideoUrl
 	existing.UpdatedAt = time.Now().UTC()
-	s.items[id] = existing
+
+	tagsJSON, _ := json.Marshal(existing.Tags)
+	imagesJSON, _ := json.Marshal(existing.ImageUrls)
+
+	_, err := s.db.Exec("UPDATE bookmarks SET title = ?, url = ?, description = ?, tags = ?, image_urls = ?, video_url = ?, updated_at = ? WHERE id = ? AND owner_id = ?",
+		existing.Title, existing.URL, existing.Description, string(tagsJSON), string(imagesJSON), existing.VideoUrl, existing.UpdatedAt, id, ownerID)
+	
+	if err != nil {
+		return bookmark{}, false
+	}
 	return existing, true
 }
 
 func (s *bookmarkStore) delete(id, ownerID string) bool {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	existing, ok := s.items[id]
-	if !ok || existing.OwnerID != ownerID {
+	res, err := s.db.Exec("DELETE FROM bookmarks WHERE id = ? AND owner_id = ?", id, ownerID)
+	if err != nil {
 		return false
 	}
-	delete(s.items, id)
-	return true
+	affected, _ := res.RowsAffected()
+	return affected > 0
 }
 
 func normalizeTags(in []string) []string {

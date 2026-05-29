@@ -365,7 +365,7 @@ class _ChangePasswordTile extends StatelessWidget {
       title: Text(context.l10n.profileChangePassword),
       trailing: const Icon(Icons.chevron_right),
       onTap: () {
-        const ChangePasswordRoute().go(context);
+        const ChangePasswordRoute().push(context);
       },
     );
   }

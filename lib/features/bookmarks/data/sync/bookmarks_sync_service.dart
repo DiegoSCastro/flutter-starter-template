@@ -112,6 +112,8 @@ class BookmarksSyncService implements BookmarksSyncController {
     for (final row in pending) {
       switch (row.syncState) {
         case SyncState.pendingCreate:
+          final remoteImages = await _uploadMediaFiles(row.imageUrls);
+          final remoteVideo = await _uploadVideoFile(row.videoUrl);
           final dto = await _remote.create(
             BookmarkRequest(
               id: row.uuid,
@@ -119,8 +121,8 @@ class BookmarksSyncService implements BookmarksSyncController {
               url: row.url,
               description: row.description,
               tags: row.tags,
-              imageUrls: row.imageUrls,
-              videoUrl: row.videoUrl,
+              imageUrls: remoteImages,
+              videoUrl: remoteVideo,
             ),
           );
           row
@@ -130,6 +132,8 @@ class BookmarksSyncService implements BookmarksSyncController {
             ..videoUrl = dto.videoUrl;
           await _local.put(row);
         case SyncState.pendingUpdate:
+          final remoteImages = await _uploadMediaFiles(row.imageUrls);
+          final remoteVideo = await _uploadVideoFile(row.videoUrl);
           final dto = await _remote.update(
             row.uuid,
             BookmarkRequest(
@@ -137,8 +141,8 @@ class BookmarksSyncService implements BookmarksSyncController {
               url: row.url,
               description: row.description,
               tags: row.tags,
-              imageUrls: row.imageUrls,
-              videoUrl: row.videoUrl,
+              imageUrls: remoteImages,
+              videoUrl: remoteVideo,
             ),
           );
           row
@@ -214,5 +218,32 @@ class BookmarksSyncService implements BookmarksSyncController {
       if (serverByUuid.containsKey(local.uuid)) continue;
       await _local.hardDelete(local.id);
     }
+  }
+
+  Future<List<String>> _uploadMediaFiles(List<String> paths) async {
+    final remoteUrls = <String>[];
+    for (final path in paths) {
+      if (path.startsWith('http://') || path.startsWith('https://')) {
+        remoteUrls.add(path);
+      } else {
+        final file = await MultipartFile.fromFile(path);
+        final res = await _remote.upload(file);
+        final url = res['url'];
+        if (url != null) {
+          remoteUrls.add(url);
+        }
+      }
+    }
+    return remoteUrls;
+  }
+
+  Future<String?> _uploadVideoFile(String? path) async {
+    if (path == null) return null;
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      return path;
+    }
+    final file = await MultipartFile.fromFile(path);
+    final res = await _remote.upload(file);
+    return res['url'];
   }
 }

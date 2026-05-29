@@ -3,20 +3,24 @@ package main
 import (
 	"context"
 	"crypto/rand"
+	"database/sql"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
+	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
-	"sync"
 	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
 	"github.com/golang-jwt/jwt/v5"
+	"golang.org/x/crypto/bcrypt"
 )
 
 const (
@@ -32,6 +36,11 @@ type user struct {
 type signInRequest struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
+}
+
+type changePasswordRequest struct {
+	CurrentPassword string `json:"currentPassword"`
+	NewPassword     string `json:"newPassword"`
 }
 
 type tokenPair struct {
@@ -50,57 +59,71 @@ type errorResponse struct {
 	Message string `json:"message"`
 }
 
-type refreshEntry struct {
-	user      user
-	expiresAt time.Time
-}
-
-type refreshStore struct {
-	mu      sync.Mutex
-	entries map[string]refreshEntry
-}
-
-func newRefreshStore() *refreshStore {
-	return &refreshStore{entries: make(map[string]refreshEntry)}
-}
-
-func (s *refreshStore) issue(u user) (string, error) {
+func issueRefreshToken(db *sql.DB, u user) (string, error) {
 	token, err := randomToken()
 	if err != nil {
 		return "", err
 	}
-	s.mu.Lock()
-	s.entries[token] = refreshEntry{user: u, expiresAt: time.Now().Add(refreshTokenTTL)}
-	s.mu.Unlock()
+	expiresAt := time.Now().Add(refreshTokenTTL)
+	_, err = db.Exec("INSERT INTO refresh_tokens (token, user_id, expires_at) VALUES (?, ?, ?)", token, u.ID, expiresAt)
+	if err != nil {
+		return "", err
+	}
 	return token, nil
 }
 
-// rotate consumes the supplied refresh token and, if still valid, returns the
-// associated user and a freshly issued refresh token. The old token is always
-// invalidated, even when expired, to prevent reuse.
-func (s *refreshStore) rotate(token string) (user, string, error) {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	entry, ok := s.entries[token]
-	delete(s.entries, token)
-	if !ok {
-		return user{}, "", errors.New("refresh token is not recognized")
+func rotateRefreshToken(db *sql.DB, token string) (user, string, error) {
+	tx, err := db.Begin()
+	if err != nil {
+		return user{}, "", err
 	}
-	if time.Now().After(entry.expiresAt) {
+	defer tx.Rollback()
+
+	var userID string
+	var expiresAt time.Time
+	err = tx.QueryRow("SELECT user_id, expires_at FROM refresh_tokens WHERE token = ?", token).Scan(&userID, &expiresAt)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return user{}, "", errors.New("refresh token is not recognized")
+		}
+		return user{}, "", err
+	}
+
+	_, err = tx.Exec("DELETE FROM refresh_tokens WHERE token = ?", token)
+	if err != nil {
+		return user{}, "", err
+	}
+
+	if time.Now().After(expiresAt) {
 		return user{}, "", errors.New("refresh token is expired")
 	}
+
+	var username string
+	err = tx.QueryRow("SELECT username FROM users WHERE id = ?", userID).Scan(&username)
+	if err != nil {
+		return user{}, "", err
+	}
+	u := user{ID: userID, Username: username}
+
 	newToken, err := randomToken()
 	if err != nil {
 		return user{}, "", err
 	}
-	s.entries[newToken] = refreshEntry{user: entry.user, expiresAt: time.Now().Add(refreshTokenTTL)}
-	return entry.user, newToken, nil
+	newExpiresAt := time.Now().Add(refreshTokenTTL)
+	_, err = tx.Exec("INSERT INTO refresh_tokens (token, user_id, expires_at) VALUES (?, ?, ?)", newToken, userID, newExpiresAt)
+	if err != nil {
+		return user{}, "", err
+	}
+	
+	if err := tx.Commit(); err != nil {
+		return user{}, "", err
+	}
+
+	return u, newToken, nil
 }
 
-func (s *refreshStore) revoke(token string) {
-	s.mu.Lock()
-	delete(s.entries, token)
-	s.mu.Unlock()
+func revokeRefreshToken(db *sql.DB, token string) {
+	db.Exec("DELETE FROM refresh_tokens WHERE token = ?", token)
 }
 
 func randomToken() (string, error) {
@@ -164,9 +187,14 @@ func main() {
 		secret = []byte("dev-only-secret-do-not-use-in-prod")
 	}
 
+	db, err := initDB("data.db")
+	if err != nil {
+		log.Fatalf("failed to initialize db: %v", err)
+	}
+	defer db.Close()
+
 	issuer := newJWTIssuer(secret)
-	refreshes := newRefreshStore()
-	bookmarks := newBookmarkStore()
+	bookmarks := newBookmarkStore(db)
 
 	r := chi.NewRouter()
 	r.Use(middleware.RequestID)
@@ -186,12 +214,19 @@ func main() {
 		writeJSON(w, http.StatusOK, map[string]string{"status": "ok"})
 	})
 
+	// Serve static files from the uploads directory
+	r.Handle("/uploads/*", http.StripPrefix("/uploads/", http.FileServer(http.Dir("./uploads"))))
+
 	r.Route("/api/auth", func(r chi.Router) {
-		r.Post("/sign-in", signInHandler(issuer, refreshes))
-		r.Post("/refresh", refreshHandler(issuer, refreshes))
-		r.Post("/sign-out", signOutHandler(refreshes))
+		r.Post("/register", registerHandler(issuer, db))
+		r.Post("/sign-in", signInHandler(issuer, db))
+		r.Post("/refresh", refreshHandler(issuer, db))
+		r.Post("/sign-out", signOutHandler(db))
 		r.Get("/me", authMiddleware(issuer, meHandler()))
+		r.Post("/change-password", authMiddleware(issuer, changePasswordHandler(db)))
 	})
+
+	r.Post("/api/upload", uploadHandler())
 
 	registerBookmarkRoutes(r, issuer, bookmarks)
 
@@ -201,7 +236,51 @@ func main() {
 	}
 }
 
-func signInHandler(issuer *jwtIssuer, refreshes *refreshStore) http.HandlerFunc {
+func registerHandler(issuer *jwtIssuer, db *sql.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		var req signInRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeError(w, http.StatusBadRequest, "invalid_body", "Request body is not valid JSON.")
+			return
+		}
+		if strings.TrimSpace(req.Username) == "" || req.Password == "" {
+			writeError(w, http.StatusBadRequest, "invalid_credentials", "Username and password are required.")
+			return
+		}
+
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
+		if err != nil {
+			writeError(w, http.StatusInternalServerError, "server_error", "Failed to hash password.")
+			return
+		}
+
+		id, err := randomToken()
+		if err != nil {
+			writeError(w, http.StatusInternalServerError, "server_error", "Failed to generate ID.")
+			return
+		}
+
+		u := user{ID: id, Username: req.Username}
+		_, err = db.Exec("INSERT INTO users (id, username, password_hash) VALUES (?, ?, ?)", id, req.Username, string(hashedPassword))
+		if err != nil {
+			if strings.Contains(err.Error(), "UNIQUE") {
+				writeError(w, http.StatusConflict, "conflict", "Username already exists.")
+				return
+			}
+			writeError(w, http.StatusInternalServerError, "server_error", "Failed to save user.")
+			return
+		}
+
+		pair, err := issueTokens(issuer, db, u)
+		if err != nil {
+			writeError(w, http.StatusInternalServerError, "token_error", "Failed to issue tokens.")
+			return
+		}
+		writeJSON(w, http.StatusOK, pair)
+	}
+}
+
+func signInHandler(issuer *jwtIssuer, db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req signInRequest
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -213,11 +292,24 @@ func signInHandler(issuer *jwtIssuer, refreshes *refreshStore) http.HandlerFunc 
 			return
 		}
 
-		u := user{
-			ID:       "fake-" + req.Username,
-			Username: req.Username,
+		var id, passwordHash string
+		err := db.QueryRow("SELECT id, password_hash FROM users WHERE username = ?", req.Username).Scan(&id, &passwordHash)
+		if err != nil {
+			if errors.Is(err, sql.ErrNoRows) {
+				writeError(w, http.StatusUnauthorized, "invalid_credentials", "Invalid username or password.")
+				return
+			}
+			writeError(w, http.StatusInternalServerError, "server_error", "Database error.")
+			return
 		}
-		pair, err := issueTokens(issuer, refreshes, u)
+
+		if err := bcrypt.CompareHashAndPassword([]byte(passwordHash), []byte(req.Password)); err != nil {
+			writeError(w, http.StatusUnauthorized, "invalid_credentials", "Invalid username or password.")
+			return
+		}
+
+		u := user{ID: id, Username: req.Username}
+		pair, err := issueTokens(issuer, db, u)
 		if err != nil {
 			writeError(w, http.StatusInternalServerError, "token_error", "Failed to issue tokens.")
 			return
@@ -226,14 +318,60 @@ func signInHandler(issuer *jwtIssuer, refreshes *refreshStore) http.HandlerFunc 
 	}
 }
 
-func refreshHandler(issuer *jwtIssuer, refreshes *refreshStore) http.HandlerFunc {
+func changePasswordHandler(db *sql.DB) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		u, ok := r.Context().Value(userCtxKey).(user)
+		if !ok {
+			writeError(w, http.StatusUnauthorized, "unauthenticated", "Missing or invalid token.")
+			return
+		}
+
+		var req changePasswordRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			writeError(w, http.StatusBadRequest, "invalid_body", "Request body is not valid JSON.")
+			return
+		}
+		if strings.TrimSpace(req.CurrentPassword) == "" || strings.TrimSpace(req.NewPassword) == "" {
+			writeError(w, http.StatusBadRequest, "invalid_input", "Current and new password are required.")
+			return
+		}
+
+		var passwordHash string
+		err := db.QueryRow("SELECT password_hash FROM users WHERE id = ?", u.ID).Scan(&passwordHash)
+		if err != nil {
+			writeError(w, http.StatusInternalServerError, "server_error", "Database error.")
+			return
+		}
+
+		if err := bcrypt.CompareHashAndPassword([]byte(passwordHash), []byte(req.CurrentPassword)); err != nil {
+			writeError(w, http.StatusUnauthorized, "invalid_credentials", "Incorrect current password.")
+			return
+		}
+
+		newHash, err := bcrypt.GenerateFromPassword([]byte(req.NewPassword), bcrypt.DefaultCost)
+		if err != nil {
+			writeError(w, http.StatusInternalServerError, "server_error", "Failed to hash new password.")
+			return
+		}
+
+		_, err = db.Exec("UPDATE users SET password_hash = ? WHERE id = ?", string(newHash), u.ID)
+		if err != nil {
+			writeError(w, http.StatusInternalServerError, "server_error", "Failed to update password.")
+			return
+		}
+
+		w.WriteHeader(http.StatusNoContent)
+	}
+}
+
+func refreshHandler(issuer *jwtIssuer, db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req refreshRequest
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil || strings.TrimSpace(req.RefreshToken) == "" {
 			writeError(w, http.StatusBadRequest, "invalid_body", "refresh_token is required.")
 			return
 		}
-		u, newRefresh, err := refreshes.rotate(req.RefreshToken)
+		u, newRefresh, err := rotateRefreshToken(db, req.RefreshToken)
 		if err != nil {
 			writeError(w, http.StatusUnauthorized, "invalid_refresh", err.Error())
 			return
@@ -252,12 +390,12 @@ func refreshHandler(issuer *jwtIssuer, refreshes *refreshStore) http.HandlerFunc
 	}
 }
 
-func issueTokens(issuer *jwtIssuer, refreshes *refreshStore, u user) (tokenPair, error) {
+func issueTokens(issuer *jwtIssuer, db *sql.DB, u user) (tokenPair, error) {
 	access, err := issuer.sign(u)
 	if err != nil {
 		return tokenPair{}, err
 	}
-	refresh, err := refreshes.issue(u)
+	refresh, err := issueRefreshToken(db, u)
 	if err != nil {
 		return tokenPair{}, err
 	}
@@ -269,12 +407,12 @@ func issueTokens(issuer *jwtIssuer, refreshes *refreshStore, u user) (tokenPair,
 	}, nil
 }
 
-func signOutHandler(refreshes *refreshStore) http.HandlerFunc {
+func signOutHandler(db *sql.DB) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		var req refreshRequest
 		_ = json.NewDecoder(r.Body).Decode(&req)
 		if strings.TrimSpace(req.RefreshToken) != "" {
-			refreshes.revoke(req.RefreshToken)
+			revokeRefreshToken(db, req.RefreshToken)
 		}
 		w.WriteHeader(http.StatusNoContent)
 	}
@@ -334,4 +472,57 @@ func writeJSON(w http.ResponseWriter, status int, body any) {
 
 func writeError(w http.ResponseWriter, status int, code, message string) {
 	writeJSON(w, status, errorResponse{Code: code, Message: message})
+}
+
+func uploadHandler() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// Limit body size to 10MB
+		r.ParseMultipartForm(10 << 20)
+		file, handler, err := r.FormFile("file")
+		if err != nil {
+			writeError(w, http.StatusBadRequest, "invalid_file", "Failed to get file from form: "+err.Error())
+			return
+		}
+		defer file.Close()
+
+		// Ensure uploads directory exists
+		if err := os.MkdirAll("./uploads", 0755); err != nil {
+			writeError(w, http.StatusInternalServerError, "server_error", "Failed to create uploads directory.")
+			return
+		}
+
+		// Generate unique name
+		ext := ""
+		if parts := strings.Split(handler.Filename, "."); len(parts) > 1 {
+			ext = "." + parts[len(parts)-1]
+		}
+		token, err := randomToken()
+		if err != nil {
+			writeError(w, http.StatusInternalServerError, "server_error", "Failed to generate file name.")
+			return
+		}
+		filename := token + ext
+		filePath := filepath.Join("uploads", filename)
+
+		// Create file on disk
+		dst, err := os.Create(filePath)
+		if err != nil {
+			writeError(w, http.StatusInternalServerError, "server_error", "Failed to save file on disk.")
+			return
+		}
+		defer dst.Close()
+
+		if _, err := io.Copy(dst, file); err != nil {
+			writeError(w, http.StatusInternalServerError, "server_error", "Failed to copy file contents.")
+			return
+		}
+
+		scheme := "http"
+		if r.TLS != nil {
+			scheme = "https"
+		}
+		fileURL := fmt.Sprintf("%s://%s/uploads/%s", scheme, r.Host, filename)
+
+		writeJSON(w, http.StatusOK, map[string]string{"url": fileURL})
+	}
 }
