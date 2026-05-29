@@ -10,5 +10,6 @@ export 'app_loading.dart';
 export 'app_network_image.dart';
 export 'app_photo_view.dart';
 export 'app_scaffold.dart';
+export 'app_skeleton.dart';
 export 'app_slidable.dart';
 export 'app_text_field.dart';
