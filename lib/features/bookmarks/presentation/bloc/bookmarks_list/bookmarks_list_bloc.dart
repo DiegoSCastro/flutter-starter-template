@@ -31,6 +31,7 @@ class BookmarksListBloc extends Bloc<BookmarksListEvent, BookmarksListState> {
       _onDeleteRequested,
       transformer: sequential(),
     );
+    on<BookmarksListSortChanged>(_onSortChanged, transformer: sequential());
     on<BookmarksListSyncRetried>(_onSyncRetried, transformer: sequential());
     on<_BookmarksSyncStatusChanged>(
       _onSyncStatusChanged,
@@ -129,6 +130,14 @@ class BookmarksListBloc extends Bloc<BookmarksListEvent, BookmarksListState> {
           )
           .uw();
     });
+  }
+
+  void _onSortChanged(
+    BookmarksListSortChanged event,
+    Emitter<BookmarksListState> emit,
+  ) {
+    if (event.sort == state.sort) return;
+    emit(state.copyWith(sort: event.sort));
   }
 
   Future<void> _onDeleteRequested(

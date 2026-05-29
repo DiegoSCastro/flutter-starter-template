@@ -494,6 +494,42 @@ abstract class AppLocalizations {
   /// **'Sync failed - tap to retry'**
   String get bookmarksSyncFailedRetryTooltip;
 
+  /// No description provided for @bookmarksAddTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Add bookmark'**
+  String get bookmarksAddTooltip;
+
+  /// No description provided for @bookmarksSearchClear.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear search'**
+  String get bookmarksSearchClear;
+
+  /// No description provided for @bookmarksSortTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort bookmarks'**
+  String get bookmarksSortTooltip;
+
+  /// No description provided for @bookmarksSortNewest.
+  ///
+  /// In en, this message translates to:
+  /// **'Newest first'**
+  String get bookmarksSortNewest;
+
+  /// No description provided for @bookmarksSortOldest.
+  ///
+  /// In en, this message translates to:
+  /// **'Oldest first'**
+  String get bookmarksSortOldest;
+
+  /// No description provided for @bookmarksSortTitleAz.
+  ///
+  /// In en, this message translates to:
+  /// **'Title (A–Z)'**
+  String get bookmarksSortTitleAz;
+
   /// No description provided for @bookmarkAppBarTitle.
   ///
   /// In en, this message translates to:
@@ -523,6 +559,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Open URL'**
   String get bookmarkOpenUrl;
+
+  /// No description provided for @bookmarkAttachedVideo.
+  ///
+  /// In en, this message translates to:
+  /// **'Attached video'**
+  String get bookmarkAttachedVideo;
 
   /// No description provided for @bookmarkInvalidUrl.
   ///

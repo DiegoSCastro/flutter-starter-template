@@ -20,6 +20,12 @@ final class BookmarksListDeleteRequested extends BookmarksListEvent {
   final String id;
 }
 
+final class BookmarksListSortChanged extends BookmarksListEvent {
+  const BookmarksListSortChanged(this.sort);
+
+  final BookmarkSort sort;
+}
+
 final class BookmarksListSyncRetried extends BookmarksListEvent {
   const BookmarksListSyncRetried();
 }
