@@ -8,7 +8,11 @@ void main() {
     AppDestination(icon: Icons.settings, label: 'Settings'),
   ];
 
-  Future<void> pumpAt(WidgetTester tester, double width) async {
+  Future<void> pumpAt(
+    WidgetTester tester,
+    double width, {
+    ValueChanged<int>? onDestinationSelected,
+  }) async {
     tester.view.physicalSize = Size(width, 800);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(tester.view.reset);
@@ -17,7 +21,7 @@ void main() {
         home: AppAdaptiveScaffold(
           destinations: destinations,
           selectedIndex: 0,
-          onDestinationSelected: (_) {},
+          onDestinationSelected: onDestinationSelected ?? (_) {},
           body: const Center(child: Text('body')),
         ),
       ),
@@ -25,11 +29,19 @@ void main() {
   }
 
   group('AppAdaptiveScaffold', () {
-    testWidgets('compact width uses a bottom NavigationBar', (tester) async {
-      await pumpAt(tester, 500);
+    testWidgets('compact width uses a floating bottom bar, not a rail', (
+      tester,
+    ) async {
+      int? selected;
+      await pumpAt(tester, 500, onDestinationSelected: (i) => selected = i);
 
-      expect(find.byType(NavigationBar), findsOneWidget);
       expect(find.byType(NavigationRail), findsNothing);
+      // The selected destination reveals its label.
+      expect(find.text('Home'), findsOneWidget);
+
+      // Tapping another destination reports its index.
+      await tester.tap(find.byIcon(Icons.settings));
+      expect(selected, 1);
     });
 
     testWidgets('medium width uses a collapsed NavigationRail', (tester) async {
