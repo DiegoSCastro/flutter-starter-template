@@ -5,20 +5,31 @@ updates:
     directory: "/"
     schedule:
       interval: weekly
-    open-pull-requests-limit: 10
+    open-pull-requests-limit: 5
     labels:
       - dependencies
       - dart
+    groups:
+      # Bundle all non-major pub bumps into a single PR.
+      pub-minor-and-patch:
+        update-types:
+          - minor
+          - patch
 
   # Android Gradle dependencies
   - package-ecosystem: gradle
     directory: "/android"
     schedule:
       interval: weekly
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 3
     labels:
       - dependencies
       - android
+    groups:
+      gradle-minor-and-patch:
+        update-types:
+          - minor
+          - patch
 
   # Note: iOS CocoaPods is intentionally omitted — Dependabot has no
   # CocoaPods support, and there is no Gemfile in /ios to track.
@@ -31,3 +42,8 @@ updates:
     labels:
       - dependencies
       - ci
+    groups:
+      # All action bumps in one PR — they rarely conflict.
+      github-actions:
+        patterns:
+          - "*"
