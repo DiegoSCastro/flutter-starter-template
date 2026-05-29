@@ -13,7 +13,6 @@ import '../features/bookmarks/presentation/screens/bookmark_form_screen.dart';
 import '../features/bookmarks/presentation/screens/bookmarks_list_screen.dart';
 import '../features/home/presentation/screens/home_screen.dart';
 import '../features/profile/presentation/screens/profile_screen.dart';
-import '../features/settings/presentation/screens/settings_screen.dart';
 import '../features/splash/presentation/screens/splash_screen.dart';
 import 'widgets/app_shell.dart';
 
@@ -59,11 +58,6 @@ part 'router.g.dart';
         ),
       ],
     ),
-    TypedStatefulShellBranch<SettingsBranchData>(
-      routes: <TypedRoute<RouteData>>[
-        TypedGoRoute<SettingsRoute>(path: '/settings', name: 'settings'),
-      ],
-    ),
   ],
 )
 class AppShellRouteData extends StatefulShellRouteData {
@@ -87,10 +81,6 @@ class BookmarksBranchData extends StatefulShellBranchData {
 
 class ProfileBranchData extends StatefulShellBranchData {
   const ProfileBranchData();
-}
-
-class SettingsBranchData extends StatefulShellBranchData {
-  const SettingsBranchData();
 }
 
 @TypedGoRoute<SplashRoute>(path: '/splash', name: 'splash')
@@ -123,14 +113,6 @@ class ChangePasswordRoute extends GoRouteData with $ChangePasswordRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) =>
       const ChangePasswordScreen();
-}
-
-class SettingsRoute extends GoRouteData with $SettingsRoute {
-  const SettingsRoute();
-
-  @override
-  Widget build(BuildContext context, GoRouterState state) =>
-      const SettingsScreen();
 }
 
 @TypedGoRoute<LoginRoute>(path: '/login', name: 'login')

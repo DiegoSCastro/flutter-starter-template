@@ -33,11 +33,6 @@ class AppShell extends StatelessWidget {
         selectedIcon: Icons.person,
         label: l10n.navProfile,
       ),
-      AppDestination(
-        icon: Icons.settings_outlined,
-        selectedIcon: Icons.settings,
-        label: l10n.navSettings,
-      ),
     ];
 
     return AppAdaptiveScaffold(
