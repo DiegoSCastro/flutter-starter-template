@@ -158,6 +158,7 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
       }
     } on Object catch (error, stackTrace) {
       addError(error, stackTrace);
+      _emitMediaFailure(emit, error);
     }
   }
 
@@ -189,6 +190,7 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
       }
     } on Object catch (error, stackTrace) {
       addError(error, stackTrace);
+      _emitMediaFailure(emit, error);
     }
   }
 
@@ -228,6 +230,7 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
       }
     } on Object catch (error, stackTrace) {
       addError(error, stackTrace);
+      _emitMediaFailure(emit, error);
     }
   }
 
@@ -259,6 +262,7 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
       }
     } on Object catch (error, stackTrace) {
       addError(error, stackTrace);
+      _emitMediaFailure(emit, error);
     }
   }
 
@@ -317,5 +321,14 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
     } finally {
       _submitInFlight = false;
     }
+  }
+
+  void _emitMediaFailure(Emitter<BookmarkFormState> emit, Object error) {
+    emit(
+      state.copyWith(
+        status: BookmarkFormStatus.idle,
+        failure: UnknownFailure(error.toString()),
+      ),
+    );
   }
 }

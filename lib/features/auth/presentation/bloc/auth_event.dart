@@ -8,6 +8,10 @@ final class AuthSessionRestoreRequested extends AuthEvent {
   const AuthSessionRestoreRequested();
 }
 
+final class AuthSessionCleared extends AuthEvent {
+  const AuthSessionCleared();
+}
+
 final class AuthSignInRequested extends AuthEvent {
   const AuthSignInRequested({
     required this.username,

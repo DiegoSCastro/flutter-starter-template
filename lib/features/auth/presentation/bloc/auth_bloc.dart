@@ -27,6 +27,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       _onSessionRestoreRequested,
       transformer: sequential(),
     );
+    on<AuthSessionCleared>(_onSessionCleared, transformer: sequential());
     on<AuthSignInRequested>(_onSignInRequested, transformer: sequential());
     on<AuthRegisterRequested>(_onRegisterRequested, transformer: sequential());
     on<AuthSignOutRequested>(_onSignOutRequested, transformer: sequential());
@@ -45,7 +46,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     try {
-      emit(const AuthState.submitting());
+      emit(const AuthState.restoring());
       final result = await _restoreSession();
       switch (result) {
         case Ok(value: final user):
@@ -58,6 +59,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     } catch (_) {
       rethrow;
     }
+  }
+
+  void _onSessionCleared(
+    AuthSessionCleared event,
+    Emitter<AuthState> emit,
+  ) {
+    emit(const AuthState.initial());
   }
 
   Future<void> _onSignInRequested(

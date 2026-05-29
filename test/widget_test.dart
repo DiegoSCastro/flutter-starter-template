@@ -5,7 +5,6 @@ import 'package:flutter_starter_template/app/app.dart';
 import 'package:flutter_starter_template/core/di/injection.dart';
 import 'package:flutter_starter_template/core/theme/theme_bloc.dart';
 import 'package:flutter_starter_template/core/utils/result.dart';
-import 'package:flutter_starter_template/features/auth/domain/entities/auth_user.dart';
 import 'package:flutter_starter_template/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:flutter_starter_template/features/bookmarks/domain/services/bookmarks_sync_controller.dart';
 import 'package:flutter_starter_template/features/home/presentation/bloc/home_bloc.dart';
@@ -29,12 +28,10 @@ void main() {
     analytics = MockAnalyticsService();
     stubAnalyticsService(analytics);
 
-    AuthUser? currentUser;
     final signIn = MockSignIn();
     when(() => signIn((username: 'alice', password: 'hunter2'))).thenAnswer((
       _,
     ) async {
-      currentUser = testUser;
       return const Ok(testUser);
     });
 
@@ -58,8 +55,6 @@ void main() {
 
     final listBookmarks = MockListBookmarks();
     when(listBookmarks.call).thenAnswer((_) async => const Ok([]));
-    final authRepository = MockAuthRepository();
-    when(() => authRepository.currentUser).thenAnswer((_) => currentUser);
 
     authBloc = AuthBloc(
       signIn: signIn,
@@ -71,7 +66,7 @@ void main() {
     themeBloc = ThemeBloc(await SharedPreferences.getInstance(), analytics);
 
     getIt.registerFactory<HomeBloc>(() {
-      final bloc = HomeBloc(authRepository, listBookmarks);
+      final bloc = HomeBloc(listBookmarks);
       homeBloc = bloc;
       return bloc;
     });

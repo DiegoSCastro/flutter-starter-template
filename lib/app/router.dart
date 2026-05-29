@@ -43,7 +43,10 @@ class ProfileRoute extends GoRouteData with $ProfileRoute {
       const ProfileScreen();
 }
 
-@TypedGoRoute<ChangePasswordRoute>(path: '/profile/change-password', name: 'change-password')
+@TypedGoRoute<ChangePasswordRoute>(
+  path: '/profile/change-password',
+  name: 'change-password',
+)
 class ChangePasswordRoute extends GoRouteData with $ChangePasswordRoute {
   const ChangePasswordRoute();
 
@@ -165,32 +168,40 @@ class DeepLinkScope extends InheritedWidget {
       final auth = bloc.state;
 
       // ── Phase 1: Before splash completes ──
-      // Intercept every navigation until restoreSession runs.  The splash
-      // screen sets splashCompleted = true after restore finishes.
-      if (auth is AuthInitial && !deepLink.splashCompleted) {
+      // Intercept every navigation until restoreSession and the splash
+      // minimum display time complete. The splash screen flips
+      // splashCompleted after both gates finish.
+      if (!deepLink.splashCompleted) {
         // Already on splash — let it run.
         if (location == splashLocation) return null;
         // Any other location (deep link or default '/') — capture and
         // send through splash first.
-        deepLink.pendingRedirect = state.uri.toString();
+        deepLink.pendingRedirect ??= state.uri.toString();
         return splashLocation;
       }
 
       // ── Phase 2: Unauthenticated ──
       // Splash completed with no session, or user signed out.
       if (auth is AuthInitial || auth is AuthFailure) {
-        if (location == loginLocation || location == registerLocation) return null;
+        if (location == loginLocation || location == registerLocation) {
+          return null;
+        }
         deepLink.pendingRedirect ??= state.uri.toString();
         return loginLocation;
       }
 
       // ── Phase 3: Authenticated ──
       if (auth is AuthAuthenticated) {
-        // Leaving splash or login/register — restore the captured deep link.
-        if (location == splashLocation || location == loginLocation || location == registerLocation) {
-          final target = deepLink.pendingRedirect;
+        final target = deepLink.pendingRedirect;
+        if (target != null) {
           deepLink.pendingRedirect = null;
-          return target ?? homeLocation;
+          if (target != state.uri.toString()) return target;
+        }
+        // Leaving splash or login/register — restore the captured deep link.
+        if (location == splashLocation ||
+            location == loginLocation ||
+            location == registerLocation) {
+          return homeLocation;
         }
         // Already on a valid, protected route — allow it.
         return null;

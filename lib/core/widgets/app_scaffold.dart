@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 import 'app_loading.dart';
 
@@ -63,13 +62,13 @@ class AppScaffold extends StatelessWidget {
                   scrolledUnderElevation: 0,
                   leading:
                       leading ??
-                      (context.canPop()
+                      (Navigator.of(context).canPop()
                           ? IconButton(
                               icon: const Icon(
                                 Icons.arrow_back_ios_new_rounded,
                               ),
                               iconSize: 20,
-                              onPressed: () => context.pop(),
+                              onPressed: () => Navigator.of(context).maybePop(),
                               tooltip: MaterialLocalizations.of(
                                 context,
                               ).backButtonTooltip,

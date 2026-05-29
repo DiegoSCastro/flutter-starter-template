@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ProfileState {
 
- String get username; String get userId; bool get isSigningOut; PackageInfo? get packageInfo; Failure? get failure;
+ String get username; String get userId; bool get isSigningOut; bool get signOutSucceeded; PackageInfo? get packageInfo; Failure? get failure;
 /// Create a copy of ProfileState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $ProfileStateCopyWith<ProfileState> get copyWith => _$ProfileStateCopyWithImpl<P
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProfileState&&(identical(other.username, username) || other.username == username)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.isSigningOut, isSigningOut) || other.isSigningOut == isSigningOut)&&(identical(other.packageInfo, packageInfo) || other.packageInfo == packageInfo)&&(identical(other.failure, failure) || other.failure == failure));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProfileState&&(identical(other.username, username) || other.username == username)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.isSigningOut, isSigningOut) || other.isSigningOut == isSigningOut)&&(identical(other.signOutSucceeded, signOutSucceeded) || other.signOutSucceeded == signOutSucceeded)&&(identical(other.packageInfo, packageInfo) || other.packageInfo == packageInfo)&&(identical(other.failure, failure) || other.failure == failure));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,username,userId,isSigningOut,packageInfo,failure);
+int get hashCode => Object.hash(runtimeType,username,userId,isSigningOut,signOutSucceeded,packageInfo,failure);
 
 @override
 String toString() {
-  return 'ProfileState(username: $username, userId: $userId, isSigningOut: $isSigningOut, packageInfo: $packageInfo, failure: $failure)';
+  return 'ProfileState(username: $username, userId: $userId, isSigningOut: $isSigningOut, signOutSucceeded: $signOutSucceeded, packageInfo: $packageInfo, failure: $failure)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $ProfileStateCopyWith<$Res>  {
   factory $ProfileStateCopyWith(ProfileState value, $Res Function(ProfileState) _then) = _$ProfileStateCopyWithImpl;
 @useResult
 $Res call({
- String username, String userId, bool isSigningOut, PackageInfo? packageInfo, Failure? failure
+ String username, String userId, bool isSigningOut, bool signOutSucceeded, PackageInfo? packageInfo, Failure? failure
 });
 
 
@@ -62,11 +62,12 @@ class _$ProfileStateCopyWithImpl<$Res>
 
 /// Create a copy of ProfileState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? username = null,Object? userId = null,Object? isSigningOut = null,Object? packageInfo = freezed,Object? failure = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? username = null,Object? userId = null,Object? isSigningOut = null,Object? signOutSucceeded = null,Object? packageInfo = freezed,Object? failure = freezed,}) {
   return _then(_self.copyWith(
 username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
 as String,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String,isSigningOut: null == isSigningOut ? _self.isSigningOut : isSigningOut // ignore: cast_nullable_to_non_nullable
+as bool,signOutSucceeded: null == signOutSucceeded ? _self.signOutSucceeded : signOutSucceeded // ignore: cast_nullable_to_non_nullable
 as bool,packageInfo: freezed == packageInfo ? _self.packageInfo : packageInfo // ignore: cast_nullable_to_non_nullable
 as PackageInfo?,failure: freezed == failure ? _self.failure : failure // ignore: cast_nullable_to_non_nullable
 as Failure?,
@@ -154,10 +155,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String username,  String userId,  bool isSigningOut,  PackageInfo? packageInfo,  Failure? failure)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String username,  String userId,  bool isSigningOut,  bool signOutSucceeded,  PackageInfo? packageInfo,  Failure? failure)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ProfileState() when $default != null:
-return $default(_that.username,_that.userId,_that.isSigningOut,_that.packageInfo,_that.failure);case _:
+return $default(_that.username,_that.userId,_that.isSigningOut,_that.signOutSucceeded,_that.packageInfo,_that.failure);case _:
   return orElse();
 
 }
@@ -175,10 +176,10 @@ return $default(_that.username,_that.userId,_that.isSigningOut,_that.packageInfo
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String username,  String userId,  bool isSigningOut,  PackageInfo? packageInfo,  Failure? failure)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String username,  String userId,  bool isSigningOut,  bool signOutSucceeded,  PackageInfo? packageInfo,  Failure? failure)  $default,) {final _that = this;
 switch (_that) {
 case _ProfileState():
-return $default(_that.username,_that.userId,_that.isSigningOut,_that.packageInfo,_that.failure);case _:
+return $default(_that.username,_that.userId,_that.isSigningOut,_that.signOutSucceeded,_that.packageInfo,_that.failure);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -195,10 +196,10 @@ return $default(_that.username,_that.userId,_that.isSigningOut,_that.packageInfo
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String username,  String userId,  bool isSigningOut,  PackageInfo? packageInfo,  Failure? failure)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String username,  String userId,  bool isSigningOut,  bool signOutSucceeded,  PackageInfo? packageInfo,  Failure? failure)?  $default,) {final _that = this;
 switch (_that) {
 case _ProfileState() when $default != null:
-return $default(_that.username,_that.userId,_that.isSigningOut,_that.packageInfo,_that.failure);case _:
+return $default(_that.username,_that.userId,_that.isSigningOut,_that.signOutSucceeded,_that.packageInfo,_that.failure);case _:
   return null;
 
 }
@@ -210,12 +211,13 @@ return $default(_that.username,_that.userId,_that.isSigningOut,_that.packageInfo
 
 
 class _ProfileState implements ProfileState {
-  const _ProfileState({this.username = '', this.userId = '', this.isSigningOut = false, this.packageInfo, this.failure});
+  const _ProfileState({this.username = '', this.userId = '', this.isSigningOut = false, this.signOutSucceeded = false, this.packageInfo, this.failure});
   
 
 @override@JsonKey() final  String username;
 @override@JsonKey() final  String userId;
 @override@JsonKey() final  bool isSigningOut;
+@override@JsonKey() final  bool signOutSucceeded;
 @override final  PackageInfo? packageInfo;
 @override final  Failure? failure;
 
@@ -229,16 +231,16 @@ _$ProfileStateCopyWith<_ProfileState> get copyWith => __$ProfileStateCopyWithImp
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProfileState&&(identical(other.username, username) || other.username == username)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.isSigningOut, isSigningOut) || other.isSigningOut == isSigningOut)&&(identical(other.packageInfo, packageInfo) || other.packageInfo == packageInfo)&&(identical(other.failure, failure) || other.failure == failure));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProfileState&&(identical(other.username, username) || other.username == username)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.isSigningOut, isSigningOut) || other.isSigningOut == isSigningOut)&&(identical(other.signOutSucceeded, signOutSucceeded) || other.signOutSucceeded == signOutSucceeded)&&(identical(other.packageInfo, packageInfo) || other.packageInfo == packageInfo)&&(identical(other.failure, failure) || other.failure == failure));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,username,userId,isSigningOut,packageInfo,failure);
+int get hashCode => Object.hash(runtimeType,username,userId,isSigningOut,signOutSucceeded,packageInfo,failure);
 
 @override
 String toString() {
-  return 'ProfileState(username: $username, userId: $userId, isSigningOut: $isSigningOut, packageInfo: $packageInfo, failure: $failure)';
+  return 'ProfileState(username: $username, userId: $userId, isSigningOut: $isSigningOut, signOutSucceeded: $signOutSucceeded, packageInfo: $packageInfo, failure: $failure)';
 }
 
 
@@ -249,7 +251,7 @@ abstract mixin class _$ProfileStateCopyWith<$Res> implements $ProfileStateCopyWi
   factory _$ProfileStateCopyWith(_ProfileState value, $Res Function(_ProfileState) _then) = __$ProfileStateCopyWithImpl;
 @override @useResult
 $Res call({
- String username, String userId, bool isSigningOut, PackageInfo? packageInfo, Failure? failure
+ String username, String userId, bool isSigningOut, bool signOutSucceeded, PackageInfo? packageInfo, Failure? failure
 });
 
 
@@ -266,11 +268,12 @@ class __$ProfileStateCopyWithImpl<$Res>
 
 /// Create a copy of ProfileState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? username = null,Object? userId = null,Object? isSigningOut = null,Object? packageInfo = freezed,Object? failure = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? username = null,Object? userId = null,Object? isSigningOut = null,Object? signOutSucceeded = null,Object? packageInfo = freezed,Object? failure = freezed,}) {
   return _then(_ProfileState(
 username: null == username ? _self.username : username // ignore: cast_nullable_to_non_nullable
 as String,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
 as String,isSigningOut: null == isSigningOut ? _self.isSigningOut : isSigningOut // ignore: cast_nullable_to_non_nullable
+as bool,signOutSucceeded: null == signOutSucceeded ? _self.signOutSucceeded : signOutSucceeded // ignore: cast_nullable_to_non_nullable
 as bool,packageInfo: freezed == packageInfo ? _self.packageInfo : packageInfo // ignore: cast_nullable_to_non_nullable
 as PackageInfo?,failure: freezed == failure ? _self.failure : failure // ignore: cast_nullable_to_non_nullable
 as Failure?,

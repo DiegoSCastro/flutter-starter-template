@@ -264,6 +264,10 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i706.Uuid>(),
       ),
     );
+    gh.factory<_i1013.ProfileBloc>(
+      () =>
+          _i1013.ProfileBloc(gh<_i926.SignOut>(), gh<_i838.AnalyticsService>()),
+    );
     gh.factory<_i11.ChangePasswordCubit>(
       () => _i11.ChangePasswordCubit(gh<_i780.ChangePassword>()),
     );
@@ -291,10 +295,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i412.UpdateBookmark>(
       () => _i412.UpdateBookmark(gh<_i630.BookmarksRepository>()),
     );
-    gh.factory<_i423.HomeBloc>(
-      () =>
-          _i423.HomeBloc(gh<_i987.AuthRepository>(), gh<_i568.ListBookmarks>()),
-    );
     gh.factory<_i373.BookmarkDetailBloc>(
       () => _i373.BookmarkDetailBloc(
         gh<_i690.GetBookmark>(),
@@ -312,9 +312,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i213.PermissionService>(),
       ),
     );
-    gh.factory<_i1013.ProfileBloc>(
-      () => _i1013.ProfileBloc(gh<_i269.AuthBloc>()),
-    );
+    gh.factory<_i423.HomeBloc>(() => _i423.HomeBloc(gh<_i568.ListBookmarks>()));
     gh.factory<_i566.BookmarksListBloc>(
       () => _i566.BookmarksListBloc(
         gh<_i568.ListBookmarks>(),

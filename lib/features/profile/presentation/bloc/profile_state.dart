@@ -11,6 +11,7 @@ abstract class ProfileState with _$ProfileState {
     @Default('') String username,
     @Default('') String userId,
     @Default(false) bool isSigningOut,
+    @Default(false) bool signOutSucceeded,
     PackageInfo? packageInfo,
     Failure? failure,
   }) = _ProfileState;

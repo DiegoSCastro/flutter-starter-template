@@ -1,6 +1,5 @@
 import 'package:flutter_starter_template/core/error/failure.dart';
 import 'package:flutter_starter_template/core/utils/result.dart';
-import 'package:flutter_starter_template/features/auth/domain/entities/auth_user.dart';
 import 'package:flutter_starter_template/features/bookmarks/domain/entities/bookmark.dart';
 import 'package:flutter_starter_template/features/home/presentation/bloc/home_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -11,7 +10,7 @@ import '../../../../test_utils.dart';
 void main() {
   group('HomeBloc', () {
     test('initial state is default', () async {
-      final bloc = HomeBloc(_authRepository(), MockListBookmarks());
+      final bloc = HomeBloc(MockListBookmarks());
 
       expect(bloc.state.username, '');
       expect(bloc.state.totalBookmarks, 0);
@@ -25,12 +24,9 @@ void main() {
 
     test('aggregates auth and bookmark data on load', () async {
       final listBookmarks = _listBookmarks(Ok([testBookmark, testBookmark2]));
-      final bloc = HomeBloc(
-        _authRepository(currentUser: testUser),
-        listBookmarks,
-      );
+      final bloc = HomeBloc(listBookmarks);
 
-      bloc.add(const HomeLoadRequested());
+      bloc.add(const HomeLoadRequested(username: 'alice'));
       await bloc.stream.firstWhere((state) => !state.isLoading);
 
       expect(bloc.state.username, 'alice');
@@ -42,7 +38,7 @@ void main() {
     });
 
     test('handles empty bookmarks', () async {
-      final bloc = HomeBloc(_authRepository(), _listBookmarks(const Ok([])));
+      final bloc = HomeBloc(_listBookmarks(const Ok([])));
       bloc.add(const HomeLoadRequested());
       await bloc.stream.firstWhere((state) => !state.isLoading);
 
@@ -57,11 +53,10 @@ void main() {
     test('stores failure when bookmark load fails', () async {
       const failure = UnknownFailure('Failed');
       final bloc = HomeBloc(
-        _authRepository(currentUser: testUser),
         _listBookmarks(const Err(failure)),
       );
 
-      bloc.add(const HomeLoadRequested());
+      bloc.add(const HomeLoadRequested(username: 'alice'));
       await bloc.stream.firstWhere((state) => !state.isLoading);
 
       expect(bloc.state.username, 'alice');
@@ -71,12 +66,6 @@ void main() {
       await bloc.close();
     });
   });
-}
-
-MockAuthRepository _authRepository({AuthUser? currentUser}) {
-  final repository = MockAuthRepository();
-  when(() => repository.currentUser).thenReturn(currentUser);
-  return repository;
 }
 
 MockListBookmarks _listBookmarks(Result<List<Bookmark>> result) {

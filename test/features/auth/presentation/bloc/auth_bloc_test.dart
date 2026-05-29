@@ -51,7 +51,7 @@ void main() {
         },
         act: (bloc) => bloc.add(const AuthSessionRestoreRequested()),
         expect: () => [
-          const AuthState.submitting(),
+          const AuthState.restoring(),
           const AuthState.authenticated(testUser),
         ],
         verify: (_) {
@@ -69,7 +69,7 @@ void main() {
         },
         act: (bloc) => bloc.add(const AuthSessionRestoreRequested()),
         expect: () => [
-          const AuthState.submitting(),
+          const AuthState.restoring(),
           const AuthState.initial(),
         ],
         verify: (_) {
@@ -77,6 +77,17 @@ void main() {
         },
       );
     });
+
+    blocTest<AuthBloc, AuthState>(
+      'clears session without invoking sign out use case',
+      build: () => bloc,
+      seed: () => const AuthState.authenticated(testUser),
+      act: (bloc) => bloc.add(const AuthSessionCleared()),
+      expect: () => [const AuthState.initial()],
+      verify: (_) {
+        verifyNever(() => mockSignOut());
+      },
+    );
 
     group('signIn', () {
       blocTest<AuthBloc, AuthState>(

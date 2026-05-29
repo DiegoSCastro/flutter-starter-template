@@ -48,12 +48,15 @@ class BookmarksListBloc extends Bloc<BookmarksListEvent, BookmarksListState> {
     });
   }
 
+  static const searchAnalyticsDebounce = Duration(milliseconds: 350);
+
   final ListBookmarks _list;
   final DeleteBookmark _delete;
   final BookmarksSyncController _sync;
   final AnalyticsService _analytics;
   late final StreamSubscription<BookmarksSyncStatus> _syncSub;
   BookmarksSyncStatus _lastSyncStatus = BookmarksSyncStatus.idle;
+  Timer? _searchAnalyticsTimer;
 
   Future<void> _onLoadRequested(
     BookmarksListLoadRequested event,
@@ -124,15 +127,18 @@ class BookmarksListBloc extends Bloc<BookmarksListEvent, BookmarksListState> {
     final next = state.copyWith(query: event.query);
     emit(next);
     final normalized = event.query.trim();
+    _searchAnalyticsTimer?.cancel();
     if (normalized.isEmpty) {
       return;
     }
-    _analytics
-        .trackBookmarkSearch(
-          queryLength: normalized.length,
-          resultCount: next.visibleItems.length,
-        )
-        .uw();
+    _searchAnalyticsTimer = Timer(searchAnalyticsDebounce, () {
+      _analytics
+          .trackBookmarkSearch(
+            queryLength: normalized.length,
+            resultCount: next.visibleItems.length,
+          )
+          .uw();
+    });
   }
 
   Future<void> _onDeleteRequested(
@@ -174,6 +180,7 @@ class BookmarksListBloc extends Bloc<BookmarksListEvent, BookmarksListState> {
 
   @override
   Future<void> close() {
+    _searchAnalyticsTimer?.cancel();
     _syncSub.cancel();
     return super.close();
   }

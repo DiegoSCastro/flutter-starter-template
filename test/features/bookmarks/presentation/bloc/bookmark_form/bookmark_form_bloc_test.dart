@@ -301,6 +301,26 @@ void main() {
       );
 
       blocTest<BookmarkFormBloc, BookmarkFormState>(
+        'emits failure when image picker throws',
+        setUp: () {
+          when(
+            () => mockPermission.hasGalleryPermission(),
+          ).thenAnswer((_) async => true);
+          when(
+            () => mockImagePicker.pickMultiImage(),
+          ).thenThrow(Exception('picker failed'));
+        },
+        build: buildBloc,
+        act: (bloc) => bloc.add(const BookmarkFormImagesPicked()),
+        expect: () => [
+          predicate<BookmarkFormState>(
+            (s) => s.failure is UnknownFailure,
+          ),
+        ],
+        errors: () => [isA<Exception>()],
+      );
+
+      blocTest<BookmarkFormBloc, BookmarkFormState>(
         'takes image successfully when camera permission is already granted',
         setUp: () {
           when(

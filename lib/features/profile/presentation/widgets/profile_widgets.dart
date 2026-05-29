@@ -13,6 +13,7 @@ import '../../../../core/future_extensions.dart';
 import '../../../../core/theme/theme_bloc.dart';
 import '../../../../core/theme/theme_state.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../bloc/profile_bloc.dart';
 import '../bloc/profile_state.dart';
 
@@ -21,40 +22,47 @@ class ProfileBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ProfileBloc, ProfileState>(
-      builder: (context, state) {
-        return AppScaffold(
-          title: context.l10n.profileAppBarTitle,
-          padding: EdgeInsets.zero,
-          body: ListView(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            children: [
-              const _ProfileHeader(),
-              const SizedBox(height: 24),
-              _SectionLabel(
-                context.l10n.profileSectionAccount,
-              ).animateSlideRight(delay: 300.ms),
-              const _ChangePasswordTile().animateSlideRight(delay: 325.ms),
-              const SizedBox(height: 24),
-              _SectionLabel(
-                context.l10n.profileSectionAppearance,
-              ).animateSlideRight(delay: 350.ms),
-              const _ThemeModeSelector().animateSlideRight(delay: 400.ms),
-              const SizedBox(height: 8),
-              const _ColorSchemeSelector().animateSlideRight(delay: 450.ms),
-              const SizedBox(height: 24),
-              _SectionLabel(
-                context.l10n.profileSectionAbout,
-              ).animateSlideRight(delay: 500.ms),
-              const _AppInfoTile().animateSlideRight(delay: 550.ms),
-              const SizedBox(height: 32),
-              _SignOutButton(
-                isLoading: state.isSigningOut,
-              ).animateSlideUp(delay: 600.ms),
-            ],
-          ),
-        );
+    return BlocListener<ProfileBloc, ProfileState>(
+      listenWhen: (previous, current) =>
+          !previous.signOutSucceeded && current.signOutSucceeded,
+      listener: (context, state) {
+        context.read<AuthBloc>().add(const AuthSessionCleared());
       },
+      child: BlocBuilder<ProfileBloc, ProfileState>(
+        builder: (context, state) {
+          return AppScaffold(
+            title: context.l10n.profileAppBarTitle,
+            padding: EdgeInsets.zero,
+            body: ListView(
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              children: [
+                const _ProfileHeader(),
+                const SizedBox(height: 24),
+                _SectionLabel(
+                  context.l10n.profileSectionAccount,
+                ).animateSlideRight(delay: 300.ms),
+                const _ChangePasswordTile().animateSlideRight(delay: 325.ms),
+                const SizedBox(height: 24),
+                _SectionLabel(
+                  context.l10n.profileSectionAppearance,
+                ).animateSlideRight(delay: 350.ms),
+                const _ThemeModeSelector().animateSlideRight(delay: 400.ms),
+                const SizedBox(height: 8),
+                const _ColorSchemeSelector().animateSlideRight(delay: 450.ms),
+                const SizedBox(height: 24),
+                _SectionLabel(
+                  context.l10n.profileSectionAbout,
+                ).animateSlideRight(delay: 500.ms),
+                const _AppInfoTile().animateSlideRight(delay: 550.ms),
+                const SizedBox(height: 32),
+                _SignOutButton(
+                  isLoading: state.isSigningOut,
+                ).animateSlideUp(delay: 600.ms),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

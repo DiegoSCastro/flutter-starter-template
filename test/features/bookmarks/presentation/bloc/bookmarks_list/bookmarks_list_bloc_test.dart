@@ -86,6 +86,9 @@ void main() {
         build: buildBloc,
         seed: () => BookmarksListState(items: [testBookmark, testBookmark2]),
         act: (bloc) => bloc.add(const BookmarksListQueryChanged('Dart')),
+        wait:
+            BookmarksListBloc.searchAnalyticsDebounce +
+            const Duration(milliseconds: 10),
         expect: () => [
           predicate<BookmarksListState>(
             (s) => s.query == 'Dart' && s.visibleItems.length == 1,
@@ -107,6 +110,34 @@ void main() {
         seed: () => BookmarksListState(items: [testBookmark], query: 'flutter'),
         act: (bloc) => bloc.add(const BookmarksListQueryChanged('flutter')),
         expect: () => <BookmarksListState>[],
+      );
+
+      blocTest<BookmarksListBloc, BookmarksListState>(
+        'debounces analytics for rapid query changes',
+        build: buildBloc,
+        seed: () => BookmarksListState(items: [testBookmark, testBookmark2]),
+        act: (bloc) {
+          bloc
+            ..add(const BookmarksListQueryChanged('D'))
+            ..add(const BookmarksListQueryChanged('Da'))
+            ..add(const BookmarksListQueryChanged('Dar'));
+        },
+        wait:
+            BookmarksListBloc.searchAnalyticsDebounce +
+            const Duration(milliseconds: 10),
+        expect: () => [
+          predicate<BookmarksListState>((s) => s.query == 'D'),
+          predicate<BookmarksListState>((s) => s.query == 'Da'),
+          predicate<BookmarksListState>((s) => s.query == 'Dar'),
+        ],
+        verify: (_) {
+          verify(
+            () => mockAnalytics.logEvent(
+              'bookmark_search',
+              parameters: any(named: 'parameters'),
+            ),
+          ).called(1);
+        },
       );
     });
 
