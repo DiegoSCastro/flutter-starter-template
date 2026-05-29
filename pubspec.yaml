@@ -77,7 +77,7 @@ dependencies:
 
   # Encrypted persistent storage for the auth session (access + refresh
   # tokens). Keychain on iOS, EncryptedSharedPreferences/Keystore on Android.
-  flutter_secure_storage: ^10.3.0
+  flutter_secure_storage: ^10.3.1
 
   # Launches URLs in the system browser (used by the bookmarks feature's
   # "Open" action).
