@@ -5,79 +5,61 @@ sealed class BookmarkFormEvent {
 }
 
 final class BookmarkFormInitialized extends BookmarkFormEvent {
-  const BookmarkFormInitialized(this.id, {this.completer});
+  const BookmarkFormInitialized(this.id);
 
   final String? id;
-  final Completer<void>? completer;
 }
 
 final class BookmarkFormTitleChanged extends BookmarkFormEvent {
-  const BookmarkFormTitleChanged(this.value, {this.completer});
+  const BookmarkFormTitleChanged(this.value);
 
   final String value;
-  final Completer<void>? completer;
 }
 
 final class BookmarkFormUrlChanged extends BookmarkFormEvent {
-  const BookmarkFormUrlChanged(this.value, {this.completer});
+  const BookmarkFormUrlChanged(this.value);
 
   final String value;
-  final Completer<void>? completer;
 }
 
 final class BookmarkFormDescriptionChanged extends BookmarkFormEvent {
-  const BookmarkFormDescriptionChanged(this.value, {this.completer});
+  const BookmarkFormDescriptionChanged(this.value);
 
   final String value;
-  final Completer<void>? completer;
 }
 
 final class BookmarkFormTagsChanged extends BookmarkFormEvent {
-  const BookmarkFormTagsChanged(this.csv, {this.completer});
+  const BookmarkFormTagsChanged(this.csv);
 
   final String csv;
-  final Completer<void>? completer;
 }
 
 final class BookmarkFormImagesPicked extends BookmarkFormEvent {
-  const BookmarkFormImagesPicked({this.completer});
-
-  final Completer<void>? completer;
+  const BookmarkFormImagesPicked();
 }
 
 final class BookmarkFormCameraImageTaken extends BookmarkFormEvent {
-  const BookmarkFormCameraImageTaken({this.completer});
-
-  final Completer<void>? completer;
+  const BookmarkFormCameraImageTaken();
 }
 
 final class BookmarkFormImageRemoved extends BookmarkFormEvent {
-  const BookmarkFormImageRemoved(this.path, {this.completer});
+  const BookmarkFormImageRemoved(this.path);
 
   final String path;
-  final Completer<void>? completer;
 }
 
 final class BookmarkFormVideoPicked extends BookmarkFormEvent {
-  const BookmarkFormVideoPicked({this.completer});
-
-  final Completer<void>? completer;
+  const BookmarkFormVideoPicked();
 }
 
 final class BookmarkFormCameraVideoTaken extends BookmarkFormEvent {
-  const BookmarkFormCameraVideoTaken({this.completer});
-
-  final Completer<void>? completer;
+  const BookmarkFormCameraVideoTaken();
 }
 
 final class BookmarkFormVideoRemoved extends BookmarkFormEvent {
-  const BookmarkFormVideoRemoved({this.completer});
-
-  final Completer<void>? completer;
+  const BookmarkFormVideoRemoved();
 }
 
 final class BookmarkFormSubmitted extends BookmarkFormEvent {
-  const BookmarkFormSubmitted({this.completer});
-
-  final Completer<bool>? completer;
+  const BookmarkFormSubmitted();
 }

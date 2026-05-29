@@ -1,10 +1,7 @@
-import 'dart:async';
-
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/bloc/event_completion.dart';
 import '../../../../core/utils/result.dart';
 import '../../../auth/domain/repositories/auth_repository.dart';
 import '../../../bookmarks/domain/entities/bookmark.dart';
@@ -24,9 +21,9 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
   final ListBookmarks _listBookmarks;
 
   Future<void> load() {
-    final completer = Completer<void>();
-    add(HomeLoadRequested(completer: completer));
-    return completer.future;
+    final completion = stream.firstWhere((state) => !state.isLoading);
+    add(const HomeLoadRequested());
+    return completion.then((_) {});
   }
 
   Future<void> _onLoadRequested(
@@ -48,9 +45,7 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
             ),
           );
       }
-      event.completer.completeVoidIfPending();
-    } catch (error, stackTrace) {
-      event.completer.completeErrorIfPending(error, stackTrace);
+    } catch (_) {
       rethrow;
     }
   }

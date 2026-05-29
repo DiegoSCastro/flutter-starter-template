@@ -6,7 +6,6 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../core/analytics/analytics_extensions.dart';
 import '../../../../core/analytics/analytics_service.dart';
-import '../../../../core/bloc/event_completion.dart';
 import '../../../../core/utils/result.dart';
 import '../../domain/usecases/register.dart';
 import '../../domain/usecases/restore_session.dart';
@@ -41,13 +40,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AnalyticsService _analytics;
   bool _signInInFlight = false;
   bool _registerInFlight = false;
+  bool _signOutInFlight = false;
 
   /// Called once during app bootstrap. Tries to rehydrate a persisted session;
   /// silently lands on [AuthState.initial] if there isn't one or it expired.
   Future<void> restoreSession() {
-    final completer = Completer<void>();
-    add(AuthSessionRestoreRequested(completer: completer));
-    return completer.future;
+    final completion = stream
+        .firstWhere(
+          (state) =>
+              state is AuthAuthenticated ||
+              state is AuthInitial ||
+              state is AuthFailure,
+        )
+        .then((_) {});
+    add(const AuthSessionRestoreRequested());
+    return completion;
   }
 
   Future<void> signIn({
@@ -56,15 +63,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }) {
     if (state is AuthSubmitting || _signInInFlight) return Future<void>.value();
     _signInInFlight = true;
-    final completer = Completer<void>();
+    final completion = stream
+        .firstWhere((state) => state is! AuthSubmitting)
+        .then((_) {});
     add(
       AuthSignInRequested(
         username: username,
         password: password,
-        completer: completer,
       ),
     );
-    return completer.future.whenComplete(() => _signInInFlight = false);
+    return completion.whenComplete(() => _signInInFlight = false);
   }
 
   Future<void> register({
@@ -75,21 +83,28 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       return Future<void>.value();
     }
     _registerInFlight = true;
-    final completer = Completer<void>();
+    final completion = stream
+        .firstWhere((state) => state is! AuthSubmitting)
+        .then((_) {});
     add(
       AuthRegisterRequested(
         username: username,
         password: password,
-        completer: completer,
       ),
     );
-    return completer.future.whenComplete(() => _registerInFlight = false);
+    return completion.whenComplete(() => _registerInFlight = false);
   }
 
   Future<void> signOut() {
-    final completer = Completer<void>();
-    add(AuthSignOutRequested(completer: completer));
-    return completer.future;
+    if (_signOutInFlight) return Future<void>.value();
+    _signOutInFlight = true;
+    final completion = stream
+        .firstWhere(
+          (state) => state is AuthInitial || state is AuthFailure,
+        )
+        .then((_) {});
+    add(const AuthSignOutRequested());
+    return completion.whenComplete(() => _signOutInFlight = false);
   }
 
   Future<void> _onSessionRestoreRequested(
@@ -97,6 +112,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     try {
+      emit(const AuthState.submitting());
       final result = await _restoreSession();
       switch (result) {
         case Ok(value: final user):
@@ -106,9 +122,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           unawaited(_analytics.setCurrentUser(null));
           emit(const AuthState.initial());
       }
-      event.completer.completeVoidIfPending();
-    } catch (error, stackTrace) {
-      event.completer.completeErrorIfPending(error, stackTrace);
+    } catch (_) {
       rethrow;
     }
   }
@@ -119,7 +133,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     try {
       if (state is AuthSubmitting) {
-        event.completer.completeVoidIfPending();
         return;
       }
       emit(const AuthState.submitting());
@@ -141,9 +154,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           );
           emit(AuthState.failure(failure));
       }
-      event.completer.completeVoidIfPending();
-    } catch (error, stackTrace) {
-      event.completer.completeErrorIfPending(error, stackTrace);
+    } catch (_) {
       rethrow;
     }
   }
@@ -154,7 +165,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     try {
       if (state is AuthSubmitting) {
-        event.completer.completeVoidIfPending();
         return;
       }
       emit(const AuthState.submitting());
@@ -176,9 +186,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           );
           emit(AuthState.failure(failure));
       }
-      event.completer.completeVoidIfPending();
-    } catch (error, stackTrace) {
-      event.completer.completeErrorIfPending(error, stackTrace);
+    } catch (_) {
       rethrow;
     }
   }
@@ -189,14 +197,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     try {
       final result = await _signOut();
-      if (result is Ok<void>) {
-        unawaited(_analytics.trackSignOut());
-        unawaited(_analytics.setCurrentUser(null));
-        emit(const AuthState.initial());
+      switch (result) {
+        case Ok<void>():
+          unawaited(_analytics.trackSignOut());
+          unawaited(_analytics.setCurrentUser(null));
+          emit(const AuthState.initial());
+        case Err():
+          unawaited(_analytics.setCurrentUser(null));
+          emit(const AuthState.initial());
       }
-      event.completer.completeVoidIfPending();
-    } catch (error, stackTrace) {
-      event.completer.completeErrorIfPending(error, stackTrace);
+    } catch (_) {
       rethrow;
     }
   }

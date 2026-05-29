@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
-import '../../../../core/bloc/event_completion.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/bloc/auth_state.dart';
 import 'profile_state.dart';
@@ -32,16 +31,16 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   late final StreamSubscription<AuthState> _authSub;
 
   Future<void> load() {
-    final completer = Completer<void>();
-    add(ProfileLoaded(completer: completer));
-    return completer.future;
+    final completion = stream.firstWhere((state) => state.packageInfo != null);
+    add(const ProfileLoaded());
+    return completion.then((_) {});
   }
 
   Future<void> signOut() {
     if (state.isSigningOut) return Future<void>.value();
-    final completer = Completer<void>();
-    add(ProfileSignOutRequested(completer: completer));
-    return completer.future;
+    final completion = stream.firstWhere((state) => !state.isSigningOut);
+    add(const ProfileSignOutRequested());
+    return completion.then((_) {});
   }
 
   Future<void> _onLoaded(
@@ -51,9 +50,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     try {
       final info = await PackageInfo.fromPlatform();
       emit(state.copyWith(packageInfo: info));
-      event.completer.completeVoidIfPending();
-    } catch (error, stackTrace) {
-      event.completer.completeErrorIfPending(error, stackTrace);
+    } catch (_) {
       rethrow;
     }
   }
@@ -64,14 +61,17 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   ) async {
     try {
       if (state.isSigningOut) {
-        event.completer.completeVoidIfPending();
         return;
       }
       emit(state.copyWith(isSigningOut: true));
       await _authBloc.signOut();
-      event.completer.completeVoidIfPending();
-    } catch (error, stackTrace) {
-      event.completer.completeErrorIfPending(error, stackTrace);
+      if (state.isSigningOut) {
+        emit(state.copyWith(isSigningOut: false));
+      }
+    } catch (_) {
+      if (state.isSigningOut) {
+        emit(state.copyWith(isSigningOut: false));
+      }
       rethrow;
     }
   }
@@ -93,7 +93,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         userId: authState.user.id,
       );
     }
-    return state.copyWith(username: '', userId: '');
+    return state.copyWith(username: '', userId: '', isSigningOut: false);
   }
 
   @override

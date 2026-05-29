@@ -50,7 +50,10 @@ void main() {
           return bloc;
         },
         act: (bloc) => bloc.restoreSession(),
-        expect: () => [const AuthState.authenticated(testUser)],
+        expect: () => [
+          const AuthState.submitting(),
+          const AuthState.authenticated(testUser),
+        ],
         verify: (_) {
           verify(() => mockAnalytics.setCurrentUser(testUser.id)).called(1);
         },
@@ -65,7 +68,10 @@ void main() {
           return bloc;
         },
         act: (bloc) => bloc.restoreSession(),
-        expect: () => [const AuthState.initial()],
+        expect: () => [
+          const AuthState.submitting(),
+          const AuthState.initial(),
+        ],
         verify: (_) {
           verify(() => mockAnalytics.setCurrentUser(null)).called(1);
         },
@@ -146,7 +152,7 @@ void main() {
       );
 
       blocTest<AuthBloc, AuthState>(
-        'does nothing when sign out returns Err',
+        'clears auth state when sign out returns Err',
         build: () {
           when(
             () => mockSignOut(),
@@ -155,7 +161,7 @@ void main() {
         },
         seed: () => const AuthState.authenticated(testUser),
         act: (bloc) => bloc.signOut(),
-        expect: () => <AuthState>[],
+        expect: () => [const AuthState.initial()],
       );
     });
   });

@@ -55,12 +55,14 @@ extension BookmarkDetailStatePatterns on BookmarkDetailState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( BookmarkDetailLoading value)?  loading,TResult Function( BookmarkDetailReady value)?  ready,TResult Function( BookmarkDetailFailure value)?  failure,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( BookmarkDetailLoading value)?  loading,TResult Function( BookmarkDetailReady value)?  ready,TResult Function( BookmarkDetailDeleting value)?  deleting,TResult Function( BookmarkDetailDeleted value)?  deleted,TResult Function( BookmarkDetailFailure value)?  failure,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case BookmarkDetailLoading() when loading != null:
 return loading(_that);case BookmarkDetailReady() when ready != null:
-return ready(_that);case BookmarkDetailFailure() when failure != null:
+return ready(_that);case BookmarkDetailDeleting() when deleting != null:
+return deleting(_that);case BookmarkDetailDeleted() when deleted != null:
+return deleted(_that);case BookmarkDetailFailure() when failure != null:
 return failure(_that);case _:
   return orElse();
 
@@ -79,12 +81,14 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( BookmarkDetailLoading value)  loading,required TResult Function( BookmarkDetailReady value)  ready,required TResult Function( BookmarkDetailFailure value)  failure,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( BookmarkDetailLoading value)  loading,required TResult Function( BookmarkDetailReady value)  ready,required TResult Function( BookmarkDetailDeleting value)  deleting,required TResult Function( BookmarkDetailDeleted value)  deleted,required TResult Function( BookmarkDetailFailure value)  failure,}){
 final _that = this;
 switch (_that) {
 case BookmarkDetailLoading():
 return loading(_that);case BookmarkDetailReady():
-return ready(_that);case BookmarkDetailFailure():
+return ready(_that);case BookmarkDetailDeleting():
+return deleting(_that);case BookmarkDetailDeleted():
+return deleted(_that);case BookmarkDetailFailure():
 return failure(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
@@ -99,12 +103,14 @@ return failure(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( BookmarkDetailLoading value)?  loading,TResult? Function( BookmarkDetailReady value)?  ready,TResult? Function( BookmarkDetailFailure value)?  failure,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( BookmarkDetailLoading value)?  loading,TResult? Function( BookmarkDetailReady value)?  ready,TResult? Function( BookmarkDetailDeleting value)?  deleting,TResult? Function( BookmarkDetailDeleted value)?  deleted,TResult? Function( BookmarkDetailFailure value)?  failure,}){
 final _that = this;
 switch (_that) {
 case BookmarkDetailLoading() when loading != null:
 return loading(_that);case BookmarkDetailReady() when ready != null:
-return ready(_that);case BookmarkDetailFailure() when failure != null:
+return ready(_that);case BookmarkDetailDeleting() when deleting != null:
+return deleting(_that);case BookmarkDetailDeleted() when deleted != null:
+return deleted(_that);case BookmarkDetailFailure() when failure != null:
 return failure(_that);case _:
   return null;
 
@@ -122,11 +128,13 @@ return failure(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  loading,TResult Function( Bookmark bookmark)?  ready,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  loading,TResult Function( Bookmark bookmark)?  ready,TResult Function( Bookmark bookmark)?  deleting,TResult Function()?  deleted,TResult Function( Failure failure)?  failure,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case BookmarkDetailLoading() when loading != null:
 return loading();case BookmarkDetailReady() when ready != null:
-return ready(_that.bookmark);case BookmarkDetailFailure() when failure != null:
+return ready(_that.bookmark);case BookmarkDetailDeleting() when deleting != null:
+return deleting(_that.bookmark);case BookmarkDetailDeleted() when deleted != null:
+return deleted();case BookmarkDetailFailure() when failure != null:
 return failure(_that.failure);case _:
   return orElse();
 
@@ -145,11 +153,13 @@ return failure(_that.failure);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  loading,required TResult Function( Bookmark bookmark)  ready,required TResult Function( Failure failure)  failure,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  loading,required TResult Function( Bookmark bookmark)  ready,required TResult Function( Bookmark bookmark)  deleting,required TResult Function()  deleted,required TResult Function( Failure failure)  failure,}) {final _that = this;
 switch (_that) {
 case BookmarkDetailLoading():
 return loading();case BookmarkDetailReady():
-return ready(_that.bookmark);case BookmarkDetailFailure():
+return ready(_that.bookmark);case BookmarkDetailDeleting():
+return deleting(_that.bookmark);case BookmarkDetailDeleted():
+return deleted();case BookmarkDetailFailure():
 return failure(_that.failure);}
 }
 /// A variant of `when` that fallback to returning `null`
@@ -164,11 +174,13 @@ return failure(_that.failure);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  loading,TResult? Function( Bookmark bookmark)?  ready,TResult? Function( Failure failure)?  failure,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  loading,TResult? Function( Bookmark bookmark)?  ready,TResult? Function( Bookmark bookmark)?  deleting,TResult? Function()?  deleted,TResult? Function( Failure failure)?  failure,}) {final _that = this;
 switch (_that) {
 case BookmarkDetailLoading() when loading != null:
 return loading();case BookmarkDetailReady() when ready != null:
-return ready(_that.bookmark);case BookmarkDetailFailure() when failure != null:
+return ready(_that.bookmark);case BookmarkDetailDeleting() when deleting != null:
+return deleting(_that.bookmark);case BookmarkDetailDeleted() when deleted != null:
+return deleted();case BookmarkDetailFailure() when failure != null:
 return failure(_that.failure);case _:
   return null;
 
@@ -274,6 +286,104 @@ as Bookmark,
 
 
 }
+
+/// @nodoc
+
+
+class BookmarkDetailDeleting implements BookmarkDetailState {
+  const BookmarkDetailDeleting(this.bookmark);
+  
+
+ final  Bookmark bookmark;
+
+/// Create a copy of BookmarkDetailState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$BookmarkDetailDeletingCopyWith<BookmarkDetailDeleting> get copyWith => _$BookmarkDetailDeletingCopyWithImpl<BookmarkDetailDeleting>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BookmarkDetailDeleting&&(identical(other.bookmark, bookmark) || other.bookmark == bookmark));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,bookmark);
+
+@override
+String toString() {
+  return 'BookmarkDetailState.deleting(bookmark: $bookmark)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $BookmarkDetailDeletingCopyWith<$Res> implements $BookmarkDetailStateCopyWith<$Res> {
+  factory $BookmarkDetailDeletingCopyWith(BookmarkDetailDeleting value, $Res Function(BookmarkDetailDeleting) _then) = _$BookmarkDetailDeletingCopyWithImpl;
+@useResult
+$Res call({
+ Bookmark bookmark
+});
+
+
+
+
+}
+/// @nodoc
+class _$BookmarkDetailDeletingCopyWithImpl<$Res>
+    implements $BookmarkDetailDeletingCopyWith<$Res> {
+  _$BookmarkDetailDeletingCopyWithImpl(this._self, this._then);
+
+  final BookmarkDetailDeleting _self;
+  final $Res Function(BookmarkDetailDeleting) _then;
+
+/// Create a copy of BookmarkDetailState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? bookmark = null,}) {
+  return _then(BookmarkDetailDeleting(
+null == bookmark ? _self.bookmark : bookmark // ignore: cast_nullable_to_non_nullable
+as Bookmark,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class BookmarkDetailDeleted implements BookmarkDetailState {
+  const BookmarkDetailDeleted();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BookmarkDetailDeleted);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'BookmarkDetailState.deleted()';
+}
+
+
+}
+
+
+
 
 /// @nodoc
 

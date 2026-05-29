@@ -41,48 +41,54 @@ class BookmarkDetailView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AppScaffold(
-      title: context.l10n.bookmarkAppBarTitle,
-      padding: EdgeInsets.zero,
-      actions: [
-        BlocBuilder<BookmarkDetailBloc, BookmarkDetailState>(
+    return BlocListener<BookmarkDetailBloc, BookmarkDetailState>(
+      listenWhen: (_, state) => state is BookmarkDetailDeleted,
+      listener: (context, state) => context.pop(true),
+      child: AppScaffold(
+        title: context.l10n.bookmarkAppBarTitle,
+        padding: EdgeInsets.zero,
+        actions: [
+          BlocBuilder<BookmarkDetailBloc, BookmarkDetailState>(
+            builder: (context, state) {
+              if (state is! BookmarkDetailReady) return const SizedBox.shrink();
+              return Row(
+                children: [
+                  IconButton(
+                    tooltip: context.l10n.commonShare,
+                    icon: const Icon(Icons.share),
+                    onPressed: () => _shareBookmark(state.bookmark),
+                  ),
+                  IconButton(
+                    tooltip: context.l10n.commonEdit,
+                    icon: const Icon(Icons.edit),
+                    onPressed: () => _openEditor(context),
+                  ),
+                  IconButton(
+                    tooltip: context.l10n.commonDelete,
+                    icon: const Icon(Icons.delete_outline),
+                    onPressed: () => _confirmAndDelete(context, state.bookmark),
+                  ),
+                ],
+              );
+            },
+          ),
+        ],
+        body: BlocBuilder<BookmarkDetailBloc, BookmarkDetailState>(
           builder: (context, state) {
-            if (state is! BookmarkDetailReady) return const SizedBox.shrink();
-            return Row(
-              children: [
-                IconButton(
-                  tooltip: context.l10n.commonShare,
-                  icon: const Icon(Icons.share),
-                  onPressed: () => _shareBookmark(state.bookmark),
-                ),
-                IconButton(
-                  tooltip: context.l10n.commonEdit,
-                  icon: const Icon(Icons.edit),
-                  onPressed: () => _openEditor(context),
-                ),
-                IconButton(
-                  tooltip: context.l10n.commonDelete,
-                  icon: const Icon(Icons.delete_outline),
-                  onPressed: () => _confirmAndDelete(context, state.bookmark),
-                ),
-              ],
-            );
+            return switch (state) {
+              BookmarkDetailLoading() => const AppLoading(),
+              BookmarkDetailFailure(:final failure) => AppErrorView(
+                message: bookmarkFailureMessage(context, failure),
+                onRetry: () => context.read<BookmarkDetailBloc>().load(id),
+              ),
+              BookmarkDetailReady(:final bookmark) ||
+              BookmarkDetailDeleting(:final bookmark) => _DetailBody(
+                bookmark: bookmark,
+              ),
+              BookmarkDetailDeleted() => const AppLoading(),
+            };
           },
         ),
-      ],
-      body: BlocBuilder<BookmarkDetailBloc, BookmarkDetailState>(
-        builder: (context, state) {
-          return switch (state) {
-            BookmarkDetailLoading() => const AppLoading(),
-            BookmarkDetailFailure(:final failure) => AppErrorView(
-              message: bookmarkFailureMessage(context, failure),
-              onRetry: () => context.read<BookmarkDetailBloc>().load(id),
-            ),
-            BookmarkDetailReady(:final bookmark) => _DetailBody(
-              bookmark: bookmark,
-            ),
-          };
-        },
       ),
     );
   }
@@ -117,9 +123,7 @@ class BookmarkDetailView extends StatelessWidget {
     );
     if (confirmed != true) return;
     if (!context.mounted) return;
-    final ok = await context.read<BookmarkDetailBloc>().delete(b.id);
-    if (!ok || !context.mounted) return;
-    context.pop(true);
+    unawaited(context.read<BookmarkDetailBloc>().delete(b.id));
   }
 }
 
@@ -164,7 +168,9 @@ class _DetailBody extends StatelessWidget {
             enableAnimation: true,
           ).animateFadeIn(delay: 250.ms),
           if (bookmark.videoUrl != null && bookmark.videoUrl!.isNotEmpty)
-            _VideoSection(videoUrl: bookmark.videoUrl!).animateFadeIn(delay: 275.ms),
+            _VideoSection(
+              videoUrl: bookmark.videoUrl!,
+            ).animateFadeIn(delay: 275.ms),
           if (bookmark.imageUrls.isNotEmpty) ...[
             const SizedBox(height: 16),
             SizedBox(

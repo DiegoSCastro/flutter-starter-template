@@ -6,7 +6,6 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../../core/analytics/analytics_extensions.dart';
 import '../../../../../core/analytics/analytics_service.dart';
-import '../../../../../core/bloc/event_completion.dart';
 import '../../../../../core/utils/result.dart';
 import '../../../domain/usecases/delete_bookmark.dart';
 import '../../../domain/usecases/get_bookmark.dart';
@@ -34,16 +33,16 @@ class BookmarkDetailBloc
   final AnalyticsService _analytics;
 
   Future<void> load(String id) {
-    final completer = Completer<void>();
-    add(BookmarkDetailLoadRequested(id, completer: completer));
-    return completer.future;
+    final completion = stream.firstWhere(
+      (state) => state is BookmarkDetailReady || state is BookmarkDetailFailure,
+    );
+    add(BookmarkDetailLoadRequested(id));
+    return completion.then((_) {});
   }
 
-  /// Returns `true` if the delete succeeded so the screen can pop.
-  Future<bool> delete(String id) {
-    final completer = Completer<bool>();
-    add(BookmarkDetailDeleteRequested(id, completer: completer));
-    return completer.future;
+  Future<void> delete(String id) {
+    add(BookmarkDetailDeleteRequested(id));
+    return Future<void>.delayed(Duration.zero);
   }
 
   Future<void> _onLoadRequested(
@@ -66,9 +65,7 @@ class BookmarkDetailBloc
         case Err(:final failure):
           emit(BookmarkDetailState.failure(failure));
       }
-      event.completer.completeVoidIfPending();
-    } catch (error, stackTrace) {
-      event.completer.completeErrorIfPending(error, stackTrace);
+    } catch (_) {
       rethrow;
     }
   }
@@ -78,6 +75,10 @@ class BookmarkDetailBloc
     Emitter<BookmarkDetailState> emit,
   ) async {
     try {
+      final previous = state;
+      if (previous is BookmarkDetailReady) {
+        emit(BookmarkDetailState.deleting(previous.bookmark));
+      }
       final result = await _delete(event.id);
       switch (result) {
         case Ok<void>():
@@ -87,7 +88,7 @@ class BookmarkDetailBloc
               source: AnalyticsSources.detail,
             ),
           );
-          event.completer.completeValueIfPending(true);
+          emit(const BookmarkDetailState.deleted());
         case Err(:final failure):
           unawaited(
             _analytics.trackBookmarkDeleteFailed(
@@ -96,10 +97,9 @@ class BookmarkDetailBloc
               errorType: failure.runtimeType.toString(),
             ),
           );
-          event.completer.completeValueIfPending(false);
+          emit(BookmarkDetailState.failure(failure));
       }
-    } catch (error, stackTrace) {
-      event.completer.completeErrorIfPending(error, stackTrace);
+    } catch (_) {
       rethrow;
     }
   }

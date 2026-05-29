@@ -5,15 +5,13 @@ sealed class ThemeEvent {
 }
 
 final class ThemeModeChanged extends ThemeEvent {
-  const ThemeModeChanged(this.mode, {this.completer});
+  const ThemeModeChanged(this.mode);
 
   final ThemeMode mode;
-  final Completer<void>? completer;
 }
 
 final class ThemeSchemeChanged extends ThemeEvent {
-  const ThemeSchemeChanged(this.scheme, {this.completer});
+  const ThemeSchemeChanged(this.scheme);
 
   final FlexScheme scheme;
-  final Completer<void>? completer;
 }

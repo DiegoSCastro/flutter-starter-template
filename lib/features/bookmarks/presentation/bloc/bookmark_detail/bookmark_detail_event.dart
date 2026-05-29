@@ -5,15 +5,13 @@ sealed class BookmarkDetailEvent {
 }
 
 final class BookmarkDetailLoadRequested extends BookmarkDetailEvent {
-  const BookmarkDetailLoadRequested(this.id, {this.completer});
+  const BookmarkDetailLoadRequested(this.id);
 
   final String id;
-  final Completer<void>? completer;
 }
 
 final class BookmarkDetailDeleteRequested extends BookmarkDetailEvent {
-  const BookmarkDetailDeleteRequested(this.id, {this.completer});
+  const BookmarkDetailDeleteRequested(this.id);
 
   final String id;
-  final Completer<bool>? completer;
 }

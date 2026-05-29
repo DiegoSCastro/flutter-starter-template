@@ -6,7 +6,6 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../../core/analytics/analytics_extensions.dart';
 import '../../../../../core/analytics/analytics_service.dart';
-import '../../../../../core/bloc/event_completion.dart';
 import '../../../../../core/utils/result.dart';
 import '../../../domain/services/bookmarks_sync_controller.dart';
 import '../../../domain/usecases/delete_bookmark.dart';
@@ -56,32 +55,29 @@ class BookmarksListBloc extends Bloc<BookmarksListEvent, BookmarksListState> {
   BookmarksSyncStatus _lastSyncStatus = BookmarksSyncStatus.idle;
 
   Future<void> load() {
-    final completer = Completer<void>();
-    add(BookmarksListLoadRequested(completer: completer));
-    return completer.future;
+    final completion = stream.firstWhere((state) => !state.isLoading);
+    add(const BookmarksListLoadRequested());
+    return completion.then((_) {});
   }
 
   Future<void> retrySync() {
-    final completer = Completer<void>();
-    add(BookmarksListSyncRetried(completer: completer));
-    return completer.future;
+    add(const BookmarksListSyncRetried());
+    return Future<void>.delayed(Duration.zero);
   }
 
   /// Updates the search query. Filtering is derived in the state itself
   /// ([BookmarksListState.visibleItems]), so this is a single state update.
   Future<void> setQuery(String query) {
     if (query == state.query) return Future<void>.value();
-    final completer = Completer<void>();
-    add(BookmarksListQueryChanged(query, completer: completer));
-    return completer.future;
+    add(BookmarksListQueryChanged(query));
+    return Future<void>.delayed(Duration.zero);
   }
 
   /// Optimistically removes the row, then issues the delete (which marks
   /// tombstone locally + queues the server call).
   Future<void> delete(String id) {
-    final completer = Completer<void>();
-    add(BookmarksListDeleteRequested(id, completer: completer));
-    return completer.future;
+    add(BookmarksListDeleteRequested(id));
+    return Future<void>.delayed(Duration.zero);
   }
 
   Future<void> _onLoadRequested(
@@ -90,9 +86,7 @@ class BookmarksListBloc extends Bloc<BookmarksListEvent, BookmarksListState> {
   ) async {
     try {
       await _loadAndEmit(emit);
-      event.completer.completeVoidIfPending();
-    } catch (error, stackTrace) {
-      event.completer.completeErrorIfPending(error, stackTrace);
+    } catch (_) {
       rethrow;
     }
   }
@@ -140,9 +134,7 @@ class BookmarksListBloc extends Bloc<BookmarksListEvent, BookmarksListState> {
     try {
       unawaited(_analytics.trackBookmarkSyncRetried());
       await _sync.sync();
-      event.completer.completeVoidIfPending();
-    } catch (error, stackTrace) {
-      event.completer.completeErrorIfPending(error, stackTrace);
+    } catch (_) {
       rethrow;
     }
   }
@@ -152,14 +144,12 @@ class BookmarksListBloc extends Bloc<BookmarksListEvent, BookmarksListState> {
     Emitter<BookmarksListState> emit,
   ) {
     if (event.query == state.query) {
-      event.completer.completeVoidIfPending();
       return;
     }
     final next = state.copyWith(query: event.query);
     emit(next);
     final normalized = event.query.trim();
     if (normalized.isEmpty) {
-      event.completer.completeVoidIfPending();
       return;
     }
     unawaited(
@@ -168,7 +158,6 @@ class BookmarksListBloc extends Bloc<BookmarksListEvent, BookmarksListState> {
         resultCount: next.visibleItems.length,
       ),
     );
-    event.completer.completeVoidIfPending();
   }
 
   Future<void> _onDeleteRequested(
@@ -203,9 +192,7 @@ class BookmarksListBloc extends Bloc<BookmarksListEvent, BookmarksListState> {
           emit(state.copyWith(items: previous));
           await _loadAndEmit(emit);
       }
-      event.completer.completeVoidIfPending();
-    } catch (error, stackTrace) {
-      event.completer.completeErrorIfPending(error, stackTrace);
+    } catch (_) {
       rethrow;
     }
   }

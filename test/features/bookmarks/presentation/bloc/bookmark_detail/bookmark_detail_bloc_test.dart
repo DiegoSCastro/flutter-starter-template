@@ -68,35 +68,51 @@ void main() {
     });
 
     group('delete', () {
-      test('returns true on success', () async {
-        when(() => mockDelete('1')).thenAnswer((_) async => const Ok(null));
-        final bloc = BookmarkDetailBloc(mockGet, mockDelete, mockAnalytics);
-        final ok = await bloc.delete('1');
-        expect(ok, true);
-        verify(
-          () => mockAnalytics.logEvent(
-            'bookmark_deleted',
-            parameters: any(named: 'parameters'),
-          ),
-        ).called(1);
-        await bloc.close();
-      });
+      blocTest<BookmarkDetailBloc, BookmarkDetailState>(
+        'emits deleting then deleted on success',
+        setUp: () {
+          when(() => mockDelete('1')).thenAnswer((_) async => const Ok(null));
+        },
+        build: () => BookmarkDetailBloc(mockGet, mockDelete, mockAnalytics),
+        seed: () => BookmarkDetailState.ready(testBookmark),
+        act: (bloc) => bloc.delete('1'),
+        expect: () => [
+          BookmarkDetailState.deleting(testBookmark),
+          const BookmarkDetailState.deleted(),
+        ],
+        verify: (_) {
+          verify(
+            () => mockAnalytics.logEvent(
+              'bookmark_deleted',
+              parameters: any(named: 'parameters'),
+            ),
+          ).called(1);
+        },
+      );
 
-      test('returns false on failure', () async {
-        when(
-          () => mockDelete('1'),
-        ).thenAnswer((_) async => const Err(UnknownFailure('Failed')));
-        final bloc = BookmarkDetailBloc(mockGet, mockDelete, mockAnalytics);
-        final ok = await bloc.delete('1');
-        expect(ok, false);
-        verify(
-          () => mockAnalytics.logEvent(
-            'bookmark_delete_failed',
-            parameters: any(named: 'parameters'),
-          ),
-        ).called(1);
-        await bloc.close();
-      });
+      blocTest<BookmarkDetailBloc, BookmarkDetailState>(
+        'emits deleting then failure on failure',
+        setUp: () {
+          when(
+            () => mockDelete('1'),
+          ).thenAnswer((_) async => const Err(UnknownFailure('Failed')));
+        },
+        build: () => BookmarkDetailBloc(mockGet, mockDelete, mockAnalytics),
+        seed: () => BookmarkDetailState.ready(testBookmark),
+        act: (bloc) => bloc.delete('1'),
+        expect: () => [
+          BookmarkDetailState.deleting(testBookmark),
+          predicate<BookmarkDetailState>((s) => s is BookmarkDetailFailure),
+        ],
+        verify: (_) {
+          verify(
+            () => mockAnalytics.logEvent(
+              'bookmark_delete_failed',
+              parameters: any(named: 'parameters'),
+            ),
+          ).called(1);
+        },
+      );
     });
   });
 }

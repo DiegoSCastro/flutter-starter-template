@@ -9,7 +9,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../analytics/analytics_extensions.dart';
 import '../analytics/analytics_service.dart';
-import '../bloc/event_completion.dart';
 import 'theme_state.dart';
 
 part 'theme_event.dart';
@@ -45,16 +44,16 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
 
   Future<void> setMode(ThemeMode mode) {
     if (mode == state.mode) return Future<void>.value();
-    final completer = Completer<void>();
-    add(ThemeModeChanged(mode, completer: completer));
-    return completer.future;
+    final completion = stream.firstWhere((state) => state.mode == mode);
+    add(ThemeModeChanged(mode));
+    return completion.then((_) {});
   }
 
   Future<void> setScheme(FlexScheme scheme) {
     if (scheme == state.scheme) return Future<void>.value();
-    final completer = Completer<void>();
-    add(ThemeSchemeChanged(scheme, completer: completer));
-    return completer.future;
+    final completion = stream.firstWhere((state) => state.scheme == scheme);
+    add(ThemeSchemeChanged(scheme));
+    return completion.then((_) {});
   }
 
   Future<void> _onModeChanged(
@@ -63,16 +62,13 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
   ) async {
     try {
       if (event.mode == state.mode) {
-        event.completer.completeVoidIfPending();
         return;
       }
       final next = state.copyWith(mode: event.mode);
       emit(next);
       await _persist(next);
       unawaited(_analytics.trackThemeModeChanged(event.mode.name));
-      event.completer.completeVoidIfPending();
-    } catch (error, stackTrace) {
-      event.completer.completeErrorIfPending(error, stackTrace);
+    } catch (_) {
       rethrow;
     }
   }
@@ -83,16 +79,13 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
   ) async {
     try {
       if (event.scheme == state.scheme) {
-        event.completer.completeVoidIfPending();
         return;
       }
       final next = state.copyWith(scheme: event.scheme);
       emit(next);
       await _persist(next);
       unawaited(_analytics.trackThemeSchemeChanged(event.scheme.name));
-      event.completer.completeVoidIfPending();
-    } catch (error, stackTrace) {
-      event.completer.completeErrorIfPending(error, stackTrace);
+    } catch (_) {
       rethrow;
     }
   }

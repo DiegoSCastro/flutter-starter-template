@@ -5,29 +5,23 @@ sealed class BookmarksListEvent {
 }
 
 final class BookmarksListLoadRequested extends BookmarksListEvent {
-  const BookmarksListLoadRequested({this.completer});
-
-  final Completer<void>? completer;
+  const BookmarksListLoadRequested();
 }
 
 final class BookmarksListQueryChanged extends BookmarksListEvent {
-  const BookmarksListQueryChanged(this.query, {this.completer});
+  const BookmarksListQueryChanged(this.query);
 
   final String query;
-  final Completer<void>? completer;
 }
 
 final class BookmarksListDeleteRequested extends BookmarksListEvent {
-  const BookmarksListDeleteRequested(this.id, {this.completer});
+  const BookmarksListDeleteRequested(this.id);
 
   final String id;
-  final Completer<void>? completer;
 }
 
 final class BookmarksListSyncRetried extends BookmarksListEvent {
-  const BookmarksListSyncRetried({this.completer});
-
-  final Completer<void>? completer;
+  const BookmarksListSyncRetried();
 }
 
 final class _BookmarksSyncStatusChanged extends BookmarksListEvent {

@@ -7,7 +7,6 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../../core/analytics/analytics_extensions.dart';
 import '../../../../../core/analytics/analytics_service.dart';
-import '../../../../../core/bloc/event_completion.dart';
 import '../../../../../core/error/failure.dart';
 import '../../../../../core/media/image_picker_service.dart';
 import '../../../../../core/permissions/permission_service.dart';
@@ -64,69 +63,63 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
   /// For create flows, pass `null`. For edit flows, fetches the existing
   /// bookmark and seeds the form.
   Future<void> initialize(String? id) {
-    final completer = Completer<void>();
-    add(BookmarkFormInitialized(id, completer: completer));
-    return completer.future;
+    final completion = stream.firstWhere(
+      (state) =>
+          state.status == BookmarkFormStatus.idle ||
+          state.status == BookmarkFormStatus.loadFailed,
+    );
+    add(BookmarkFormInitialized(id));
+    return completion.then((_) {});
   }
 
   Future<void> setTitle(String value) {
-    final completer = Completer<void>();
-    add(BookmarkFormTitleChanged(value, completer: completer));
-    return completer.future;
+    add(BookmarkFormTitleChanged(value));
+    return Future<void>.delayed(Duration.zero);
   }
 
   Future<void> setUrl(String value) {
-    final completer = Completer<void>();
-    add(BookmarkFormUrlChanged(value, completer: completer));
-    return completer.future;
+    add(BookmarkFormUrlChanged(value));
+    return Future<void>.delayed(Duration.zero);
   }
 
   Future<void> setDescription(String value) {
-    final completer = Completer<void>();
-    add(BookmarkFormDescriptionChanged(value, completer: completer));
-    return completer.future;
+    add(BookmarkFormDescriptionChanged(value));
+    return Future<void>.delayed(Duration.zero);
   }
 
   Future<void> setTagsFromCsv(String csv) {
-    final completer = Completer<void>();
-    add(BookmarkFormTagsChanged(csv, completer: completer));
-    return completer.future;
+    add(BookmarkFormTagsChanged(csv));
+    return Future<void>.delayed(Duration.zero);
   }
 
   Future<void> pickImages() {
-    final completer = Completer<void>();
-    add(BookmarkFormImagesPicked(completer: completer));
-    return completer.future;
+    add(const BookmarkFormImagesPicked());
+    return Future<void>.delayed(Duration.zero);
   }
 
   Future<void> takeImageFromCamera() {
-    final completer = Completer<void>();
-    add(BookmarkFormCameraImageTaken(completer: completer));
-    return completer.future;
+    add(const BookmarkFormCameraImageTaken());
+    return Future<void>.delayed(Duration.zero);
   }
 
   Future<void> removeImage(String path) {
-    final completer = Completer<void>();
-    add(BookmarkFormImageRemoved(path, completer: completer));
-    return completer.future;
+    add(BookmarkFormImageRemoved(path));
+    return Future<void>.delayed(Duration.zero);
   }
 
   Future<void> pickVideo() {
-    final completer = Completer<void>();
-    add(BookmarkFormVideoPicked(completer: completer));
-    return completer.future;
+    add(const BookmarkFormVideoPicked());
+    return Future<void>.delayed(Duration.zero);
   }
 
   Future<void> recordVideoFromCamera() {
-    final completer = Completer<void>();
-    add(BookmarkFormCameraVideoTaken(completer: completer));
-    return completer.future;
+    add(const BookmarkFormCameraVideoTaken());
+    return Future<void>.delayed(Duration.zero);
   }
 
   Future<void> removeVideo() {
-    final completer = Completer<void>();
-    add(BookmarkFormVideoRemoved(completer: completer));
-    return completer.future;
+    add(const BookmarkFormVideoRemoved());
+    return Future<void>.delayed(Duration.zero);
   }
 
   /// Returns `true` if submit succeeded so the screen can pop.
@@ -135,9 +128,13 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
       return Future<bool>.value(false);
     }
     _submitInFlight = true;
-    final completer = Completer<bool>();
-    add(BookmarkFormSubmitted(completer: completer));
-    return completer.future.whenComplete(() => _submitInFlight = false);
+    final completion = stream.firstWhere(
+      (state) => state.status != BookmarkFormStatus.submitting,
+    );
+    add(const BookmarkFormSubmitted());
+    return completion
+        .then((state) => state.status == BookmarkFormStatus.submitted)
+        .whenComplete(() => _submitInFlight = false);
   }
 
   Future<void> _onInitialized(
@@ -148,7 +145,6 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
       final id = event.id;
       if (id == null) {
         emit(const BookmarkFormState());
-        event.completer.completeVoidIfPending();
         return;
       }
       emit(state.copyWith(id: id, status: BookmarkFormStatus.loading));
@@ -175,9 +171,7 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
             ),
           );
       }
-      event.completer.completeVoidIfPending();
-    } on Object catch (error, stackTrace) {
-      event.completer.completeErrorIfPending(error, stackTrace);
+    } on Object {
       rethrow;
     }
   }
@@ -187,7 +181,6 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
     Emitter<BookmarkFormState> emit,
   ) {
     emit(state.copyWith(title: event.value));
-    event.completer.completeVoidIfPending();
   }
 
   void _onUrlChanged(
@@ -195,7 +188,6 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
     Emitter<BookmarkFormState> emit,
   ) {
     emit(state.copyWith(url: event.value));
-    event.completer.completeVoidIfPending();
   }
 
   void _onDescriptionChanged(
@@ -203,7 +195,6 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
     Emitter<BookmarkFormState> emit,
   ) {
     emit(state.copyWith(description: event.value));
-    event.completer.completeVoidIfPending();
   }
 
   void _onTagsChanged(
@@ -216,7 +207,6 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
         .where((t) => t.isNotEmpty)
         .toList(growable: false);
     emit(state.copyWith(tags: parsed));
-    event.completer.completeVoidIfPending();
   }
 
   Future<void> _onImagesPicked(
@@ -235,7 +225,6 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
               failure: const PermissionFailure(),
             ),
           );
-          event.completer.completeVoidIfPending();
           return;
         }
       }
@@ -245,9 +234,8 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
         final newPaths = images.map((e) => e.path).toList();
         emit(state.copyWith(imageUrls: [...state.imageUrls, ...newPaths]));
       }
-      event.completer.completeVoidIfPending();
     } on Object catch (error, stackTrace) {
-      event.completer.completeErrorIfPending(error, stackTrace);
+      addError(error, stackTrace);
     }
   }
 
@@ -267,7 +255,6 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
               failure: const CameraPermissionFailure(),
             ),
           );
-          event.completer.completeVoidIfPending();
           return;
         }
       }
@@ -278,9 +265,8 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
       if (image != null) {
         emit(state.copyWith(imageUrls: [...state.imageUrls, image.path]));
       }
-      event.completer.completeVoidIfPending();
     } on Object catch (error, stackTrace) {
-      event.completer.completeErrorIfPending(error, stackTrace);
+      addError(error, stackTrace);
     }
   }
 
@@ -290,7 +276,6 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
   ) {
     final updated = List<String>.of(state.imageUrls)..remove(event.path);
     emit(state.copyWith(imageUrls: updated));
-    event.completer.completeVoidIfPending();
   }
 
   Future<void> _onVideoPicked(
@@ -309,7 +294,6 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
               failure: const PermissionFailure(),
             ),
           );
-          event.completer.completeVoidIfPending();
           return;
         }
       }
@@ -320,9 +304,8 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
       if (video != null) {
         emit(state.copyWith(videoUrl: video.path));
       }
-      event.completer.completeVoidIfPending();
     } on Object catch (error, stackTrace) {
-      event.completer.completeErrorIfPending(error, stackTrace);
+      addError(error, stackTrace);
     }
   }
 
@@ -342,7 +325,6 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
               failure: const CameraPermissionFailure(),
             ),
           );
-          event.completer.completeVoidIfPending();
           return;
         }
       }
@@ -353,9 +335,8 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
       if (video != null) {
         emit(state.copyWith(videoUrl: video.path));
       }
-      event.completer.completeVoidIfPending();
     } on Object catch (error, stackTrace) {
-      event.completer.completeErrorIfPending(error, stackTrace);
+      addError(error, stackTrace);
     }
   }
 
@@ -364,7 +345,6 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
     Emitter<BookmarkFormState> emit,
   ) {
     emit(state.copyWith(videoUrl: null));
-    event.completer.completeVoidIfPending();
   }
 
   Future<void> _onSubmitted(
@@ -373,7 +353,6 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
   ) async {
     try {
       if (state.status == BookmarkFormStatus.submitting) {
-        event.completer.completeValueIfPending(false);
         return;
       }
       emit(
@@ -406,15 +385,12 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
             ),
           );
           emit(state.copyWith(status: BookmarkFormStatus.submitted));
-          event.completer.completeValueIfPending(true);
         case Err(:final failure):
           emit(
             state.copyWith(status: BookmarkFormStatus.idle, failure: failure),
           );
-          event.completer.completeValueIfPending(false);
       }
-    } catch (error, stackTrace) {
-      event.completer.completeErrorIfPending(error, stackTrace);
+    } catch (_) {
       rethrow;
     }
   }

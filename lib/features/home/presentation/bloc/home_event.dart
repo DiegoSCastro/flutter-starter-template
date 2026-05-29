@@ -5,7 +5,5 @@ sealed class HomeEvent {
 }
 
 final class HomeLoadRequested extends HomeEvent {
-  const HomeLoadRequested({this.completer});
-
-  final Completer<void>? completer;
+  const HomeLoadRequested();
 }

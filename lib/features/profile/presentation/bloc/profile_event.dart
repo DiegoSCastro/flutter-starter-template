@@ -5,15 +5,11 @@ sealed class ProfileEvent {
 }
 
 final class ProfileLoaded extends ProfileEvent {
-  const ProfileLoaded({this.completer});
-
-  final Completer<void>? completer;
+  const ProfileLoaded();
 }
 
 final class ProfileSignOutRequested extends ProfileEvent {
-  const ProfileSignOutRequested({this.completer});
-
-  final Completer<void>? completer;
+  const ProfileSignOutRequested();
 }
 
 final class _ProfileAuthChanged extends ProfileEvent {
