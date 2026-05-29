@@ -37,8 +37,6 @@ class FirebaseMessagingService {
     final notificationsAllowed = await _localNotifications.requestPermissions();
     if (!notificationsAllowed) return;
 
-    await _saveInitialToken();
-
     if (Platform.isIOS || Platform.isMacOS) {
       // APNs token registration — required for iOS push delivery.
       await _messaging.setForegroundNotificationPresentationOptions(
@@ -47,6 +45,11 @@ class FirebaseMessagingService {
         sound: true,
       );
     }
+
+    // Fetching the initial token can block for several seconds on Apple
+    // platforms while waiting for the APNs token. Don't hold up app startup for
+    // it — the token is delivered through `_tokenStream` once it's ready.
+    _saveInitialToken().uw();
 
     _messaging.onTokenRefresh.listen(_onTokenRefresh);
 
@@ -66,10 +69,36 @@ class FirebaseMessagingService {
   Future<String?> getToken() => _messaging.getToken();
 
   Future<void> _saveInitialToken() async {
+    // On Apple platforms, `getToken()` throws `apns-token-not-set` until the
+    // device has received its APNs token from Apple, which happens
+    // asynchronously after registration. Wait for it before requesting the FCM
+    // token.
+    if (Platform.isIOS || Platform.isMacOS) {
+      final apnsReady = await _waitForApnsToken();
+      if (!apnsReady) return;
+    }
+
     final token = await _messaging.getToken();
     if (token != null) {
       _tokenStream.add(token);
     }
+  }
+
+  /// Polls for the APNs token until it is available or [timeout] elapses.
+  ///
+  /// Returns `true` once the token is set, or `false` if it never arrives
+  /// (e.g. on a simulator without push capability, or when offline).
+  Future<bool> _waitForApnsToken({
+    Duration timeout = const Duration(seconds: 10),
+    Duration interval = const Duration(milliseconds: 500),
+  }) async {
+    final deadline = DateTime.now().add(timeout);
+    while (DateTime.now().isBefore(deadline)) {
+      final apnsToken = await _messaging.getAPNSToken();
+      if (apnsToken != null) return true;
+      await Future<void>.delayed(interval);
+    }
+    return false;
   }
 
   void _onTokenRefresh(String token) {
