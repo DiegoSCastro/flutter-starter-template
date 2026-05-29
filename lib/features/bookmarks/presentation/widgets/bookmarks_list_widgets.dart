@@ -79,6 +79,12 @@ class _BookmarksListViewState extends State<BookmarksListView> {
     });
   }
 
+  void _clearSearch() {
+    _debounce?.cancel();
+    _searchController.clear();
+    context.read<BookmarksListBloc>().add(const BookmarksListQueryChanged(''));
+  }
+
   Future<void> _reload() {
     final bloc = context.read<BookmarksListBloc>();
     final completion = bloc.stream.firstWhere((state) => !state.isLoading);
@@ -119,9 +125,14 @@ class _BookmarksListViewState extends State<BookmarksListView> {
           builder: (context, state) =>
               _SyncStatusIcon(status: state.syncStatus),
         ),
+        BlocBuilder<BookmarksListBloc, BookmarksListState>(
+          buildWhen: (a, b) => a.sort != b.sort,
+          builder: (context, state) => _SortMenuButton(sort: state.sort),
+        ),
       ],
       floatingActionButton: FloatingActionButton(
         onPressed: _openNew,
+        tooltip: context.l10n.bookmarksAddTooltip,
         child: const Icon(Icons.add),
       ).animateScale(delay: 300.ms),
       body: LayoutBuilder(
@@ -163,6 +174,17 @@ class _BookmarksListViewState extends State<BookmarksListView> {
             hint: context.l10n.bookmarksSearchHint,
             prefixIcon: Icons.search,
             onChanged: _onSearchChanged,
+            suffix: ValueListenableBuilder<TextEditingValue>(
+              valueListenable: _searchController,
+              builder: (context, value, _) {
+                if (value.text.isEmpty) return const SizedBox.shrink();
+                return IconButton(
+                  icon: const Icon(Icons.clear),
+                  tooltip: context.l10n.bookmarksSearchClear,
+                  onPressed: _clearSearch,
+                );
+              },
+            ),
           ),
         ).animateSlideDown(duration: 300.ms),
         Expanded(
@@ -222,15 +244,7 @@ class _BookmarksListViewState extends State<BookmarksListView> {
                         ],
                         child: ListTile(
                           selected: twoPane && b.id == _selectedId,
-                          leading: b.isPendingSync
-                              ? Tooltip(
-                                  message: context.l10n.bookmarksNotYetSynced,
-                                  child: Icon(
-                                    Icons.cloud_off,
-                                    color: context.colorScheme.outline,
-                                  ),
-                                )
-                              : null,
+                          leading: _BookmarkAvatar(bookmark: b),
                           title: Text(
                             b.title,
                             maxLines: 1,
@@ -305,6 +319,84 @@ class _DetailPlaceholder extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Leading avatar for a bookmark row: the title's initial, overlaid with a
+/// small cloud badge while the bookmark is still pending sync.
+class _BookmarkAvatar extends StatelessWidget {
+  const _BookmarkAvatar({required this.bookmark});
+
+  final Bookmark bookmark;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final title = bookmark.title.trim();
+    final initial = title.isNotEmpty ? title[0].toUpperCase() : '#';
+    final avatar = CircleAvatar(
+      backgroundColor: theme.colorScheme.secondaryContainer,
+      foregroundColor: theme.colorScheme.onSecondaryContainer,
+      child: Text(initial),
+    );
+    if (!bookmark.isPendingSync) return avatar;
+    return Tooltip(
+      message: context.l10n.bookmarksNotYetSynced,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          avatar,
+          Positioned(
+            right: -2,
+            bottom: -2,
+            child: Container(
+              padding: const EdgeInsets.all(2),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surface,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                Icons.cloud_off,
+                size: 14,
+                color: theme.colorScheme.outline,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SortMenuButton extends StatelessWidget {
+  const _SortMenuButton({required this.sort});
+
+  final BookmarkSort sort;
+
+  String _labelFor(BuildContext context, BookmarkSort value) => switch (value) {
+    BookmarkSort.newest => context.l10n.bookmarksSortNewest,
+    BookmarkSort.oldest => context.l10n.bookmarksSortOldest,
+    BookmarkSort.titleAz => context.l10n.bookmarksSortTitleAz,
+  };
+
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton<BookmarkSort>(
+      icon: const Icon(Icons.sort),
+      tooltip: context.l10n.bookmarksSortTooltip,
+      initialValue: sort,
+      onSelected: (value) => context.read<BookmarksListBloc>().add(
+        BookmarksListSortChanged(value),
+      ),
+      itemBuilder: (context) => [
+        for (final value in BookmarkSort.values)
+          CheckedPopupMenuItem<BookmarkSort>(
+            value: value,
+            checked: value == sort,
+            child: Text(_labelFor(context, value)),
+          ),
+      ],
     );
   }
 }

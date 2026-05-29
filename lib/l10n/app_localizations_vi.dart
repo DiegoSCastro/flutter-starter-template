@@ -215,6 +215,24 @@ class AppLocalizationsVi extends AppLocalizations {
       'Đồng bộ thất bại - nhấn để thử lại';
 
   @override
+  String get bookmarksAddTooltip => 'Thêm bookmark';
+
+  @override
+  String get bookmarksSearchClear => 'Xóa tìm kiếm';
+
+  @override
+  String get bookmarksSortTooltip => 'Sắp xếp bookmark';
+
+  @override
+  String get bookmarksSortNewest => 'Mới nhất trước';
+
+  @override
+  String get bookmarksSortOldest => 'Cũ nhất trước';
+
+  @override
+  String get bookmarksSortTitleAz => 'Tiêu đề (A–Z)';
+
+  @override
   String get bookmarkAppBarTitle => 'Bookmark';
 
   @override
@@ -230,6 +248,9 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get bookmarkOpenUrl => 'Mở URL';
+
+  @override
+  String get bookmarkAttachedVideo => 'Video đính kèm';
 
   @override
   String get bookmarkInvalidUrl => 'URL không hợp lệ';

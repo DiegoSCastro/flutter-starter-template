@@ -208,12 +208,25 @@ class _DetailBody extends StatelessWidget {
           const SizedBox(height: AppSpacing.sm),
           InkWell(
             onTap: () => _openUrl(context, bookmark),
-            child: Text(
-              bookmark.url,
-              style: context.textTheme.bodyMedium?.copyWith(
-                color: context.colorScheme.primary,
-                decoration: TextDecoration.underline,
-              ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Icon(
+                  Icons.link,
+                  size: 16,
+                  color: context.colorScheme.primary,
+                ),
+                const SizedBox(width: AppSpacing.xs),
+                Expanded(
+                  child: Text(
+                    bookmark.url,
+                    style: context.textTheme.bodyMedium?.copyWith(
+                      color: context.colorScheme.primary,
+                      decoration: TextDecoration.underline,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ).animateFadeIn(delay: 100.ms),
           if (bookmark.description.isNotEmpty) ...[
@@ -358,7 +371,7 @@ class _VideoSectionState extends State<_VideoSection> {
       children: [
         const SizedBox(height: AppSpacing.lg),
         Text(
-          'Attached Video',
+          context.l10n.bookmarkAttachedVideo,
           style: context.textTheme.titleMedium,
         ),
         const SizedBox(height: AppSpacing.sm),

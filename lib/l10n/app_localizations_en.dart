@@ -212,6 +212,24 @@ class AppLocalizationsEn extends AppLocalizations {
   String get bookmarksSyncFailedRetryTooltip => 'Sync failed - tap to retry';
 
   @override
+  String get bookmarksAddTooltip => 'Add bookmark';
+
+  @override
+  String get bookmarksSearchClear => 'Clear search';
+
+  @override
+  String get bookmarksSortTooltip => 'Sort bookmarks';
+
+  @override
+  String get bookmarksSortNewest => 'Newest first';
+
+  @override
+  String get bookmarksSortOldest => 'Oldest first';
+
+  @override
+  String get bookmarksSortTitleAz => 'Title (A–Z)';
+
+  @override
   String get bookmarkAppBarTitle => 'Bookmark';
 
   @override
@@ -227,6 +245,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get bookmarkOpenUrl => 'Open URL';
+
+  @override
+  String get bookmarkAttachedVideo => 'Attached video';
 
   @override
   String get bookmarkInvalidUrl => 'Invalid URL';

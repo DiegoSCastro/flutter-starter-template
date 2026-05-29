@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$BookmarksListState {
 
- bool get isLoading; BookmarksSyncStatus get syncStatus; List<Bookmark> get items; String get query; Failure? get failure;
+ bool get isLoading; BookmarksSyncStatus get syncStatus; List<Bookmark> get items; String get query; BookmarkSort get sort; Failure? get failure;
 /// Create a copy of BookmarksListState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $BookmarksListStateCopyWith<BookmarksListState> get copyWith => _$BookmarksListS
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is BookmarksListState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.syncStatus, syncStatus) || other.syncStatus == syncStatus)&&const DeepCollectionEquality().equals(other.items, items)&&(identical(other.query, query) || other.query == query)&&(identical(other.failure, failure) || other.failure == failure));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BookmarksListState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.syncStatus, syncStatus) || other.syncStatus == syncStatus)&&const DeepCollectionEquality().equals(other.items, items)&&(identical(other.query, query) || other.query == query)&&(identical(other.sort, sort) || other.sort == sort)&&(identical(other.failure, failure) || other.failure == failure));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isLoading,syncStatus,const DeepCollectionEquality().hash(items),query,failure);
+int get hashCode => Object.hash(runtimeType,isLoading,syncStatus,const DeepCollectionEquality().hash(items),query,sort,failure);
 
 @override
 String toString() {
-  return 'BookmarksListState(isLoading: $isLoading, syncStatus: $syncStatus, items: $items, query: $query, failure: $failure)';
+  return 'BookmarksListState(isLoading: $isLoading, syncStatus: $syncStatus, items: $items, query: $query, sort: $sort, failure: $failure)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $BookmarksListStateCopyWith<$Res>  {
   factory $BookmarksListStateCopyWith(BookmarksListState value, $Res Function(BookmarksListState) _then) = _$BookmarksListStateCopyWithImpl;
 @useResult
 $Res call({
- bool isLoading, BookmarksSyncStatus syncStatus, List<Bookmark> items, String query, Failure? failure
+ bool isLoading, BookmarksSyncStatus syncStatus, List<Bookmark> items, String query, BookmarkSort sort, Failure? failure
 });
 
 
@@ -62,13 +62,14 @@ class _$BookmarksListStateCopyWithImpl<$Res>
 
 /// Create a copy of BookmarksListState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? isLoading = null,Object? syncStatus = null,Object? items = null,Object? query = null,Object? failure = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? isLoading = null,Object? syncStatus = null,Object? items = null,Object? query = null,Object? sort = null,Object? failure = freezed,}) {
   return _then(_self.copyWith(
 isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,syncStatus: null == syncStatus ? _self.syncStatus : syncStatus // ignore: cast_nullable_to_non_nullable
 as BookmarksSyncStatus,items: null == items ? _self.items : items // ignore: cast_nullable_to_non_nullable
 as List<Bookmark>,query: null == query ? _self.query : query // ignore: cast_nullable_to_non_nullable
-as String,failure: freezed == failure ? _self.failure : failure // ignore: cast_nullable_to_non_nullable
+as String,sort: null == sort ? _self.sort : sort // ignore: cast_nullable_to_non_nullable
+as BookmarkSort,failure: freezed == failure ? _self.failure : failure // ignore: cast_nullable_to_non_nullable
 as Failure?,
   ));
 }
@@ -154,10 +155,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isLoading,  BookmarksSyncStatus syncStatus,  List<Bookmark> items,  String query,  Failure? failure)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isLoading,  BookmarksSyncStatus syncStatus,  List<Bookmark> items,  String query,  BookmarkSort sort,  Failure? failure)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _BookmarksListState() when $default != null:
-return $default(_that.isLoading,_that.syncStatus,_that.items,_that.query,_that.failure);case _:
+return $default(_that.isLoading,_that.syncStatus,_that.items,_that.query,_that.sort,_that.failure);case _:
   return orElse();
 
 }
@@ -175,10 +176,10 @@ return $default(_that.isLoading,_that.syncStatus,_that.items,_that.query,_that.f
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isLoading,  BookmarksSyncStatus syncStatus,  List<Bookmark> items,  String query,  Failure? failure)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isLoading,  BookmarksSyncStatus syncStatus,  List<Bookmark> items,  String query,  BookmarkSort sort,  Failure? failure)  $default,) {final _that = this;
 switch (_that) {
 case _BookmarksListState():
-return $default(_that.isLoading,_that.syncStatus,_that.items,_that.query,_that.failure);case _:
+return $default(_that.isLoading,_that.syncStatus,_that.items,_that.query,_that.sort,_that.failure);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -195,10 +196,10 @@ return $default(_that.isLoading,_that.syncStatus,_that.items,_that.query,_that.f
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isLoading,  BookmarksSyncStatus syncStatus,  List<Bookmark> items,  String query,  Failure? failure)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isLoading,  BookmarksSyncStatus syncStatus,  List<Bookmark> items,  String query,  BookmarkSort sort,  Failure? failure)?  $default,) {final _that = this;
 switch (_that) {
 case _BookmarksListState() when $default != null:
-return $default(_that.isLoading,_that.syncStatus,_that.items,_that.query,_that.failure);case _:
+return $default(_that.isLoading,_that.syncStatus,_that.items,_that.query,_that.sort,_that.failure);case _:
   return null;
 
 }
@@ -210,7 +211,7 @@ return $default(_that.isLoading,_that.syncStatus,_that.items,_that.query,_that.f
 
 
 class _BookmarksListState extends BookmarksListState {
-  const _BookmarksListState({this.isLoading = false, this.syncStatus = BookmarksSyncStatus.idle, final  List<Bookmark> items = const [], this.query = '', this.failure}): _items = items,super._();
+  const _BookmarksListState({this.isLoading = false, this.syncStatus = BookmarksSyncStatus.idle, final  List<Bookmark> items = const [], this.query = '', this.sort = BookmarkSort.newest, this.failure}): _items = items,super._();
   
 
 @override@JsonKey() final  bool isLoading;
@@ -223,6 +224,7 @@ class _BookmarksListState extends BookmarksListState {
 }
 
 @override@JsonKey() final  String query;
+@override@JsonKey() final  BookmarkSort sort;
 @override final  Failure? failure;
 
 /// Create a copy of BookmarksListState
@@ -235,16 +237,16 @@ _$BookmarksListStateCopyWith<_BookmarksListState> get copyWith => __$BookmarksLi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BookmarksListState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.syncStatus, syncStatus) || other.syncStatus == syncStatus)&&const DeepCollectionEquality().equals(other._items, _items)&&(identical(other.query, query) || other.query == query)&&(identical(other.failure, failure) || other.failure == failure));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _BookmarksListState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.syncStatus, syncStatus) || other.syncStatus == syncStatus)&&const DeepCollectionEquality().equals(other._items, _items)&&(identical(other.query, query) || other.query == query)&&(identical(other.sort, sort) || other.sort == sort)&&(identical(other.failure, failure) || other.failure == failure));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,isLoading,syncStatus,const DeepCollectionEquality().hash(_items),query,failure);
+int get hashCode => Object.hash(runtimeType,isLoading,syncStatus,const DeepCollectionEquality().hash(_items),query,sort,failure);
 
 @override
 String toString() {
-  return 'BookmarksListState(isLoading: $isLoading, syncStatus: $syncStatus, items: $items, query: $query, failure: $failure)';
+  return 'BookmarksListState(isLoading: $isLoading, syncStatus: $syncStatus, items: $items, query: $query, sort: $sort, failure: $failure)';
 }
 
 
@@ -255,7 +257,7 @@ abstract mixin class _$BookmarksListStateCopyWith<$Res> implements $BookmarksLis
   factory _$BookmarksListStateCopyWith(_BookmarksListState value, $Res Function(_BookmarksListState) _then) = __$BookmarksListStateCopyWithImpl;
 @override @useResult
 $Res call({
- bool isLoading, BookmarksSyncStatus syncStatus, List<Bookmark> items, String query, Failure? failure
+ bool isLoading, BookmarksSyncStatus syncStatus, List<Bookmark> items, String query, BookmarkSort sort, Failure? failure
 });
 
 
@@ -272,13 +274,14 @@ class __$BookmarksListStateCopyWithImpl<$Res>
 
 /// Create a copy of BookmarksListState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? isLoading = null,Object? syncStatus = null,Object? items = null,Object? query = null,Object? failure = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? isLoading = null,Object? syncStatus = null,Object? items = null,Object? query = null,Object? sort = null,Object? failure = freezed,}) {
   return _then(_BookmarksListState(
 isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,syncStatus: null == syncStatus ? _self.syncStatus : syncStatus // ignore: cast_nullable_to_non_nullable
 as BookmarksSyncStatus,items: null == items ? _self._items : items // ignore: cast_nullable_to_non_nullable
 as List<Bookmark>,query: null == query ? _self.query : query // ignore: cast_nullable_to_non_nullable
-as String,failure: freezed == failure ? _self.failure : failure // ignore: cast_nullable_to_non_nullable
+as String,sort: null == sort ? _self.sort : sort // ignore: cast_nullable_to_non_nullable
+as BookmarkSort,failure: freezed == failure ? _self.failure : failure // ignore: cast_nullable_to_non_nullable
 as Failure?,
   ));
 }

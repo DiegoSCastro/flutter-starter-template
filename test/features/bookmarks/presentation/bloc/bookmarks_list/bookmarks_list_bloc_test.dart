@@ -141,6 +141,58 @@ void main() {
       );
     });
 
+    group('sort', () {
+      test('defaults to newest first', () {
+        final bloc = buildBloc();
+        expect(bloc.state.sort, BookmarkSort.newest);
+        bloc.close();
+      });
+
+      test('visibleItems orders by createdAt descending by default', () {
+        final state = BookmarksListState(items: [testBookmark, testBookmark2]);
+        // testBookmark2 (2025-01-02) is newer than testBookmark (2025-01-01).
+        expect(state.visibleItems.first.id, testBookmark2.id);
+      });
+
+      blocTest<BookmarksListBloc, BookmarksListState>(
+        'oldest sort orders by createdAt ascending',
+        build: buildBloc,
+        seed: () => BookmarksListState(items: [testBookmark, testBookmark2]),
+        act: (bloc) =>
+            bloc.add(const BookmarksListSortChanged(BookmarkSort.oldest)),
+        expect: () => [
+          predicate<BookmarksListState>(
+            (s) =>
+                s.sort == BookmarkSort.oldest &&
+                s.visibleItems.first.id == testBookmark.id,
+          ),
+        ],
+      );
+
+      blocTest<BookmarksListBloc, BookmarksListState>(
+        'titleAz sort orders alphabetically by title',
+        build: buildBloc,
+        seed: () => BookmarksListState(items: [testBookmark, testBookmark2]),
+        act: (bloc) =>
+            bloc.add(const BookmarksListSortChanged(BookmarkSort.titleAz)),
+        expect: () => [
+          predicate<BookmarksListState>(
+            // "Dart" sorts before "Flutter".
+            (s) => s.visibleItems.first.title == 'Dart',
+          ),
+        ],
+      );
+
+      blocTest<BookmarksListBloc, BookmarksListState>(
+        'does nothing when sort is unchanged',
+        build: buildBloc,
+        seed: () => const BookmarksListState(sort: BookmarkSort.newest),
+        act: (bloc) =>
+            bloc.add(const BookmarksListSortChanged(BookmarkSort.newest)),
+        expect: () => <BookmarksListState>[],
+      );
+    });
+
     group('delete', () {
       blocTest<BookmarksListBloc, BookmarksListState>(
         'optimistically removes item',
