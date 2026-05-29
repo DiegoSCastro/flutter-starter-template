@@ -619,6 +619,42 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Camera access is required to take photos.'**
   String get errorCameraPermissionRequired;
+
+  /// No description provided for @navHome.
+  ///
+  /// In en, this message translates to:
+  /// **'Home'**
+  String get navHome;
+
+  /// No description provided for @navBookmarks.
+  ///
+  /// In en, this message translates to:
+  /// **'Bookmarks'**
+  String get navBookmarks;
+
+  /// No description provided for @navProfile.
+  ///
+  /// In en, this message translates to:
+  /// **'Profile'**
+  String get navProfile;
+
+  /// No description provided for @navSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get navSettings;
+
+  /// No description provided for @settingsAppBarTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settingsAppBarTitle;
+
+  /// No description provided for @bookmarksDetailPlaceholder.
+  ///
+  /// In en, this message translates to:
+  /// **'Select a bookmark to view its details'**
+  String get bookmarksDetailPlaceholder;
 }
 
 class _AppLocalizationsDelegate

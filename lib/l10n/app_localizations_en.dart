@@ -277,4 +277,23 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get errorCameraPermissionRequired =>
       'Camera access is required to take photos.';
+
+  @override
+  String get navHome => 'Home';
+
+  @override
+  String get navBookmarks => 'Bookmarks';
+
+  @override
+  String get navProfile => 'Profile';
+
+  @override
+  String get navSettings => 'Settings';
+
+  @override
+  String get settingsAppBarTitle => 'Settings';
+
+  @override
+  String get bookmarksDetailPlaceholder =>
+      'Select a bookmark to view its details';
 }

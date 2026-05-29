@@ -17,6 +17,7 @@ import '../../domain/entities/bookmark.dart';
 import '../../domain/services/bookmarks_sync_controller.dart';
 import '../bloc/bookmarks_list/bookmarks_list_bloc.dart';
 import '../bloc/bookmarks_list/bookmarks_list_state.dart';
+import 'bookmark_detail_widgets.dart';
 import 'bookmark_failure_messages.dart';
 
 Future<void> _showItemMenu(BuildContext context, Bookmark bookmark) async {
@@ -57,8 +58,11 @@ class BookmarksListView extends StatefulWidget {
 }
 
 class _BookmarksListViewState extends State<BookmarksListView> {
+  static const double _twoPaneMinWidth = 700;
+
   final _searchController = TextEditingController();
   Timer? _debounce;
+  String? _selectedId;
 
   @override
   void dispose() {
@@ -95,6 +99,14 @@ class _BookmarksListViewState extends State<BookmarksListView> {
     }
   }
 
+  void _onItemTap(Bookmark bookmark, {required bool twoPane}) {
+    if (twoPane) {
+      setState(() => _selectedId = bookmark.id);
+    } else {
+      _openDetail(bookmark);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return AppScaffold(
@@ -111,110 +123,136 @@ class _BookmarksListViewState extends State<BookmarksListView> {
         onPressed: _openNew,
         child: const Icon(Icons.add),
       ).animateScale(delay: 300.ms),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(
-              AppSpacing.lg,
-              AppSpacing.md,
-              AppSpacing.lg,
-              AppSpacing.xs,
-            ),
-            child: AppTextField(
-              controller: _searchController,
-              hint: context.l10n.bookmarksSearchHint,
-              prefixIcon: Icons.search,
-              onChanged: _onSearchChanged,
-            ),
-          ).animateSlideDown(duration: 300.ms),
-          Expanded(
-            child: BlocBuilder<BookmarksListBloc, BookmarksListState>(
-              builder: (context, state) {
-                if (state.isLoading && state.items.isEmpty) {
-                  return const AppLoading();
-                }
-                if (state.failure != null && state.items.isEmpty) {
-                  return AppErrorView(
-                    message: bookmarkFailureMessage(context, state.failure!),
-                    onRetry: () => context.read<BookmarksListBloc>().add(
-                      const BookmarksListLoadRequested(),
-                    ),
-                  );
-                }
-                final visible = state.visibleItems;
-                if (visible.isEmpty) {
-                  final isFiltered = state.query.trim().isNotEmpty;
-                  return AppEmptyView(
-                    icon: isFiltered
-                        ? Icons.search_off
-                        : Icons.bookmark_outline,
-                    title: isFiltered
-                        ? context.l10n.bookmarksNoMatchesTitle
-                        : context.l10n.bookmarksEmptyTitle,
-                    message: isFiltered
-                        ? context.l10n.bookmarksNoMatchesMessage
-                        : context.l10n.bookmarksEmptyMessage,
-                  );
-                }
-                return RefreshIndicator(
-                  onRefresh: _reload,
-                  child: AppSlidableAutoCloseGroup(
-                    child: ListView.separated(
-                      itemCount: visible.length,
-                      separatorBuilder: (_, _) => const Divider(height: 1),
-                      itemBuilder: (context, index) {
-                        final b = visible[index];
-                        return AppSlidable(
-                          key: ValueKey(b.id),
-                          groupTag: 'bookmarks',
-                          endActions: [
-                            AppSlidableAction.delete(
-                              onPressed: (_) async {
-                                final shouldDelete = await _confirmDelete(
-                                  context,
-                                  b.title,
-                                );
-                                if (!shouldDelete || !context.mounted) return;
-                                context.read<BookmarksListBloc>().add(
-                                  BookmarksListDeleteRequested(b.id),
-                                );
-                              },
-                            ),
-                          ],
-                          child: ListTile(
-                            leading: b.isPendingSync
-                                ? Tooltip(
-                                    message: context.l10n.bookmarksNotYetSynced,
-                                    child: Icon(
-                                      Icons.cloud_off,
-                                      color: context.colorScheme.outline,
-                                    ),
-                                  )
-                                : null,
-                            title: Text(
-                              b.title,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            subtitle: Text(
-                              b.url,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            trailing: const Icon(Icons.chevron_right),
-                            onTap: () => _openDetail(b),
-                            onLongPress: () => _showItemMenu(context, b),
-                          ),
-                        ).animateStaggerItem(index);
-                      },
-                    ),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final twoPane = constraints.maxWidth >= _twoPaneMinWidth;
+          return AppListDetailPane(
+            twoPaneMinWidth: _twoPaneMinWidth,
+            master: _buildMaster(twoPane: twoPane),
+            detail: twoPane && _selectedId != null
+                ? BookmarkDetailPane(
+                    key: ValueKey(_selectedId),
+                    id: _selectedId!,
+                    onDeleted: () {
+                      setState(() => _selectedId = null);
+                      _reload().uw();
+                    },
+                    onEdited: _reload,
+                  )
+                : null,
+            placeholder: const _DetailPlaceholder(),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildMaster({required bool twoPane}) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.lg,
+            AppSpacing.md,
+            AppSpacing.lg,
+            AppSpacing.xs,
+          ),
+          child: AppTextField(
+            controller: _searchController,
+            hint: context.l10n.bookmarksSearchHint,
+            prefixIcon: Icons.search,
+            onChanged: _onSearchChanged,
+          ),
+        ).animateSlideDown(duration: 300.ms),
+        Expanded(
+          child: BlocBuilder<BookmarksListBloc, BookmarksListState>(
+            builder: (context, state) {
+              if (state.isLoading && state.items.isEmpty) {
+                return const AppLoading();
+              }
+              if (state.failure != null && state.items.isEmpty) {
+                return AppErrorView(
+                  message: bookmarkFailureMessage(context, state.failure!),
+                  onRetry: () => context.read<BookmarksListBloc>().add(
+                    const BookmarksListLoadRequested(),
                   ),
                 );
-              },
-            ),
+              }
+              final visible = state.visibleItems;
+              if (visible.isEmpty) {
+                final isFiltered = state.query.trim().isNotEmpty;
+                return AppEmptyView(
+                  icon: isFiltered ? Icons.search_off : Icons.bookmark_outline,
+                  title: isFiltered
+                      ? context.l10n.bookmarksNoMatchesTitle
+                      : context.l10n.bookmarksEmptyTitle,
+                  message: isFiltered
+                      ? context.l10n.bookmarksNoMatchesMessage
+                      : context.l10n.bookmarksEmptyMessage,
+                );
+              }
+              return RefreshIndicator(
+                onRefresh: _reload,
+                child: AppSlidableAutoCloseGroup(
+                  child: ListView.separated(
+                    itemCount: visible.length,
+                    separatorBuilder: (_, _) => const Divider(height: 1),
+                    itemBuilder: (context, index) {
+                      final b = visible[index];
+                      return AppSlidable(
+                        key: ValueKey(b.id),
+                        groupTag: 'bookmarks',
+                        endActions: [
+                          AppSlidableAction.delete(
+                            onPressed: (_) async {
+                              final shouldDelete = await _confirmDelete(
+                                context,
+                                b.title,
+                              );
+                              if (!shouldDelete || !context.mounted) return;
+                              if (_selectedId == b.id) {
+                                setState(() => _selectedId = null);
+                              }
+                              context.read<BookmarksListBloc>().add(
+                                BookmarksListDeleteRequested(b.id),
+                              );
+                            },
+                          ),
+                        ],
+                        child: ListTile(
+                          selected: twoPane && b.id == _selectedId,
+                          leading: b.isPendingSync
+                              ? Tooltip(
+                                  message: context.l10n.bookmarksNotYetSynced,
+                                  child: Icon(
+                                    Icons.cloud_off,
+                                    color: context.colorScheme.outline,
+                                  ),
+                                )
+                              : null,
+                          title: Text(
+                            b.title,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          subtitle: Text(
+                            b.url,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          trailing: const Icon(Icons.chevron_right),
+                          onTap: () => _onItemTap(b, twoPane: twoPane),
+                          onLongPress: () => _showItemMenu(context, b),
+                        ),
+                      ).animateStaggerItem(index);
+                    },
+                  ),
+                ),
+              );
+            },
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -240,6 +278,33 @@ class _BookmarksListViewState extends State<BookmarksListView> {
           ),
         ) ??
         false;
+  }
+}
+
+class _DetailPlaceholder extends StatelessWidget {
+  const _DetailPlaceholder();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(
+            Icons.bookmark_outline,
+            size: 48,
+            color: context.colorScheme.outline,
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Text(
+            context.l10n.bookmarksDetailPlaceholder,
+            style: context.textTheme.bodyMedium?.copyWith(
+              color: context.colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 

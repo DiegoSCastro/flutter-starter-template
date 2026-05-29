@@ -19,7 +19,6 @@ class HomeBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return AppScaffold(
       title: context.l10n.homeAppBarTitle,
-      actions: const [_ProfileAvatarButton()],
       body: BlocBuilder<HomeBloc, HomeState>(
         builder: (context, state) {
           return SingleChildScrollView(
@@ -307,37 +306,6 @@ class _BookmarkCarouselCard extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class _ProfileAvatarButton extends StatelessWidget {
-  const _ProfileAvatarButton();
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocSelector<AuthBloc, AuthState, String>(
-      selector: _usernameFrom,
-      builder: (context, username) {
-        final initial = username.isNotEmpty ? username[0].toUpperCase() : '?';
-        return Padding(
-          padding: const EdgeInsets.only(right: AppSpacing.sm),
-          child: IconButton(
-            tooltip: context.l10n.homeProfileTooltip,
-            onPressed: () => const ProfileRoute().push<void>(context),
-            icon: CircleAvatar(
-              radius: 16,
-              backgroundColor: context.colorScheme.primaryContainer,
-              child: Text(
-                initial,
-                style: context.textTheme.labelLarge?.copyWith(
-                  color: context.colorScheme.onPrimaryContainer,
-                ),
-              ),
-            ),
-          ),
-        );
-      },
     );
   }
 }

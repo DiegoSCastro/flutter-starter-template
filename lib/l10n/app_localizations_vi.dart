@@ -280,4 +280,22 @@ class AppLocalizationsVi extends AppLocalizations {
   @override
   String get errorCameraPermissionRequired =>
       'Cần có quyền truy cập máy ảnh để chụp ảnh.';
+
+  @override
+  String get navHome => 'Trang chủ';
+
+  @override
+  String get navBookmarks => 'Bookmark';
+
+  @override
+  String get navProfile => 'Hồ sơ';
+
+  @override
+  String get navSettings => 'Cài đặt';
+
+  @override
+  String get settingsAppBarTitle => 'Cài đặt';
+
+  @override
+  String get bookmarksDetailPlaceholder => 'Chọn một bookmark để xem chi tiết';
 }

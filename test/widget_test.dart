@@ -122,7 +122,10 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
     }
 
-    expect(find.text('Home'), findsOneWidget);
+    expect(
+      find.descendant(of: find.byType(AppBar), matching: find.text('Home')),
+      findsOneWidget,
+    );
     expect(homeBloc, isNotNull);
     expect(authBloc.state, isA<AuthAuthenticated>());
     expect(

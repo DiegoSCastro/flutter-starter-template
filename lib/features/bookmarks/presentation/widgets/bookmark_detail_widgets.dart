@@ -35,16 +35,71 @@ Future<void> _shareBookmark(Bookmark bookmark) async {
   await getIt<ShareService>().share(text: content, subject: bookmark.title);
 }
 
-class BookmarkDetailView extends StatelessWidget {
-  const BookmarkDetailView({super.key, required this.id});
+/// Provides a [BookmarkDetailBloc] for [id] and renders the detail embedded in
+/// a side pane (no back button; delete/edit report back via callbacks instead
+/// of popping a route).
+class BookmarkDetailPane extends StatelessWidget {
+  const BookmarkDetailPane({
+    super.key,
+    required this.id,
+    this.onDeleted,
+    this.onEdited,
+  });
 
   final String id;
+
+  /// Called after the bookmark is deleted, so the host can clear its selection.
+  final VoidCallback? onDeleted;
+
+  /// Called after an edit returns with changes, so the host can refresh.
+  final VoidCallback? onEdited;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) =>
+          getIt<BookmarkDetailBloc>()..add(BookmarkDetailLoadRequested(id)),
+      child: BookmarkDetailView(
+        id: id,
+        embedded: true,
+        onDeleted: onDeleted,
+        onEdited: onEdited,
+      ),
+    );
+  }
+}
+
+class BookmarkDetailView extends StatelessWidget {
+  const BookmarkDetailView({
+    super.key,
+    required this.id,
+    this.embedded = false,
+    this.onDeleted,
+    this.onEdited,
+  });
+
+  final String id;
+
+  /// Whether the view is rendered inside a side pane rather than a full screen.
+  final bool embedded;
+
+  /// In embedded mode, called after the bookmark is deleted.
+  final VoidCallback? onDeleted;
+
+  /// In embedded mode, called after an edit returns with changes.
+  final VoidCallback? onEdited;
 
   @override
   Widget build(BuildContext context) {
     return BlocListener<BookmarkDetailBloc, BookmarkDetailState>(
       listenWhen: (_, state) => state is BookmarkDetailDeleted,
-      listener: (context, state) => context.pop(true),
+      listener: (context, state) {
+        if (embedded) {
+          onDeleted?.call();
+        } else {
+          context.pop(true);
+        }
+      },
       child: AppScaffold(
         title: context.l10n.bookmarkAppBarTitle,
         padding: EdgeInsets.zero,
@@ -100,6 +155,7 @@ class BookmarkDetailView extends StatelessWidget {
     final changed = await BookmarkEditRoute(id).push<bool>(context);
     if (changed == true && context.mounted) {
       context.read<BookmarkDetailBloc>().add(BookmarkDetailLoadRequested(id));
+      onEdited?.call();
     }
   }
 

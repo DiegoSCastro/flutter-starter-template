@@ -13,9 +13,85 @@ import '../features/bookmarks/presentation/screens/bookmark_form_screen.dart';
 import '../features/bookmarks/presentation/screens/bookmarks_list_screen.dart';
 import '../features/home/presentation/screens/home_screen.dart';
 import '../features/profile/presentation/screens/profile_screen.dart';
+import '../features/settings/presentation/screens/settings_screen.dart';
 import '../features/splash/presentation/screens/splash_screen.dart';
+import 'widgets/app_shell.dart';
 
 part 'router.g.dart';
+
+@TypedStatefulShellRoute<AppShellRouteData>(
+  branches: <TypedStatefulShellBranch<StatefulShellBranchData>>[
+    TypedStatefulShellBranch<HomeBranchData>(
+      routes: <TypedRoute<RouteData>>[
+        TypedGoRoute<HomeRoute>(path: '/', name: 'home'),
+      ],
+    ),
+    TypedStatefulShellBranch<BookmarksBranchData>(
+      routes: <TypedRoute<RouteData>>[
+        TypedGoRoute<BookmarksListRoute>(
+          path: '/bookmarks',
+          name: 'bookmarks',
+          routes: <TypedRoute<RouteData>>[
+            TypedGoRoute<BookmarkNewRoute>(path: 'new', name: 'bookmark_new'),
+            TypedGoRoute<BookmarkDetailRoute>(
+              path: ':id',
+              name: 'bookmark_detail',
+            ),
+            TypedGoRoute<BookmarkEditRoute>(
+              path: ':id/edit',
+              name: 'bookmark_edit',
+            ),
+          ],
+        ),
+      ],
+    ),
+    TypedStatefulShellBranch<ProfileBranchData>(
+      routes: <TypedRoute<RouteData>>[
+        TypedGoRoute<ProfileRoute>(
+          path: '/profile',
+          name: 'profile',
+          routes: <TypedRoute<RouteData>>[
+            TypedGoRoute<ChangePasswordRoute>(
+              path: 'change-password',
+              name: 'change-password',
+            ),
+          ],
+        ),
+      ],
+    ),
+    TypedStatefulShellBranch<SettingsBranchData>(
+      routes: <TypedRoute<RouteData>>[
+        TypedGoRoute<SettingsRoute>(path: '/settings', name: 'settings'),
+      ],
+    ),
+  ],
+)
+class AppShellRouteData extends StatefulShellRouteData {
+  const AppShellRouteData();
+
+  @override
+  Widget builder(
+    BuildContext context,
+    GoRouterState state,
+    StatefulNavigationShell navigationShell,
+  ) => AppShell(navigationShell: navigationShell);
+}
+
+class HomeBranchData extends StatefulShellBranchData {
+  const HomeBranchData();
+}
+
+class BookmarksBranchData extends StatefulShellBranchData {
+  const BookmarksBranchData();
+}
+
+class ProfileBranchData extends StatefulShellBranchData {
+  const ProfileBranchData();
+}
+
+class SettingsBranchData extends StatefulShellBranchData {
+  const SettingsBranchData();
+}
 
 @TypedGoRoute<SplashRoute>(path: '/splash', name: 'splash')
 class SplashRoute extends GoRouteData with $SplashRoute {
@@ -26,7 +102,6 @@ class SplashRoute extends GoRouteData with $SplashRoute {
       const SplashScreen();
 }
 
-@TypedGoRoute<HomeRoute>(path: '/', name: 'home')
 class HomeRoute extends GoRouteData with $HomeRoute {
   const HomeRoute();
 
@@ -34,7 +109,6 @@ class HomeRoute extends GoRouteData with $HomeRoute {
   Widget build(BuildContext context, GoRouterState state) => const HomeScreen();
 }
 
-@TypedGoRoute<ProfileRoute>(path: '/profile', name: 'profile')
 class ProfileRoute extends GoRouteData with $ProfileRoute {
   const ProfileRoute();
 
@@ -43,16 +117,20 @@ class ProfileRoute extends GoRouteData with $ProfileRoute {
       const ProfileScreen();
 }
 
-@TypedGoRoute<ChangePasswordRoute>(
-  path: '/profile/change-password',
-  name: 'change-password',
-)
 class ChangePasswordRoute extends GoRouteData with $ChangePasswordRoute {
   const ChangePasswordRoute();
 
   @override
   Widget build(BuildContext context, GoRouterState state) =>
       const ChangePasswordScreen();
+}
+
+class SettingsRoute extends GoRouteData with $SettingsRoute {
+  const SettingsRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      const SettingsScreen();
 }
 
 @TypedGoRoute<LoginRoute>(path: '/login', name: 'login')
@@ -73,15 +151,6 @@ class RegisterRoute extends GoRouteData with $RegisterRoute {
       const RegisterScreen();
 }
 
-@TypedGoRoute<BookmarksListRoute>(
-  path: '/bookmarks',
-  name: 'bookmarks',
-  routes: [
-    TypedGoRoute<BookmarkNewRoute>(path: 'new', name: 'bookmark_new'),
-    TypedGoRoute<BookmarkDetailRoute>(path: ':id', name: 'bookmark_detail'),
-    TypedGoRoute<BookmarkEditRoute>(path: ':id/edit', name: 'bookmark_edit'),
-  ],
-)
 class BookmarksListRoute extends GoRouteData with $BookmarksListRoute {
   const BookmarksListRoute();
 

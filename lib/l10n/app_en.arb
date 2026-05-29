@@ -114,5 +114,11 @@
   "bookmarkUrlInvalid": "Enter a valid URL (https://…)",
   "errorPermissionDenied": "Permission denied.",
   "errorGalleryPermissionRequired": "Photo gallery access is required to attach images.",
-  "errorCameraPermissionRequired": "Camera access is required to take photos."
+  "errorCameraPermissionRequired": "Camera access is required to take photos.",
+  "navHome": "Home",
+  "navBookmarks": "Bookmarks",
+  "navProfile": "Profile",
+  "navSettings": "Settings",
+  "settingsAppBarTitle": "Settings",
+  "bookmarksDetailPlaceholder": "Select a bookmark to view its details"
 }

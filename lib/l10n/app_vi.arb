@@ -86,5 +86,11 @@
   "bookmarkUrlInvalid": "Nhập URL hợp lệ (https://…)",
   "errorPermissionDenied": "Quyền truy cập bị từ chối.",
   "errorGalleryPermissionRequired": "Cần có quyền truy cập thư viện ảnh để đính kèm hình ảnh.",
-  "errorCameraPermissionRequired": "Cần có quyền truy cập máy ảnh để chụp ảnh."
+  "errorCameraPermissionRequired": "Cần có quyền truy cập máy ảnh để chụp ảnh.",
+  "navHome": "Trang chủ",
+  "navBookmarks": "Bookmark",
+  "navProfile": "Hồ sơ",
+  "navSettings": "Cài đặt",
+  "settingsAppBarTitle": "Cài đặt",
+  "bookmarksDetailPlaceholder": "Chọn một bookmark để xem chi tiết"
 }
