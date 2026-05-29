@@ -13,6 +13,30 @@ fvm dart <command>             # for Dart-only tooling
 
 If `.fvm/flutter_sdk` is missing, run `fvm install` once to materialize it.
 
+## iOS: Swift Package Manager must be disabled
+
+This project depends on Firebase, which requires an iOS deployment target of
+15.0. The Xcode project and `ios/Podfile` are both set to 15.0, but Flutter
+3.44.0 **hardcodes** the SPM-generated package to iOS 13.0
+(`darwin.dart`, `deploymentTarget()`), so an iOS build under Swift Package
+Manager fails with a "requires minimum platform version 15.0 ... but this
+target supports 13.0" error. Two of our plugins
+(`permission_handler_apple`, `objectbox_flutter_libs`) also lack SPM support.
+
+The fix is to use CocoaPods instead of SPM. **SPM is disabled via a
+machine-global Flutter setting (`~/.config/flutter/settings`), not via a file
+in this repo** — so every new machine and CI runner must run this once before
+the first iOS build:
+
+```bash
+fvm flutter config --no-enable-swift-package-manager
+```
+
+After that, the normal CocoaPods flow works (`fvm flutter clean`,
+`fvm flutter pub get`, then `cd ios && pod install`). The "plugins do not
+support Swift Package Manager" warning printed during `pub get`/build is then
+harmless.
+
 ## Common commands
 
 ```bash

@@ -139,6 +139,19 @@ fvm flutter pub get
 fvm dart run build_runner build --delete-conflicting-outputs
 ```
 
+### 🍎 iOS one-time setup
+
+iOS builds must use CocoaPods, **not** Swift Package Manager — Firebase needs an
+iOS 15.0 deployment target, but Flutter 3.44.0 hardcodes the SPM-generated
+package to 13.0, and two plugins (`permission_handler_apple`,
+`objectbox_flutter_libs`) don't support SPM yet. This setting lives in a
+machine-global Flutter config (`~/.config/flutter/settings`), so **every new
+machine and CI runner must run it once** before the first iOS build:
+
+```bash
+fvm flutter config --no-enable-swift-package-manager
+```
+
 ### 🖥 Start Backend
 
 ```bash
