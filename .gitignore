@@ -68,6 +68,13 @@ Thumbs.db
 .fvm/
 
 # -------------------------------------------------------------------------
+# AI / editor tooling (machine-local; kept here rather than relying on a
+# user-global ~/.config/git/ignore so the rules travel with the repo)
+# -------------------------------------------------------------------------
+.claude/settings.local.json
+.cursor/
+
+# -------------------------------------------------------------------------
 # MCP
 # -------------------------------------------------------------------------
 .mcp/**/node_modules/
