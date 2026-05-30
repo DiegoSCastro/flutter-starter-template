@@ -40,8 +40,8 @@ class AuthInterceptor extends Interceptor {
       return;
     }
 
-    final refreshed = await _refresher.refresh();
-    if (!refreshed) {
+    final outcome = await _refresher.refresh();
+    if (outcome != RefreshOutcome.refreshed) {
       handler.next(err);
       return;
     }

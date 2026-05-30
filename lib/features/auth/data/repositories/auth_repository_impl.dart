@@ -120,14 +120,20 @@ class AuthRepositoryImpl implements AuthRepository {
     if (user == null || refreshToken == null) {
       return const Err(NoSessionFailure());
     }
-    final refreshed = await _refresher.refresh();
-    if (!refreshed) {
-      // Tokens existed but the refresh cycle failed — drop the dead session so
-      // the next cold start doesn't loop through the same failed refresh.
-      await _local.clearSession();
-      return const Err(NoSessionFailure('Session expired.'));
+    final outcome = await _refresher.refresh();
+    switch (outcome) {
+      case RefreshOutcome.refreshed:
+        return Ok(user);
+      case RefreshOutcome.networkError:
+        // Offline or a transient server error at launch. Restore the session
+        // optimistically and let AuthInterceptor refresh lazily on the first
+        // 401 once connectivity returns. Wiping a possibly-valid session here
+        // is what forced offline users to re-login.
+        return Ok(user);
+      case RefreshOutcome.invalidSession:
+        // The refresher already cleared storage on a genuine token rejection.
+        return const Err(NoSessionFailure('Session expired.'));
     }
-    return Ok(user);
   }
 
   Failure _mapDioError(DioException e) {

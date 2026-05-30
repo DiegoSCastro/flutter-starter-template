@@ -19,7 +19,17 @@ class _ScriptedAdapter implements HttpClientAdapter {
   ) async {
     final next = responses[calls];
     calls++;
-    if (next is DioException) throw next;
+    if (next is DioException) {
+      // Re-point the error at the real request options so it carries the
+      // actual HTTP method — this is what real Dio does, and what the
+      // interceptor's method-based retry decision depends on.
+      throw DioException(
+        requestOptions: options,
+        type: next.type,
+        response: next.response,
+        error: next.error,
+      );
+    }
     return next as ResponseBody;
   }
 
@@ -120,6 +130,48 @@ void main() {
 
       await expectLater(dio.get<dynamic>('/'), throwsA(isA<DioException>()));
       expect(adapter.calls, 1);
+    });
+
+    test('does NOT retry a POST on an ambiguous transport failure', () async {
+      // A timed-out POST may already have been processed; replaying it could
+      // duplicate the side effect, so it must not be retried.
+      final adapter = _ScriptedAdapter([_connectionError(), ok()]);
+      final dio = buildDio(adapter);
+
+      await expectLater(dio.post<dynamic>('/'), throwsA(isA<DioException>()));
+      expect(adapter.calls, 1);
+    });
+
+    test('retries an idempotent PUT on a transport failure', () async {
+      final adapter = _ScriptedAdapter([_connectionError(), ok()]);
+      final dio = buildDio(adapter);
+
+      final response = await dio.put<dynamic>('/');
+
+      expect(response.statusCode, 200);
+      expect(adapter.calls, 2);
+    });
+
+    test('still retries a POST on a retryable status code (503)', () async {
+      // 503 means the server explicitly did not process the request, so even a
+      // POST is safe to retry.
+      final adapter = _ScriptedAdapter([
+        DioException(
+          requestOptions: RequestOptions(path: '/'),
+          type: DioExceptionType.badResponse,
+          response: Response<dynamic>(
+            requestOptions: RequestOptions(path: '/'),
+            statusCode: 503,
+          ),
+        ),
+        ok(),
+      ]);
+      final dio = buildDio(adapter);
+
+      final response = await dio.post<dynamic>('/');
+
+      expect(response.statusCode, 200);
+      expect(adapter.calls, 2);
     });
   });
 }
