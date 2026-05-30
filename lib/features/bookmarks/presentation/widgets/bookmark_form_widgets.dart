@@ -229,6 +229,8 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
                               fit: BoxFit.cover,
                               width: _thumbnailSize,
                               height: _thumbnailSize,
+                              semanticLabel:
+                                  context.l10n.bookmarkAttachedImageLabel,
                             )
                           : Image.file(
                               File(path),
@@ -240,20 +242,24 @@ class _BookmarkFormViewState extends State<BookmarkFormView> {
                     Positioned(
                       top: AppSpacing.xs,
                       right: AppSpacing.xs,
-                      child: GestureDetector(
-                        onTap: () => context.read<BookmarkFormBloc>().add(
-                          BookmarkFormImageRemoved(path),
-                        ),
-                        child: Container(
-                          padding: const EdgeInsets.all(AppSpacing.xxs),
-                          decoration: const BoxDecoration(
-                            color: Colors.black54,
-                            shape: BoxShape.circle,
+                      child: Semantics(
+                        button: true,
+                        label: context.l10n.bookmarkRemoveImageLabel,
+                        child: GestureDetector(
+                          onTap: () => context.read<BookmarkFormBloc>().add(
+                            BookmarkFormImageRemoved(path),
                           ),
-                          child: const Icon(
-                            Icons.close,
-                            size: AppIconSize.sm,
-                            color: Colors.white,
+                          child: Container(
+                            padding: const EdgeInsets.all(AppSpacing.xxs),
+                            decoration: const BoxDecoration(
+                              color: Colors.black54,
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.close,
+                              size: AppIconSize.sm,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
                       ),

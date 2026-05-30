@@ -339,4 +339,15 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get bookmarksDetailPlaceholder =>
       'Select a bookmark to view its details';
+
+  @override
+  String bookmarkImageLabel(String title) {
+    return 'Image for $title';
+  }
+
+  @override
+  String get bookmarkAttachedImageLabel => 'Attached image';
+
+  @override
+  String get bookmarkRemoveImageLabel => 'Remove image';
 }

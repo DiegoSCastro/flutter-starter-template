@@ -341,4 +341,15 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get bookmarksDetailPlaceholder => 'Chọn một bookmark để xem chi tiết';
+
+  @override
+  String bookmarkImageLabel(String title) {
+    return 'Hình ảnh của $title';
+  }
+
+  @override
+  String get bookmarkAttachedImageLabel => 'Hình ảnh đính kèm';
+
+  @override
+  String get bookmarkRemoveImageLabel => 'Xóa hình ảnh';
 }

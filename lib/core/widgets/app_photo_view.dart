@@ -494,6 +494,9 @@ class _AppPhotoViewFullScreenPageState
                               color: Colors.white,
                               size: AppIconSize.xl,
                             ),
+                            tooltip: MaterialLocalizations.of(
+                              context,
+                            ).closeButtonTooltip,
                             onPressed: () => Navigator.of(context).pop(),
                           ),
                           if (hasGallery) ...[

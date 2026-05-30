@@ -733,6 +733,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Select a bookmark to view its details'**
   String get bookmarksDetailPlaceholder;
+
+  /// Accessibility label for a bookmark's attached image.
+  ///
+  /// In en, this message translates to:
+  /// **'Image for {title}'**
+  String bookmarkImageLabel(String title);
+
+  /// No description provided for @bookmarkAttachedImageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Attached image'**
+  String get bookmarkAttachedImageLabel;
+
+  /// No description provided for @bookmarkRemoveImageLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove image'**
+  String get bookmarkRemoveImageLabel;
 }
 
 class _AppLocalizationsDelegate

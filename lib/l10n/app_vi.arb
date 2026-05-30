@@ -113,5 +113,8 @@
   "navProfile": "Hồ sơ",
   "navSettings": "Cài đặt",
   "settingsAppBarTitle": "Cài đặt",
-  "bookmarksDetailPlaceholder": "Chọn một bookmark để xem chi tiết"
+  "bookmarksDetailPlaceholder": "Chọn một bookmark để xem chi tiết",
+  "bookmarkImageLabel": "Hình ảnh của {title}",
+  "bookmarkAttachedImageLabel": "Hình ảnh đính kèm",
+  "bookmarkRemoveImageLabel": "Xóa hình ảnh"
 }

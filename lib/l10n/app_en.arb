@@ -141,5 +141,16 @@
   "navProfile": "Profile",
   "navSettings": "Settings",
   "settingsAppBarTitle": "Settings",
-  "bookmarksDetailPlaceholder": "Select a bookmark to view its details"
+  "bookmarksDetailPlaceholder": "Select a bookmark to view its details",
+  "bookmarkImageLabel": "Image for {title}",
+  "@bookmarkImageLabel": {
+    "description": "Accessibility label for a bookmark's attached image.",
+    "placeholders": {
+      "title": {
+        "type": "String"
+      }
+    }
+  },
+  "bookmarkAttachedImageLabel": "Attached image",
+  "bookmarkRemoveImageLabel": "Remove image"
 }

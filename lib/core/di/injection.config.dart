@@ -13,6 +13,8 @@ import 'package:connectivity_plus/connectivity_plus.dart' as _i895;
 import 'package:dio/dio.dart' as _i361;
 import 'package:firebase_analytics/firebase_analytics.dart' as _i398;
 import 'package:firebase_messaging/firebase_messaging.dart' as _i892;
+import 'package:firebase_performance/firebase_performance.dart' as _i346;
+import 'package:firebase_remote_config/firebase_remote_config.dart' as _i627;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart'
     as _i163;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
@@ -23,6 +25,10 @@ import 'package:flutter_starter_template/core/analytics/analytics_route_observer
 import 'package:flutter_starter_template/core/analytics/analytics_service.dart'
     as _i838;
 import 'package:flutter_starter_template/core/config/env_config.dart' as _i689;
+import 'package:flutter_starter_template/core/config/remote_config_module.dart'
+    as _i929;
+import 'package:flutter_starter_template/core/config/remote_config_service.dart'
+    as _i159;
 import 'package:flutter_starter_template/core/firebase/firebase_service.dart'
     as _i999;
 import 'package:flutter_starter_template/core/media/camera_service.dart'
@@ -34,6 +40,8 @@ import 'package:flutter_starter_template/core/media/video_player_service.dart'
     as _i863;
 import 'package:flutter_starter_template/core/network/network_module.dart'
     as _i173;
+import 'package:flutter_starter_template/core/network/performance_module.dart'
+    as _i498;
 import 'package:flutter_starter_template/core/notifications/firebase_messaging_service.dart'
     as _i529;
 import 'package:flutter_starter_template/core/notifications/notifications_module.dart'
@@ -130,7 +138,9 @@ extension GetItInjectableX on _i174.GetIt {
     final sharedPreferencesModule = _$SharedPreferencesModule();
     final objectBoxModule = _$ObjectBoxModule();
     final analyticsModule = _$AnalyticsModule();
+    final remoteConfigModule = _$RemoteConfigModule();
     final mediaModule = _$MediaModule();
+    final performanceModule = _$PerformanceModule();
     final notificationsModule = _$NotificationsModule();
     final shareModule = _$ShareModule();
     final secureStorageModule = _$SecureStorageModule();
@@ -152,10 +162,16 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i398.FirebaseAnalytics>(
       () => analyticsModule.provideFirebaseAnalytics(),
     );
+    gh.lazySingleton<_i627.FirebaseRemoteConfig>(
+      () => remoteConfigModule.provideRemoteConfig(),
+    );
     gh.lazySingleton<_i756.CameraService>(() => _i756.CameraService());
     gh.lazySingleton<_i183.ImagePicker>(() => mediaModule.imagePicker);
     gh.lazySingleton<_i863.VideoPlayerService>(
       () => _i863.VideoPlayerService(),
+    );
+    gh.lazySingleton<_i346.FirebasePerformance>(
+      () => performanceModule.providePerformance(),
     );
     gh.lazySingleton<_i163.FlutterLocalNotificationsPlugin>(
       () => notificationsModule.providePlugin(),
@@ -183,6 +199,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.lazySingleton<_i735.ImagePickerService>(
       () => _i735.ImagePickerService(gh<_i183.ImagePicker>()),
+    );
+    gh.lazySingleton<_i159.RemoteConfigService>(
+      () => _i159.FirebaseRemoteConfigService(gh<_i627.FirebaseRemoteConfig>()),
     );
     gh.lazySingleton<_i580.ShareService>(
       () => _i580.ShareService(gh<_i998.SharePlus>()),
@@ -227,6 +246,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i297.AuthLocalDataSource>(),
         gh<_i533.TokenRefresher>(),
         gh<_i689.EnvConfig>(),
+        gh<_i346.FirebasePerformance>(),
       ),
     );
     gh.lazySingleton<_i87.AuthRemoteDataSource>(
@@ -341,7 +361,11 @@ class _$ObjectBoxModule extends _i319.ObjectBoxModule {}
 
 class _$AnalyticsModule extends _i720.AnalyticsModule {}
 
+class _$RemoteConfigModule extends _i929.RemoteConfigModule {}
+
 class _$MediaModule extends _i773.MediaModule {}
+
+class _$PerformanceModule extends _i498.PerformanceModule {}
 
 class _$NotificationsModule extends _i146.NotificationsModule {}
 

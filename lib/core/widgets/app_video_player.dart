@@ -256,43 +256,52 @@ class _AppVideoPlayerState extends State<AppVideoPlayer> {
                       Icons.arrow_back_rounded,
                       color: Colors.white,
                     ),
+                    tooltip: MaterialLocalizations.of(
+                      context,
+                    ).backButtonTooltip,
                     onPressed: () => Navigator.of(context).pop(),
                   ),
                 ),
               ),
             ),
 
-          // Central Play/Pause Tap Target Overlay
+          // Central Play/Pause Tap Target Overlay. Hidden from semantics: the
+          // labeled play/pause button in the controls row covers screen readers
+          // so this redundant gesture target doesn't announce twice.
           Center(
-            child:
-                Material(
-                      color: Colors.transparent,
-                      child: InkWell(
-                        onTap: _togglePlay,
-                        customBorder: const CircleBorder(),
-                        child: Container(
-                          padding: const EdgeInsets.all(AppSpacing.lg),
-                          decoration: BoxDecoration(
-                            color: Colors.black.withValues(alpha: 0.5),
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            widget.controller.value.isPlaying
-                                ? Icons.pause_rounded
-                                : Icons.play_arrow_rounded,
-                            color: Colors.white,
-                            size: 48,
+            child: ExcludeSemantics(
+              child:
+                  Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: _togglePlay,
+                          customBorder: const CircleBorder(),
+                          child: Container(
+                            padding: const EdgeInsets.all(AppSpacing.lg),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withValues(alpha: 0.5),
+                              shape: BoxShape.circle,
+                            ),
+                            child: Icon(
+                              widget.controller.value.isPlaying
+                                  ? Icons.pause_rounded
+                                  : Icons.play_arrow_rounded,
+                              color: Colors.white,
+                              size: 48,
+                            ),
                           ),
                         ),
-                      ),
-                    )
-                    .animate(target: widget.controller.value.isPlaying ? 1 : 0)
-                    .scale(
-                      begin: const Offset(0.9, 0.9),
-                      end: const Offset(1, 1),
-                      duration: 150.ms,
-                    )
-                    .fade(duration: 150.ms),
+                      )
+                      .animate(
+                        target: widget.controller.value.isPlaying ? 1 : 0,
+                      )
+                      .scale(
+                        begin: const Offset(0.9, 0.9),
+                        end: const Offset(1, 1),
+                        duration: 150.ms,
+                      )
+                      .fade(duration: 150.ms),
+            ),
           ),
 
           // Bottom Controls HUD Panel
@@ -341,6 +350,9 @@ class _AppVideoPlayerState extends State<AppVideoPlayer> {
                                 : Icons.play_arrow_rounded,
                             color: Colors.white,
                           ),
+                          tooltip: widget.controller.value.isPlaying
+                              ? 'Pause'
+                              : 'Play',
                           onPressed: _togglePlay,
                         ),
 
@@ -354,6 +366,7 @@ class _AppVideoPlayerState extends State<AppVideoPlayer> {
                                 : Icons.volume_up_rounded,
                             color: Colors.white,
                           ),
+                          tooltip: _isMuted ? 'Unmute' : 'Mute',
                           onPressed: _toggleMute,
                         ),
 
@@ -410,6 +423,9 @@ class _AppVideoPlayerState extends State<AppVideoPlayer> {
                             color: Colors.white,
                             size: 28,
                           ),
+                          tooltip: widget.isFullscreen
+                              ? 'Exit full screen'
+                              : 'Full screen',
                           onPressed: _enterFullscreen,
                         ),
                       ],
