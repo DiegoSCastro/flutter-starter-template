@@ -108,6 +108,8 @@ import 'package:flutter_starter_template/features/bookmarks/domain/usecases/get_
     as _i690;
 import 'package:flutter_starter_template/features/bookmarks/domain/usecases/list_bookmarks.dart'
     as _i568;
+import 'package:flutter_starter_template/features/bookmarks/domain/usecases/list_local_bookmarks.dart'
+    as _i428;
 import 'package:flutter_starter_template/features/bookmarks/domain/usecases/update_bookmark.dart'
     as _i412;
 import 'package:flutter_starter_template/features/bookmarks/presentation/bloc/bookmark_detail/bookmark_detail_bloc.dart'
@@ -322,6 +324,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i568.ListBookmarks>(
       () => _i568.ListBookmarks(gh<_i630.BookmarksRepository>()),
     );
+    gh.factory<_i428.ListLocalBookmarks>(
+      () => _i428.ListLocalBookmarks(gh<_i630.BookmarksRepository>()),
+    );
     gh.factory<_i412.UpdateBookmark>(
       () => _i412.UpdateBookmark(gh<_i630.BookmarksRepository>()),
     );
@@ -346,6 +351,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i566.BookmarksListBloc>(
       () => _i566.BookmarksListBloc(
         gh<_i568.ListBookmarks>(),
+        gh<_i428.ListLocalBookmarks>(),
         gh<_i244.DeleteBookmark>(),
         gh<_i627.BookmarksSyncController>(),
         gh<_i838.AnalyticsService>(),
