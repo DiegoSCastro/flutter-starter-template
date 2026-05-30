@@ -10,8 +10,10 @@ import '../../domain/entities/auth_user.dart';
 /// EncryptedSharedPreferences/Keystore on Android).
 ///
 /// All getters cache in memory after the first read so the Dio interceptor's
-/// hot path doesn't hit native channels per request. `load` must be awaited
-/// once during app bootstrap before any token-bearing request is made.
+/// hot path doesn't hit native channels per request. `load` is awaited once
+/// during session restore (see `AuthRepositoryImpl.restoreSession`, driven by
+/// the splash screen) before any token-bearing request is made; it is a no-op
+/// on subsequent calls.
 abstract interface class AuthLocalDataSource {
   AuthUser? get currentUser;
   String? get accessToken;
@@ -62,11 +64,18 @@ class SecureStorageAuthDataSource implements AuthLocalDataSource {
     _refreshToken = values[_kRefreshKey];
     final userJson = values[_kUserKey];
     if (userJson != null) {
-      final map = jsonDecode(userJson) as Map<String, dynamic>;
-      _user = AuthUser(
-        id: map['id'] as String,
-        username: map['username'] as String,
-      );
+      try {
+        final map = jsonDecode(userJson) as Map<String, dynamic>;
+        _user = AuthUser(
+          id: map['id'] as String,
+          username: map['username'] as String,
+        );
+      } on Object {
+        // Corrupt persisted user — treat as no session rather than throwing on
+        // every launch. Drop the bad entry so the next cold start is clean.
+        _user = null;
+        await _storage.delete(key: _kUserKey);
+      }
     }
     _loaded = true;
   }

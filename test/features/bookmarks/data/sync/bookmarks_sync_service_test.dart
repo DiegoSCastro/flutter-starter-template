@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
@@ -23,6 +24,8 @@ class MockConnectivity extends Mock implements Connectivity {}
 class FakeBookmarkEntity extends Fake implements BookmarkEntity {}
 
 class FakeBookmarkRequest extends Fake implements BookmarkRequest {}
+
+class FakeMultipartFile extends Fake implements MultipartFile {}
 
 BookmarkEntity createEntity({
   int id = 1,
@@ -79,6 +82,7 @@ void main() {
   setUpAll(() {
     registerFallbackValue(FakeBookmarkEntity());
     registerFallbackValue(FakeBookmarkRequest());
+    registerFallbackValue(FakeMultipartFile());
   });
 
   setUp(() {
@@ -201,24 +205,135 @@ void main() {
       verify(() => mockLocal.hardDelete(42)).called(1);
     });
 
-    test('rethrows non-404 and makes status error', () async {
-      final entity = createEntity(id: 42, syncStateCode: 3);
-      when(() => mockLocal.listPending()).thenAnswer((_) async => [entity]);
-      when(() => mockRemote.delete('b-1')).thenThrow(
-        DioException(
-          requestOptions: RequestOptions(path: '/api/bookmarks/b-1'),
-          response: Response(
+    test(
+      'keeps row pending and sets error status on non-404 failure',
+      () async {
+        when(() => mockLocal.listAll()).thenAnswer((_) async => []);
+        when(() => mockRemote.list()).thenAnswer((_) async => []);
+        final entity = createEntity(id: 42, syncStateCode: 3);
+        when(() => mockLocal.listPending()).thenAnswer((_) async => [entity]);
+        when(() => mockRemote.delete('b-1')).thenThrow(
+          DioException(
             requestOptions: RequestOptions(path: '/api/bookmarks/b-1'),
-            statusCode: 500,
+            response: Response(
+              requestOptions: RequestOptions(path: '/api/bookmarks/b-1'),
+              statusCode: 500,
+            ),
+          ),
+        );
+
+        await service.sync();
+
+        expect(service.statusNow, BookmarksSyncStatus.error);
+        verifyNever(() => mockLocal.hardDelete(42));
+      },
+    );
+  });
+
+  group('per-row failure isolation', () {
+    test('one failing row does not block the rest of the queue', () async {
+      when(() => mockLocal.listAll()).thenAnswer((_) async => []);
+      when(() => mockRemote.list()).thenAnswer((_) async => []);
+      when(() => mockLocal.put(any())).thenAnswer((_) async {});
+
+      final poison = createEntity(uuid: 'poison', syncStateCode: 1);
+      final good = createEntity(uuid: 'good', syncStateCode: 1);
+      when(
+        () => mockLocal.listPending(),
+      ).thenAnswer((_) async => [poison, good]);
+
+      when(() => mockRemote.create(any())).thenAnswer((invocation) async {
+        final req = invocation.positionalArguments.first as BookmarkRequest;
+        if (req.id == 'poison') {
+          throw DioException(
+            requestOptions: RequestOptions(path: '/api/bookmarks'),
+            response: Response(
+              requestOptions: RequestOptions(path: '/api/bookmarks'),
+              statusCode: 400,
+            ),
+          );
+        }
+        return createDto(id: req.id!, updatedAt: DateTime(2025, 2, 1));
+      });
+
+      await service.sync();
+
+      // The good row was still pushed and marked synced despite the poison row.
+      verify(() => mockRemote.create(any())).called(2);
+      expect(good.syncState, SyncState.synced);
+      expect(poison.syncState, SyncState.pendingCreate);
+      // A failed row still surfaces as a non-clean sync.
+      expect(service.statusNow, BookmarksSyncStatus.error);
+    });
+
+    test('treats a 409 on create as already-created (marks synced)', () async {
+      when(() => mockLocal.listAll()).thenAnswer((_) async => []);
+      when(() => mockRemote.list()).thenAnswer((_) async => []);
+      when(() => mockLocal.put(any())).thenAnswer((_) async {});
+
+      final entity = createEntity(uuid: 'dup', syncStateCode: 1);
+      when(() => mockLocal.listPending()).thenAnswer((_) async => [entity]);
+      when(() => mockRemote.create(any())).thenThrow(
+        DioException(
+          requestOptions: RequestOptions(path: '/api/bookmarks'),
+          response: Response(
+            requestOptions: RequestOptions(path: '/api/bookmarks'),
+            statusCode: 409,
           ),
         ),
       );
 
       await service.sync();
 
-      expect(service.statusNow, BookmarksSyncStatus.error);
-      verifyNever(() => mockLocal.hardDelete(42));
+      expect(entity.syncState, SyncState.synced);
+      verify(() => mockLocal.put(entity)).called(1);
     });
+  });
+
+  group('media upload checkpoint', () {
+    test(
+      'persists uploaded URLs before create and never re-uploads on retry',
+      () async {
+        when(() => mockLocal.listAll()).thenAnswer((_) async => []);
+        when(() => mockRemote.list()).thenAnswer((_) async => []);
+        when(() => mockLocal.put(any())).thenAnswer((_) async {});
+
+        final tempDir = await Directory.systemTemp.createTemp('sync_test');
+        addTearDown(() => tempDir.delete(recursive: true));
+        final file = File('${tempDir.path}/a.jpg')..writeAsBytesSync([1, 2, 3]);
+
+        final entity = createEntity(uuid: 'with-media', syncStateCode: 1)
+          ..imageUrls = [file.path];
+        when(() => mockLocal.listPending()).thenAnswer((_) async => [entity]);
+
+        when(
+          () => mockRemote.upload(any()),
+        ).thenAnswer((_) async => {'url': 'https://srv/a.jpg'});
+        // The create always fails, so the row stays pendingCreate across syncs.
+        when(() => mockRemote.create(any())).thenThrow(
+          DioException(
+            requestOptions: RequestOptions(path: '/api/bookmarks'),
+            response: Response(
+              requestOptions: RequestOptions(path: '/api/bookmarks'),
+              statusCode: 500,
+            ),
+          ),
+        );
+
+        await service.sync();
+
+        // The local file path was swapped for the uploaded remote URL and
+        // checkpointed before the failing create.
+        expect(entity.imageUrls, ['https://srv/a.jpg']);
+        expect(entity.syncState, SyncState.pendingCreate);
+
+        // Second sync of the same (now http-only) row must not re-upload.
+        await service.sync();
+
+        // Exactly one upload across both syncs — no duplicate/orphaned blob.
+        verify(() => mockRemote.upload(any())).called(1);
+      },
+    );
   });
 
   group('_pull insert', () {

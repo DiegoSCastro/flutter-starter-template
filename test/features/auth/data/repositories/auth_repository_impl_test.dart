@@ -242,12 +242,13 @@ void main() {
     });
 
     test(
-      'returns NoSessionFailure and clears session when token refresh fails',
+      'returns NoSessionFailure on invalidSession (refresher owns clearing)',
       () async {
         when(() => mockLocal.currentUser).thenReturn(testUser);
         when(() => mockLocal.refreshToken).thenReturn('refresh');
-        when(() => mockRefresher.refresh()).thenAnswer((_) async => false);
-        when(() => mockLocal.clearSession()).thenAnswer((_) async {});
+        when(
+          () => mockRefresher.refresh(),
+        ).thenAnswer((_) async => RefreshOutcome.invalidSession);
 
         final result = await repository.restoreSession();
 
@@ -255,14 +256,36 @@ void main() {
         final err = result as Err<AuthUser>;
         expect(err.failure, isA<NoSessionFailure>());
         expect(err.failure.message, 'Session expired.');
-        verify(() => mockLocal.clearSession()).called(1);
+        // The repository no longer double-clears: TokenRefresher already wiped
+        // storage on a genuine token rejection.
+        verifyNever(() => mockLocal.clearSession());
+      },
+    );
+
+    test(
+      'restores optimistically (Ok) when refresh hits a network error',
+      () async {
+        when(() => mockLocal.currentUser).thenReturn(testUser);
+        when(() => mockLocal.refreshToken).thenReturn('refresh');
+        when(
+          () => mockRefresher.refresh(),
+        ).thenAnswer((_) async => RefreshOutcome.networkError);
+
+        final result = await repository.restoreSession();
+
+        // Offline launch must keep the user signed in, not wipe the session.
+        expect(result, isA<Ok<AuthUser>>());
+        expect((result as Ok<AuthUser>).value.id, 'user-1');
+        verifyNever(() => mockLocal.clearSession());
       },
     );
 
     test('returns Ok with user on successful session restore', () async {
       when(() => mockLocal.currentUser).thenReturn(testUser);
       when(() => mockLocal.refreshToken).thenReturn('refresh');
-      when(() => mockRefresher.refresh()).thenAnswer((_) async => true);
+      when(
+        () => mockRefresher.refresh(),
+      ).thenAnswer((_) async => RefreshOutcome.refreshed);
 
       final result = await repository.restoreSession();
 

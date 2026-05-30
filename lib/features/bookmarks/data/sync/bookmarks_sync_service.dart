@@ -9,6 +9,7 @@ import '../../domain/services/bookmarks_sync_controller.dart';
 import '../datasources/bookmarks_remote_data_source.dart';
 import '../local/bookmark_entity.dart';
 import '../local/bookmarks_local_data_source.dart';
+import '../models/bookmark_dto.dart';
 import '../models/bookmark_request.dart';
 
 /// Reconciles the local ObjectBox store with the remote API.
@@ -97,9 +98,13 @@ class BookmarksSyncService implements BookmarksSyncController {
   Future<void> _run() async {
     _emit(BookmarksSyncStatus.syncing);
     try {
-      await _push();
+      final pushHadFailures = await _push();
       await _pull();
-      _emit(BookmarksSyncStatus.idle);
+      // A failed row keeps its pending state and is retried next trigger; we
+      // still surface `error` so the UI reflects that the sync was incomplete.
+      _emit(
+        pushHadFailures ? BookmarksSyncStatus.error : BookmarksSyncStatus.idle,
+      );
     } on DioException {
       // Network/auth error — leave pending rows untouched so the next trigger
       // retries. Don't propagate; sync is fire-and-forget from callers.
@@ -114,13 +119,28 @@ class BookmarksSyncService implements BookmarksSyncController {
     _status.add(s);
   }
 
-  Future<void> _push() async {
+  /// Drains every pending row. Each row is isolated so a single permanently
+  /// rejected row (e.g. a server `400`/`500`) can't block the rest of the
+  /// queue — it stays pending and is retried next trigger. Returns `true` if
+  /// any row failed.
+  Future<bool> _push() async {
     final pending = await _local.listPending();
+    var hadFailure = false;
     for (final row in pending) {
-      switch (row.syncState) {
-        case SyncState.pendingCreate:
-          final remoteImages = await _uploadMediaFiles(row.imageUrls);
-          final remoteVideo = await _uploadVideoFile(row.videoUrl);
+      try {
+        await _pushRow(row);
+      } on Object {
+        hadFailure = true;
+      }
+    }
+    return hadFailure;
+  }
+
+  Future<void> _pushRow(BookmarkEntity row) async {
+    switch (row.syncState) {
+      case SyncState.pendingCreate:
+        await _checkpointUploads(row);
+        try {
           final dto = await _remote.create(
             BookmarkRequest(
               id: row.uuid,
@@ -128,49 +148,80 @@ class BookmarksSyncService implements BookmarksSyncController {
               url: row.url,
               description: row.description,
               tags: row.tags,
-              imageUrls: remoteImages,
-              videoUrl: remoteVideo,
+              imageUrls: row.imageUrls,
+              videoUrl: row.videoUrl,
             ),
           );
-          row
-            ..syncState = SyncState.synced
-            ..serverUpdatedAt = dto.updatedAt
-            ..imageUrls = List.of(dto.imageUrls)
-            ..videoUrl = dto.videoUrl;
+          _markSynced(row, dto);
           await _local.put(row);
-        case SyncState.pendingUpdate:
-          final remoteImages = await _uploadMediaFiles(row.imageUrls);
-          final remoteVideo = await _uploadVideoFile(row.videoUrl);
-          final dto = await _remote.update(
-            row.uuid,
-            BookmarkRequest(
-              title: row.title,
-              url: row.url,
-              description: row.description,
-              tags: row.tags,
-              imageUrls: remoteImages,
-              videoUrl: remoteVideo,
-            ),
-          );
-          row
-            ..syncState = SyncState.synced
-            ..serverUpdatedAt = dto.updatedAt
-            ..imageUrls = List.of(dto.imageUrls)
-            ..videoUrl = dto.videoUrl;
+        } on DioException catch (e) {
+          // 409: a previous attempt already created this row server-side (its
+          // response was lost). The uuid exists remotely, so stop treating it
+          // as pending — `_pull` reconciles its fields.
+          if (e.response?.statusCode != 409) rethrow;
+          row.syncState = SyncState.synced;
           await _local.put(row);
-        case SyncState.pendingDelete:
-          try {
-            await _remote.delete(row.uuid);
-          } on DioException catch (e) {
-            // 404 is fine — server already lost it. Anything else, rethrow
-            // so the outer catch leaves the row pending for next sync.
-            if (e.response?.statusCode != 404) rethrow;
-          }
-          await _local.hardDelete(row.id);
-        case SyncState.synced:
-          break;
-      }
+        }
+      case SyncState.pendingUpdate:
+        await _checkpointUploads(row);
+        final dto = await _remote.update(
+          row.uuid,
+          BookmarkRequest(
+            title: row.title,
+            url: row.url,
+            description: row.description,
+            tags: row.tags,
+            imageUrls: row.imageUrls,
+            videoUrl: row.videoUrl,
+          ),
+        );
+        _markSynced(row, dto);
+        await _local.put(row);
+      case SyncState.pendingDelete:
+        try {
+          await _remote.delete(row.uuid);
+        } on DioException catch (e) {
+          // 404 is fine — server already lost it. Anything else, rethrow so the
+          // per-row guard leaves the row pending for the next sync.
+          if (e.response?.statusCode != 404) rethrow;
+        }
+        await _local.hardDelete(row.id);
+      case SyncState.synced:
+        break;
     }
+  }
+
+  void _markSynced(BookmarkEntity row, BookmarkDto dto) {
+    row
+      ..syncState = SyncState.synced
+      ..serverUpdatedAt = dto.updatedAt
+      ..imageUrls = List.of(dto.imageUrls)
+      ..videoUrl = dto.videoUrl;
+  }
+
+  /// Uploads any local media files and persists the resulting remote URLs back
+  /// to the row *before* the create/update call. If that call later fails, the
+  /// next retry sees already-uploaded `http(s)` URLs and skips re-uploading,
+  /// avoiding duplicate/orphaned blobs on the server.
+  Future<void> _checkpointUploads(BookmarkEntity row) async {
+    final uploadedImages = await _uploadMediaFiles(row.imageUrls);
+    final uploadedVideo = await _uploadVideoFile(row.videoUrl);
+    if (_sameUrls(uploadedImages, row.imageUrls) &&
+        uploadedVideo == row.videoUrl) {
+      return;
+    }
+    row
+      ..imageUrls = uploadedImages
+      ..videoUrl = uploadedVideo;
+    await _local.put(row);
+  }
+
+  bool _sameUrls(List<String> a, List<String> b) {
+    if (a.length != b.length) return false;
+    for (var i = 0; i < a.length; i++) {
+      if (a[i] != b[i]) return false;
+    }
+    return true;
   }
 
   Future<void> _pull() async {

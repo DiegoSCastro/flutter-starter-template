@@ -23,7 +23,16 @@ class FirebaseService {
 
     FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
+    // Keep dev/debug crashes out of production Crashlytics. Release builds
+    // collect; debug builds only log locally.
+    await FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(
+      !kDebugMode,
+    );
+
     FlutterError.onError = (errorDetails) {
+      // Still surface the red-screen / console dump in debug so developers see
+      // the error; recordFlutterFatalError is a no-op when collection is off.
+      FlutterError.presentError(errorDetails);
       FirebaseCrashlytics.instance.recordFlutterFatalError(errorDetails);
     };
 

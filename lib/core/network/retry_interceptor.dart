@@ -38,6 +38,18 @@ class RetryInterceptor extends Interceptor {
 
   static const _retryableStatusCodes = <int>{408, 425, 429, 500, 502, 503, 504};
 
+  /// Methods safe to replay after an *ambiguous* transport failure (a timeout
+  /// or dropped connection, where the server may or may not have processed the
+  /// request). POST/PATCH are excluded: replaying one can duplicate a create,
+  /// upload, or other side effect.
+  static const _idempotentMethods = <String>{
+    'GET',
+    'HEAD',
+    'OPTIONS',
+    'PUT',
+    'DELETE',
+  };
+
   final _random = Random();
 
   @override
@@ -70,8 +82,12 @@ class RetryInterceptor extends Interceptor {
       case DioExceptionType.sendTimeout:
       case DioExceptionType.receiveTimeout:
       case DioExceptionType.connectionError:
-        return true;
+        // Ambiguous: the request may already have reached the server. Only
+        // replay idempotent methods so a non-idempotent POST can't double-fire.
+        return _isIdempotent(err.requestOptions.method);
       case DioExceptionType.badResponse:
+        // A retryable status (429/503/…) means the server explicitly did *not*
+        // process the request, so it's safe to retry regardless of method.
         final status = err.response?.statusCode;
         return status != null && _retryableStatusCodes.contains(status);
       case DioExceptionType.cancel:
@@ -80,6 +96,9 @@ class RetryInterceptor extends Interceptor {
         return false;
     }
   }
+
+  bool _isIdempotent(String method) =>
+      _idempotentMethods.contains(method.toUpperCase());
 
   /// Honors a `Retry-After` header (seconds) when present; otherwise uses
   /// exponential backoff with full jitter, capped at [maxDelay].

@@ -49,8 +49,9 @@ dependencies:
     sdk: flutter
 
   # Locale-aware formatting (dates, numbers, plurals) and runtime backing
-  # for the generated AppLocalizations class.
-  intl: any
+  # for the generated AppLocalizations class. Pinned to the version the pinned
+  # Flutter SDK's flutter_localizations resolves to, for reproducible builds.
+  intl: ^0.20.2
 
   # DI annotations (@injectable, @singleton, @module) — drives registration
   # codegen on top of get_it via injectable_generator.
@@ -160,7 +161,7 @@ dependencies:
   # Interactive zoomable image viewer widget. Wrapped by AppPhotoView.
   photo_view: ^0.15.0
 
-  vector_graphics: any
+  vector_graphics: ^1.2.2
   image_picker: ^1.2.2
   camera: ^0.12.0+1
   video_player: ^2.11.1
