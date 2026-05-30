@@ -33,9 +33,9 @@ clean · Go backend `go build` OK.
 | 4 | Android cleartext for dev backend | ✅ Fixed |
 | 5 | Unpinned `any` dependencies | ✅ Fixed |
 | 6 | Crashlytics not silenced in debug | ✅ Fixed |
-| 7 | Fresh clone doesn't compile (Firebase) | ⬜ Deferred (CI already stubs it; needs a product decision) |
+| 7 | Fresh clone doesn't compile (Firebase) | ✅ Fixed (committed a non-real placeholder `firebase_options.dart`) |
 | 8 | Corrupt session JSON guard | ✅ Fixed |
-| 9 | `flutter_secure_storage` default options | ⬜ Deferred (platform-specific, verify on device) |
+| 9 | `flutter_secure_storage` default options | ✅ Fixed (iOS `first_unlock_this_device` + Android encrypted) |
 | 10 | Stale `load()` doc comment | ✅ Fixed |
 | 11 | Backend upload size cap | ✅ Fixed (content-type/extension validation still TODO) |
 | 12 | Coverage floor / golden+integration in CI | ⬜ Ongoing |
