@@ -76,12 +76,12 @@ jobs:
 
       # Fail the build if line coverage drops below the threshold. Generated
       # files are excluded so the percentage reflects hand-written code only.
-      # Current baseline is ~57%; raise `min_coverage` as coverage improves.
+      # Current baseline is ~59%; raise `min_coverage` as coverage improves.
       - name: Enforce coverage threshold
         uses: VeryGoodOpenSource/very_good_coverage@v3
         with:
           path: coverage/lcov.info
-          min_coverage: 55
+          min_coverage: 58
           exclude: >-
             **/*.g.dart
             **/*.freezed.dart
