@@ -10,6 +10,14 @@ These configuration files are injected into the Flutter application at compile/r
 - `staging.json`: Environment variables for the **staging** flavor.
 - `prod.json`: Environment variables for the **production** flavor.
 
+## Keys
+
+| Key | Type | Description |
+| --- | --- | --- |
+| `FLAVOR` | string | One of `dev`, `staging`, `prod`. Backs `EnvConfig.isDev/isStaging/isProd`. |
+| `API_BASE_URL` | string | Base URL for the HTTP client. |
+| `API_TIMEOUT_SECONDS` | int | Connect/receive timeout for Dio, in seconds. Defaults to 10 if omitted. |
+
 ## Usage
 
 When running or building the app, specify the target environment file.

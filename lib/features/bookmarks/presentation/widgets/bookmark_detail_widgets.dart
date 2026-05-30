@@ -265,6 +265,9 @@ class _DetailBody extends StatelessWidget {
                             fit: BoxFit.cover,
                             width: _imageSize,
                             height: _imageSize,
+                            semanticLabel: context.l10n.bookmarkImageLabel(
+                              bookmark.title,
+                            ),
                           )
                         : Image.file(
                             File(path),

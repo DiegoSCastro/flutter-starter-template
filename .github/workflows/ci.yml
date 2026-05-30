@@ -57,8 +57,14 @@ jobs:
       - name: Analyze
         run: flutter analyze
 
+      # Golden tests are excluded: Flutter goldens are not guaranteed to match
+      # across operating systems, and baselines are generated on macOS while
+      # this runner is Ubuntu. They run locally as a regression check (see
+      # dart_test.yaml). Integration tests under integration_test/ also do not
+      # run here — `flutter test` only picks up the test/ directory, and they
+      # require a connected device/emulator.
       - name: Run tests
-        run: flutter test --coverage
+        run: flutter test --coverage --exclude-tags golden
 
       - name: Upload coverage artifact
         if: always()
@@ -67,3 +73,19 @@ jobs:
           name: coverage
           path: coverage/lcov.info
           if-no-files-found: ignore
+
+      # Fail the build if line coverage drops below the threshold. Generated
+      # files are excluded so the percentage reflects hand-written code only.
+      # Current baseline is ~57%; raise `min_coverage` as coverage improves.
+      - name: Enforce coverage threshold
+        uses: VeryGoodOpenSource/very_good_coverage@v3
+        with:
+          path: coverage/lcov.info
+          min_coverage: 55
+          exclude: >-
+            **/*.g.dart
+            **/*.freezed.dart
+            **/*.config.dart
+            **/*.gen.dart
+            **/firebase_options.dart
+            lib/l10n/**

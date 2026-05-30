@@ -20,6 +20,7 @@ class AppNetworkImage extends StatelessWidget {
     this.borderRadius = BorderRadius.zero,
     this.placeholder,
     this.errorWidget,
+    this.semanticLabel,
   });
 
   /// The URL of the image to load.
@@ -55,10 +56,14 @@ class AppNetworkImage extends StatelessWidget {
   /// Custom widget to display if the image fails to load.
   final Widget Function(BuildContext, String, dynamic)? errorWidget;
 
+  /// Describes the image for screen readers. When null the image is treated
+  /// as decorative and hidden from the semantics tree.
+  final String? semanticLabel;
+
   @override
   Widget build(BuildContext context) {
     if (imageUrl.isEmpty) {
-      return _buildErrorWidget(context, imageUrl, 'Empty URL');
+      return _withSemantics(_buildErrorWidget(context, imageUrl, 'Empty URL'));
     }
 
     final imageWidget = CachedNetworkImage(
@@ -73,13 +78,20 @@ class AppNetworkImage extends StatelessWidget {
     );
 
     if (borderRadius != BorderRadius.zero) {
-      return ClipRRect(
-        borderRadius: borderRadius,
-        child: imageWidget,
+      return _withSemantics(
+        ClipRRect(borderRadius: borderRadius, child: imageWidget),
       );
     }
 
-    return imageWidget;
+    return _withSemantics(imageWidget);
+  }
+
+  /// Labels the image for assistive tech, or hides it when purely decorative.
+  Widget _withSemantics(Widget child) {
+    if (semanticLabel == null) {
+      return ExcludeSemantics(child: child);
+    }
+    return Semantics(image: true, label: semanticLabel, child: child);
   }
 
   Widget _buildPlaceholder(BuildContext context, String url) {

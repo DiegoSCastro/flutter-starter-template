@@ -129,6 +129,15 @@ dependencies:
   firebase_analytics: ^12.4.1
   firebase_messaging: ^16.2.2
 
+  # Automatic network + screen-rendering traces. The PerformanceInterceptor
+  # records an HttpMetric per request; collection is disabled in dev builds.
+  firebase_performance: ^0.11.4+1
+
+  # Server-controlled feature flags and config values. Wrapped by
+  # RemoteConfigService with compile-time defaults so reads never block on a
+  # network fetch.
+  firebase_remote_config: ^6.5.1
+
   # Dynamic M3 colour schemes built on top of Material Color Utilities. 
   # Provides FlexColorScheme, FlexSubThemes, and opinionated defaults.
   flex_color_scheme: ^8.4.0
@@ -158,6 +167,11 @@ dependencies:
   cached_network_image: ^3.4.1
 dev_dependencies:
   flutter_test:
+    sdk: flutter
+
+  # End-to-end testing harness. Drives the assembled app (via the testable
+  # App(...) seams) through full user flows; runs on a device or headless.
+  integration_test:
     sdk: flutter
 
   # Mocking library for tests — uses real callable objects without codegen.
