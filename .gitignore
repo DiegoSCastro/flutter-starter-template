@@ -87,6 +87,8 @@ Thumbs.db
 # -------------------------------------------------------------------------
 firebase.json
 .firebaserc
-lib/firebase_options.dart
+# lib/firebase_options.dart is intentionally committed as a non-real PLACEHOLDER
+# so the template builds out of the box; run `flutterfire configure` to generate
+# your own (it overwrites the placeholder locally). Native config stays ignored.
 ios/Runner/GoogleService-Info.plist
 macos/Runner/GoogleService-Info.plist
