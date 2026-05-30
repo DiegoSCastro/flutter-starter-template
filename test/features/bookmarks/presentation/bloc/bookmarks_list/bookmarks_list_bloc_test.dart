@@ -13,6 +13,7 @@ import '../../../../../test_utils.dart';
 
 void main() {
   late MockListBookmarks mockList;
+  late MockListLocalBookmarks mockListLocal;
   late MockDeleteBookmark mockDelete;
   late MockBookmarksSyncController mockSync;
   late MockAnalyticsService mockAnalytics;
@@ -20,6 +21,7 @@ void main() {
 
   setUp(() {
     mockList = MockListBookmarks();
+    mockListLocal = MockListLocalBookmarks();
     mockDelete = MockDeleteBookmark();
     mockSync = MockBookmarksSyncController();
     mockAnalytics = MockAnalyticsService();
@@ -34,8 +36,13 @@ void main() {
     statusController.close();
   });
 
-  BookmarksListBloc buildBloc() =>
-      BookmarksListBloc(mockList, mockDelete, mockSync, mockAnalytics);
+  BookmarksListBloc buildBloc() => BookmarksListBloc(
+    mockList,
+    mockListLocal,
+    mockDelete,
+    mockSync,
+    mockAnalytics,
+  );
 
   group('BookmarksListBloc', () {
     test('initial state is empty', () {
@@ -77,6 +84,39 @@ void main() {
           predicate<BookmarksListState>((s) => s.isLoading),
           predicate<BookmarksListState>((s) => s.failure != null),
         ],
+      );
+    });
+
+    group('sync status', () {
+      blocTest<BookmarksListBloc, BookmarksListState>(
+        'syncing → idle reloads via listLocal without re-triggering a sync',
+        setUp: () {
+          when(
+            () => mockListLocal(),
+          ).thenAnswer((_) async => Ok([testBookmark]));
+        },
+        build: buildBloc,
+        act: (bloc) async {
+          statusController.add(BookmarksSyncStatus.syncing);
+          await Future<void>.delayed(Duration.zero);
+          statusController.add(BookmarksSyncStatus.idle);
+        },
+        expect: () => [
+          predicate<BookmarksListState>(
+            (s) => s.syncStatus == BookmarksSyncStatus.syncing,
+          ),
+          predicate<BookmarksListState>(
+            (s) => s.syncStatus == BookmarksSyncStatus.idle,
+          ),
+          predicate<BookmarksListState>((s) => s.items.length == 1),
+        ],
+        verify: (_) {
+          // The silent reload must read local only: a single listLocal() call
+          // and no list() call, otherwise list() would fire another sync and
+          // loop indefinitely.
+          verify(() => mockListLocal()).called(1);
+          verifyNever(() => mockList());
+        },
       );
     });
 

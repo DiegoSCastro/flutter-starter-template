@@ -23,9 +23,15 @@ class BookmarksRepositoryImpl implements BookmarksRepository {
 
   @override
   Future<Result<List<Bookmark>>> list() async {
-    final rows = await _local.listVisible();
+    final result = await listLocal();
     // Trigger a refresh in the background; reads return immediately.
     _sync.sync().uw();
+    return result;
+  }
+
+  @override
+  Future<Result<List<Bookmark>>> listLocal() async {
+    final rows = await _local.listVisible();
     return Ok(rows.map((e) => e.toDomain()).toList(growable: false));
   }
 

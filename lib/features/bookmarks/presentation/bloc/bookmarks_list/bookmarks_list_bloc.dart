@@ -11,14 +11,20 @@ import '../../../../../core/utils/result.dart';
 import '../../../domain/services/bookmarks_sync_controller.dart';
 import '../../../domain/usecases/delete_bookmark.dart';
 import '../../../domain/usecases/list_bookmarks.dart';
+import '../../../domain/usecases/list_local_bookmarks.dart';
 import 'bookmarks_list_state.dart';
 
 part 'bookmarks_list_event.dart';
 
 @injectable
 class BookmarksListBloc extends Bloc<BookmarksListEvent, BookmarksListState> {
-  BookmarksListBloc(this._list, this._delete, this._sync, this._analytics)
-    : super(const BookmarksListState()) {
+  BookmarksListBloc(
+    this._list,
+    this._listLocal,
+    this._delete,
+    this._sync,
+    this._analytics,
+  ) : super(const BookmarksListState()) {
     on<BookmarksListLoadRequested>(
       _onLoadRequested,
       transformer: sequential(),
@@ -52,6 +58,7 @@ class BookmarksListBloc extends Bloc<BookmarksListEvent, BookmarksListState> {
   static const searchAnalyticsDebounce = Duration(milliseconds: 350);
 
   final ListBookmarks _list;
+  final ListLocalBookmarks _listLocal;
   final DeleteBookmark _delete;
   final BookmarksSyncController _sync;
   final AnalyticsService _analytics;
@@ -94,7 +101,9 @@ class BookmarksListBloc extends Bloc<BookmarksListEvent, BookmarksListState> {
     _BookmarksReloadSilentlyRequested event,
     Emitter<BookmarksListState> emit,
   ) async {
-    final result = await _list();
+    // Read local only: reloading via _list() would trigger another sync,
+    // which would emit syncing → idle and schedule another reload, looping.
+    final result = await _listLocal();
     if (result case Ok(value: final items)) {
       emit(state.copyWith(items: items));
     }

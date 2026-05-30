@@ -13,6 +13,7 @@ import 'package:flutter_starter_template/features/bookmarks/domain/usecases/crea
 import 'package:flutter_starter_template/features/bookmarks/domain/usecases/delete_bookmark.dart';
 import 'package:flutter_starter_template/features/bookmarks/domain/usecases/get_bookmark.dart';
 import 'package:flutter_starter_template/features/bookmarks/domain/usecases/list_bookmarks.dart';
+import 'package:flutter_starter_template/features/bookmarks/domain/usecases/list_local_bookmarks.dart';
 import 'package:flutter_starter_template/features/bookmarks/domain/usecases/update_bookmark.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -56,6 +57,8 @@ void stubAnalyticsService(MockAnalyticsService analytics) {
 }
 
 class MockListBookmarks extends Mock implements ListBookmarks {}
+
+class MockListLocalBookmarks extends Mock implements ListLocalBookmarks {}
 
 class MockGetBookmark extends Mock implements GetBookmark {}
 
