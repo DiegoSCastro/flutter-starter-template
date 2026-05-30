@@ -132,7 +132,11 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
     BookmarkFormImagesPicked event,
     Emitter<BookmarkFormState> emit,
   ) async {
-    if (!await _ensureGalleryPermission(emit)) return;
+    // No gallery permission gate: image_picker's gallery flow uses the system
+    // photo picker (PHPicker on iOS, the Android photo picker), which runs
+    // out-of-process and only ever exposes the items the user selects, so it
+    // needs no photo-library permission. Requesting one would add a dialog
+    // that, when denied, wrongly stops the picker from ever opening.
     try {
       final images = await _imagePickerService.pickMultiImage();
       if (images.isNotEmpty) {
@@ -175,7 +179,8 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
     BookmarkFormVideoPicked event,
     Emitter<BookmarkFormState> emit,
   ) async {
-    if (!await _ensureGalleryPermission(emit)) return;
+    // No permission gate — the system gallery picker needs none. See the note
+    // in _onImagesPicked.
     try {
       final video = await _imagePickerService.pickVideo(
         source: ImageSource.gallery,
@@ -249,18 +254,6 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
           state.copyWith(status: BookmarkFormStatus.idle, failure: failure),
         );
     }
-  }
-
-  Future<bool> _ensureGalleryPermission(Emitter<BookmarkFormState> emit) async {
-    if (await _permissionService.hasGalleryPermission()) return true;
-    if (await _permissionService.requestGalleryPermission()) return true;
-    emit(
-      state.copyWith(
-        status: BookmarkFormStatus.idle,
-        failure: const PermissionFailure(),
-      ),
-    );
-    return false;
   }
 
   Future<bool> _ensureCameraPermission(Emitter<BookmarkFormState> emit) async {

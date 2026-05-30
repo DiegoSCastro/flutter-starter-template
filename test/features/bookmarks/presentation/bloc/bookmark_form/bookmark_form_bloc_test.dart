@@ -260,11 +260,8 @@ void main() {
       final mockFile = XFile('test/path.png');
 
       blocTest<BookmarkFormBloc, BookmarkFormState>(
-        'picks images successfully when gallery permission is already granted',
+        'picks images from the gallery without requesting permission',
         setUp: () {
-          when(
-            () => mockPermission.hasGalleryPermission(),
-          ).thenAnswer((_) async => true);
           when(
             () => mockImagePicker.pickMultiImage(),
           ).thenAnswer((_) async => [mockFile]);
@@ -277,56 +274,17 @@ void main() {
                 s.imageUrls.length == 1 && s.imageUrls.first == 'test/path.png',
           ),
         ],
-      );
-
-      blocTest<BookmarkFormBloc, BookmarkFormState>(
-        'picks images successfully after requesting and getting gallery permission',
-        setUp: () {
-          when(
-            () => mockPermission.hasGalleryPermission(),
-          ).thenAnswer((_) async => false);
-          when(
-            () => mockPermission.requestGalleryPermission(),
-          ).thenAnswer((_) async => true);
-          when(
-            () => mockImagePicker.pickMultiImage(),
-          ).thenAnswer((_) async => [mockFile]);
+        verify: (_) {
+          // The system photo picker needs no permission; gating it would
+          // wrongly block the picker from opening (regression guard).
+          verifyNever(() => mockPermission.hasGalleryPermission());
+          verifyNever(() => mockPermission.requestGalleryPermission());
         },
-        build: buildBloc,
-        act: (bloc) => bloc.add(const BookmarkFormImagesPicked()),
-        expect: () => [
-          predicate<BookmarkFormState>(
-            (s) =>
-                s.imageUrls.length == 1 && s.imageUrls.first == 'test/path.png',
-          ),
-        ],
-      );
-
-      blocTest<BookmarkFormBloc, BookmarkFormState>(
-        'fails to pick images when gallery permission is denied',
-        setUp: () {
-          when(
-            () => mockPermission.hasGalleryPermission(),
-          ).thenAnswer((_) async => false);
-          when(
-            () => mockPermission.requestGalleryPermission(),
-          ).thenAnswer((_) async => false);
-        },
-        build: buildBloc,
-        act: (bloc) => bloc.add(const BookmarkFormImagesPicked()),
-        expect: () => [
-          predicate<BookmarkFormState>(
-            (s) => s.failure is PermissionFailure,
-          ),
-        ],
       );
 
       blocTest<BookmarkFormBloc, BookmarkFormState>(
         'emits MediaPickFailure when image picker throws',
         setUp: () {
-          when(
-            () => mockPermission.hasGalleryPermission(),
-          ).thenAnswer((_) async => true);
           when(
             () => mockImagePicker.pickMultiImage(),
           ).thenThrow(Exception('picker failed'));
@@ -419,11 +377,8 @@ void main() {
       final mockVideo = XFile('test/video.mp4');
 
       blocTest<BookmarkFormBloc, BookmarkFormState>(
-        'picks video successfully when gallery permission is already granted',
+        'picks video from the gallery without requesting permission',
         setUp: () {
-          when(
-            () => mockPermission.hasGalleryPermission(),
-          ).thenAnswer((_) async => true);
           when(
             () => mockImagePicker.pickVideo(source: ImageSource.gallery),
           ).thenAnswer((_) async => mockVideo);
@@ -435,6 +390,9 @@ void main() {
             (s) => s.videoUrl == 'test/video.mp4',
           ),
         ],
+        verify: (_) {
+          verifyNever(() => mockPermission.hasGalleryPermission());
+        },
       );
 
       blocTest<BookmarkFormBloc, BookmarkFormState>(
