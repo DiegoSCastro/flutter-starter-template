@@ -93,6 +93,20 @@ actually depend on it today (not "might someday") and its contract is stable.
 Until then it stays in its owning feature. Keep `shared` a small, deliberate set
 of contracts — never a catch-all dumping ground.
 
+**Worked example — the session.** "Who is logged in" is app-wide state read by
+`home`, `profile`, and `splash`. Rather than have those features import the auth
+feature's `AuthBloc` (a presentation-layer type), they depend on the
+`Session` contract in `lib/shared/domain/session.dart` (current user + the
+`restore`/`signOut`/`clearSession` lifecycle). The auth feature provides the
+implementation (`AuthSession`, an adapter over `AuthBloc`); the composition root
+(`lib/app/app.dart`) wires it and exposes it via `SessionScope` (an
+`InheritedWidget`, read with `SessionScope.of(context)` + `ListenableBuilder`).
+The composition root (`lib/app/`) may depend on features directly — the
+"no cross-feature presentation import" rule applies to feature code, not to the
+app shell that wires features together. Feature-specific *capabilities* (e.g.
+auth's delete-account cubit, surfaced in profile) stay in their owning feature
+and are imported directly; only genuinely shared *state* goes through `shared`.
+
 ---
 
 # Flutter coding rules

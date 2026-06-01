@@ -8,8 +8,7 @@ import '../../../../core/theme/app_icon_size.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/widgets.dart';
-import '../../../auth/presentation/bloc/auth_bloc.dart';
-import '../../../auth/presentation/bloc/auth_state.dart';
+import '../../../../shared/presentation/session_scope.dart';
 import '../../../bookmarks/domain/entities/bookmark.dart';
 import '../bloc/home_bloc.dart';
 import '../bloc/home_state.dart';
@@ -59,9 +58,11 @@ class _WelcomeSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<AuthBloc, AuthState, String>(
-      selector: _usernameFrom,
-      builder: (context, username) {
+    final session = SessionScope.of(context);
+    return ListenableBuilder(
+      listenable: session,
+      builder: (context, _) {
+        final username = session.currentUser?.username ?? '';
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -94,12 +95,6 @@ class _WelcomeSection extends StatelessWidget {
     );
   }
 }
-
-String _usernameFrom(AuthState state) => switch (state) {
-  AuthAuthenticated(:final user) ||
-  AuthSigningOut(:final user) => user.username,
-  _ => '',
-};
 
 class _StatsDashboard extends StatelessWidget {
   const _StatsDashboard({required this.state});
