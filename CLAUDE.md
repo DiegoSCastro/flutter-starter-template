@@ -72,6 +72,27 @@ npx skills add dart-lang/skills --skill '*' --agent universal
 
 When a task matches a skill name (e.g. setting up routing → `flutter-setup-declarative-routing`, JSON serialization → `flutter-implement-json-serialization`, adding tests → `flutter-add-widget-test` / `dart-add-unit-test`), invoke the skill rather than improvising — it encodes the team's preferred workflow.
 
+## Code organization: `core` vs `shared` vs `features`
+
+`lib/` is split into three top-level areas with distinct responsibilities. Place
+new code by asking what kind of thing it is, not which feature happens to need
+it first.
+
+- **`lib/core/`** — cross-cutting *infrastructure* with no business meaning:
+  network, DI, error types, theme, the base `UseCase`, analytics, notifications.
+- **`lib/features/<feature>/`** — everything owned by a single feature, in its
+  own `data/domain/presentation` layers. A feature must **not** import another
+  feature's `presentation` layer; if it needs a sibling's `domain` contract,
+  that's a signal the contract may belong in `shared`.
+- **`lib/shared/`** — *business* vocabulary genuinely used by 2+ features
+  (e.g. `domain/entities/auth_user.dart`). Mirrors the feature layer layout
+  (`domain/`, `data/`). Dependency direction is `features → shared → core`.
+
+Promote a type into `shared` only on the **rule of three**: when ≥2 features
+actually depend on it today (not "might someday") and its contract is stable.
+Until then it stays in its owning feature. Keep `shared` a small, deliberate set
+of contracts — never a catch-all dumping ground.
+
 ---
 
 # Flutter coding rules

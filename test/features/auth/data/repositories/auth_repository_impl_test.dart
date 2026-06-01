@@ -9,7 +9,7 @@ import 'package:flutter_starter_template/features/auth/data/models/sign_in_reque
 import 'package:flutter_starter_template/features/auth/data/models/sign_in_response.dart';
 import 'package:flutter_starter_template/features/auth/data/network/token_refresher.dart';
 import 'package:flutter_starter_template/features/auth/data/repositories/auth_repository_impl.dart';
-import 'package:flutter_starter_template/features/auth/domain/entities/auth_user.dart';
+import 'package:flutter_starter_template/shared/domain/entities/auth_user.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 

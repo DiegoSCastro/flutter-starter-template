@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../domain/entities/auth_user.dart';
+import '../../../../shared/domain/entities/auth_user.dart';
 
 /// Persists the active authentication session — current user, access token,
 /// and refresh token — in platform-encrypted storage (Keychain on iOS,

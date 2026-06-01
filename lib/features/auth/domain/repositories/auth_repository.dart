@@ -1,5 +1,5 @@
 import '../../../../core/utils/result.dart';
-import '../entities/auth_user.dart';
+import '../../../../shared/domain/entities/auth_user.dart';
 
 abstract interface class AuthRepository {
   Future<Result<AuthUser>> signIn({

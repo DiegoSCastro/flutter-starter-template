@@ -1,8 +1,8 @@
 import 'dart:typed_data';
 
 import 'package:flutter_starter_template/core/error/failure.dart';
-import 'package:flutter_starter_template/features/auth/domain/entities/auth_user.dart';
 import 'package:flutter_starter_template/features/bookmarks/domain/entities/bookmark.dart';
+import 'package:flutter_starter_template/shared/domain/entities/auth_user.dart';
 
 const testUser = AuthUser(id: 'user-1', username: 'alice');
 

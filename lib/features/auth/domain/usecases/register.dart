@@ -3,7 +3,7 @@ import 'package:injectable/injectable.dart';
 import '../../../../core/error/failure.dart';
 import '../../../../core/usecases/use_case.dart';
 import '../../../../core/utils/result.dart';
-import '../entities/auth_user.dart';
+import '../../../../shared/domain/entities/auth_user.dart';
 import '../repositories/auth_repository.dart';
 
 typedef RegisterParams = ({String username, String password});

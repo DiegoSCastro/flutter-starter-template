@@ -337,6 +337,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i838.AnalyticsService>(),
       ),
     );
+    gh.factory<_i423.HomeBloc>(() => _i423.HomeBloc(gh<_i568.ListBookmarks>()));
     gh.factory<_i540.BookmarkFormBloc>(
       () => _i540.BookmarkFormBloc(
         gh<_i690.GetBookmark>(),
@@ -347,7 +348,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i213.PermissionService>(),
       ),
     );
-    gh.factory<_i423.HomeBloc>(() => _i423.HomeBloc(gh<_i568.ListBookmarks>()));
     gh.factory<_i566.BookmarksListBloc>(
       () => _i566.BookmarksListBloc(
         gh<_i568.ListBookmarks>(),

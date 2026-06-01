@@ -16,7 +16,7 @@ import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/theme_bloc.dart';
 import '../../../../core/theme/theme_state.dart';
 import '../../../../core/widgets/widgets.dart';
-import '../../../auth/domain/entities/auth_user.dart';
+import '../../../../shared/domain/entities/auth_user.dart';
 import '../../../auth/presentation/bloc/auth_bloc.dart';
 import '../../../auth/presentation/bloc/auth_state.dart';
 import '../../../auth/presentation/bloc/delete_account_cubit.dart';
