@@ -30,6 +30,18 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      # Generated files (*.g.dart, *.freezed.dart, *.config.dart, etc.) are
+      # committed to the repo. Regenerate them and fail if anything changed,
+      # so a PR can never merge with stale generated code.
+      - name: Verify generated code is up to date
+        run: |
+          dart run build_runner build --delete-conflicting-outputs
+          if ! git diff --quiet --exit-code; then
+            echo "::error::Generated code is out of date. Run 'dart run build_runner build --delete-conflicting-outputs' and commit the result."
+            git diff --stat
+            exit 1
+          fi
+
       - name: Verify formatting
         run: dart format --output=none --set-exit-if-changed .
 
