@@ -12,6 +12,7 @@ import '../features/bookmarks/presentation/screens/bookmark_detail_screen.dart';
 import '../features/bookmarks/presentation/screens/bookmark_form_screen.dart';
 import '../features/bookmarks/presentation/screens/bookmarks_list_screen.dart';
 import '../features/home/presentation/screens/home_screen.dart';
+import '../features/notifications/presentation/screens/notifications_screen.dart';
 import '../features/profile/presentation/screens/profile_screen.dart';
 import '../features/splash/presentation/screens/splash_screen.dart';
 import 'widgets/app_shell.dart';
@@ -41,6 +42,14 @@ part 'router.g.dart';
               name: 'bookmark_edit',
             ),
           ],
+        ),
+      ],
+    ),
+    TypedStatefulShellBranch<NotificationsBranchData>(
+      routes: <TypedRoute<RouteData>>[
+        TypedGoRoute<NotificationsRoute>(
+          path: '/notifications',
+          name: 'notifications',
         ),
       ],
     ),
@@ -79,6 +88,10 @@ class BookmarksBranchData extends StatefulShellBranchData {
   const BookmarksBranchData();
 }
 
+class NotificationsBranchData extends StatefulShellBranchData {
+  const NotificationsBranchData();
+}
+
 class ProfileBranchData extends StatefulShellBranchData {
   const ProfileBranchData();
 }
@@ -97,6 +110,14 @@ class HomeRoute extends GoRouteData with $HomeRoute {
 
   @override
   Widget build(BuildContext context, GoRouterState state) => const HomeScreen();
+}
+
+class NotificationsRoute extends GoRouteData with $NotificationsRoute {
+  const NotificationsRoute();
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      const NotificationsScreen();
 }
 
 class ProfileRoute extends GoRouteData with $ProfileRoute {

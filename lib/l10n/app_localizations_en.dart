@@ -350,4 +350,53 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get bookmarkRemoveImageLabel => 'Remove image';
+
+  @override
+  String get navNotifications => 'Notifications';
+
+  @override
+  String get notificationsAppBarTitle => 'Notifications';
+
+  @override
+  String get notificationsActivitySection => 'Your activity';
+
+  @override
+  String get notificationsSection => 'Notifications';
+
+  @override
+  String get notificationsEmptyTitle => 'Nothing here yet';
+
+  @override
+  String get notificationsEmptyMessage =>
+      'Your notifications and recent activity will appear here.';
+
+  @override
+  String get notificationsNoNotifications => 'No notifications yet.';
+
+  @override
+  String get notificationsLoadError =>
+      'Couldn\'t load your notifications. Pull to refresh or try again.';
+
+  @override
+  String notificationsUnreadCount(int count) {
+    return '$count unread';
+  }
+
+  @override
+  String get timeJustNow => 'Just now';
+
+  @override
+  String timeMinutesAgo(int minutes) {
+    return '${minutes}m ago';
+  }
+
+  @override
+  String timeHoursAgo(int hours) {
+    return '${hours}h ago';
+  }
+
+  @override
+  String timeDaysAgo(int days) {
+    return '${days}d ago';
+  }
 }

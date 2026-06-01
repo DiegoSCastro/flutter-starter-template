@@ -29,6 +29,11 @@ class AppShell extends StatelessWidget {
         label: l10n.navBookmarks,
       ),
       AppDestination(
+        icon: Icons.notifications_outlined,
+        selectedIcon: Icons.notifications,
+        label: l10n.navNotifications,
+      ),
+      AppDestination(
         icon: Icons.person_outline,
         selectedIcon: Icons.person,
         label: l10n.navProfile,

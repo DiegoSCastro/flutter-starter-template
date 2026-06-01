@@ -53,7 +53,6 @@ import 'package:flutter_starter_template/core/permissions/permission_service.dar
 import 'package:flutter_starter_template/core/share/share_module.dart' as _i390;
 import 'package:flutter_starter_template/core/share/share_service.dart'
     as _i580;
-import 'package:flutter_starter_template/ui/theme/theme_bloc.dart' as _i652;
 import 'package:flutter_starter_template/features/auth/data/datasources/auth_local_data_source.dart'
     as _i297;
 import 'package:flutter_starter_template/features/auth/data/datasources/auth_remote_data_source.dart'
@@ -122,11 +121,26 @@ import 'package:flutter_starter_template/features/bookmarks/presentation/bloc/bo
     as _i566;
 import 'package:flutter_starter_template/features/home/presentation/bloc/home_bloc.dart'
     as _i423;
+import 'package:flutter_starter_template/features/notifications/data/datasources/notifications_remote_data_source.dart'
+    as _i937;
+import 'package:flutter_starter_template/features/notifications/data/datasources/notifications_remote_module.dart'
+    as _i951;
+import 'package:flutter_starter_template/features/notifications/data/repositories/notifications_repository_impl.dart'
+    as _i879;
+import 'package:flutter_starter_template/features/notifications/domain/repositories/notifications_repository.dart'
+    as _i578;
+import 'package:flutter_starter_template/features/notifications/domain/usecases/get_notifications_feed.dart'
+    as _i41;
+import 'package:flutter_starter_template/features/notifications/domain/usecases/mark_notification_read.dart'
+    as _i854;
+import 'package:flutter_starter_template/features/notifications/presentation/bloc/notifications_bloc.dart'
+    as _i642;
 import 'package:flutter_starter_template/features/profile/presentation/bloc/profile_bloc.dart'
     as _i1013;
 import 'package:flutter_starter_template/objectbox.g.dart' as _i831;
 import 'package:flutter_starter_template/shared/domain/bookmark_stats.dart'
     as _i189;
+import 'package:flutter_starter_template/ui/theme/theme_bloc.dart' as _i753;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:image_picker/image_picker.dart' as _i183;
 import 'package:injectable/injectable.dart' as _i526;
@@ -154,11 +168,12 @@ extension GetItInjectableX on _i174.GetIt {
     final networkModule = _$NetworkModule();
     final authNetworkModule = _$AuthNetworkModule();
     final bookmarksRemoteModule = _$BookmarksRemoteModule();
+    final notificationsRemoteModule = _$NotificationsRemoteModule();
+    gh.factory<_i1013.ProfileBloc>(() => _i1013.ProfileBloc());
     await gh.factoryAsync<_i460.SharedPreferences>(
       () => sharedPreferencesModule.provideSharedPreferences(),
       preResolve: true,
     );
-    gh.factory<_i1013.ProfileBloc>(() => _i1013.ProfileBloc());
     gh.singleton<_i689.EnvConfig>(() => const _i689.EnvConfig());
     gh.singleton<_i999.FirebaseService>(() => _i999.FirebaseService());
     await gh.singletonAsync<_i319.ObjectBox>(
@@ -215,8 +230,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i838.AnalyticsService>(
       () => _i838.FirebaseAnalyticsService(gh<_i398.FirebaseAnalytics>()),
     );
-    gh.lazySingleton<_i652.ThemeBloc>(
-      () => _i652.ThemeBloc(
+    gh.lazySingleton<_i753.ThemeBloc>(
+      () => _i753.ThemeBloc(
         gh<_i460.SharedPreferences>(),
         gh<_i838.AnalyticsService>(),
       ),
@@ -263,6 +278,16 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i361.Dio>(),
       ),
     );
+    gh.lazySingleton<_i937.NotificationsRemoteDataSource>(
+      () => notificationsRemoteModule.provideNotificationsRemoteDataSource(
+        gh<_i361.Dio>(),
+      ),
+    );
+    gh.lazySingleton<_i578.NotificationsRepository>(
+      () => _i879.NotificationsRepositoryImpl(
+        gh<_i937.NotificationsRemoteDataSource>(),
+      ),
+    );
     gh.lazySingleton<_i627.BookmarksSyncController>(
       () => _i539.BookmarksSyncService(
         gh<_i724.BookmarksLocalDataSource>(),
@@ -270,11 +295,23 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i895.Connectivity>(),
       ),
     );
+    gh.factory<_i41.GetNotificationsFeed>(
+      () => _i41.GetNotificationsFeed(gh<_i578.NotificationsRepository>()),
+    );
+    gh.factory<_i854.MarkNotificationRead>(
+      () => _i854.MarkNotificationRead(gh<_i578.NotificationsRepository>()),
+    );
     gh.lazySingleton<_i987.AuthRepository>(
       () => _i1028.AuthRepositoryImpl(
         gh<_i87.AuthRemoteDataSource>(),
         gh<_i297.AuthLocalDataSource>(),
         gh<_i533.TokenRefresher>(),
+      ),
+    );
+    gh.factory<_i642.NotificationsBloc>(
+      () => _i642.NotificationsBloc(
+        gh<_i41.GetNotificationsFeed>(),
+        gh<_i854.MarkNotificationRead>(),
       ),
     );
     gh.factory<_i780.ChangePassword>(
@@ -370,7 +407,7 @@ extension GetItInjectableX on _i174.GetIt {
   }
 }
 
-class _$SharedPreferencesModule extends _i652.SharedPreferencesModule {}
+class _$SharedPreferencesModule extends _i753.SharedPreferencesModule {}
 
 class _$ObjectBoxModule extends _i319.ObjectBoxModule {}
 
@@ -395,3 +432,5 @@ class _$NetworkModule extends _i173.NetworkModule {}
 class _$AuthNetworkModule extends _i740.AuthNetworkModule {}
 
 class _$BookmarksRemoteModule extends _i235.BookmarksRemoteModule {}
+
+class _$NotificationsRemoteModule extends _i951.NotificationsRemoteModule {}

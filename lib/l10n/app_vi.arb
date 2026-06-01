@@ -116,5 +116,50 @@
   "bookmarksDetailPlaceholder": "Chọn một bookmark để xem chi tiết",
   "bookmarkImageLabel": "Hình ảnh của {title}",
   "bookmarkAttachedImageLabel": "Hình ảnh đính kèm",
-  "bookmarkRemoveImageLabel": "Xóa hình ảnh"
+  "bookmarkRemoveImageLabel": "Xóa hình ảnh",
+  "navNotifications": "Thông báo",
+  "notificationsAppBarTitle": "Thông báo",
+  "notificationsActivitySection": "Hoạt động của bạn",
+  "notificationsSection": "Thông báo",
+  "notificationsEmptyTitle": "Chưa có gì ở đây",
+  "notificationsEmptyMessage": "Thông báo và hoạt động gần đây của bạn sẽ hiển thị ở đây.",
+  "notificationsNoNotifications": "Chưa có thông báo nào.",
+  "notificationsLoadError": "Không tải được thông báo. Hãy kéo để làm mới hoặc thử lại.",
+  "notificationsUnreadCount": "{count} chưa đọc",
+  "@notificationsUnreadCount": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "timeJustNow": "Vừa xong",
+  "timeMinutesAgo": "{minutes} phút trước",
+  "@timeMinutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "timeHoursAgo": "{hours} giờ trước",
+  "@timeHoursAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "timeDaysAgo": "{days} ngày trước",
+  "@timeDaysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  }
 }
