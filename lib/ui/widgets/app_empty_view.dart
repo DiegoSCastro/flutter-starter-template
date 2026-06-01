@@ -1,41 +1,32 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
-import '../build_context_extensions.dart';
+import '../../core/extensions/build_context_extensions.dart';
 import '../theme/app_spacing.dart';
 
-/// Full-screen error placeholder with an icon, message, and optional retry.
-class AppErrorView extends StatelessWidget {
-  const AppErrorView({
+/// Full-screen placeholder for empty lists or states with no data yet.
+class AppEmptyView extends StatelessWidget {
+  const AppEmptyView({
     super.key,
     required this.message,
     this.title,
-    this.onRetry,
-    this.retryLabel,
-    this.icon = Icons.error_outline,
+    this.icon = Icons.inbox_outlined,
+    this.action,
   });
 
   final String message;
   final String? title;
-  final VoidCallback? onRetry;
-  final String? retryLabel;
   final IconData icon;
+  final Widget? action;
 
   @override
   Widget build(BuildContext context) {
-    final effectiveOnRetry = onRetry != null
-        ? () {
-            HapticFeedback.lightImpact();
-            onRetry!();
-          }
-        : null;
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.xxl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 56, color: context.colorScheme.error),
+            Icon(icon, size: 56, color: context.colorScheme.onSurfaceVariant),
             const SizedBox(height: AppSpacing.lg),
             if (title != null) ...[
               Text(
@@ -47,16 +38,14 @@ class AppErrorView extends StatelessWidget {
             ],
             Text(
               message,
-              style: context.textTheme.bodyMedium,
+              style: context.textTheme.bodyMedium?.copyWith(
+                color: context.colorScheme.onSurfaceVariant,
+              ),
               textAlign: TextAlign.center,
             ),
-            if (onRetry != null) ...[
+            if (action != null) ...[
               const SizedBox(height: AppSpacing.xxl),
-              FilledButton.tonalIcon(
-                onPressed: effectiveOnRetry,
-                icon: const Icon(Icons.refresh),
-                label: Text(retryLabel ?? context.l10n.commonRetry),
-              ),
+              action!,
             ],
           ],
         ),

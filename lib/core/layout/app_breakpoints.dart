@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 
-import '../build_context_extensions.dart';
+import '../extensions/build_context_extensions.dart';
 
 /// Material 3 window-size-class breakpoints used to drive adaptive layouts.
 ///

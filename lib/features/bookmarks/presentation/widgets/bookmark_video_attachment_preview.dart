@@ -3,13 +3,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/build_context_extensions.dart';
 import '../../../../core/di/injection.dart';
+import '../../../../core/extensions/build_context_extensions.dart';
 import '../../../../core/media/video_player_service.dart';
-import '../../../../core/theme/app_icon_size.dart';
-import '../../../../core/theme/app_radius.dart';
-import '../../../../core/theme/app_spacing.dart';
-import '../../../../core/widgets/app_video_player.dart';
+import '../../../../ui/theme/app_icon_size.dart';
+import '../../../../ui/theme/app_radius.dart';
+import '../../../../ui/theme/app_spacing.dart';
+import '../../../../ui/widgets/app_video_player.dart';
 import '../bloc/bookmark_form/bookmark_form_bloc.dart';
 
 class BookmarkVideoAttachmentPreview extends StatefulWidget {

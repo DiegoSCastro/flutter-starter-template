@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_starter_template/core/widgets/app_list_detail_pane.dart';
+import 'package:flutter_starter_template/ui/widgets/app_list_detail_pane.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

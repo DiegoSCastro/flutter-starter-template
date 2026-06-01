@@ -1,9 +1,11 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:video_player/video_player.dart';
+
+import '../../core/media/video_player_service.dart';
 import '../animation/app_durations.dart';
-import '../media/video_player_service.dart';
 import '../theme/app_icon_size.dart';
 import '../theme/app_spacing.dart';
 import 'app_video_player_controls.dart';

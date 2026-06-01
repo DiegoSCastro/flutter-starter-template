@@ -72,21 +72,34 @@ npx skills add dart-lang/skills --skill '*' --agent universal
 
 When a task matches a skill name (e.g. setting up routing → `flutter-setup-declarative-routing`, JSON serialization → `flutter-implement-json-serialization`, adding tests → `flutter-add-widget-test` / `dart-add-unit-test`), invoke the skill rather than improvising — it encodes the team's preferred workflow.
 
-## Code organization: `core` vs `shared` vs `features`
+## Code organization: `core` vs `ui` vs `shared` vs `features`
 
-`lib/` is split into three top-level areas with distinct responsibilities. Place
+`lib/` is split into top-level areas with distinct responsibilities. Place
 new code by asking what kind of thing it is, not which feature happens to need
 it first.
 
-- **`lib/core/`** — cross-cutting *infrastructure* with no business meaning:
-  network, DI, error types, theme, the base `UseCase`, analytics, notifications.
+- **`lib/core/`** — cross-cutting, *non-visual* infrastructure with no business
+  meaning: network, DI, error types, the base `UseCase`, analytics,
+  notifications, media, permissions, layout/extension primitives.
+- **`lib/ui/`** — the *design system*: generic visual building blocks with no
+  business meaning — `theme/` (theming + `ThemeBloc`), `widgets/` (reusable
+  generic widgets), `animation/`. Split out of `core/` because it's large and
+  self-contained.
 - **`lib/features/<feature>/`** — everything owned by a single feature, in its
-  own `data/domain/presentation` layers. A feature must **not** import another
-  feature's `presentation` layer; if it needs a sibling's `domain` contract,
-  that's a signal the contract may belong in `shared`.
+  own `data/domain/presentation` layers. As a default, a feature must **not**
+  import another feature's `presentation` layer — *shared state* is read through
+  a `shared` contract instead (see the session example below). The one
+  deliberate exception is a *capability*: a self-contained presentation object
+  (e.g. a `Cubit`) that one feature surfaces inside another. While only a single
+  consumer exists, importing it directly is allowed and preferred over inventing
+  a `shared` abstraction; the moment a **second** consumer appears, the
+  rule of three applies and the contract is promoted to `shared`. If a feature
+  needs a sibling's `domain` contract, that too is a signal it may belong in
+  `shared`.
 - **`lib/shared/`** — *business* vocabulary genuinely used by 2+ features
   (e.g. `domain/entities/auth_user.dart`). Mirrors the feature layer layout
-  (`domain/`, `data/`). Dependency direction is `features → shared → core`.
+  (`domain/`, `data/`). Dependency direction is
+  `features → shared → ui → core`.
 
 Promote a type into `shared` only on the **rule of three**: when ≥2 features
 actually depend on it today (not "might someday") and its contract is stable.
@@ -104,8 +117,11 @@ implementation (`AuthSession`, an adapter over `AuthBloc`); the composition root
 The composition root (`lib/app/`) may depend on features directly — the
 "no cross-feature presentation import" rule applies to feature code, not to the
 app shell that wires features together. Feature-specific *capabilities* (e.g.
-auth's delete-account cubit, surfaced in profile) stay in their owning feature
-and are imported directly; only genuinely shared *state* goes through `shared`.
+auth's `DeleteAccountCubit`, surfaced in profile) stay in their owning feature
+and are imported directly — this is the single-consumer capability exception
+above, and `profile`'s own UI still owns the reaction (its snackbars, its
+`clearSession()` call). Only genuinely shared *state* goes through `shared`,
+and a capability graduates there once a second feature needs it.
 
 ---
 

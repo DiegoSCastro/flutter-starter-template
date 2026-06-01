@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
-import '../build_context_extensions.dart';
+import '../../core/extensions/build_context_extensions.dart';
 import 'app_loading.dart';
 
 /// A wrapper around [CachedNetworkImage] that provides consistent loading

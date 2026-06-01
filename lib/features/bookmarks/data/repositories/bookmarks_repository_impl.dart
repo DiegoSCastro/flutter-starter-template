@@ -2,7 +2,7 @@ import 'package:injectable/injectable.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../core/error/failure.dart';
-import '../../../../core/future_extensions.dart';
+import '../../../../core/extensions/future_extensions.dart';
 import '../../../../core/utils/result.dart';
 import '../../domain/entities/bookmark.dart';
 import '../../domain/repositories/bookmarks_repository.dart';

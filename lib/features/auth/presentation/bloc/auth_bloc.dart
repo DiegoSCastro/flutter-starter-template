@@ -5,7 +5,7 @@ import 'package:injectable/injectable.dart';
 import '../../../../core/analytics/analytics_extensions.dart';
 import '../../../../core/analytics/analytics_service.dart';
 import '../../../../core/error/failure.dart';
-import '../../../../core/future_extensions.dart';
+import '../../../../core/extensions/future_extensions.dart';
 import '../../../../core/utils/result.dart';
 import '../../domain/usecases/register.dart';
 import '../../domain/usecases/restore_session.dart';

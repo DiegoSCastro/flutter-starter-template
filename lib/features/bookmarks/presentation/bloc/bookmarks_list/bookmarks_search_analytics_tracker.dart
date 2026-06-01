@@ -2,7 +2,7 @@ import 'dart:async';
 
 import '../../../../../core/analytics/analytics_extensions.dart';
 import '../../../../../core/analytics/analytics_service.dart';
-import '../../../../../core/future_extensions.dart';
+import '../../../../../core/extensions/future_extensions.dart';
 
 class BookmarksSearchAnalyticsTracker {
   BookmarksSearchAnalyticsTracker(this._analytics);
