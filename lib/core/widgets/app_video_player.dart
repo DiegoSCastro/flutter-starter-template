@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:video_player/video_player.dart';
 import '../animation/app_durations.dart';
 import '../media/video_player_service.dart';
 import '../theme/app_icon_size.dart';
 import '../theme/app_spacing.dart';
+import 'app_video_player_controls.dart';
+import 'app_video_player_fullscreen.dart';
 
 /// A premium, highly customizable, and responsive video player widget.
 ///
@@ -119,18 +120,8 @@ class _AppVideoPlayerState extends State<AppVideoPlayer> {
     if (widget.isFullscreen) {
       Navigator.of(context).pop();
     } else {
-      _AppVideoPlayerFullScreenPage.show(context, widget.controller);
+      AppVideoPlayerFullScreenPage.show(context, widget.controller);
     }
-  }
-
-  String _formatDuration(Duration duration) {
-    final minutes = duration.inMinutes.remainder(60).toString().padLeft(2, '0');
-    final seconds = duration.inSeconds.remainder(60).toString().padLeft(2, '0');
-    if (duration.inHours > 0) {
-      final hours = duration.inHours.toString().padLeft(2, '0');
-      return '$hours:$minutes:$seconds';
-    }
-    return '$minutes:$seconds';
   }
 
   @override
@@ -197,7 +188,17 @@ class _AppVideoPlayerState extends State<AppVideoPlayer> {
               duration: AppDurations.fast,
               child: IgnorePointer(
                 ignoring: !_showControls,
-                child: _buildControlsOverlay(context, raw),
+                child: AppVideoPlayerControlsOverlay(
+                  controller: widget.controller,
+                  rawController: raw,
+                  isFullscreen: widget.isFullscreen,
+                  isMuted: _isMuted,
+                  playbackSpeed: _playbackSpeed,
+                  onTogglePlay: _togglePlay,
+                  onToggleMute: _toggleMute,
+                  onSpeedSelected: _setSpeed,
+                  onFullscreenPressed: _enterFullscreen,
+                ),
               ),
             ),
           ],
@@ -222,284 +223,6 @@ class _AppVideoPlayerState extends State<AppVideoPlayer> {
           textAlign: TextAlign.center,
         ),
       ],
-    );
-  }
-
-  Widget _buildControlsOverlay(
-    BuildContext context,
-    VideoPlayerController raw,
-  ) {
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Colors.black.withValues(alpha: 0.6),
-            Colors.transparent,
-            Colors.black.withValues(alpha: 0.6),
-          ],
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-        ),
-      ),
-      child: Stack(
-        children: [
-          // Top HUD row (close if full screen)
-          if (widget.isFullscreen)
-            Positioned(
-              top: 16,
-              left: 16,
-              child: SafeArea(
-                child: CircleAvatar(
-                  backgroundColor: Colors.black45,
-                  child: IconButton(
-                    icon: const Icon(
-                      Icons.arrow_back_rounded,
-                      color: Colors.white,
-                    ),
-                    tooltip: MaterialLocalizations.of(
-                      context,
-                    ).backButtonTooltip,
-                    onPressed: () => Navigator.of(context).pop(),
-                  ),
-                ),
-              ),
-            ),
-
-          // Central Play/Pause Tap Target Overlay. Hidden from semantics: the
-          // labeled play/pause button in the controls row covers screen readers
-          // so this redundant gesture target doesn't announce twice.
-          Center(
-            child: ExcludeSemantics(
-              child:
-                  Material(
-                        color: Colors.transparent,
-                        child: InkWell(
-                          onTap: _togglePlay,
-                          customBorder: const CircleBorder(),
-                          child: Container(
-                            padding: const EdgeInsets.all(AppSpacing.lg),
-                            decoration: BoxDecoration(
-                              color: Colors.black.withValues(alpha: 0.5),
-                              shape: BoxShape.circle,
-                            ),
-                            child: Icon(
-                              widget.controller.value.isPlaying
-                                  ? Icons.pause_rounded
-                                  : Icons.play_arrow_rounded,
-                              color: Colors.white,
-                              size: 48,
-                            ),
-                          ),
-                        ),
-                      )
-                      .animate(
-                        target: widget.controller.value.isPlaying ? 1 : 0,
-                      )
-                      .scale(
-                        begin: const Offset(0.9, 0.9),
-                        end: const Offset(1, 1),
-                        duration: 150.ms,
-                      )
-                      .fade(duration: 150.ms),
-            ),
-          ),
-
-          // Bottom Controls HUD Panel
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: SafeArea(
-              top: false,
-              bottom: widget.isFullscreen,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppSpacing.lg,
-                  vertical: AppSpacing.sm,
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // Video Progress Track
-                    MouseRegion(
-                      cursor: SystemMouseCursors.click,
-                      child: VideoProgressIndicator(
-                        raw,
-                        allowScrubbing: true,
-                        padding: const EdgeInsets.symmetric(
-                          vertical: AppSpacing.sm,
-                        ),
-                        colors: VideoProgressColors(
-                          playedColor: Theme.of(context).colorScheme.primary,
-                          bufferedColor: Theme.of(
-                            context,
-                          ).colorScheme.primaryContainer.withValues(alpha: 0.4),
-                          backgroundColor: Colors.white24,
-                        ),
-                      ),
-                    ),
-
-                    // Controls Row
-                    Row(
-                      children: [
-                        // Play/Pause Action
-                        IconButton(
-                          icon: Icon(
-                            widget.controller.value.isPlaying
-                                ? Icons.pause_rounded
-                                : Icons.play_arrow_rounded,
-                            color: Colors.white,
-                          ),
-                          tooltip: widget.controller.value.isPlaying
-                              ? 'Pause'
-                              : 'Play',
-                          onPressed: _togglePlay,
-                        ),
-
-                        // Volume Toggle + Value control
-                        IconButton(
-                          icon: Icon(
-                            _isMuted
-                                ? Icons.volume_off_rounded
-                                : widget.controller.value.volume < 0.5
-                                ? Icons.volume_down_rounded
-                                : Icons.volume_up_rounded,
-                            color: Colors.white,
-                          ),
-                          tooltip: _isMuted ? 'Unmute' : 'Mute',
-                          onPressed: _toggleMute,
-                        ),
-
-                        // Timeline Clock (Elapsed / Duration)
-                        Text(
-                          '${_formatDuration(widget.controller.value.position)} / ${_formatDuration(widget.controller.value.duration)}',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 13,
-                          ),
-                        ),
-
-                        const Spacer(),
-
-                        // Playback Speed Button
-                        PopupMenuButton<double>(
-                          initialValue: _playbackSpeed,
-                          tooltip: 'Playback speed',
-                          onSelected: _setSpeed,
-                          itemBuilder: (context) => [
-                            for (final speed in [
-                              0.5,
-                              0.75,
-                              1.0,
-                              1.25,
-                              1.5,
-                              2.0,
-                            ])
-                              PopupMenuItem(
-                                value: speed,
-                                child: Text('${speed}x'),
-                              ),
-                          ],
-                          child: Padding(
-                            padding: const EdgeInsets.all(AppSpacing.sm),
-                            child: Text(
-                              '${_playbackSpeed}x',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-
-                        const SizedBox(width: AppSpacing.sm),
-
-                        // Fullscreen Action
-                        IconButton(
-                          icon: Icon(
-                            widget.isFullscreen
-                                ? Icons.fullscreen_exit_rounded
-                                : Icons.fullscreen_rounded,
-                            color: Colors.white,
-                            size: 28,
-                          ),
-                          tooltip: widget.isFullscreen
-                              ? 'Exit full screen'
-                              : 'Full screen',
-                          onPressed: _enterFullscreen,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _AppVideoPlayerFullScreenPage extends StatefulWidget {
-  const _AppVideoPlayerFullScreenPage({required this.controller});
-
-  final AppVideoPlayerController controller;
-
-  static Future<void> show(
-    BuildContext context,
-    AppVideoPlayerController controller,
-  ) {
-    return Navigator.of(context).push(
-      PageRouteBuilder(
-        opaque: true,
-        pageBuilder: (context, _, _) =>
-            _AppVideoPlayerFullScreenPage(controller: controller),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return FadeTransition(opacity: animation, child: child);
-        },
-      ),
-    );
-  }
-
-  @override
-  State<_AppVideoPlayerFullScreenPage> createState() =>
-      _AppVideoPlayerFullScreenPageState();
-}
-
-class _AppVideoPlayerFullScreenPageState
-    extends State<_AppVideoPlayerFullScreenPage> {
-  @override
-  void initState() {
-    super.initState();
-    // Configure immersive video settings
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
-    ]);
-  }
-
-  @override
-  void dispose() {
-    // Restore default portrait display settings
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-    ]);
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: Center(
-        child: AppVideoPlayer(
-          controller: widget.controller,
-          isFullscreen: true,
-        ),
-      ),
     );
   }
 }
