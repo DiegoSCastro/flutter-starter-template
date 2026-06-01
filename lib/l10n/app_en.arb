@@ -152,5 +152,50 @@
     }
   },
   "bookmarkAttachedImageLabel": "Attached image",
-  "bookmarkRemoveImageLabel": "Remove image"
+  "bookmarkRemoveImageLabel": "Remove image",
+  "navNotifications": "Notifications",
+  "notificationsAppBarTitle": "Notifications",
+  "notificationsActivitySection": "Your activity",
+  "notificationsSection": "Notifications",
+  "notificationsEmptyTitle": "Nothing here yet",
+  "notificationsEmptyMessage": "Your notifications and recent activity will appear here.",
+  "notificationsNoNotifications": "No notifications yet.",
+  "notificationsLoadError": "Couldn't load your notifications. Pull to refresh or try again.",
+  "notificationsUnreadCount": "{count} unread",
+  "@notificationsUnreadCount": {
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "timeJustNow": "Just now",
+  "timeMinutesAgo": "{minutes}m ago",
+  "@timeMinutesAgo": {
+    "placeholders": {
+      "minutes": {
+        "type": "int",
+        "example": "5"
+      }
+    }
+  },
+  "timeHoursAgo": "{hours}h ago",
+  "@timeHoursAgo": {
+    "placeholders": {
+      "hours": {
+        "type": "int",
+        "example": "3"
+      }
+    }
+  },
+  "timeDaysAgo": "{days}d ago",
+  "@timeDaysAgo": {
+    "placeholders": {
+      "days": {
+        "type": "int",
+        "example": "2"
+      }
+    }
+  }
 }

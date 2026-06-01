@@ -352,4 +352,53 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get bookmarkRemoveImageLabel => 'Xóa hình ảnh';
+
+  @override
+  String get navNotifications => 'Thông báo';
+
+  @override
+  String get notificationsAppBarTitle => 'Thông báo';
+
+  @override
+  String get notificationsActivitySection => 'Hoạt động của bạn';
+
+  @override
+  String get notificationsSection => 'Thông báo';
+
+  @override
+  String get notificationsEmptyTitle => 'Chưa có gì ở đây';
+
+  @override
+  String get notificationsEmptyMessage =>
+      'Thông báo và hoạt động gần đây của bạn sẽ hiển thị ở đây.';
+
+  @override
+  String get notificationsNoNotifications => 'Chưa có thông báo nào.';
+
+  @override
+  String get notificationsLoadError =>
+      'Không tải được thông báo. Hãy kéo để làm mới hoặc thử lại.';
+
+  @override
+  String notificationsUnreadCount(int count) {
+    return '$count chưa đọc';
+  }
+
+  @override
+  String get timeJustNow => 'Vừa xong';
+
+  @override
+  String timeMinutesAgo(int minutes) {
+    return '$minutes phút trước';
+  }
+
+  @override
+  String timeHoursAgo(int hours) {
+    return '$hours giờ trước';
+  }
+
+  @override
+  String timeDaysAgo(int days) {
+    return '$days ngày trước';
+  }
 }
