@@ -12,6 +12,7 @@ import '../../../domain/services/bookmarks_sync_controller.dart';
 import '../../../domain/usecases/delete_bookmark.dart';
 import '../../../domain/usecases/list_bookmarks.dart';
 import '../../../domain/usecases/list_local_bookmarks.dart';
+import 'bookmarks_search_analytics_tracker.dart';
 import 'bookmarks_list_state.dart';
 
 part 'bookmarks_list_event.dart';
@@ -24,7 +25,8 @@ class BookmarksListBloc extends Bloc<BookmarksListEvent, BookmarksListState> {
     this._delete,
     this._sync,
     this._analytics,
-  ) : super(const BookmarksListState()) {
+  ) : _searchAnalytics = BookmarksSearchAnalyticsTracker(_analytics),
+      super(const BookmarksListState()) {
     on<BookmarksListLoadRequested>(
       _onLoadRequested,
       transformer: sequential(),
@@ -55,16 +57,14 @@ class BookmarksListBloc extends Bloc<BookmarksListEvent, BookmarksListState> {
     });
   }
 
-  static const searchAnalyticsDebounce = Duration(milliseconds: 350);
-
   final ListBookmarks _list;
   final ListLocalBookmarks _listLocal;
   final DeleteBookmark _delete;
   final BookmarksSyncController _sync;
   final AnalyticsService _analytics;
+  final BookmarksSearchAnalyticsTracker _searchAnalytics;
   late final StreamSubscription<BookmarksSyncStatus> _syncSub;
   BookmarksSyncStatus _lastSyncStatus = BookmarksSyncStatus.idle;
-  Timer? _searchAnalyticsTimer;
 
   Future<void> _onLoadRequested(
     BookmarksListLoadRequested event,
@@ -126,19 +126,10 @@ class BookmarksListBloc extends Bloc<BookmarksListEvent, BookmarksListState> {
     }
     final next = state.copyWith(query: event.query);
     emit(next);
-    final normalized = event.query.trim();
-    _searchAnalyticsTimer?.cancel();
-    if (normalized.isEmpty) {
-      return;
-    }
-    _searchAnalyticsTimer = Timer(searchAnalyticsDebounce, () {
-      _analytics
-          .trackBookmarkSearch(
-            queryLength: normalized.length,
-            resultCount: next.visibleItems.length,
-          )
-          .uw();
-    });
+    _searchAnalytics.schedule(
+      query: event.query,
+      resultCount: next.visibleItems.length,
+    );
   }
 
   void _onSortChanged(
@@ -184,7 +175,7 @@ class BookmarksListBloc extends Bloc<BookmarksListEvent, BookmarksListState> {
 
   @override
   Future<void> close() {
-    _searchAnalyticsTimer?.cancel();
+    _searchAnalytics.dispose();
     _syncSub.cancel();
     return super.close();
   }
