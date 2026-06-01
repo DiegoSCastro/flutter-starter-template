@@ -210,7 +210,7 @@ fvm flutter test test/widget_test.dart
 fvm flutter test --name "signs in"
 ```
 
-Refer to the [test/README.md](file:///Users/trunglaptieu/development/projects/flutter-starter-template/test/README.md) file for detailed testing guidelines and patterns.
+Refer to the [test/README.md](test/README.md) file for detailed testing guidelines and patterns.
 
 ### 🔍 Static Analysis & Linting
 
