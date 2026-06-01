@@ -1,7 +1,7 @@
 import 'package:flutter_starter_template/core/error/failure.dart';
 import 'package:flutter_starter_template/core/utils/result.dart';
-import 'package:flutter_starter_template/features/bookmarks/domain/entities/bookmark.dart';
 import 'package:flutter_starter_template/features/home/presentation/bloc/home_bloc.dart';
+import 'package:flutter_starter_template/shared/domain/bookmark_stats.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -10,7 +10,7 @@ import '../../../../test_utils.dart';
 void main() {
   group('HomeBloc', () {
     test('initial state is default', () async {
-      final bloc = HomeBloc(MockListBookmarks());
+      final bloc = HomeBloc(MockBookmarkStatsReader());
 
       expect(bloc.state.totalBookmarks, 0);
       expect(bloc.state.recentBookmarks, 0);
@@ -21,38 +21,48 @@ void main() {
       await bloc.close();
     });
 
-    test('aggregates bookmark data on load', () async {
-      final listBookmarks = _listBookmarks(Ok([testBookmark, testBookmark2]));
-      final bloc = HomeBloc(listBookmarks);
+    test('maps stats into state on load', () async {
+      const stats = BookmarkStats(
+        total: 5,
+        recent: 2,
+        uniqueTags: 3,
+        recentItems: [
+          BookmarkSummary(
+            id: '1',
+            title: 'Flutter',
+            url: 'https://flutter.dev',
+            description: '',
+            tags: ['dev'],
+          ),
+        ],
+      );
+      final bloc = HomeBloc(_reader(const Ok(stats)));
 
       bloc.add(const HomeLoadRequested());
       await bloc.stream.firstWhere((state) => !state.isLoading);
 
-      expect(bloc.state.totalBookmarks, 2);
-      expect(bloc.state.uniqueTags, 2);
-      expect(bloc.state.recentItems.length, 2);
+      expect(bloc.state.totalBookmarks, 5);
+      expect(bloc.state.recentBookmarks, 2);
+      expect(bloc.state.uniqueTags, 3);
+      expect(bloc.state.recentItems.single.title, 'Flutter');
 
       await bloc.close();
     });
 
-    test('handles empty bookmarks', () async {
-      final bloc = HomeBloc(_listBookmarks(const Ok([])));
+    test('handles empty stats', () async {
+      final bloc = HomeBloc(_reader(const Ok(BookmarkStats())));
       bloc.add(const HomeLoadRequested());
       await bloc.stream.firstWhere((state) => !state.isLoading);
 
       expect(bloc.state.totalBookmarks, 0);
-      expect(bloc.state.recentBookmarks, 0);
-      expect(bloc.state.uniqueTags, 0);
       expect(bloc.state.recentItems, isEmpty);
 
       await bloc.close();
     });
 
-    test('stores failure when bookmark load fails', () async {
+    test('stores failure when stats load fails', () async {
       const failure = UnknownFailure('Failed');
-      final bloc = HomeBloc(
-        _listBookmarks(const Err(failure)),
-      );
+      final bloc = HomeBloc(_reader(const Err(failure)));
 
       bloc.add(const HomeLoadRequested());
       await bloc.stream.firstWhere((state) => !state.isLoading);
@@ -65,8 +75,8 @@ void main() {
   });
 }
 
-MockListBookmarks _listBookmarks(Result<List<Bookmark>> result) {
-  final listBookmarks = MockListBookmarks();
-  when(listBookmarks.call).thenAnswer((_) async => result);
-  return listBookmarks;
+MockBookmarkStatsReader _reader(Result<BookmarkStats> result) {
+  final reader = MockBookmarkStatsReader();
+  when(reader.call).thenAnswer((_) async => result);
+  return reader;
 }

@@ -8,8 +8,8 @@ import '../../../../core/theme/app_icon_size.dart';
 import '../../../../core/theme/app_radius.dart';
 import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/widgets/widgets.dart';
+import '../../../../shared/domain/bookmark_stats.dart';
 import '../../../../shared/presentation/session_scope.dart';
-import '../../../bookmarks/domain/entities/bookmark.dart';
 import '../bloc/home_bloc.dart';
 import '../bloc/home_state.dart';
 
@@ -195,7 +195,7 @@ class _RecentBookmarksSection extends StatelessWidget {
 
   static const double _carouselHeight = 160;
 
-  final List<Bookmark> recentItems;
+  final List<BookmarkSummary> recentItems;
   final bool isEmpty;
   final Duration animationDelay;
 
@@ -237,7 +237,7 @@ class _RecentBookmarksSection extends StatelessWidget {
 class _BookmarkCarouselCard extends StatelessWidget {
   const _BookmarkCarouselCard({required this.bookmark});
 
-  final Bookmark bookmark;
+  final BookmarkSummary bookmark;
 
   @override
   Widget build(BuildContext context) {

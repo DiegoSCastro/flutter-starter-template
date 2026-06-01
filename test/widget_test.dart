@@ -9,6 +9,7 @@ import 'package:flutter_starter_template/features/auth/presentation/bloc/auth_bl
 import 'package:flutter_starter_template/features/auth/presentation/bloc/auth_state.dart';
 import 'package:flutter_starter_template/features/bookmarks/domain/services/bookmarks_sync_controller.dart';
 import 'package:flutter_starter_template/features/home/presentation/bloc/home_bloc.dart';
+import 'package:flutter_starter_template/shared/domain/bookmark_stats.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -54,8 +55,10 @@ void main() {
     when(() => sync.stop()).thenAnswer((_) async {});
     when(() => sync.sync()).thenAnswer((_) async {});
 
-    final listBookmarks = MockListBookmarks();
-    when(listBookmarks.call).thenAnswer((_) async => const Ok([]));
+    final bookmarkStats = MockBookmarkStatsReader();
+    when(
+      bookmarkStats.call,
+    ).thenAnswer((_) async => const Ok(BookmarkStats()));
 
     authBloc = AuthBloc(
       signIn: signIn,
@@ -67,7 +70,7 @@ void main() {
     themeBloc = ThemeBloc(await SharedPreferences.getInstance(), analytics);
 
     getIt.registerFactory<HomeBloc>(() {
-      final bloc = HomeBloc(listBookmarks);
+      final bloc = HomeBloc(bookmarkStats);
       homeBloc = bloc;
       return bloc;
     });
