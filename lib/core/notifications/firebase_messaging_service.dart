@@ -8,7 +8,7 @@ import 'package:injectable/injectable.dart';
 
 import '../analytics/analytics_extensions.dart';
 import '../analytics/analytics_service.dart';
-import '../future_extensions.dart';
+import '../extensions/future_extensions.dart';
 import 'notifications_service.dart';
 
 typedef OnNotificationTap = void Function(Map<String, dynamic>? data);

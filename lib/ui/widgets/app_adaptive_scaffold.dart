@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../layout/app_breakpoints.dart';
+import '../../core/layout/app_breakpoints.dart';
 
 /// A single destination in the [AppAdaptiveScaffold] navigation.
 @immutable

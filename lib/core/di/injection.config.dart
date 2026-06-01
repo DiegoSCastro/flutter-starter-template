@@ -53,7 +53,7 @@ import 'package:flutter_starter_template/core/permissions/permission_service.dar
 import 'package:flutter_starter_template/core/share/share_module.dart' as _i390;
 import 'package:flutter_starter_template/core/share/share_service.dart'
     as _i580;
-import 'package:flutter_starter_template/core/theme/theme_bloc.dart' as _i652;
+import 'package:flutter_starter_template/ui/theme/theme_bloc.dart' as _i652;
 import 'package:flutter_starter_template/features/auth/data/datasources/auth_local_data_source.dart'
     as _i297;
 import 'package:flutter_starter_template/features/auth/data/datasources/auth_remote_data_source.dart'

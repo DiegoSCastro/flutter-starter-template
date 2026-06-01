@@ -2,10 +2,10 @@
 library;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_starter_template/core/widgets/app_button.dart';
-import 'package:flutter_starter_template/core/widgets/app_empty_view.dart';
-import 'package:flutter_starter_template/core/widgets/app_error_view.dart';
-import 'package:flutter_starter_template/core/widgets/app_loading.dart';
+import 'package:flutter_starter_template/ui/widgets/app_button.dart';
+import 'package:flutter_starter_template/ui/widgets/app_empty_view.dart';
+import 'package:flutter_starter_template/ui/widgets/app_error_view.dart';
+import 'package:flutter_starter_template/ui/widgets/app_loading.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// Pumps [child] inside a deterministic MaterialApp (a plain

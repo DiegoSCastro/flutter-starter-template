@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../build_context_extensions.dart';
+import '../../core/extensions/build_context_extensions.dart';
 import '../theme/app_spacing.dart';
 
 enum AppButtonVariant { primary, tonal, outlined, text }

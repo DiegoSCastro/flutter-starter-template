@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../../../core/animation/app_durations.dart';
-import '../../../../core/animation/widget_animations.dart';
-import '../../../../core/build_context_extensions.dart';
-import '../../../../core/theme/app_spacing.dart';
+import '../../../../core/extensions/build_context_extensions.dart';
 import '../../../../gen/assets.gen.dart';
+import '../../../../ui/animation/app_durations.dart';
+import '../../../../ui/animation/widget_animations.dart';
+import '../../../../ui/theme/app_spacing.dart';
 
 class SplashContent extends StatelessWidget {
   const SplashContent({super.key});

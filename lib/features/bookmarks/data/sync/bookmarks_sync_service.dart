@@ -4,7 +4,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/future_extensions.dart';
+import '../../../../core/extensions/future_extensions.dart';
 import '../../domain/services/bookmarks_sync_controller.dart';
 import '../datasources/bookmarks_remote_data_source.dart';
 import '../local/bookmarks_local_data_source.dart';

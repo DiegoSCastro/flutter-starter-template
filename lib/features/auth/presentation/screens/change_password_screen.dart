@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/animation/widget_animations.dart';
-import '../../../../core/build_context_extensions.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/error/failure.dart';
-import '../../../../core/theme/app_spacing.dart';
-import '../../../../core/widgets/widgets.dart';
+import '../../../../core/extensions/build_context_extensions.dart';
+import '../../../../ui/animation/widget_animations.dart';
+import '../../../../ui/theme/app_spacing.dart';
+import '../../../../ui/widgets/widgets.dart';
 import '../bloc/change_password_cubit.dart';
 import '../bloc/change_password_state.dart';
 

@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 
-import '../build_context_extensions.dart';
+import '../../core/extensions/build_context_extensions.dart';
 import '../theme/app_icon_size.dart';
 import '../theme/app_spacing.dart';
 import 'app_photo_view_fullscreen.dart';

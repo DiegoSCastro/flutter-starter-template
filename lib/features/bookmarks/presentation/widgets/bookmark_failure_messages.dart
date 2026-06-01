@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
-import '../../../../core/build_context_extensions.dart';
 import '../../../../core/error/failure.dart';
+import '../../../../core/extensions/build_context_extensions.dart';
 
 String bookmarkFailureMessage(BuildContext context, Failure failure) {
   if (failure is NotFoundFailure) return context.l10n.bookmarkNotFound;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../l10n/app_localizations.dart';
-import 'theme/semantic_colors.dart';
+import '../../l10n/app_localizations.dart';
+import '../../ui/theme/semantic_colors.dart';
 
 extension BuildContextTheme on BuildContext {
   ThemeData get theme => Theme.of(this);

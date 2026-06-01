@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../../core/animation/widget_animations.dart';
-import '../../../../core/build_context_extensions.dart';
-import '../../../../core/theme/app_spacing.dart';
-import '../../../../core/widgets/widgets.dart';
+import '../../../../core/extensions/build_context_extensions.dart';
+import '../../../../ui/animation/widget_animations.dart';
+import '../../../../ui/theme/app_spacing.dart';
+import '../../../../ui/widgets/widgets.dart';
 import '../bloc/bookmark_form/bookmark_form_bloc.dart';
 import '../bloc/bookmark_form/bookmark_form_state.dart';
 import 'bookmark_attachments_section.dart';
