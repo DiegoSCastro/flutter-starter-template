@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io' show Platform;
 
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
@@ -83,8 +84,13 @@ class FirebaseMessagingService {
       if (token != null) {
         _tokenStream.add(token);
       }
-    } catch (e) {
-      debugPrint('Failed to get FCM token: $e');
+    } on Exception catch (error, stackTrace) {
+      await FirebaseCrashlytics.instance.recordError(
+        error,
+        stackTrace,
+        reason: 'Failed to get initial FCM token',
+        fatal: false,
+      );
     }
   }
 
