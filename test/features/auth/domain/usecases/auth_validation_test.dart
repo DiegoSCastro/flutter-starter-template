@@ -1,9 +1,9 @@
 import 'package:flutter_starter_template/core/error/failure.dart';
 import 'package:flutter_starter_template/core/utils/result.dart';
-import 'package:flutter_starter_template/features/auth/domain/entities/auth_user.dart';
 import 'package:flutter_starter_template/features/auth/domain/usecases/change_password.dart';
 import 'package:flutter_starter_template/features/auth/domain/usecases/register.dart';
 import 'package:flutter_starter_template/features/auth/domain/usecases/sign_in.dart';
+import 'package:flutter_starter_template/shared/domain/entities/auth_user.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 

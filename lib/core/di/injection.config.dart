@@ -98,6 +98,8 @@ import 'package:flutter_starter_template/features/bookmarks/data/sync/bookmarks_
     as _i539;
 import 'package:flutter_starter_template/features/bookmarks/domain/repositories/bookmarks_repository.dart'
     as _i630;
+import 'package:flutter_starter_template/features/bookmarks/domain/services/bookmark_stats_service.dart'
+    as _i405;
 import 'package:flutter_starter_template/features/bookmarks/domain/services/bookmarks_sync_controller.dart'
     as _i627;
 import 'package:flutter_starter_template/features/bookmarks/domain/usecases/create_bookmark.dart'
@@ -123,6 +125,8 @@ import 'package:flutter_starter_template/features/home/presentation/bloc/home_bl
 import 'package:flutter_starter_template/features/profile/presentation/bloc/profile_bloc.dart'
     as _i1013;
 import 'package:flutter_starter_template/objectbox.g.dart' as _i831;
+import 'package:flutter_starter_template/shared/domain/bookmark_stats.dart'
+    as _i189;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:image_picker/image_picker.dart' as _i183;
 import 'package:injectable/injectable.dart' as _i526;
@@ -347,7 +351,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i213.PermissionService>(),
       ),
     );
-    gh.factory<_i423.HomeBloc>(() => _i423.HomeBloc(gh<_i568.ListBookmarks>()));
+    gh.lazySingleton<_i189.BookmarkStatsReader>(
+      () => _i405.BookmarkStatsService(gh<_i568.ListBookmarks>()),
+    );
     gh.factory<_i566.BookmarksListBloc>(
       () => _i566.BookmarksListBloc(
         gh<_i568.ListBookmarks>(),
@@ -356,6 +362,9 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i627.BookmarksSyncController>(),
         gh<_i838.AnalyticsService>(),
       ),
+    );
+    gh.factory<_i423.HomeBloc>(
+      () => _i423.HomeBloc(gh<_i189.BookmarkStatsReader>()),
     );
     return this;
   }

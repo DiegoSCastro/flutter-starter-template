@@ -3,45 +3,39 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/utils/result.dart';
-import '../../../bookmarks/domain/entities/bookmark.dart';
-import '../../../bookmarks/domain/usecases/list_bookmarks.dart';
+import '../../../../shared/domain/bookmark_stats.dart';
 import 'home_state.dart';
 
 part 'home_event.dart';
 
 @injectable
 class HomeBloc extends Bloc<HomeEvent, HomeState> {
-  HomeBloc(this._listBookmarks) : super(const HomeState()) {
+  HomeBloc(this._bookmarkStats) : super(const HomeState()) {
     on<HomeLoadRequested>(_onLoadRequested, transformer: droppable());
   }
 
-  final ListBookmarks _listBookmarks;
+  final BookmarkStatsReader _bookmarkStats;
 
   Future<void> _onLoadRequested(
     HomeLoadRequested event,
     Emitter<HomeState> emit,
   ) async {
     emit(state.copyWith(isLoading: true, failure: null));
-    final result = await _listBookmarks();
+    final result = await _bookmarkStats();
     switch (result) {
-      case Ok(value: final items):
-        emit(_recomputedState(items));
+      case Ok(value: final stats):
+        emit(
+          state.copyWith(
+            isLoading: false,
+            failure: null,
+            totalBookmarks: stats.total,
+            recentBookmarks: stats.recent,
+            uniqueTags: stats.uniqueTags,
+            recentItems: stats.recentItems,
+          ),
+        );
       case Err(:final failure):
         emit(state.copyWith(isLoading: false, failure: failure));
     }
-  }
-
-  HomeState _recomputedState(List<Bookmark> items) {
-    final now = DateTime.now();
-    final weekAgo = now.subtract(const Duration(days: 7));
-
-    return state.copyWith(
-      isLoading: false,
-      failure: null,
-      totalBookmarks: items.length,
-      recentBookmarks: items.where((b) => b.createdAt.isAfter(weekAgo)).length,
-      uniqueTags: items.expand((b) => b.tags).toSet().length,
-      recentItems: items.take(3).toList(growable: false),
-    );
   }
 }

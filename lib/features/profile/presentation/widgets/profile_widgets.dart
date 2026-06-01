@@ -16,9 +16,7 @@ import '../../../../core/theme/app_spacing.dart';
 import '../../../../core/theme/theme_bloc.dart';
 import '../../../../core/theme/theme_state.dart';
 import '../../../../core/widgets/widgets.dart';
-import '../../../auth/domain/entities/auth_user.dart';
-import '../../../auth/presentation/bloc/auth_bloc.dart';
-import '../../../auth/presentation/bloc/auth_state.dart';
+import '../../../../shared/presentation/session_scope.dart';
 import '../../../auth/presentation/bloc/delete_account_cubit.dart';
 import '../../../auth/presentation/bloc/delete_account_state.dart';
 import '../bloc/profile_bloc.dart';
@@ -33,9 +31,9 @@ class ProfileBody extends StatelessWidget {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(context.l10n.profileDeleteAccountSuccess)),
         );
-        // Clearing the session flips AuthBloc to initial, so the router
+        // Clearing the session flips the app to signed-out, so the router
         // redirects to the login screen.
-        context.read<AuthBloc>().add(const AuthSessionCleared());
+        SessionScope.of(context).clearSession();
       case DeleteAccountFailure():
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(context.l10n.profileDeleteAccountError)),
@@ -89,12 +87,11 @@ class _ProfileHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return BlocSelector<AuthBloc, AuthState, AuthUser?>(
-      selector: (state) => switch (state) {
-        AuthAuthenticated(:final user) || AuthSigningOut(:final user) => user,
-        _ => null,
-      },
-      builder: (context, user) {
+    final session = SessionScope.of(context);
+    return ListenableBuilder(
+      listenable: session,
+      builder: (context, _) {
+        final user = session.currentUser;
         final username = user?.username ?? '';
         final initial = username.isNotEmpty ? username[0].toUpperCase() : '?';
         return Column(
@@ -239,11 +236,7 @@ class _DeleteAccountTile extends StatelessWidget {
   }
 
   Future<void> _confirmAndDelete(BuildContext context) async {
-    final username = switch (context.read<AuthBloc>().state) {
-      AuthAuthenticated(:final user) ||
-      AuthSigningOut(:final user) => user.username,
-      _ => null,
-    };
+    final username = SessionScope.of(context).currentUser?.username;
     if (username == null) return;
     final confirmed = await showDialog<bool>(
       context: context,
@@ -470,9 +463,11 @@ class _SignOutButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<AuthBloc, AuthState, bool>(
-      selector: (state) => state is AuthSigningOut,
-      builder: (context, isLoading) {
+    final session = SessionScope.of(context);
+    return ListenableBuilder(
+      listenable: session,
+      builder: (context, _) {
+        final isLoading = session.isSigningOut;
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
           child: AppButton(
@@ -508,7 +503,7 @@ class _SignOutButton extends StatelessWidget {
       ),
     );
     if (confirmed == true && context.mounted) {
-      context.read<AuthBloc>().add(const AuthSignOutRequested());
+      SessionScope.of(context).signOut();
     }
   }
 }

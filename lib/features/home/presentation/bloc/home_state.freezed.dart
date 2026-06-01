@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$HomeState {
 
- int get totalBookmarks; int get recentBookmarks; int get uniqueTags; List<Bookmark> get recentItems; bool get isLoading; Failure? get failure;
+ int get totalBookmarks; int get recentBookmarks; int get uniqueTags; List<BookmarkSummary> get recentItems; bool get isLoading; Failure? get failure;
 /// Create a copy of HomeState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -45,7 +45,7 @@ abstract mixin class $HomeStateCopyWith<$Res>  {
   factory $HomeStateCopyWith(HomeState value, $Res Function(HomeState) _then) = _$HomeStateCopyWithImpl;
 @useResult
 $Res call({
- int totalBookmarks, int recentBookmarks, int uniqueTags, List<Bookmark> recentItems, bool isLoading, Failure? failure
+ int totalBookmarks, int recentBookmarks, int uniqueTags, List<BookmarkSummary> recentItems, bool isLoading, Failure? failure
 });
 
 
@@ -68,7 +68,7 @@ totalBookmarks: null == totalBookmarks ? _self.totalBookmarks : totalBookmarks /
 as int,recentBookmarks: null == recentBookmarks ? _self.recentBookmarks : recentBookmarks // ignore: cast_nullable_to_non_nullable
 as int,uniqueTags: null == uniqueTags ? _self.uniqueTags : uniqueTags // ignore: cast_nullable_to_non_nullable
 as int,recentItems: null == recentItems ? _self.recentItems : recentItems // ignore: cast_nullable_to_non_nullable
-as List<Bookmark>,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
+as List<BookmarkSummary>,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,failure: freezed == failure ? _self.failure : failure // ignore: cast_nullable_to_non_nullable
 as Failure?,
   ));
@@ -155,7 +155,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int totalBookmarks,  int recentBookmarks,  int uniqueTags,  List<Bookmark> recentItems,  bool isLoading,  Failure? failure)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int totalBookmarks,  int recentBookmarks,  int uniqueTags,  List<BookmarkSummary> recentItems,  bool isLoading,  Failure? failure)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _HomeState() when $default != null:
 return $default(_that.totalBookmarks,_that.recentBookmarks,_that.uniqueTags,_that.recentItems,_that.isLoading,_that.failure);case _:
@@ -176,7 +176,7 @@ return $default(_that.totalBookmarks,_that.recentBookmarks,_that.uniqueTags,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int totalBookmarks,  int recentBookmarks,  int uniqueTags,  List<Bookmark> recentItems,  bool isLoading,  Failure? failure)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int totalBookmarks,  int recentBookmarks,  int uniqueTags,  List<BookmarkSummary> recentItems,  bool isLoading,  Failure? failure)  $default,) {final _that = this;
 switch (_that) {
 case _HomeState():
 return $default(_that.totalBookmarks,_that.recentBookmarks,_that.uniqueTags,_that.recentItems,_that.isLoading,_that.failure);case _:
@@ -196,7 +196,7 @@ return $default(_that.totalBookmarks,_that.recentBookmarks,_that.uniqueTags,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int totalBookmarks,  int recentBookmarks,  int uniqueTags,  List<Bookmark> recentItems,  bool isLoading,  Failure? failure)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int totalBookmarks,  int recentBookmarks,  int uniqueTags,  List<BookmarkSummary> recentItems,  bool isLoading,  Failure? failure)?  $default,) {final _that = this;
 switch (_that) {
 case _HomeState() when $default != null:
 return $default(_that.totalBookmarks,_that.recentBookmarks,_that.uniqueTags,_that.recentItems,_that.isLoading,_that.failure);case _:
@@ -211,14 +211,14 @@ return $default(_that.totalBookmarks,_that.recentBookmarks,_that.uniqueTags,_tha
 
 
 class _HomeState implements HomeState {
-  const _HomeState({this.totalBookmarks = 0, this.recentBookmarks = 0, this.uniqueTags = 0, final  List<Bookmark> recentItems = const [], this.isLoading = false, this.failure}): _recentItems = recentItems;
+  const _HomeState({this.totalBookmarks = 0, this.recentBookmarks = 0, this.uniqueTags = 0, final  List<BookmarkSummary> recentItems = const [], this.isLoading = false, this.failure}): _recentItems = recentItems;
   
 
 @override@JsonKey() final  int totalBookmarks;
 @override@JsonKey() final  int recentBookmarks;
 @override@JsonKey() final  int uniqueTags;
- final  List<Bookmark> _recentItems;
-@override@JsonKey() List<Bookmark> get recentItems {
+ final  List<BookmarkSummary> _recentItems;
+@override@JsonKey() List<BookmarkSummary> get recentItems {
   if (_recentItems is EqualUnmodifiableListView) return _recentItems;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_recentItems);
@@ -257,7 +257,7 @@ abstract mixin class _$HomeStateCopyWith<$Res> implements $HomeStateCopyWith<$Re
   factory _$HomeStateCopyWith(_HomeState value, $Res Function(_HomeState) _then) = __$HomeStateCopyWithImpl;
 @override @useResult
 $Res call({
- int totalBookmarks, int recentBookmarks, int uniqueTags, List<Bookmark> recentItems, bool isLoading, Failure? failure
+ int totalBookmarks, int recentBookmarks, int uniqueTags, List<BookmarkSummary> recentItems, bool isLoading, Failure? failure
 });
 
 
@@ -280,7 +280,7 @@ totalBookmarks: null == totalBookmarks ? _self.totalBookmarks : totalBookmarks /
 as int,recentBookmarks: null == recentBookmarks ? _self.recentBookmarks : recentBookmarks // ignore: cast_nullable_to_non_nullable
 as int,uniqueTags: null == uniqueTags ? _self.uniqueTags : uniqueTags // ignore: cast_nullable_to_non_nullable
 as int,recentItems: null == recentItems ? _self._recentItems : recentItems // ignore: cast_nullable_to_non_nullable
-as List<Bookmark>,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
+as List<BookmarkSummary>,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,failure: freezed == failure ? _self.failure : failure // ignore: cast_nullable_to_non_nullable
 as Failure?,
   ));
