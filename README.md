@@ -546,7 +546,36 @@ fvm dart run build_runner build --delete-conflicting-outputs   # one-shot
 fvm dart run build_runner watch --delete-conflicting-outputs   # incremental
 ```
 
-Runs Freezed, Retrofit, Injectable, ObjectBox, `go_router_builder`, `flutter_gen`, and `json_serializable`. Generated files are tracked in git — adjust `.gitignore` if your team prefers otherwise.
+Runs Freezed, Retrofit, Injectable, ObjectBox, `go_router_builder`, `flutter_gen`, and `json_serializable`.
+
+### 📦 Generated files are committed (not ignored)
+
+This repo **tracks** generated output (`*.g.dart`, `*.freezed.dart`,
+`*.config.dart`, `*.gen.dart`, `lib/objectbox.g.dart`, `lib/objectbox-model.json`)
+rather than `.gitignore`-ing it. Reasons:
+
+- **ObjectBox requires it.** `lib/objectbox-model.json` holds the stable
+  entity/property UIDs that keep on-device data intact across schema
+  migrations — it is a source-of-truth file and **must** be version-controlled.
+  Committing the matching `objectbox.g.dart` keeps the pair consistent.
+- **Reproducible checkouts.** A fresh clone, a reviewer, or CI compiles
+  immediately without first running `build_runner`, and regenerated code shows
+  up in the PR diff — so "someone forgot to regenerate" is caught at review.
+- **Simpler CI.** No mandatory codegen step before every analyze/test run.
+
+Two safeguards keep the trade-off (diff noise) in check:
+
+- **`.gitattributes`** marks these files `linguist-generated=true`, so GitHub
+  collapses them in diffs and excludes them from language stats.
+- **CI** runs `build_runner` and fails if the working tree changes (the
+  _"Verify generated code is up to date"_ step in
+  [`.github/workflows/ci.yml`](file:///Users/trunglaptieu/development/projects/flutter-starter-template/.github/workflows/ci.yml)),
+  so stale generated code can never merge.
+
+If your team prefers ignoring generated files instead, you'd need to: add the
+patterns to `.gitignore` (but **keep `objectbox-model.json` tracked**), make the
+CI `build_runner` step run before analyze/test on every job, and add a local
+pre-build hook so contributors don't compile stale code.
 
 <br>
 
