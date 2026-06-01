@@ -14,6 +14,9 @@ build/
 # Test coverage output
 coverage/
 
+# Golden test failure output
+test/**/golden/failures/
+
 # -------------------------------------------------------------------------
 # Android (in addition to android/.gitignore)
 # -------------------------------------------------------------------------
@@ -81,6 +84,12 @@ Thumbs.db
 # MCP
 # -------------------------------------------------------------------------
 .mcp/**/node_modules/
+
+# Local helper binaries / UI inspection artifacts
+.bin/
+.fvm_bin/
+screen.png
+window_dump.xml
 
 # -------------------------------------------------------------------------
 # Firebase

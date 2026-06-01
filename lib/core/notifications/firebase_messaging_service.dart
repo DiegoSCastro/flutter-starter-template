@@ -78,9 +78,13 @@ class FirebaseMessagingService {
       if (!apnsReady) return;
     }
 
-    final token = await _messaging.getToken();
-    if (token != null) {
-      _tokenStream.add(token);
+    try {
+      final token = await _messaging.getToken();
+      if (token != null) {
+        _tokenStream.add(token);
+      }
+    } catch (e) {
+      debugPrint('Failed to get FCM token: $e');
     }
   }
 
