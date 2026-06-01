@@ -64,36 +64,34 @@ lib/
 ├── main.dart                         # Entry: DI → Firebase → runApp
 ├── app/
 │   ├── app.dart                      # MaterialApp.router + providers
-│   └── router.dart                   # TypedGoRoute + auth redirect
+│   ├── router.dart                   # TypedGoRoute + auth redirect
+│   └── widgets/                      # App-level shell widgets
 ├── core/
 │   ├── analytics/                    # Firebase Analytics wrapper + route observer
-│   ├── animation/                    # Shared transitions + motion helpers
-│   ├── bloc/                         # BLoC event completion and nullable completer utilities
-│   ├── build_context_extensions.dart # Theme/MediaQuery shortcuts on BuildContext
 │   ├── config/                       # EnvConfig — typed --dart-define values
 │   ├── di/                           # get_it + injectable
 │   ├── error/                        # Failure hierarchy
+│   ├── extensions/                   # BuildContext and Future helpers
 │   ├── firebase/                     # Firebase initialization & global Crashlytics/Messaging setup
-│   ├── future_extensions.dart        # Future helpers (e.g. .uw() fire-and-forget)
 │   ├── layout/                       # Responsive breakpoints (AppBreakpoints)
 │   ├── media/                        # Camera, Image Picker, and Video Player wrapper services
 │   ├── network/                      # Dio clients, auth interceptor, token refresh
 │   ├── notifications/                # flutter_local_notifications
 │   ├── permissions/                  # Runtime permission request handling
 │   ├── share/                        # share_plus wrapper
-│   ├── theme/                        # ThemeBloc + light/dark ThemeData
 │   ├── usecases/                     # Abstract UseCase base class
-│   ├── utils/                        # Result<T> type
-│   └── widgets/                      # Reusable UI components
+│   └── utils/                        # Result<T> type
 ├── features/
 │   ├── auth/                         # Sign-in, sign-out, session restore
 │   ├── bookmarks/                    # CRUD, offline sync, list/detail/form
 │   ├── home/                         # Welcome screen
+│   ├── notifications/                # Notification and activity feed
 │   ├── profile/                      # User info + notification controls
-│   ├── settings/                     # Theme mode, color scheme, sign-out
 │   └── splash/                       # Session restoration gate
 ├── gen/                              # flutter_gen asset references
-└── l10n/                             # ARB translation files
+├── l10n/                             # ARB translation files
+├── shared/                           # Cross-feature domain contracts
+└── ui/                               # Theme, animation, reusable widgets
 ```
 
 <details>
@@ -212,7 +210,7 @@ fvm flutter test test/widget_test.dart
 fvm flutter test --name "signs in"
 ```
 
-Refer to the [test/README.md](file:///Users/trunglaptieu/development/projects/flutter-starter-template/test/README.md) file for detailed testing guidelines and patterns.
+Refer to the [test/README.md](test/README.md) file for detailed testing guidelines and patterns.
 
 ### 🔍 Static Analysis & Linting
 
@@ -360,9 +358,9 @@ Replace `yourdomain.com` with your actual domain, then host these on your server
 
 <br>
 
-## 🧩 Core Widgets
+## 🧩 UI Widgets
 
-All shared components in `lib/core/widgets/`:
+All shared components in `lib/ui/widgets/`:
 
 | Widget              | Purpose                                                          |
 |---------------------|------------------------------------------------------------------|

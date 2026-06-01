@@ -200,9 +200,7 @@ class _NotificationTile extends StatelessWidget {
         title: Text(
           notification.title,
           style: TextStyle(
-            fontWeight: notification.isRead
-                ? FontWeight.w400
-                : FontWeight.w600,
+            fontWeight: notification.isRead ? FontWeight.w400 : FontWeight.w600,
           ),
         ),
         subtitle: Column(

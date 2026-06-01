@@ -3,6 +3,10 @@ import 'package:flutter_starter_template/core/utils/result.dart';
 import 'package:flutter_starter_template/features/bookmarks/domain/entities/bookmark.dart';
 import 'package:flutter_starter_template/features/bookmarks/domain/repositories/bookmarks_repository.dart';
 import 'package:flutter_starter_template/features/bookmarks/domain/usecases/create_bookmark.dart';
+import 'package:flutter_starter_template/features/bookmarks/domain/usecases/delete_bookmark.dart';
+import 'package:flutter_starter_template/features/bookmarks/domain/usecases/get_bookmark.dart';
+import 'package:flutter_starter_template/features/bookmarks/domain/usecases/list_bookmarks.dart';
+import 'package:flutter_starter_template/features/bookmarks/domain/usecases/list_local_bookmarks.dart';
 import 'package:flutter_starter_template/features/bookmarks/domain/usecases/update_bookmark.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -74,6 +78,53 @@ void main() {
       final err = result as Err<Bookmark>;
       expect(err.failure, isA<ValidationFailure>());
       verifyZeroInteractions(repo);
+    });
+  });
+
+  group('read and delete use cases', () {
+    test('ListBookmarks delegates to repository', () async {
+      when(() => repo.list()).thenAnswer((_) async => const Ok([]));
+
+      final result = await ListBookmarks(repo)();
+
+      expect(result, isA<Ok<List<Bookmark>>>());
+      verify(() => repo.list()).called(1);
+    });
+
+    test('ListLocalBookmarks delegates to repository', () async {
+      when(() => repo.listLocal()).thenAnswer((_) async => const Ok([]));
+
+      final result = await ListLocalBookmarks(repo)();
+
+      expect(result, isA<Ok<List<Bookmark>>>());
+      verify(() => repo.listLocal()).called(1);
+    });
+
+    test('GetBookmark delegates to repository', () async {
+      final bookmark = Bookmark(
+        id: 'b-1',
+        title: 'Flutter',
+        url: 'https://flutter.dev',
+        description: '',
+        tags: const [],
+        createdAt: DateTime(2026, 6, 1),
+        updatedAt: DateTime(2026, 6, 1),
+      );
+      when(() => repo.get('b-1')).thenAnswer((_) async => Ok(bookmark));
+
+      final result = await GetBookmark(repo)('b-1');
+
+      expect(result, isA<Ok<Bookmark>>());
+      verify(() => repo.get('b-1')).called(1);
+    });
+
+    test('DeleteBookmark delegates to repository', () async {
+      when(() => repo.delete('b-1')).thenAnswer((_) async => const Ok(null));
+
+      final result = await DeleteBookmark(repo)('b-1');
+
+      expect(result, isA<Ok<void>>());
+      verify(() => repo.delete('b-1')).called(1);
     });
   });
 }

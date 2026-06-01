@@ -1,8 +1,11 @@
 import 'package:flutter_starter_template/core/error/failure.dart';
 import 'package:flutter_starter_template/core/utils/result.dart';
 import 'package:flutter_starter_template/features/auth/domain/usecases/change_password.dart';
+import 'package:flutter_starter_template/features/auth/domain/usecases/delete_account.dart';
 import 'package:flutter_starter_template/features/auth/domain/usecases/register.dart';
+import 'package:flutter_starter_template/features/auth/domain/usecases/restore_session.dart';
 import 'package:flutter_starter_template/features/auth/domain/usecases/sign_in.dart';
+import 'package:flutter_starter_template/features/auth/domain/usecases/sign_out.dart';
 import 'package:flutter_starter_template/shared/domain/entities/auth_user.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -81,6 +84,46 @@ void main() {
 
       expect(result, isA<Err<void>>());
       verifyZeroInteractions(repo);
+    });
+  });
+
+  group('session use cases', () {
+    test('DeleteAccount delegates to repository', () async {
+      when(() => repo.deleteAccount()).thenAnswer((_) async => const Ok(null));
+
+      final result = await DeleteAccount(repo)();
+
+      expect(result, isA<Ok<void>>());
+      verify(() => repo.deleteAccount()).called(1);
+    });
+
+    test('RestoreSession delegates to repository', () async {
+      when(
+        () => repo.restoreSession(),
+      ).thenAnswer((_) async => const Ok(testUser));
+
+      final result = await RestoreSession(repo)();
+
+      expect(result, isA<Ok<AuthUser>>());
+      verify(() => repo.restoreSession()).called(1);
+    });
+
+    test('SignOut delegates to repository', () async {
+      when(() => repo.signOut()).thenAnswer((_) async => const Ok(null));
+
+      final result = await SignOut(repo)();
+
+      expect(result, isA<Ok<void>>());
+      verify(() => repo.signOut()).called(1);
+    });
+
+    test('SignOut maps thrown errors to UnknownFailure', () async {
+      when(() => repo.signOut()).thenThrow(Exception('offline'));
+
+      final result = await SignOut(repo)();
+
+      expect(result, isA<Err<void>>());
+      expect((result as Err<void>).failure, isA<UnknownFailure>());
     });
   });
 }
