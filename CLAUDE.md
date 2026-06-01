@@ -86,9 +86,16 @@ it first.
   generic widgets), `animation/`. Split out of `core/` because it's large and
   self-contained.
 - **`lib/features/<feature>/`** — everything owned by a single feature, in its
-  own `data/domain/presentation` layers. A feature must **not** import another
-  feature's `presentation` layer; if it needs a sibling's `domain` contract,
-  that's a signal the contract may belong in `shared`.
+  own `data/domain/presentation` layers. As a default, a feature must **not**
+  import another feature's `presentation` layer — *shared state* is read through
+  a `shared` contract instead (see the session example below). The one
+  deliberate exception is a *capability*: a self-contained presentation object
+  (e.g. a `Cubit`) that one feature surfaces inside another. While only a single
+  consumer exists, importing it directly is allowed and preferred over inventing
+  a `shared` abstraction; the moment a **second** consumer appears, the
+  rule of three applies and the contract is promoted to `shared`. If a feature
+  needs a sibling's `domain` contract, that too is a signal it may belong in
+  `shared`.
 - **`lib/shared/`** — *business* vocabulary genuinely used by 2+ features
   (e.g. `domain/entities/auth_user.dart`). Mirrors the feature layer layout
   (`domain/`, `data/`). Dependency direction is
@@ -110,8 +117,11 @@ implementation (`AuthSession`, an adapter over `AuthBloc`); the composition root
 The composition root (`lib/app/`) may depend on features directly — the
 "no cross-feature presentation import" rule applies to feature code, not to the
 app shell that wires features together. Feature-specific *capabilities* (e.g.
-auth's delete-account cubit, surfaced in profile) stay in their owning feature
-and are imported directly; only genuinely shared *state* goes through `shared`.
+auth's `DeleteAccountCubit`, surfaced in profile) stay in their owning feature
+and are imported directly — this is the single-consumer capability exception
+above, and `profile`'s own UI still owns the reaction (its snackbars, its
+`clearSession()` call). Only genuinely shared *state* goes through `shared`,
+and a capability graduates there once a second feature needs it.
 
 ---
 
