@@ -12,8 +12,8 @@ import '../../../domain/services/bookmarks_sync_controller.dart';
 import '../../../domain/usecases/delete_bookmark.dart';
 import '../../../domain/usecases/list_bookmarks.dart';
 import '../../../domain/usecases/list_local_bookmarks.dart';
-import 'bookmarks_search_analytics_tracker.dart';
 import 'bookmarks_list_state.dart';
+import 'bookmarks_search_analytics_tracker.dart';
 
 part 'bookmarks_list_event.dart';
 
@@ -65,6 +65,9 @@ class BookmarksListBloc extends Bloc<BookmarksListEvent, BookmarksListState> {
   final BookmarksSearchAnalyticsTracker _searchAnalytics;
   late final StreamSubscription<BookmarksSyncStatus> _syncSub;
   BookmarksSyncStatus _lastSyncStatus = BookmarksSyncStatus.idle;
+
+  static const Duration searchAnalyticsDebounce =
+      BookmarksSearchAnalyticsTracker.debounce;
 
   Future<void> _onLoadRequested(
     BookmarksListLoadRequested event,

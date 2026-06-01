@@ -11,8 +11,8 @@ import '../../../domain/usecases/get_bookmark.dart';
 import '../../../domain/usecases/update_bookmark.dart';
 import 'bookmark_form_loader.dart';
 import 'bookmark_form_media_handler.dart';
-import 'bookmark_form_submitter.dart';
 import 'bookmark_form_state.dart';
+import 'bookmark_form_submitter.dart';
 import 'bookmark_tag_parser.dart';
 
 part 'bookmark_form_event.dart';

@@ -46,15 +46,16 @@ class BookmarkFormMediaHandler {
     }
   }
 
-  Future<BookmarkMediaResult<String?>> takeCameraImage() async {
+  Future<BookmarkMediaResult<List<String>>> takeCameraImage() async {
     final permissionFailure = await _ensureCameraPermission();
-    if (permissionFailure != null)
+    if (permissionFailure != null) {
       return BookmarkMediaFailure(permissionFailure);
+    }
     try {
       final image = await _imagePickerService.pickImage(
         source: ImageSource.camera,
       );
-      return BookmarkMediaSuccess(image?.path);
+      return BookmarkMediaSuccess(image == null ? [] : [image.path]);
     } on Object catch (error, stackTrace) {
       return BookmarkMediaFailure(
         const MediaPickFailure(),
@@ -81,8 +82,9 @@ class BookmarkFormMediaHandler {
 
   Future<BookmarkMediaResult<String?>> recordCameraVideo() async {
     final permissionFailure = await _ensureCameraPermission();
-    if (permissionFailure != null)
+    if (permissionFailure != null) {
       return BookmarkMediaFailure(permissionFailure);
+    }
     try {
       final video = await _imagePickerService.pickVideo(
         source: ImageSource.camera,

@@ -1,12 +1,13 @@
 import 'dart:async';
 
+import '../../../../../core/analytics/analytics_extensions.dart';
 import '../../../../../core/analytics/analytics_service.dart';
 import '../../../../../core/future_extensions.dart';
 
 class BookmarksSearchAnalyticsTracker {
   BookmarksSearchAnalyticsTracker(this._analytics);
 
-  static const _debounce = Duration(milliseconds: 350);
+  static const debounce = Duration(milliseconds: 350);
 
   final AnalyticsService _analytics;
   Timer? _timer;
@@ -15,7 +16,7 @@ class BookmarksSearchAnalyticsTracker {
     final normalized = query.trim();
     _timer?.cancel();
     if (normalized.isEmpty) return;
-    _timer = Timer(_debounce, () {
+    _timer = Timer(debounce, () {
       _analytics
           .trackBookmarkSearch(
             queryLength: normalized.length,
