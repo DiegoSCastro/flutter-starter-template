@@ -16,9 +16,6 @@ import 'package:core_network/core_network.dart' as _i309;
 import 'package:core_platform/core_platform.dart' as _i490;
 import 'package:core_storage/core_storage.dart' as _i78;
 import 'package:core_theme/core_theme.dart' as _i741;
-import 'package:dio/dio.dart' as _i361;
-import 'package:firebase_performance/firebase_performance.dart' as _i346;
-import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
 import 'package:flutter_starter_template/core/data/database/object_box.dart'
     as _i706;
 import 'package:flutter_starter_template/core/platform/firebase/firebase_service.dart'
@@ -139,47 +136,47 @@ extension GetItInjectableX on _i174.GetIt {
       preResolve: true,
     );
     gh.singleton<_i473.FirebaseService>(() => _i473.FirebaseService());
-    gh.lazySingleton<_i558.FlutterSecureStorage>(
+    gh.lazySingleton<_i78.FlutterSecureStorage>(
       () => secureStorageModule.provideSecureStorage(),
     );
     gh.lazySingleton<_i895.Connectivity>(
       () => bookmarksDataModule.provideConnectivity(),
     );
     gh.lazySingleton<_i706.Uuid>(() => bookmarksDataModule.provideUuid());
-    gh.lazySingleton<_i297.AuthLocalDataSource>(
-      () => _i297.SecureStorageAuthDataSource(gh<_i558.FlutterSecureStorage>()),
-    );
     gh.singleton<_i831.Store>(
       () => objectBoxModule.provideStore(gh<_i706.ObjectBox>()),
     );
-    gh.lazySingleton<_i533.TokenRefresher>(
-      () => _i533.TokenRefresher(
-        gh<_i297.AuthLocalDataSource>(),
-        gh<_i361.Dio>(instanceName: 'plain'),
-      ),
+    gh.lazySingleton<_i297.AuthLocalDataSource>(
+      () => _i297.SecureStorageAuthDataSource(gh<_i78.FlutterSecureStorage>()),
     );
     gh.lazySingleton<_i724.BookmarksLocalDataSource>(
       () => _i724.ObjectBoxBookmarksDataSource(gh<_i831.Store>()),
     );
-    gh.lazySingleton<_i361.Dio>(
+    gh.lazySingleton<_i533.TokenRefresher>(
+      () => _i533.TokenRefresher(
+        gh<_i297.AuthLocalDataSource>(),
+        gh<_i309.Dio>(instanceName: 'plain'),
+      ),
+    );
+    gh.lazySingleton<_i309.Dio>(
       () => authNetworkModule.provideDio(
         gh<_i297.AuthLocalDataSource>(),
         gh<_i533.TokenRefresher>(),
         gh<_i277.EnvConfig>(),
-        gh<_i346.FirebasePerformance>(),
+        gh<_i309.FirebasePerformance>(),
       ),
     );
     gh.lazySingleton<_i87.AuthRemoteDataSource>(
-      () => authNetworkModule.provideAuthRemoteDataSource(gh<_i361.Dio>()),
+      () => authNetworkModule.provideAuthRemoteDataSource(gh<_i309.Dio>()),
     );
     gh.lazySingleton<_i729.BookmarksRemoteDataSource>(
       () => bookmarksRemoteModule.provideBookmarksRemoteDataSource(
-        gh<_i361.Dio>(),
+        gh<_i309.Dio>(),
       ),
     );
     gh.lazySingleton<_i937.NotificationsRemoteDataSource>(
       () => notificationsRemoteModule.provideNotificationsRemoteDataSource(
-        gh<_i361.Dio>(),
+        gh<_i309.Dio>(),
       ),
     );
     gh.lazySingleton<_i578.NotificationsRepository>(
