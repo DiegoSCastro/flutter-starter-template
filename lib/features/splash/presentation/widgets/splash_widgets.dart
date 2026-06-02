@@ -17,10 +17,10 @@ class SplashContent extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              padding: const EdgeInsets.all(AppSpacing.xl),
+              clipBehavior: Clip.antiAlias,
               decoration: BoxDecoration(
                 color: colorScheme.surfaceContainerHighest,
-                borderRadius: BorderRadius.circular(28),
+                borderRadius: BorderRadius.circular(AppRadius.xl),
                 boxShadow: [
                   BoxShadow(
                     color: colorScheme.shadow.withValues(alpha: 0.15),
@@ -29,7 +29,11 @@ class SplashContent extends StatelessWidget {
                   ),
                 ],
               ),
-              child: Assets.icons.logo.image(width: 72, height: 72),
+              child: Assets.icons.logo.image(
+                width: 72,
+                height: 72,
+                fit: BoxFit.cover,
+              ),
             ).animateScale(),
             const SizedBox(height: AppSpacing.xxl),
             Text(
