@@ -10,7 +10,7 @@ import 'notifications_state.dart';
 
 part 'notifications_event.dart';
 
-@injectable
+@lazySingleton
 class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
   NotificationsBloc(this._getFeed, this._markRead)
     : super(const NotificationsState()) {

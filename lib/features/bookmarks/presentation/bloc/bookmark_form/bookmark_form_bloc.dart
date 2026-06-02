@@ -5,6 +5,8 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../../../../core/di/injection.dart';
+import '../../../../notifications/presentation/bloc/notifications_bloc.dart';
 import '../../../domain/usecases/create_bookmark.dart';
 import '../../../domain/usecases/get_bookmark.dart';
 import '../../../domain/usecases/update_bookmark.dart';
@@ -166,6 +168,8 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
     switch (result) {
       case Ok<void>():
         emit(state.copyWith(status: BookmarkFormStatus.submitted));
+        // Refresh notifications and activity feed since a bookmark was created/updated.
+        getIt<NotificationsBloc>().add(const NotificationsLoadRequested());
       case Err(:final failure):
         emit(state.copyWith(status: BookmarkFormStatus.idle, failure: failure));
     }

@@ -204,7 +204,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i533.TokenRefresher>(),
       ),
     );
-    gh.factory<_i642.NotificationsBloc>(
+    gh.lazySingleton<_i642.NotificationsBloc>(
       () => _i642.NotificationsBloc(
         gh<_i41.GetNotificationsFeed>(),
         gh<_i854.MarkNotificationRead>(),
