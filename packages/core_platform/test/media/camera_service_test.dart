@@ -1,4 +1,3 @@
-import 'package:camera/camera.dart';
 import 'package:core_platform/core_platform.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';

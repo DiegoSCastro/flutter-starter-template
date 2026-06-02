@@ -1,7 +1,7 @@
 import 'package:core_analytics/core_analytics.dart';
 import 'package:core_platform/core_platform.dart';
+import 'package:core_storage/core_storage.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_starter_template/features/auth/domain/repositories/auth_repository.dart';
 import 'package:flutter_starter_template/features/auth/domain/usecases/delete_account.dart';
 import 'package:flutter_starter_template/features/auth/domain/usecases/register.dart';
@@ -20,7 +20,6 @@ import 'package:flutter_starter_template/shared/domain/bookmark_stats.dart';
 import 'package:flutter_starter_template/shared/domain/entities/auth_user.dart';
 import 'package:flutter_starter_template/shared/domain/session.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class MockSignIn extends Mock implements SignIn {}
 

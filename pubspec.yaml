@@ -87,10 +87,6 @@ dependencies:
   # immutable data classes and sealed unions (used by auth models).
   freezed_annotation: ^3.1.0
 
-  # Encrypted persistent storage for the auth session (access + refresh
-  # tokens). Keychain on iOS, EncryptedSharedPreferences/Keystore on Android.
-  flutter_secure_storage: ^10.3.1
-
   # Launches URLs in the system browser (used by the bookmarks feature's
   # "Open" action).
   url_launcher: ^6.3.2
@@ -121,30 +117,10 @@ dependencies:
   # get typed accessors that expose a ready-to-use SvgPicture widget.
   flutter_svg: ^2.3.0
 
-  # Cross-platform local (on-device) notifications. Used to schedule and
-  # display notifications without a push backend; permissions are requested
-  # at runtime on iOS and on Android 13+.
-  flutter_local_notifications: ^21.0.0
-
   # Firebase platform initialization — required by every Firebase plugin.
   firebase_core: ^4.9.0
 
-  # Firebase Crashlytics — real-time crash reporting for both Dart and
-  # native (Android/iOS) stack traces.
-  firebase_crashlytics: ^5.2.2
-  firebase_messaging: ^16.2.2
-
-  # Automatic network + screen-rendering traces. The PerformanceInterceptor
-  # records an HttpMetric per request; collection is disabled in dev builds.
-  firebase_performance: ^0.11.4+1
-
-  # Dynamic M3 colour schemes built on top of Material Color Utilities. 
-  # Provides FlexColorScheme, FlexSubThemes, and opinionated defaults.
-  flex_color_scheme: ^8.4.0
-
   vector_graphics: ^1.2.2
-  image_picker: ^1.2.2
-  video_player: ^2.11.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -156,10 +132,6 @@ dev_dependencies:
 
   # Mocking library for tests — uses real callable objects without codegen.
   mocktail: ^1.0.5
-
-  # Only used by tests now (ThemeBloc's prefs provider lives in core_theme):
-  # SharedPreferences.setMockInitialValues + MockSharedPreferences.
-  shared_preferences: ^2.5.5
 
   # High-level testing utilities for Bloc: blocTest helper, wait
   # for states, and verify exact emission sequences.

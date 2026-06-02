@@ -1,6 +1,5 @@
 import 'package:core_platform/core_platform.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 void main() {
   group('PermissionService', () {
