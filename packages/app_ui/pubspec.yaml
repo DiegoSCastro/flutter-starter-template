@@ -1,0 +1,9 @@
+name: app_ui
+description: Shared UI design tokens for the Flutter starter template.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ^3.12.0
+
+resolution: workspace
