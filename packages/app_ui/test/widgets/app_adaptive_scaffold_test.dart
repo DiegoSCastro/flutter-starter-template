@@ -41,7 +41,13 @@ void main() {
       expect(find.text('Home'), findsOneWidget);
 
       // Tapping another destination reports its index.
-      await tester.tap(find.byWidgetPredicate((w) => w is FaIcon && w.icon?.codePoint == FontAwesomeIcons.circle.codePoint));
+      await tester.tap(
+        find.byWidgetPredicate(
+          (w) =>
+              w is FaIcon &&
+              w.icon?.codePoint == FontAwesomeIcons.circle.codePoint,
+        ),
+      );
       expect(selected, 1);
     });
 

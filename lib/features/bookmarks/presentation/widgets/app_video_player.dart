@@ -210,7 +210,8 @@ class _AppVideoPlayerState extends State<AppVideoPlayer> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const FaIcon(FontAwesomeIcons.circleExclamation,
+        const FaIcon(
+          FontAwesomeIcons.circleExclamation,
           color: Colors.redAccent,
           size: AppIconSize.xxxl,
         ),

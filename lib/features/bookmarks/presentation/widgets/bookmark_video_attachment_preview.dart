@@ -102,7 +102,8 @@ class _BookmarkVideoAttachmentPreviewState
                     color: Colors.black54,
                     shape: BoxShape.circle,
                   ),
-                  child: const FaIcon(FontAwesomeIcons.xmark,
+                  child: const FaIcon(
+                    FontAwesomeIcons.xmark,
                     size: AppIconSize.md,
                     color: Colors.white,
                   ),

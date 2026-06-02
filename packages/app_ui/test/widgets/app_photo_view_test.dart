@@ -61,7 +61,14 @@ void main() {
 
       // Verify the error text is displayed
       expect(find.text('Image Load Failed'), findsOneWidget);
-      expect(find.byWidgetPredicate((w) => w is FaIcon && w.icon?.codePoint == FontAwesomeIcons.image.codePoint), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) =>
+              w is FaIcon &&
+              w.icon?.codePoint == FontAwesomeIcons.image.codePoint,
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('shows fullscreen viewer and close button dismisses it', (
@@ -96,7 +103,11 @@ void main() {
       expect(find.byType(PhotoView), findsOneWidget);
 
       // Close button should be present
-      final closeButton = find.byWidgetPredicate((w) => w is FaIcon && w.icon?.codePoint == FontAwesomeIcons.xmark.codePoint);
+      final closeButton = find.byWidgetPredicate(
+        (w) =>
+            w is FaIcon &&
+            w.icon?.codePoint == FontAwesomeIcons.xmark.codePoint,
+      );
       expect(closeButton, findsOneWidget);
 
       // Tap close to dismiss

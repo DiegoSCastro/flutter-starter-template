@@ -142,7 +142,8 @@ class _DetailPlaceholder extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          FaIcon(FontAwesomeIcons.bookmark,
+          FaIcon(
+            FontAwesomeIcons.bookmark,
             size: AppIconSize.xxxl,
             color: context.colorScheme.outline,
           ),

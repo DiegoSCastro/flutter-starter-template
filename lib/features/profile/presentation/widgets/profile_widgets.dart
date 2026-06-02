@@ -147,7 +147,8 @@ class _CopyableId extends StatelessWidget {
               ),
             ),
             const SizedBox(width: AppSpacing.xs),
-            FaIcon(FontAwesomeIcons.copy,
+            FaIcon(
+              FontAwesomeIcons.copy,
               size: 14,
               color: theme.colorScheme.onSurfaceVariant,
             ),

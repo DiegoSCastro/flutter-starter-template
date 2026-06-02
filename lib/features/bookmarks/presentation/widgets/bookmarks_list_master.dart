@@ -136,7 +136,9 @@ class _BookmarksEmptyState extends StatelessWidget {
   Widget build(BuildContext context) {
     final isFiltered = query.trim().isNotEmpty;
     return AppEmptyView(
-      icon: isFiltered ? FontAwesomeIcons.magnifyingGlassMinus : FontAwesomeIcons.bookmark,
+      icon: isFiltered
+          ? FontAwesomeIcons.magnifyingGlassMinus
+          : FontAwesomeIcons.bookmark,
       title: isFiltered
           ? context.l10n.bookmarksNoMatchesTitle
           : context.l10n.bookmarksEmptyTitle,

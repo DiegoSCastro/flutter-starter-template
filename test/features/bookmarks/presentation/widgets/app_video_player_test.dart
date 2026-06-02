@@ -47,7 +47,14 @@ void main() {
       );
 
       expect(find.text('Mock Video Player View'), findsOneWidget);
-      expect(find.byWidgetPredicate((w) => w is FaIcon && w.icon?.codePoint == FontAwesomeIcons.video.codePoint), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) =>
+              w is FaIcon &&
+              w.icon?.codePoint == FontAwesomeIcons.video.codePoint,
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('renders error view when video fails to load', (
@@ -64,7 +71,14 @@ void main() {
         wrapWithMaterial(AppVideoPlayer(controller: mockController)),
       );
 
-      expect(find.byWidgetPredicate((w) => w is FaIcon && w.icon?.codePoint == FontAwesomeIcons.circleExclamation.codePoint), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) =>
+              w is FaIcon &&
+              w.icon?.codePoint == FontAwesomeIcons.circleExclamation.codePoint,
+        ),
+        findsOneWidget,
+      );
       expect(find.text('Invalid video file format'), findsOneWidget);
     });
   });

@@ -148,9 +148,7 @@ class _ControlsRow extends StatelessWidget {
         const SizedBox(width: AppSpacing.sm),
         IconButton(
           icon: FaIcon(
-            isFullscreen
-                ? FontAwesomeIcons.compress
-                : FontAwesomeIcons.expand,
+            isFullscreen ? FontAwesomeIcons.compress : FontAwesomeIcons.expand,
             color: Colors.white,
             size: 28,
           ),

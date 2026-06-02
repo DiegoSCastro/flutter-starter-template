@@ -259,7 +259,8 @@ class _FullscreenTopBar extends StatelessWidget {
             child: Row(
               children: [
                 IconButton(
-                  icon: const FaIcon(FontAwesomeIcons.xmark,
+                  icon: const FaIcon(
+                    FontAwesomeIcons.xmark,
                     color: Colors.white,
                     size: AppIconSize.xl,
                   ),

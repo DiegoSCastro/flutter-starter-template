@@ -107,7 +107,8 @@ class AppNetworkImage extends StatelessWidget {
       height: height,
       color: context.colorScheme.surfaceContainerHighest,
       alignment: Alignment.center,
-      child: FaIcon(FontAwesomeIcons.image,
+      child: FaIcon(
+        FontAwesomeIcons.image,
         size: errorIconSize,
         color: context.colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
       ),

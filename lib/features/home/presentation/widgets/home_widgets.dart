@@ -66,7 +66,8 @@ class _WelcomeSection extends StatelessWidget {
             CircleAvatar(
               radius: AppIconSize.xxl,
               backgroundColor: context.colorScheme.primaryContainer,
-              child: FaIcon(FontAwesomeIcons.solidUser,
+              child: FaIcon(
+                FontAwesomeIcons.solidUser,
                 size: AppIconSize.xxl,
                 color: context.colorScheme.onPrimaryContainer,
               ),

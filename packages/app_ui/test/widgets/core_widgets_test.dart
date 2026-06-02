@@ -44,7 +44,14 @@ void main() {
       );
 
       expect(find.text('Nothing here'), findsOneWidget);
-      expect(find.byWidgetPredicate((w) => w is FaIcon && w.icon?.codePoint == FontAwesomeIcons.inbox.codePoint), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) =>
+              w is FaIcon &&
+              w.icon?.codePoint == FontAwesomeIcons.inbox.codePoint,
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('renders title when provided', (tester) async {
@@ -59,11 +66,22 @@ void main() {
     testWidgets('renders custom icon', (tester) async {
       await tester.pumpWidget(
         materialApp(
-          const AppEmptyView(message: 'Empty', icon: FontAwesomeIcons.magnifyingGlassMinus),
+          const AppEmptyView(
+            message: 'Empty',
+            icon: FontAwesomeIcons.magnifyingGlassMinus,
+          ),
         ),
       );
 
-      expect(find.byWidgetPredicate((w) => w is FaIcon && w.icon?.codePoint == FontAwesomeIcons.magnifyingGlassMinus.codePoint), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) =>
+              w is FaIcon &&
+              w.icon?.codePoint ==
+                  FontAwesomeIcons.magnifyingGlassMinus.codePoint,
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('renders action widget when provided', (tester) async {
@@ -85,7 +103,14 @@ void main() {
       await tester.pumpWidget(materialApp(const AppErrorView(message: 'Oops')));
 
       expect(find.text('Oops'), findsOneWidget);
-      expect(find.byWidgetPredicate((w) => w is FaIcon && w.icon?.codePoint == FontAwesomeIcons.circleExclamation.codePoint), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) =>
+              w is FaIcon &&
+              w.icon?.codePoint == FontAwesomeIcons.circleExclamation.codePoint,
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('renders title when provided', (tester) async {
@@ -105,7 +130,14 @@ void main() {
       );
 
       expect(find.text('Retry'), findsOneWidget);
-      expect(find.byWidgetPredicate((w) => w is FaIcon && w.icon?.codePoint == FontAwesomeIcons.rotateRight.codePoint), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) =>
+              w is FaIcon &&
+              w.icon?.codePoint == FontAwesomeIcons.rotateRight.codePoint,
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('retry callback fires on tap', (tester) async {
@@ -214,7 +246,14 @@ void main() {
 
       expect(find.byType(CustomSlidableAction), findsOneWidget);
       expect(find.text('Delete'), findsOneWidget);
-      expect(find.byWidgetPredicate((w) => w is FaIcon && w.icon?.codePoint == FontAwesomeIcons.trashCan.codePoint), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) =>
+              w is FaIcon &&
+              w.icon?.codePoint == FontAwesomeIcons.trashCan.codePoint,
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('fires action callback', (tester) async {
@@ -259,11 +298,21 @@ void main() {
     testWidgets('renders prefix icon', (tester) async {
       await tester.pumpWidget(
         materialApp(
-          const AppTextField(label: 'Email', prefixIcon: FontAwesomeIcons.circle),
+          const AppTextField(
+            label: 'Email',
+            prefixIcon: FontAwesomeIcons.circle,
+          ),
         ),
       );
 
-      expect(find.byWidgetPredicate((w) => w is FaIcon && w.icon?.codePoint == FontAwesomeIcons.circle.codePoint), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) =>
+              w is FaIcon &&
+              w.icon?.codePoint == FontAwesomeIcons.circle.codePoint,
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('accepts text input', (tester) async {
@@ -335,11 +384,22 @@ void main() {
       testWidgets('renders icon button when icon provided', (tester) async {
         await tester.pumpWidget(
           materialApp(
-            AppButton(label: 'Save', onPressed: () {}, icon: FontAwesomeIcons.circle),
+            AppButton(
+              label: 'Save',
+              onPressed: () {},
+              icon: FontAwesomeIcons.circle,
+            ),
           ),
         );
 
-        expect(find.byWidgetPredicate((w) => w is FaIcon && w.icon?.codePoint == FontAwesomeIcons.circle.codePoint), findsOneWidget);
+        expect(
+          find.byWidgetPredicate(
+            (w) =>
+                w is FaIcon &&
+                w.icon?.codePoint == FontAwesomeIcons.circle.codePoint,
+          ),
+          findsOneWidget,
+        );
         expect(find.text('Save'), findsOneWidget);
       });
 
@@ -383,7 +443,14 @@ void main() {
           ),
         );
 
-        expect(find.byWidgetPredicate((w) => w is FaIcon && w.icon?.codePoint == FontAwesomeIcons.xmark.codePoint), findsOneWidget);
+        expect(
+          find.byWidgetPredicate(
+            (w) =>
+                w is FaIcon &&
+                w.icon?.codePoint == FontAwesomeIcons.xmark.codePoint,
+          ),
+          findsOneWidget,
+        );
       });
     });
 

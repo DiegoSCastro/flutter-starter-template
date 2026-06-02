@@ -207,7 +207,8 @@ class _DetailBody extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                FaIcon(FontAwesomeIcons.link,
+                FaIcon(
+                  FontAwesomeIcons.link,
                   size: 16,
                   color: context.colorScheme.primary,
                 ),

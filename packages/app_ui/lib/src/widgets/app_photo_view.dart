@@ -260,7 +260,8 @@ class _AppPhotoViewState extends State<AppPhotoView> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                FaIcon(FontAwesomeIcons.image,
+                FaIcon(
+                  FontAwesomeIcons.image,
                   color: Theme.of(context).colorScheme.error,
                   size: AppIconSize.xxl,
                 ),

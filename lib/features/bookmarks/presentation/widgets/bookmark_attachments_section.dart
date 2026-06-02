@@ -105,7 +105,8 @@ class _ImageAttachmentTile extends StatelessWidget {
                   color: Colors.black54,
                   shape: BoxShape.circle,
                 ),
-                child: const FaIcon(FontAwesomeIcons.xmark,
+                child: const FaIcon(
+                  FontAwesomeIcons.xmark,
                   size: AppIconSize.sm,
                   color: Colors.white,
                 ),

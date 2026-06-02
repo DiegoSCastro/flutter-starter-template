@@ -96,7 +96,8 @@ class _BookmarkAvatar extends StatelessWidget {
                 color: theme.colorScheme.surface,
                 shape: BoxShape.circle,
               ),
-              child: FaIcon(FontAwesomeIcons.cloudArrowUp,
+              child: FaIcon(
+                FontAwesomeIcons.cloudArrowUp,
                 size: 14,
                 color: theme.colorScheme.outline,
               ),
