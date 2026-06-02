@@ -1,6 +1,6 @@
+import 'package:core_domain/core_domain.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../../../../core/domain/failure.dart';
 import '../../../domain/entities/bookmark.dart';
 import '../../../domain/services/bookmarks_sync_controller.dart';
 

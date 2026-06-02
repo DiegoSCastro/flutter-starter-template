@@ -1,6 +1,5 @@
+import 'package:core_domain/core_domain.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter_starter_template/core/domain/failure.dart';
-import 'package:flutter_starter_template/core/domain/result.dart';
 import 'package:flutter_starter_template/features/auth/data/datasources/auth_local_data_source.dart';
 import 'package:flutter_starter_template/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:flutter_starter_template/features/auth/data/models/auth_user_dto.dart';

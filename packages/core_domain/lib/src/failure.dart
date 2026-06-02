@@ -1,7 +1,7 @@
 import 'result.dart' show Result;
 
 /// Base type for domain-layer failures returned from repositories and use
-/// cases. Subclass per feature; never throw these — return them via [Result].
+/// cases. Subclass per feature; never throw these - return them via [Result].
 sealed class Failure {
   const Failure(this.message);
 
@@ -12,7 +12,7 @@ class UnknownFailure extends Failure {
   const UnknownFailure([super.message = 'Unknown error']);
 }
 
-/// Expected absence of a persisted session — not an error.
+/// Expected absence of a persisted session - not an error.
 /// Use to distinguish "user never signed in" from real restore failures.
 class NoSessionFailure extends Failure {
   const NoSessionFailure([super.message = 'No persisted session']);

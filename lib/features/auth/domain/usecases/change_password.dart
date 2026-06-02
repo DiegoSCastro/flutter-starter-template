@@ -1,8 +1,6 @@
+import 'package:core_domain/core_domain.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/domain/failure.dart';
-import '../../../../core/domain/result.dart';
-import '../../../../core/domain/use_case.dart';
 import '../repositories/auth_repository.dart';
 
 typedef ChangePasswordParams = ({String currentPassword, String newPassword});

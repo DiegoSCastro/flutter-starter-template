@@ -1,6 +1,6 @@
+import 'package:core_domain/core_domain.dart';
 import 'package:flutter/widgets.dart';
 
-import '../../../../core/domain/failure.dart';
 import '../../../../core/extensions/build_context_extensions.dart';
 
 String bookmarkFailureMessage(BuildContext context, Failure failure) {

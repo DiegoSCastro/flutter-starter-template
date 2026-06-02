@@ -1,5 +1,4 @@
-import 'package:flutter_starter_template/core/domain/failure.dart';
-import 'package:flutter_starter_template/core/domain/result.dart';
+import 'package:core_domain/core_domain.dart';
 import 'package:flutter_starter_template/features/auth/domain/usecases/change_password.dart';
 import 'package:flutter_starter_template/features/auth/domain/usecases/delete_account.dart';
 import 'package:flutter_starter_template/features/auth/domain/usecases/register.dart';

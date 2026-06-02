@@ -92,6 +92,13 @@ lib/
 └── ui/                               # Theme, animation, reusable widgets
 ```
 
+The repository uses Dart Pub Workspaces. The root package remains the Flutter
+app, and `packages/app_ui` contains shared, pure UI design tokens such as
+spacing, radii, icon sizes, and motion durations. `packages/core_domain`
+contains pure-Dart domain primitives such as `Failure`, `Result`, and `UseCase`.
+Existing `lib/ui/...` token files and `lib/core/domain/...` files re-export the
+workspace packages for compatibility with current app imports.
+
 <details>
 <summary><b>📁 Feature Slice (Clean Architecture)</b></summary>
 <br>

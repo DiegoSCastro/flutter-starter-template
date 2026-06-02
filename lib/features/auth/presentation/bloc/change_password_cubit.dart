@@ -1,7 +1,7 @@
+import 'package:core_domain/core_domain.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/domain/result.dart';
 import '../../domain/usecases/change_password.dart';
 import 'change_password_state.dart';
 

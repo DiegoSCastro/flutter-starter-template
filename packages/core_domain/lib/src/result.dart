@@ -1,7 +1,7 @@
 import 'failure.dart';
 
 /// Discriminated union representing either a success value or a [Failure].
-/// Use exhaustive pattern matching at call sites — no `null` sentinels.
+/// Use exhaustive pattern matching at call sites - no `null` sentinels.
 sealed class Result<T> {
   const Result();
 }

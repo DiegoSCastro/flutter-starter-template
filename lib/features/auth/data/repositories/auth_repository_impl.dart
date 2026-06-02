@@ -1,8 +1,7 @@
+import 'package:core_domain/core_domain.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/domain/failure.dart';
-import '../../../../core/domain/result.dart';
 import '../../../../shared/domain/entities/auth_user.dart';
 import '../../domain/repositories/auth_repository.dart';
 import '../datasources/auth_local_data_source.dart';

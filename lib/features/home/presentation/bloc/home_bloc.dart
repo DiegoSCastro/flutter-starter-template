@@ -1,8 +1,8 @@
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:core_domain/core_domain.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/domain/result.dart';
 import '../../../../shared/domain/bookmark_stats.dart';
 import 'home_state.dart';
 

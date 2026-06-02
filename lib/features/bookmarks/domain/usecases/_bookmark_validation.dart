@@ -1,4 +1,4 @@
-import '../../../../core/domain/failure.dart';
+import 'package:core_domain/core_domain.dart';
 import '../entities/bookmark.dart';
 
 /// Domain validation for [BookmarkInput]. Returns the first failure found, or
