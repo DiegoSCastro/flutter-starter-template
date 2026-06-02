@@ -1,0 +1,88 @@
+# Fastfile — iOS build + TestFlight upload for the flavored Flutter app.
+#
+# This is a template/scaffold: every account-specific value is read from the
+# environment (see fastlane/.env.example), so the repo carries no secrets and
+# no project-specific identifiers. Fill in fastlane/.env, then run:
+#
+#   bundle exec fastlane beta flavor:prod
+#
+# Authentication uses an App Store Connect API key (.p8) rather than an Apple
+# ID + password, which avoids 2FA prompts and works unattended in CI.
+
+# Map a Flutter flavor to its Xcode scheme, build configuration, and the
+# bundle-id suffix this template applies per flavor (prod uses the base id).
+FLAVORS = {
+  "dev"     => { scheme: "dev",     configuration: "Release-dev",     suffix: ".dev" },
+  "staging" => { scheme: "staging", configuration: "Release-staging", suffix: ".staging" },
+  "prod"    => { scheme: "prod",    configuration: "Release-prod",     suffix: "" },
+}.freeze
+
+# Fail early with a clear message when a required value is missing, instead of
+# letting an action fail later with an opaque error.
+def require_env(name)
+  value = ENV[name]
+  if value.nil? || value.strip.empty?
+    UI.user_error!(
+      "Missing required environment variable: #{name}. " \
+      "Copy fastlane/.env.example to fastlane/.env and fill it in."
+    )
+  end
+  value
+end
+
+# Run the Flutter SDK from the repo root. The command is overridable via
+# FLUTTER_CMD so CI (which puts `flutter` on PATH directly) can set
+# FLUTTER_CMD=flutter; locally it defaults to the FVM-pinned SDK.
+def flutter(*args)
+  cmd = ENV.fetch("FLUTTER_CMD", "fvm flutter").split
+  Dir.chdir("..") do # fastlane runs in ios/; the Flutter project root is one up.
+    sh(*cmd, *args)
+  end
+end
+
+default_platform(:ios)
+
+platform :ios do
+  desc "Build a flavor and upload it to TestFlight."
+  desc "Usage: bundle exec fastlane beta flavor:prod (flavor: dev|staging|prod)"
+  lane :beta do |options|
+    flavor = (options[:flavor] || "prod").to_s
+    config = FLAVORS.fetch(flavor) do
+      UI.user_error!(
+        "Unknown flavor '#{flavor}'. Expected one of: #{FLAVORS.keys.join(', ')}."
+      )
+    end
+
+    bundle_id = "#{require_env('IOS_BUNDLE_ID_BASE')}#{config[:suffix]}"
+
+    api_key = app_store_connect_api_key(
+      key_id: require_env("APP_STORE_CONNECT_API_KEY_ID"),
+      issuer_id: require_env("APP_STORE_CONNECT_API_ISSUER_ID"),
+      key_content: require_env("APP_STORE_CONNECT_API_KEY_CONTENT"),
+      is_key_content_base64: true,
+    )
+
+    # Compile Dart + assets and run `pod install`, but leave signing to gym so
+    # it can resolve provisioning with the API key (-allowProvisioningUpdates).
+    flutter("build", "ios", "--release", "--no-codesign", "--flavor", flavor)
+
+    build_app(
+      workspace: "Runner.xcworkspace",
+      scheme: config[:scheme],
+      configuration: config[:configuration],
+      export_method: "app-store",
+      xcargs: "-allowProvisioningUpdates",
+      output_directory: "build/ipa",
+      output_name: "#{flavor}.ipa",
+    )
+
+    upload_to_testflight(
+      api_key: api_key,
+      app_identifier: bundle_id,
+      ipa: lane_context[SharedValues::IPA_OUTPUT_PATH],
+      # Don't block the lane on Apple's server-side processing; flip to false
+      # if a later lane needs the build immediately (e.g. external testers).
+      skip_waiting_for_build_processing: true,
+    )
+  end
+end

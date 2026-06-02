@@ -92,6 +92,21 @@ screen.png
 window_dump.xml
 
 # -------------------------------------------------------------------------
+# Fastlane (ios/fastlane). The .env holds App Store Connect credentials and
+# the App Store Connect API .p8 key must never be committed. Build output and
+# fastlane's run reports are machine-local. Gemfile.lock is intentionally
+# committed (not ignored) so gem versions are reproducible.
+# -------------------------------------------------------------------------
+**/fastlane/.env
+**/fastlane/.env.*
+!**/fastlane/.env.example
+**/fastlane/report.xml
+**/fastlane/Preview.html
+**/fastlane/test_output/
+ios/fastlane/build/
+**/AuthKey_*.p8
+
+# -------------------------------------------------------------------------
 # Firebase
 # -------------------------------------------------------------------------
 firebase.json
