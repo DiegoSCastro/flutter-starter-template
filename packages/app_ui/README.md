@@ -1,7 +1,16 @@
 # app_ui
 
-Shared UI design tokens for the Flutter starter template.
+The design system for the Flutter starter template — generic, app-agnostic
+visual building blocks exported through `package:app_ui/app_ui.dart`.
 
-This package intentionally contains only app-agnostic UI primitives for now:
-spacing, radii, icon sizes, and motion durations. Keep app services, DI,
-analytics, session state, and platform integrations in the root app package.
+Contents (`lib/src/`):
+
+- `theme/` — Material 3 theming and design tokens (spacing, radii, sizes, motion durations).
+- `widgets/` — reusable generic widgets (`AppButton`, `AppScaffold`, `AppAdaptiveScaffold`, `AppNetworkImage`, …).
+- `layout/` — responsive primitives such as `AppBreakpoints`.
+- `animation/` — animation helpers.
+- `extensions/` — UI-related `BuildContext`/widget extensions.
+
+These widgets carry **no business meaning**. Keep app services, DI, analytics,
+session state, platform integrations, and feature-specific widgets out of this
+package — those belong in the root app or the relevant `core_*` package.

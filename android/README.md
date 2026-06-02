@@ -10,9 +10,9 @@ While Flutter generates this directory and manages most of its configurations au
   - **`app/src/main/AndroidManifest.xml`**: The central configuration file for the Android app. Modify this file to add native Android permissions (e.g., camera, internet), register deep linking intent filters, or update the application name and icon.
   - **`app/src/main/kotlin/`** (or `java/`): Contains the `MainActivity` class (usually inheriting from `FlutterActivity`). You edit this if you need to write custom native Kotlin/Java code or integrate Android-specific plugins that require activity changes.
   - **`app/src/main/res/`**: Native Android resources, such as launcher icons (`mipmap` folders) and splash screens.
-  - **`app/build.gradle`**: The module-level Gradle build file. Use this to change the application ID (package name), version code/name, minimum/target SDK versions, and to add Android-specific dependencies (like Firebase BOM).
-- **`build.gradle`** (Root): The project-level Gradle configuration. It defines the Gradle plugins and repositories used across all modules.
-- **`settings.gradle`**: Configures the Gradle project and includes the `app` module.
+  - **`app/build.gradle.kts`**: The module-level Gradle build file (Kotlin DSL). Use this to change the application ID (package name), version code/name, minimum/target SDK versions, and to add Android-specific dependencies (like Firebase BOM).
+- **`build.gradle.kts`** (Root): The project-level Gradle configuration. It defines the Gradle plugins and repositories used across all modules.
+- **`settings.gradle.kts`**: Configures the Gradle project and includes the `app` module.
 - **`gradle.properties`**: Contains project-wide Gradle properties (e.g., enabling AndroidX, allocating memory for the Gradle daemon).
 - **`gradlew` / `gradlew.bat`**: The Gradle wrapper executable used to build the Android project from the command line without requiring a global Gradle installation.
 
@@ -30,10 +30,10 @@ To request access to device hardware or data (like the internet or location), ad
 ```
 
 ### 2. Updating the SDK Version
-To change the `minSdkVersion`, `compileSdkVersion`, or `targetSdkVersion`, modify the `app/build.gradle` file (or sometimes the `local.properties` depending on how the Flutter template is structured).
+To change the `minSdkVersion`, `compileSdkVersion`, or `targetSdkVersion`, modify the `app/build.gradle.kts` file (or sometimes the `local.properties` depending on how the Flutter template is structured).
 
 ### 3. Signing the App for Release
-To build a release APK or AAB, you need to configure app signing. This typically involves creating a `keystore` file and referencing it in `app/build.gradle`. Refer to the [official Flutter documentation on Android deployment](https://docs.flutter.dev/deployment/android) for details.
+To build a release APK or AAB, you need to configure app signing. This typically involves creating a `keystore` file and referencing it in `app/build.gradle.kts`. Refer to the [official Flutter documentation on Android deployment](https://docs.flutter.dev/deployment/android) for details.
 
 ## Important Note
 

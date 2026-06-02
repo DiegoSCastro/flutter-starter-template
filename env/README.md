@@ -36,7 +36,7 @@ The `.vscode/launch.json` file is already configured to use these environments. 
 Inside the application, these variables are mapped to strongly-typed properties through the `EnvConfig` class using `String.fromEnvironment`. 
 
 ```dart
-// Example of how it's defined in lib/core/config/env_config.dart
+// Example of how it's defined in packages/core_config/lib/src/env_config.dart
 String get apiBaseUrl => const String.fromEnvironment(
   'API_BASE_URL', 
   defaultValue: 'http://localhost:8080'

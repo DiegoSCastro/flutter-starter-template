@@ -81,8 +81,7 @@ To enable seamless local development and testing, this template is paired with a
 │   │   └── splash/                   # Session restoration gate
 │   ├── gen/                          # flutter_gen asset references
 │   ├── l10n/                         # ARB files + generated localizations
-│   ├── shared/                       # App-level shared domain/presentation contracts
-│   └── ui/                           # Compatibility exports for app_ui
+│   └── shared/                       # App-level shared domain/presentation contracts
 ├── packages/                         # Dart Pub Workspace members
 │   ├── app_ui/                       # Design system, theme, layout, reusable widgets
 │   ├── core_analytics/               # Analytics service + route observer
@@ -108,10 +107,10 @@ the root app depends on `core_network`, not directly on `dio` or `retrofit`;
 keeps platform, storage, analytics, theme, and UI dependencies versioned in one
 place and avoids root-package dependency conflicts.
 
-Compatibility exports remain under `lib/ui/...` for existing app imports, but
-new shared UI should be added to `packages/app_ui`. Package-owned tests live
-beside their package in `packages/<name>/test`, while root app tests stay under
-`test/`.
+All shared UI lives in `packages/app_ui` and is consumed through
+`package:app_ui/app_ui.dart`; add new generic widgets there. Package-owned tests
+live beside their package in `packages/<name>/test`, while root app tests stay
+under `test/`.
 
 <details>
 <summary><b>📁 Feature Slice (Clean Architecture)</b></summary>
@@ -401,8 +400,7 @@ Replace `yourdomain.com` with your actual domain, then host these on your server
 ## 🧩 UI Widgets
 
 Shared app components live in `packages/app_ui` and are exported through
-`package:app_ui/app_ui.dart`. The root `lib/ui/...` files remain compatibility
-exports for existing app imports.
+`package:app_ui/app_ui.dart`.
 
 | Widget              | Purpose                                                          |
 |---------------------|------------------------------------------------------------------|
@@ -638,7 +636,10 @@ Since `generate: true` is enabled in [pubspec.yaml](file:///Users/trunglaptieu/d
 fvm flutter gen-l10n
 ```
 
-Import `package:flutter_gen/gen_l10n/app_localizations.dart` and use `AppLocalizations.of(context)` to access localized strings.
+Generated localizations are emitted into `lib/l10n/`. Import
+`package:flutter_starter_template/l10n/app_localizations.dart` and use
+`AppLocalizations.of(context)` (or the `context.l10n` extension) to access
+localized strings.
 
 <br>
 
