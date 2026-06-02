@@ -1,4 +1,4 @@
-# Firebase (`core/firebase`)
+# Firebase (`core/platform/firebase`)
 
 This directory contains the core services and utilities for initializing and configuring Firebase within the application.
 

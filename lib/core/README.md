@@ -14,11 +14,8 @@ Here is a breakdown of the typical subdirectories found in `core/`:
 - **`domain/`**: Architecture-level domain primitives shared by feature domains, such as `Failure`, `Result<T>`, and `UseCase`.
 - **`extensions/`**: Generic extensions used across the app (e.g., `build_context_extensions.dart`, `future_extensions.dart`).
 - **`layout/`**: Responsive layout primitives such as breakpoints.
-- **`media/`**: Camera, image-picker, and video-player services.
 - **`network/`**: Base networking clients (e.g., `Dio` or `http`), interceptors, API configuration, and network connectivity checkers.
-- **`notifications/`**: Push notifications logic, local notifications configuration, and handling notification taps.
-- **`permissions/`**: Centralized handling for requesting and checking OS permissions (camera, location, notifications).
-- **`share/`**: Cross-platform sharing utilities (e.g., sharing text, images, or deep links via `share_plus`).
+- **`platform/`**: App-wide platform and plugin integrations, such as Firebase initialization, media picking/playback, push/local notifications, OS permissions, and sharing.
 
 > [!NOTE]
 > The design system — global theming (`theme/`), reusable generic widgets

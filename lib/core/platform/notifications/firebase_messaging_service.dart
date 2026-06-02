@@ -6,9 +6,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 
-import '../analytics/analytics_extensions.dart';
-import '../analytics/analytics_service.dart';
-import '../extensions/future_extensions.dart';
+import '../../analytics/analytics_extensions.dart';
+import '../../analytics/analytics_service.dart';
+import '../../extensions/future_extensions.dart';
 import 'notifications_service.dart';
 
 typedef OnNotificationTap = void Function(Map<String, dynamic>? data);
