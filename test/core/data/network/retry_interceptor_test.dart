@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_starter_template/core/network/retry_interceptor.dart';
+import 'package:flutter_starter_template/core/data/network/retry_interceptor.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /// Programmable adapter: each entry in [responses] is consumed in order on

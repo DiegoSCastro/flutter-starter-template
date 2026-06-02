@@ -29,10 +29,10 @@ import 'package:flutter_starter_template/core/config/remote_config_module.dart'
     as _i929;
 import 'package:flutter_starter_template/core/config/remote_config_service.dart'
     as _i159;
-import 'package:flutter_starter_template/core/network/network_module.dart'
-    as _i173;
-import 'package:flutter_starter_template/core/network/performance_module.dart'
-    as _i498;
+import 'package:flutter_starter_template/core/data/network/network_module.dart'
+    as _i893;
+import 'package:flutter_starter_template/core/data/network/performance_module.dart'
+    as _i489;
 import 'package:flutter_starter_template/core/platform/firebase/firebase_service.dart'
     as _i473;
 import 'package:flutter_starter_template/core/platform/media/camera_service.dart'
@@ -417,7 +417,7 @@ class _$AnalyticsModule extends _i720.AnalyticsModule {}
 
 class _$RemoteConfigModule extends _i929.RemoteConfigModule {}
 
-class _$PerformanceModule extends _i498.PerformanceModule {}
+class _$PerformanceModule extends _i489.PerformanceModule {}
 
 class _$MediaModule extends _i773.MediaModule {}
 
@@ -429,7 +429,7 @@ class _$SecureStorageModule extends _i297.SecureStorageModule {}
 
 class _$PluginsModule extends _i319.PluginsModule {}
 
-class _$NetworkModule extends _i173.NetworkModule {}
+class _$NetworkModule extends _i893.NetworkModule {}
 
 class _$AuthNetworkModule extends _i740.AuthNetworkModule {}
 
