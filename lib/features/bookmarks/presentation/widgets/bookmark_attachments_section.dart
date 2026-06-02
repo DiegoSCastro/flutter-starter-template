@@ -1,13 +1,10 @@
 import 'dart:io';
 
+import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/extensions/build_context_extensions.dart';
-import '../../../../ui/theme/app_icon_size.dart';
-import '../../../../ui/theme/app_radius.dart';
-import '../../../../ui/theme/app_spacing.dart';
-import '../../../../ui/widgets/widgets.dart';
 import '../bloc/bookmark_form/bookmark_form_bloc.dart';
 import '../bloc/bookmark_form/bookmark_form_state.dart';
 import 'bookmark_video_attachment_preview.dart';

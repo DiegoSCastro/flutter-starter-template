@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_starter_template/l10n/app_localizations.dart';
-import 'package:flutter_starter_template/ui/widgets/app_photo_view.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:photo_view/photo_view.dart';
 

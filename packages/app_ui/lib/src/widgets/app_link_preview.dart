@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_link_previewer/flutter_link_previewer.dart';
 
-import '../theme/app_radius.dart';
+import '../../app_ui.dart';
 
 class AppLinkPreview extends StatelessWidget {
   const AppLinkPreview({

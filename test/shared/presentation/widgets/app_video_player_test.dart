@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_starter_template/core/platform/media/video_player_service.dart';
-import 'package:flutter_starter_template/ui/widgets/app_video_player.dart';
+import 'package:flutter_starter_template/shared/presentation/widgets/app_video_player.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:video_player/video_player.dart';

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_starter_template/core/theme/theme_bloc.dart';
+import 'package:flutter_starter_template/core/theme/theme_state.dart';
 import 'package:flutter_starter_template/features/auth/presentation/bloc/delete_account_cubit.dart';
 import 'package:flutter_starter_template/features/auth/presentation/bloc/delete_account_state.dart';
 import 'package:flutter_starter_template/features/profile/presentation/bloc/profile_bloc.dart';
@@ -7,8 +9,6 @@ import 'package:flutter_starter_template/features/profile/presentation/bloc/prof
 import 'package:flutter_starter_template/features/profile/presentation/widgets/profile_widgets.dart';
 import 'package:flutter_starter_template/l10n/app_localizations.dart';
 import 'package:flutter_starter_template/shared/presentation/session_scope.dart';
-import 'package:flutter_starter_template/ui/theme/theme_bloc.dart';
-import 'package:flutter_starter_template/ui/theme/theme_state.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 

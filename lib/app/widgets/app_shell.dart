@@ -1,8 +1,8 @@
+import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/extensions/build_context_extensions.dart';
-import '../../ui/widgets/widgets.dart';
 
 /// Hosts the persistent adaptive navigation around the authenticated branches.
 ///

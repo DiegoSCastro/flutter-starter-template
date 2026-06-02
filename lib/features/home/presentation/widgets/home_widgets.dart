@@ -1,3 +1,4 @@
+import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -5,11 +6,6 @@ import '../../../../app/router.dart';
 import '../../../../core/extensions/build_context_extensions.dart';
 import '../../../../shared/domain/bookmark_stats.dart';
 import '../../../../shared/presentation/session_scope.dart';
-import '../../../../ui/animation/widget_animations.dart';
-import '../../../../ui/theme/app_icon_size.dart';
-import '../../../../ui/theme/app_radius.dart';
-import '../../../../ui/theme/app_spacing.dart';
-import '../../../../ui/widgets/widgets.dart';
 import '../bloc/home_bloc.dart';
 import '../bloc/home_state.dart';
 

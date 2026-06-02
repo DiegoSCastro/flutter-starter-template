@@ -2,12 +2,8 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-import '../animation/app_durations.dart';
-import '../theme/app_icon_size.dart';
-import '../theme/app_radius.dart';
-import '../theme/app_spacing.dart';
+import '../../app_ui.dart';
 
-import 'app_loading.dart';
 
 /// Wraps [Scaffold] with consistent app-bar styling and an optional full-screen
 /// loading overlay driven by [isLoading].

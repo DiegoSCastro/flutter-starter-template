@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
-import '../animation/app_durations.dart';
-import '../theme/app_icon_size.dart';
-import '../theme/app_spacing.dart';
+import '../../app_ui.dart';
 
 class AppPhotoViewFullScreenPage extends StatefulWidget {
   const AppPhotoViewFullScreenPage({

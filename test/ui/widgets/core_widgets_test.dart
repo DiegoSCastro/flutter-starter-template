@@ -1,13 +1,7 @@
+import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_starter_template/l10n/app_localizations.dart';
-import 'package:flutter_starter_template/ui/widgets/app_button.dart';
-import 'package:flutter_starter_template/ui/widgets/app_empty_view.dart';
-import 'package:flutter_starter_template/ui/widgets/app_error_view.dart';
-import 'package:flutter_starter_template/ui/widgets/app_loading.dart';
-import 'package:flutter_starter_template/ui/widgets/app_scaffold.dart';
-import 'package:flutter_starter_template/ui/widgets/app_slidable.dart';
-import 'package:flutter_starter_template/ui/widgets/app_text_field.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Widget materialApp(Widget child) {
