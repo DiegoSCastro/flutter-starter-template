@@ -6,26 +6,31 @@ The testing strategy emphasizes unit tests for logic and widget tests for UI com
 
 ## Directory Structure
 
-The `test/` directory mirrors the `lib/` directory structure:
+This `test/` directory holds **root app tests only** and mirrors the app's
+`lib/` structure. Reusable infrastructure now lives in workspace packages, and
+each package owns its tests under `packages/<name>/test` — so there is no
+`test/core/` here; those suites moved into the relevant `core_*` / `app_ui`
+packages.
 
-- `core/`: Tests for reusable cross-feature code (e.g., core utilities, networking, local storage, theming).
-- `features/`: Tests for specific features, organized by data, domain, and presentation layers.
-- `test_utils/`: Contains shared test utilities, generated mocks, and reusable test fixtures.
-  - `mocks.dart`: Generated `mocktail` mocks for repositories, services, and other dependencies.
-  - `fixtures.dart`: Reusable test data and mock objects used across multiple tests.
-- `test_utils.dart`: Barrel file exporting mocks and fixtures for easy importing in your tests.
+- `features/`: Tests for the app's features, organized by data, domain, and presentation layers.
+- `test_utils/`: Root-only test helpers.
+  - `mocks.dart`: Hand-written `mocktail` mocks/fakes for the app's repositories, use cases, and services (e.g. `MockSignIn`, `FakeSession`).
+  - `fixtures.dart`: Reusable test data used across multiple tests.
+- `test_utils.dart`: Barrel file. Re-exports `package:test_utils/test_utils.dart` (the shared `mocktail` export plus cross-package mocks/fakes) alongside the local `mocks.dart` and `fixtures.dart`.
 - `widget_test.dart`: An integration-style widget test that exercises the full app startup and sign-in flow.
 
 ## Mocking Dependencies
 
-This project uses [`mocktail`](https://pub.dev/packages/mocktail) for mocking dependencies. 
+This project uses [`mocktail`](https://pub.dev/packages/mocktail) for mocking
+dependencies. `mocktail` is runtime-based, so mocks are **written by hand** and
+require **no code generation** — declare them directly:
 
-To generate or update mocks (if using code generation for mocks), run the build runner:
-```bash
-fvm dart run build_runner build --delete-conflicting-outputs
+```dart
+class MockAuthRepository extends Mock implements AuthRepository {}
 ```
 
-*(Note: If you write mocks manually using `class MockMyClass extends Mock implements MyClass {}`, no code generation is required.)*
+The `Mock`/`Fake` base classes come from `package:test_utils/test_utils.dart`,
+re-exported through the `test_utils.dart` barrel.
 
 ## Running Tests
 

@@ -34,13 +34,13 @@ To add a new localized string or update an existing one:
 
 ## Usage in Code
 
-To use the generated localizations in your UI code, use `AppLocalizations.of(context)`:
+To use the generated localizations in your UI code, use `AppLocalizations.of(context)`. Because `nullable-getter: false` is set in `l10n.yaml`, the getter returns a non-null `AppLocalizations`, so no `!` is needed:
 
 ```dart
 import 'package:flutter_starter_template/l10n/app_localizations.dart';
 
 // ... inside a widget's build method
-Text(AppLocalizations.of(context)!.helloWorld);
+Text(AppLocalizations.of(context).helloWorld);
 ```
 
 Alternatively, you can use the `BuildContext` extension if one is provided in the project:

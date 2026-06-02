@@ -3,8 +3,16 @@ name: CI
 on:
   push:
     branches: [main]
+    # Skip analyze/test when a push touches only docs. Any change outside
+    # these paths (lib/, test/, packages/, pubspec.*, etc.) still triggers CI.
+    paths-ignore:
+      - '**/*.md'
+      - 'LICENSE'
   pull_request:
     branches: [main]
+    paths-ignore:
+      - '**/*.md'
+      - 'LICENSE'
 
 # Cancel superseded runs on the same ref to save CI minutes.
 concurrency:
