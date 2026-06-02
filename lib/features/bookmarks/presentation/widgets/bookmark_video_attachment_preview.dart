@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/di/injection.dart';
-import '../../../../shared/presentation/widgets/app_video_player.dart';
 import '../bloc/bookmark_form/bookmark_form_bloc.dart';
+import 'app_video_player.dart';
 
 class BookmarkVideoAttachmentPreview extends StatefulWidget {
   const BookmarkVideoAttachmentPreview({super.key, required this.videoUrl});
