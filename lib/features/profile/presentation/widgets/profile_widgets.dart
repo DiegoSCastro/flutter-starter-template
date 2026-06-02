@@ -1,10 +1,10 @@
+import 'package:analytics/analytics.dart';
 import 'package:app_ui/app_ui.dart';
-import 'package:core_analytics/core_analytics.dart';
-import 'package:core_domain/core_domain.dart';
-import 'package:core_theme/core_theme.dart';
+import 'package:architecture/architecture.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:theme/theme.dart';
 
 import '../../../../app/router.dart';
 import '../../../../core/di/injection.dart';

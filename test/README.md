@@ -9,7 +9,7 @@ The testing strategy emphasizes unit tests for logic and widget tests for UI com
 This `test/` directory holds **root app tests only** and mirrors the app's
 `lib/` structure. Reusable infrastructure now lives in workspace packages, and
 each package owns its tests under `packages/<name>/test` — so there is no
-`test/core/` here; those suites moved into the relevant `core_*` / `app_ui`
+`test/core/` here; those suites moved into the relevant workspace package / `app_ui`
 packages.
 
 - `features/`: Tests for the app's features, organized by data, domain, and presentation layers.

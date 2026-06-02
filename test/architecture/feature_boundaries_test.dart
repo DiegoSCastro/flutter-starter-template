@@ -4,7 +4,7 @@
 // A file under `lib/features/<A>/` may not import code from another feature
 // `lib/features/<B>/` (whether through a `package:` or a relative import).
 // Shared state must be read through a `shared/` contract, and shared infra
-// through the `core_*` / `app_ui` / `ui` packages instead.
+// through the workspace packages instead.
 //
 // The one documented escape hatch is the "capability" exception: a
 // presentation object that one feature deliberately surfaces inside another
@@ -222,7 +222,7 @@ String? _resolveFeatureTarget(String uri, String fromRelPath) {
     return uri.substring(packageFeatures.length);
   }
 
-  // Any other package: import (flutter, core_*, app_ui, ...) is fine.
+  // Any other package: import (flutter, workspace packages, ...) is fine.
   if (uri.startsWith('package:') || uri.startsWith('dart:')) return null;
 
   // Relative import: resolve against the importing file's directory.

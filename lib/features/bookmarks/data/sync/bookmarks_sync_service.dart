@@ -1,9 +1,9 @@
 import 'dart:async';
 
+import 'package:architecture/architecture.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:core_domain/core_domain.dart';
-import 'package:core_network/core_network.dart';
 import 'package:injectable/injectable.dart';
+import 'package:network/network.dart';
 
 import '../../domain/services/bookmarks_sync_controller.dart';
 import '../datasources/bookmarks_remote_data_source.dart';

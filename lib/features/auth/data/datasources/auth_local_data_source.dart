@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:core_storage/core_storage.dart';
 import 'package:injectable/injectable.dart';
+import 'package:storage/storage.dart';
 
 import '../../../../shared/domain/entities/auth_user.dart';
 

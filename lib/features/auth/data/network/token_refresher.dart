@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:core_network/core_network.dart';
 import 'package:injectable/injectable.dart';
+import 'package:network/network.dart';
 
 import '../datasources/auth_local_data_source.dart';
 import '../models/refresh_token_response.dart';

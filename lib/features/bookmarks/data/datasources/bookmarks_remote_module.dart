@@ -1,5 +1,5 @@
-import 'package:core_network/core_network.dart';
 import 'package:injectable/injectable.dart';
+import 'package:network/network.dart';
 
 import 'bookmarks_remote_data_source.dart';
 

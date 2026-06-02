@@ -1,4 +1,4 @@
-import 'package:core_platform/core_platform.dart';
+import 'package:app_platform/app_platform.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockImagePickerService extends Mock implements ImagePickerService {}

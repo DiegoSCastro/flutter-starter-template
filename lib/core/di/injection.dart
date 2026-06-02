@@ -1,11 +1,11 @@
-import 'package:core_analytics/core_analytics.dart';
-import 'package:core_config/core_config.dart';
-import 'package:core_network/core_network.dart';
-import 'package:core_platform/core_platform.dart';
-import 'package:core_storage/core_storage.dart';
-import 'package:core_theme/core_theme.dart';
+import 'package:analytics/analytics.dart';
+import 'package:app_platform/app_platform.dart';
+import 'package:config/config.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
+import 'package:network/network.dart';
+import 'package:storage/storage.dart';
+import 'package:theme/theme.dart';
 
 import 'injection.config.dart';
 
@@ -14,11 +14,11 @@ final GetIt getIt = GetIt.instance;
 /// Async because core database modules use `@preResolve` to open native
 /// resources before any consumer is constructed. Must be awaited from `main`.
 ///
-/// `core_analytics` is registered before `core_platform` and `core_theme`
+/// `analytics` is registered before `app_platform` and `theme`
 /// because both depend on `AnalyticsService` (the former via
-/// `FirebaseMessagingService`, the latter via `ThemeBloc`). `core_storage` is
-/// listed before `core_theme` because `ThemeBloc` reads the `SharedPreferences`
-/// that `core_storage` provides.
+/// `FirebaseMessagingService`, the latter via `ThemeBloc`). `storage` is
+/// listed before `theme` because `ThemeBloc` reads the `SharedPreferences`
+/// that `storage` provides.
 @InjectableInit(
   externalPackageModulesBefore: [
     ExternalModule(CoreAnalyticsPackageModule),

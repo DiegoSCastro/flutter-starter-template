@@ -1,10 +1,11 @@
+import 'package:app_platform/app_platform.dart';
+import 'package:architecture/architecture.dart';
 import 'package:bloc_test/bloc_test.dart';
-import 'package:core_domain/core_domain.dart';
-import 'package:core_platform/core_platform.dart';
 import 'package:flutter_starter_template/features/bookmarks/domain/usecases/update_bookmark.dart';
 import 'package:flutter_starter_template/features/bookmarks/presentation/bloc/bookmark_form/bookmark_form_bloc.dart';
 import 'package:flutter_starter_template/features/bookmarks/presentation/bloc/bookmark_form/bookmark_form_state.dart';
 import 'package:flutter_test/flutter_test.dart';
+
 import '../../../../../test_utils.dart';
 
 void main() {

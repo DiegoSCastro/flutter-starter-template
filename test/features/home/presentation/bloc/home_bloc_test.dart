@@ -1,4 +1,4 @@
-import 'package:core_domain/core_domain.dart';
+import 'package:architecture/architecture.dart';
 import 'package:flutter_starter_template/features/home/presentation/bloc/home_bloc.dart';
 import 'package:flutter_starter_template/shared/domain/bookmark_stats.dart';
 import 'package:flutter_test/flutter_test.dart';

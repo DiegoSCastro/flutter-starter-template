@@ -1,4 +1,4 @@
-import 'package:core_network/core_network.dart';
+import 'package:network/network.dart';
 
 import '../models/change_password_request.dart';
 import '../models/refresh_token_request.dart';

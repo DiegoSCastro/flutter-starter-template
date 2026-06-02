@@ -31,7 +31,7 @@ The UI layer responsible for displaying information to the user and capturing us
 - **Feature Independence:** Features should be as isolated as possible. As a default, a feature must **not** import another feature's `presentation` layer — shared *state* is read through a contract in `lib/shared/` instead. The one deliberate exception is a *capability* (a self-contained presentation object one feature surfaces inside another); while only a single consumer exists, importing it directly is allowed.
 - **Shared Code:** Pick the destination by what kind of thing it is:
   - *Business* vocabulary used by 2+ features (e.g. the session, shared entities) → `lib/shared/`, on the **rule of three** (promote only when ≥2 features depend on it today).
-  - *Cross-cutting, non-visual* infrastructure → `lib/core/` (app-coupled) or a `packages/core_*` workspace package (reusable).
+  - *Cross-cutting, non-visual* infrastructure → `lib/core/` (app-coupled) or a workspace package (reusable).
   - *Generic visual* building blocks → the `app_ui` package.
 - **Immutability:** Use immutable models and `Freezed` unions for state management and domain entities.
 - **Dependency Injection:** Dependencies are injected using `get_it` + `injectable` (composition root in `lib/core/di/`).

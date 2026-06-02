@@ -1,6 +1,6 @@
-import 'package:core_config/core_config.dart';
-import 'package:core_network/core_network.dart';
+import 'package:config/config.dart';
 import 'package:injectable/injectable.dart';
+import 'package:network/network.dart';
 
 import '../datasources/auth_local_data_source.dart';
 import '../datasources/auth_remote_data_source.dart';

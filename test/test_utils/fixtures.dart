@@ -1,4 +1,4 @@
-import 'package:core_domain/core_domain.dart';
+import 'package:architecture/architecture.dart';
 import 'package:flutter_starter_template/features/bookmarks/domain/entities/bookmark.dart';
 import 'package:flutter_starter_template/shared/domain/entities/auth_user.dart';
 

@@ -1,5 +1,5 @@
-import 'package:core_domain/core_domain.dart';
-import 'package:core_platform/core_platform.dart';
+import 'package:app_platform/app_platform.dart';
+import 'package:architecture/architecture.dart';
 
 sealed class BookmarkMediaResult<T> {
   const BookmarkMediaResult();

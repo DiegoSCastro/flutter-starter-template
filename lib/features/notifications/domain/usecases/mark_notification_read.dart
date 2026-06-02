@@ -1,4 +1,4 @@
-import 'package:core_domain/core_domain.dart';
+import 'package:architecture/architecture.dart';
 import 'package:injectable/injectable.dart';
 
 import '../repositories/notifications_repository.dart';

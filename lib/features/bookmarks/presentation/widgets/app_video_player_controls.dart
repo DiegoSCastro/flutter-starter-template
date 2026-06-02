@@ -1,5 +1,5 @@
+import 'package:app_platform/app_platform.dart';
 import 'package:app_ui/app_ui.dart';
-import 'package:core_platform/core_platform.dart';
 import 'package:flutter/material.dart';
 
 import 'app_video_player_controls_bar.dart';

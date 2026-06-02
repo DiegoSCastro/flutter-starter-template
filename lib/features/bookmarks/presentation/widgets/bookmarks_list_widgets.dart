@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:app_ui/app_ui.dart';
-import 'package:core_domain/core_domain.dart';
+import 'package:architecture/architecture.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

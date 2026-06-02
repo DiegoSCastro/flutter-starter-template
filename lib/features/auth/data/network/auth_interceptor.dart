@@ -1,4 +1,4 @@
-import 'package:core_network/core_network.dart';
+import 'package:network/network.dart';
 
 import '../datasources/auth_local_data_source.dart';
 import 'token_refresher.dart';
