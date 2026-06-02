@@ -287,11 +287,11 @@ Firebase initializes in `lib/main.dart` with Crashlytics fatal‑error reporting
 
 Three build flavors driven by `--dart-define` with typed runtime config:
 
-| Flavor    | Android App ID                                      |
-|-----------|-----------------------------------------------------|
-| `dev`     | `com.lucistudio.flutter_starter_template.dev`       |
-| `staging` | `com.lucistudio.flutter_starter_template.staging`   |
-| `prod`    | `com.lucistudio.flutter_starter_template`           |
+| Flavor    | Android App ID                                    | iOS Bundle ID                                |
+|-----------|---------------------------------------------------|----------------------------------------------|
+| `dev`     | `com.lucistudio.flutter_starter_template.dev`     | `com.luci-studio.flutterStarterTemplate.dev` |
+| `staging` | `com.lucistudio.flutter_starter_template.staging` | `com.luci-studio.flutterStarterTemplate.staging` |
+| `prod`    | `com.lucistudio.flutter_starter_template`         | `com.luci-studio.flutterStarterTemplate`     |
 
 ```bash
 fvm flutter run --flavor dev     --dart-define-from-file=env/dev.json
