@@ -1,0 +1,146 @@
+name: Release
+
+# Builds and uploads mobile releases via Fastlane: iOS → TestFlight,
+# Android → Google Play. Triggered by pushing a version tag (e.g. v1.2.0) or
+# manually with a chosen flavor/platform.
+#
+# This workflow only does the CI plumbing; the lane logic lives in
+# ios/fastlane/Fastfile and android/fastlane/Fastfile. It expects the secrets
+# and variables listed under each job's `env:` to be configured in the repo
+# (Settings → Secrets and variables → Actions). See the fastlane READMEs.
+
+on:
+  workflow_dispatch:
+    inputs:
+      flavor:
+        description: Flutter flavor to release
+        type: choice
+        options: [prod, staging, dev]
+        default: prod
+      platform:
+        description: Platforms to release
+        type: choice
+        options: [both, ios, android]
+        default: both
+  push:
+    tags:
+      - 'v*'
+
+env:
+  # Keep in sync with .fvmrc (3.44.0). CI installs the SDK directly, so the
+  # lanes run with FLUTTER_CMD=flutter rather than via FVM.
+  FLUTTER_VERSION: '3.44.0'
+
+# A release for a given ref should not run twice concurrently.
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  android:
+    name: Android → Play
+    if: >-
+      github.event_name == 'push' ||
+      github.event.inputs.platform == 'both' ||
+      github.event.inputs.platform == 'android'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      - name: Set up Ruby + Fastlane
+        uses: ruby/setup-ruby@v1
+        with:
+          working-directory: android
+          bundler-cache: true
+
+      - name: Materialize signing & Firebase config
+        env:
+          GOOGLE_SERVICES_JSON: ${{ secrets.ANDROID_GOOGLE_SERVICES_JSON }}
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          PLAY_JSON: ${{ secrets.PLAY_STORE_JSON_KEY }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+        run: |
+          set -euo pipefail
+          # google-services.json is git-ignored; restore it from a secret.
+          printf '%s' "$GOOGLE_SERVICES_JSON" | base64 --decode > android/app/google-services.json
+          # Upload keystore + key.properties drive release signing.
+          printf '%s' "$KEYSTORE_BASE64" | base64 --decode > android/app/upload-keystore.jks
+          # Play service-account key the lane authenticates with.
+          printf '%s' "$PLAY_JSON" > android/play-store-key.json
+          cat > android/key.properties <<EOF
+          storePassword=${KEYSTORE_PASSWORD}
+          keyPassword=${KEY_PASSWORD}
+          keyAlias=${KEY_ALIAS}
+          storeFile=upload-keystore.jks
+          EOF
+
+      - name: Build & upload to Google Play
+        working-directory: android
+        env:
+          FLUTTER_CMD: flutter
+          BUILD_NUMBER: ${{ github.run_number }}
+          ANDROID_PACKAGE_NAME_BASE: ${{ vars.ANDROID_PACKAGE_NAME_BASE }}
+          PLAY_STORE_JSON_KEY_PATH: ${{ github.workspace }}/android/play-store-key.json
+        run: bundle exec fastlane beta flavor:${{ github.event.inputs.flavor || 'prod' }}
+
+  ios:
+    name: iOS → TestFlight
+    if: >-
+      github.event_name == 'push' ||
+      github.event.inputs.platform == 'both' ||
+      github.event.inputs.platform == 'ios'
+    runs-on: macos-15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: stable
+          cache: true
+
+      # This project requires CocoaPods, not SPM (see CLAUDE.md). The setting is
+      # machine-global, so each runner must disable SPM before the first build.
+      - name: Disable Swift Package Manager
+        run: flutter config --no-enable-swift-package-manager
+
+      - name: Set up Ruby + Fastlane
+        uses: ruby/setup-ruby@v1
+        with:
+          working-directory: ios
+          bundler-cache: true
+
+      - name: Materialize Firebase config
+        env:
+          GSP: ${{ secrets.IOS_GOOGLE_SERVICE_INFO_PLIST }}
+        run: |
+          set -euo pipefail
+          # GoogleService-Info.plist is git-ignored; restore it from a secret.
+          printf '%s' "$GSP" | base64 --decode > ios/Runner/GoogleService-Info.plist
+
+      - name: Build & upload to TestFlight
+        working-directory: ios
+        env:
+          FLUTTER_CMD: flutter
+          BUILD_NUMBER: ${{ github.run_number }}
+          IOS_BUNDLE_ID_BASE: ${{ vars.IOS_BUNDLE_ID_BASE }}
+          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+          APP_STORE_CONNECT_API_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_ISSUER_ID }}
+          APP_STORE_CONNECT_API_KEY_CONTENT: ${{ secrets.APP_STORE_CONNECT_API_KEY_CONTENT }}
+          MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
+          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.MATCH_GIT_BASIC_AUTHORIZATION }}
+        run: bundle exec fastlane beta flavor:${{ github.event.inputs.flavor || 'prod' }}

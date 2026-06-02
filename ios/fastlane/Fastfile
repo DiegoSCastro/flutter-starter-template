@@ -6,8 +6,11 @@
 #
 #   bundle exec fastlane beta flavor:prod
 #
-# Authentication uses an App Store Connect API key (.p8) rather than an Apple
-# ID + password, which avoids 2FA prompts and works unattended in CI.
+# Authentication uses an App Store Connect API key (.p8). Code signing uses
+# `match`: the distribution certificate and provisioning profiles live in a
+# private git repo (MATCH_GIT_URL) and are fetched here, so every machine and
+# CI runner signs identically. Run `bundle exec fastlane match appstore` once
+# locally to create the assets before the first release.
 
 # Map a Flutter flavor to its Xcode scheme, build configuration, and the
 # bundle-id suffix this template applies per flavor (prod uses the base id).
@@ -28,6 +31,16 @@ def require_env(name)
     )
   end
   value
+end
+
+# Resolve the build number (CFBundleVersion). TestFlight rejects a duplicate or
+# non-increasing value, so prefer an explicit, monotonic source: the lane arg,
+# then BUILD_NUMBER (CI sets this), then the git commit count as a fallback.
+# In CI use BUILD_NUMBER — a shallow checkout makes the commit count unreliable.
+def resolve_build_number(options)
+  explicit = options[:build_number] || ENV["BUILD_NUMBER"]
+  return explicit.to_s unless explicit.nil? || explicit.to_s.strip.empty?
+  sh("git", "rev-list", "--count", "HEAD").strip
 end
 
 # Run the Flutter SDK from the repo root. The command is overridable via
@@ -53,7 +66,11 @@ platform :ios do
       )
     end
 
+    # On CI, create a temporary keychain for match to import the cert into.
+    setup_ci if is_ci?
+
     bundle_id = "#{require_env('IOS_BUNDLE_ID_BASE')}#{config[:suffix]}"
+    build_number = resolve_build_number(options)
 
     api_key = app_store_connect_api_key(
       key_id: require_env("APP_STORE_CONNECT_API_KEY_ID"),
@@ -62,19 +79,52 @@ platform :ios do
       is_key_content_base64: true,
     )
 
-    # Compile Dart + assets and run `pod install`, but leave signing to gym so
-    # it can resolve provisioning with the API key (-allowProvisioningUpdates).
-    flutter("build", "ios", "--release", "--no-codesign", "--flavor", flavor)
+    # Fetch the signing cert + App Store profile for this bundle id. readonly on
+    # CI so a runner never mutates the match repo; locally it can create assets.
+    match(
+      type: "appstore",
+      app_identifier: bundle_id,
+      api_key: api_key,
+      readonly: is_ci?,
+    )
+
+    # Compile Dart + assets without signing; gym handles archive & signing using
+    # the match-provisioned profile selected below.
+    flutter(
+      "build", "ios", "--release", "--no-codesign",
+      "--flavor", flavor, "--build-number", build_number
+    )
 
     build_app(
       workspace: "Runner.xcworkspace",
       scheme: config[:scheme],
       configuration: config[:configuration],
       export_method: "app-store",
-      xcargs: "-allowProvisioningUpdates",
       output_directory: "build/ipa",
       output_name: "#{flavor}.ipa",
+      export_options: {
+        signingStyle: "manual",
+        provisioningProfiles: {
+          bundle_id => "match AppStore #{bundle_id}",
+        },
+      },
     )
+
+    # Upload dSYMs so release crashes symbolicate in Firebase Crashlytics. Skip
+    # gracefully when the Firebase config or symbols are absent (e.g. a local
+    # build without GoogleService-Info.plist in place).
+    dsym_path = lane_context[SharedValues::DSYM_OUTPUT_PATH]
+    gsp_path = "Runner/GoogleService-Info.plist"
+    if dsym_path && File.exist?(gsp_path)
+      upload_symbols_to_crashlytics(
+        dsym_path: dsym_path,
+        gsp_path: gsp_path,
+        binary_path: ENV.fetch(
+          "CRASHLYTICS_UPLOAD_SYMBOLS_BIN",
+          "Pods/FirebaseCrashlytics/upload-symbols",
+        ),
+      )
+    end
 
     upload_to_testflight(
       api_key: api_key,

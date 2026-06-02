@@ -5,14 +5,18 @@ it to TestFlight. All account-specific values live in `fastlane/.env`, which is
 git-ignored, so this template ships with **no secrets and nothing to scrub**
 before reuse on a new project.
 
+Signing uses [`match`](https://docs.fastlane.tools/actions/match/): the
+distribution certificate and provisioning profiles are stored (encrypted) in a
+private git repo and fetched at build time, so every machine and CI runner
+signs identically.
+
 ## One-time setup
 
-1. **Ruby + bundler.** The lanes need Ruby ≥ 2.7 (macOS system Ruby 2.6 is too
-   old for current fastlane). Install a newer Ruby via `rbenv`/`asdf`, then:
+1. **Ruby + bundler.** The repo pins Ruby via `.ruby-version` (3.2.2); install
+   it with `rbenv`/`asdf`. `Gemfile.lock` is committed, so:
 
    ```bash
    cd ios
-   gem install bundler
    bundle install
    ```
 
@@ -21,17 +25,25 @@ before reuse on a new project.
    higher) access and download the `AuthKey_XXXX.p8` (you can only download it
    once). Keep the `.p8` outside the repo.
 
-3. **Configure `.env`.**
+3. **App registration.** Make sure the app exists in App Store Connect for each
+   flavor you ship. The lane derives the id from `IOS_BUNDLE_ID_BASE` plus the
+   flavor suffix (`.dev`, `.staging`, none for prod).
+
+4. **Configure `.env`.**
 
    ```bash
    cp fastlane/.env.example fastlane/.env
-   # then fill in the values; for the key:
+   # fill in the values; for the API key:
    base64 -i /path/to/AuthKey_XXXX.p8 | pbcopy   # paste as APP_STORE_CONNECT_API_KEY_CONTENT
    ```
 
-4. **Bundle id.** Make sure the app exists in App Store Connect for each flavor
-   you ship. The lane derives the id from `IOS_BUNDLE_ID_BASE` plus the flavor
-   suffix (`.dev`, `.staging`, none for prod).
+5. **Initialize match.** Create an empty **private** git repo for the signing
+   assets, set `MATCH_GIT_URL` + `MATCH_PASSWORD` in `.env`, then generate the
+   cert + profiles once (this populates the repo):
+
+   ```bash
+   bundle exec fastlane match appstore
+   ```
 
 ## Usage
 
@@ -42,25 +54,35 @@ bundle exec fastlane beta flavor:staging
 bundle exec fastlane beta flavor:dev
 ```
 
-The `beta` lane: compiles with `flutter build ios --no-codesign --flavor <f>`,
-archives + signs via `build_app` (`-allowProvisioningUpdates`, so signing
-assets are resolved automatically using the API key), then uploads to
-TestFlight.
+The `beta` lane: fetches signing assets with `match`, compiles with
+`flutter build ios --no-codesign --flavor <f> --build-number <n>`, archives +
+signs via `build_app` (manual signing with the match profile), uploads dSYMs to
+Firebase Crashlytics, then uploads the build to TestFlight.
 
-## CI notes
+### Build numbers
 
-- Must run on **macOS** runners (Xcode required).
-- Provide the same variables as repository secrets and export them into the
-  environment; set `FLUTTER_CMD=flutter` since CI puts Flutter on `PATH`
-  directly (no FVM).
-- This repo's existing `.github/workflows/ci.yml` is analyze/test only and is
-  intentionally left unchanged — wire a separate release workflow (e.g. on tag
-  push) that calls `bundle exec fastlane beta flavor:prod` when you're ready.
+TestFlight rejects a duplicate or non-increasing build number. The lane sets it
+from, in order: a `build_number:` arg, the `BUILD_NUMBER` env var (CI sets
+this), else the git commit count. Pass one explicitly when needed:
 
-## Signing alternatives
+```bash
+bundle exec fastlane beta flavor:prod build_number:42
+```
 
-This scaffold uses automatic signing via the API key, which is the
-lowest-setup path. For reproducible team signing, swap in
-[`match`](https://docs.fastlane.tools/actions/match/) (stores certs/profiles in
-a private git repo) — add a `match` call before `build_app` and set
-`build_app(... export_options: { signingStyle: "manual" })`.
+## CI
+
+`.github/workflows/release.yml` runs this lane on a macOS runner (Xcode
+required) on tag push / manual dispatch, with `FLUTTER_CMD=flutter` and
+`BUILD_NUMBER` from the run number. It expects these repository secrets/vars:
+
+| Name | Kind | Purpose |
+|---|---|---|
+| `IOS_BUNDLE_ID_BASE` | var | Base bundle id |
+| `APPLE_TEAM_ID` | secret | Developer Team ID |
+| `APP_STORE_CONNECT_API_KEY_ID` | secret | API key id |
+| `APP_STORE_CONNECT_API_ISSUER_ID` | secret | API issuer id |
+| `APP_STORE_CONNECT_API_KEY_CONTENT` | secret | base64 of the `.p8` |
+| `MATCH_GIT_URL` | secret | Signing-assets repo URL |
+| `MATCH_PASSWORD` | secret | match encryption passphrase |
+| `MATCH_GIT_BASIC_AUTHORIZATION` | secret | base64 `user:token` for HTTPS clone (omit for SSH) |
+| `IOS_GOOGLE_SERVICE_INFO_PLIST` | secret | base64 of `GoogleService-Info.plist` (git-ignored) |

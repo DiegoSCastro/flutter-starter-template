@@ -53,19 +53,36 @@ bundle exec fastlane beta flavor:staging
 bundle exec fastlane beta flavor:dev
 ```
 
-The `beta` lane: builds with `flutter build appbundle --flavor <f>`, then
-uploads the `.aab` to the flavor's Play track as a **draft** release. Change
-`release_status` to `"completed"` in the `Fastfile` to publish straight to the
-track's testers, or pass `track:` to target a different track
-(`bundle exec fastlane beta flavor:prod track:beta`).
+The `beta` lane: builds with `flutter build appbundle --flavor <f>
+--build-number <n>`, then uploads the `.aab` to the flavor's Play track as a
+**draft** release. Change `release_status` to `"completed"` in the `Fastfile`
+to publish straight to the track's testers, or pass `track:` to target a
+different track (`bundle exec fastlane beta flavor:prod track:beta`).
 
-## CI notes
+### Build numbers
 
-- Runs on Linux or macOS (no Xcode needed for Android).
-- Provide the variables as repository secrets and export them into the
-  environment; set `FLUTTER_CMD=flutter` since CI puts Flutter on `PATH`
-  directly (no FVM).
-- Materialize `key.properties` and the keystore from secrets at job start
-  (e.g. base64-decode them into place), then run the lane.
-- This repo's `.github/workflows/ci.yml` is analyze/test only and is left
-  unchanged — wire a separate release workflow (e.g. on tag push) when ready.
+Play rejects a duplicate or non-increasing `versionCode`. The lane sets it
+from, in order: a `build_number:` arg, the `BUILD_NUMBER` env var (CI sets
+this), else the git commit count. Pass one explicitly when needed:
+
+```bash
+bundle exec fastlane beta flavor:prod build_number:42
+```
+
+## CI
+
+`.github/workflows/release.yml` runs this lane on `ubuntu-latest` (no Xcode
+needed) on tag push / manual dispatch, with `FLUTTER_CMD=flutter` and
+`BUILD_NUMBER` from the run number. The workflow restores `key.properties`, the
+keystore, `google-services.json`, and the Play key file from secrets, then runs
+the lane. Expected repository secrets/vars:
+
+| Name | Kind | Purpose |
+|---|---|---|
+| `ANDROID_PACKAGE_NAME_BASE` | var | Base applicationId |
+| `PLAY_STORE_JSON_KEY` | secret | Play service-account JSON (raw contents) |
+| `ANDROID_KEYSTORE_BASE64` | secret | base64 of the upload keystore |
+| `ANDROID_KEYSTORE_PASSWORD` | secret | Keystore password |
+| `ANDROID_KEY_PASSWORD` | secret | Key password |
+| `ANDROID_KEY_ALIAS` | secret | Key alias |
+| `ANDROID_GOOGLE_SERVICES_JSON` | secret | base64 of `google-services.json` (git-ignored) |

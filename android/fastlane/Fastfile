@@ -30,6 +30,16 @@ def require_env(name)
   value
 end
 
+# Resolve the build number (Android versionCode). Play rejects a duplicate or
+# non-increasing value, so prefer an explicit, monotonic source: the lane arg,
+# then BUILD_NUMBER (CI sets this), then the git commit count as a fallback.
+# In CI use BUILD_NUMBER — a shallow checkout makes the commit count unreliable.
+def resolve_build_number(options)
+  explicit = options[:build_number] || ENV["BUILD_NUMBER"]
+  return explicit.to_s unless explicit.nil? || explicit.to_s.strip.empty?
+  sh("git", "rev-list", "--count", "HEAD").strip
+end
+
 # Run the Flutter SDK from the repo root. The command is overridable via
 # FLUTTER_CMD so CI (which puts `flutter` on PATH directly) can set
 # FLUTTER_CMD=flutter; locally it defaults to the FVM-pinned SDK.
@@ -54,10 +64,14 @@ platform :android do
     end
 
     package_name = "#{require_env('ANDROID_PACKAGE_NAME_BASE')}#{config[:suffix]}"
+    build_number = resolve_build_number(options)
 
     # Requires release signing configured via android/key.properties; without
     # it the bundle is debug-signed and Play will reject it.
-    flutter("build", "appbundle", "--release", "--flavor", flavor)
+    flutter(
+      "build", "appbundle", "--release",
+      "--flavor", flavor, "--build-number", build_number
+    )
 
     # Output path is relative to android/ (fastlane's working directory).
     aab = "../build/app/outputs/bundle/" \
