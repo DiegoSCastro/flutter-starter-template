@@ -60,10 +60,3 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
     _analytics.trackThemeSchemeChanged(event.scheme.name).uw();
   }
 }
-
-@module
-abstract class SharedPreferencesModule {
-  @preResolve
-  Future<SharedPreferences> provideSharedPreferences() =>
-      SharedPreferences.getInstance();
-}

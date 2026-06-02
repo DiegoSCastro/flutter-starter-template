@@ -14,6 +14,7 @@ import 'package:core_analytics/core_analytics.dart' as _i682;
 import 'package:core_config/core_config.dart' as _i277;
 import 'package:core_network/core_network.dart' as _i309;
 import 'package:core_platform/core_platform.dart' as _i490;
+import 'package:core_storage/core_storage.dart' as _i78;
 import 'package:core_theme/core_theme.dart' as _i741;
 import 'package:dio/dio.dart' as _i361;
 import 'package:firebase_performance/firebase_performance.dart' as _i346;
@@ -124,6 +125,7 @@ extension GetItInjectableX on _i174.GetIt {
     await _i277.CoreConfigPackageModule().init(gh);
     await _i309.CoreNetworkPackageModule().init(gh);
     await _i490.CorePlatformPackageModule().init(gh);
+    await _i78.CoreStoragePackageModule().init(gh);
     await _i741.CoreThemePackageModule().init(gh);
     final objectBoxModule = _$ObjectBoxModule();
     final secureStorageModule = _$SecureStorageModule();
