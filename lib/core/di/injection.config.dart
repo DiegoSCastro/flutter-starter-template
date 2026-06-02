@@ -14,6 +14,7 @@ import 'package:core_analytics/core_analytics.dart' as _i682;
 import 'package:core_config/core_config.dart' as _i277;
 import 'package:core_network/core_network.dart' as _i309;
 import 'package:core_platform/core_platform.dart' as _i490;
+import 'package:core_theme/core_theme.dart' as _i741;
 import 'package:dio/dio.dart' as _i361;
 import 'package:firebase_performance/firebase_performance.dart' as _i346;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
@@ -21,7 +22,6 @@ import 'package:flutter_starter_template/core/data/database/object_box.dart'
     as _i706;
 import 'package:flutter_starter_template/core/platform/firebase/firebase_service.dart'
     as _i473;
-import 'package:flutter_starter_template/core/theme/theme_bloc.dart' as _i652;
 import 'package:flutter_starter_template/features/auth/data/datasources/auth_local_data_source.dart'
     as _i297;
 import 'package:flutter_starter_template/features/auth/data/datasources/auth_remote_data_source.dart'
@@ -111,7 +111,6 @@ import 'package:flutter_starter_template/shared/domain/bookmark_stats.dart'
     as _i189;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
-import 'package:shared_preferences/shared_preferences.dart' as _i460;
 import 'package:uuid/uuid.dart' as _i706;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -125,17 +124,13 @@ extension GetItInjectableX on _i174.GetIt {
     await _i277.CoreConfigPackageModule().init(gh);
     await _i309.CoreNetworkPackageModule().init(gh);
     await _i490.CorePlatformPackageModule().init(gh);
-    final sharedPreferencesModule = _$SharedPreferencesModule();
+    await _i741.CoreThemePackageModule().init(gh);
     final objectBoxModule = _$ObjectBoxModule();
     final secureStorageModule = _$SecureStorageModule();
     final bookmarksDataModule = _$BookmarksDataModule();
     final authNetworkModule = _$AuthNetworkModule();
     final bookmarksRemoteModule = _$BookmarksRemoteModule();
     final notificationsRemoteModule = _$NotificationsRemoteModule();
-    await gh.factoryAsync<_i460.SharedPreferences>(
-      () => sharedPreferencesModule.provideSharedPreferences(),
-      preResolve: true,
-    );
     gh.factory<_i1013.ProfileBloc>(() => _i1013.ProfileBloc());
     await gh.singletonAsync<_i706.ObjectBox>(
       () => objectBoxModule.provideObjectBox(),
@@ -154,12 +149,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.singleton<_i831.Store>(
       () => objectBoxModule.provideStore(gh<_i706.ObjectBox>()),
-    );
-    gh.lazySingleton<_i652.ThemeBloc>(
-      () => _i652.ThemeBloc(
-        gh<_i460.SharedPreferences>(),
-        gh<_i682.AnalyticsService>(),
-      ),
     );
     gh.lazySingleton<_i533.TokenRefresher>(
       () => _i533.TokenRefresher(
@@ -314,8 +303,6 @@ extension GetItInjectableX on _i174.GetIt {
     return this;
   }
 }
-
-class _$SharedPreferencesModule extends _i652.SharedPreferencesModule {}
 
 class _$ObjectBoxModule extends _i706.ObjectBoxModule {}
 

@@ -28,6 +28,7 @@ workspace:
   - packages/core_domain
   - packages/core_network
   - packages/core_platform
+  - packages/core_theme
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -42,6 +43,7 @@ dependencies:
   core_domain: ^0.1.0
   core_network: ^0.1.0
   core_platform: ^0.1.0
+  core_theme: ^0.1.0
 
   flutter:
     sdk: flutter

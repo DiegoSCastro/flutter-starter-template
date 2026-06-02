@@ -1,7 +1,6 @@
+import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_starter_template/core/theme/theme_bloc.dart';
-import 'package:flutter_starter_template/core/theme/theme_state.dart';
 import 'package:flutter_starter_template/features/auth/presentation/bloc/delete_account_cubit.dart';
 import 'package:flutter_starter_template/features/auth/presentation/bloc/delete_account_state.dart';
 import 'package:flutter_starter_template/features/profile/presentation/bloc/profile_bloc.dart';
