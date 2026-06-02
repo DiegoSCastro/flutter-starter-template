@@ -1,5 +1,5 @@
 import 'package:core_domain/core_domain.dart';
-import 'package:dio/dio.dart';
+import 'package:core_network/core_network.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../shared/domain/entities/auth_user.dart';

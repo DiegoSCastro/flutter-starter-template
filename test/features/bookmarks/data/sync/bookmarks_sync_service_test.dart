@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:dio/dio.dart';
+import 'package:core_network/core_network.dart';
 import 'package:flutter_starter_template/features/bookmarks/data/datasources/bookmarks_remote_data_source.dart';
 import 'package:flutter_starter_template/features/bookmarks/data/local/bookmark_entity.dart';
 import 'package:flutter_starter_template/features/bookmarks/data/local/bookmarks_local_data_source.dart';
@@ -11,7 +11,7 @@ import 'package:flutter_starter_template/features/bookmarks/data/models/bookmark
 import 'package:flutter_starter_template/features/bookmarks/data/sync/bookmarks_sync_service.dart';
 import 'package:flutter_starter_template/features/bookmarks/domain/services/bookmarks_sync_controller.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
+import 'package:test_utils/test_utils.dart';
 
 class MockBookmarksLocalDataSource extends Mock
     implements BookmarksLocalDataSource {}

@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:core_storage/core_storage.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../shared/domain/entities/auth_user.dart';

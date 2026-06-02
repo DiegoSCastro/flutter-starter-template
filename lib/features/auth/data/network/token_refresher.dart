@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:dio/dio.dart';
+import 'package:core_network/core_network.dart';
 import 'package:injectable/injectable.dart';
 
 import '../datasources/auth_local_data_source.dart';

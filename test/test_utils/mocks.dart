@@ -1,7 +1,4 @@
-import 'package:core_analytics/core_analytics.dart';
-import 'package:core_platform/core_platform.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_starter_template/features/auth/domain/repositories/auth_repository.dart';
 import 'package:flutter_starter_template/features/auth/domain/usecases/delete_account.dart';
 import 'package:flutter_starter_template/features/auth/domain/usecases/register.dart';
@@ -19,8 +16,7 @@ import 'package:flutter_starter_template/features/bookmarks/domain/usecases/upda
 import 'package:flutter_starter_template/shared/domain/bookmark_stats.dart';
 import 'package:flutter_starter_template/shared/domain/entities/auth_user.dart';
 import 'package:flutter_starter_template/shared/domain/session.dart';
-import 'package:mocktail/mocktail.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:test_utils/test_utils.dart';
 
 class MockSignIn extends Mock implements SignIn {}
 
@@ -33,34 +29,6 @@ class MockDeleteAccount extends Mock implements DeleteAccount {}
 class MockRestoreSession extends Mock implements RestoreSession {}
 
 class MockAuthRepository extends Mock implements AuthRepository {}
-
-class MockSharedPreferences extends Mock implements SharedPreferences {}
-
-class MockFlutterSecureStorage extends Mock implements FlutterSecureStorage {}
-
-class MockAnalyticsService extends Mock implements AnalyticsService {}
-
-void stubAnalyticsService(MockAnalyticsService analytics) {
-  when(
-    () => analytics.logEvent(any(), parameters: any(named: 'parameters')),
-  ).thenAnswer((_) async {});
-  when(
-    () => analytics.logLogin(method: any(named: 'method')),
-  ).thenAnswer((_) async {});
-  when(
-    () => analytics.logSignUp(signUpMethod: any(named: 'signUpMethod')),
-  ).thenAnswer((_) async {});
-  when(
-    () => analytics.logScreenView(screenName: any(named: 'screenName')),
-  ).thenAnswer((_) async {});
-  when(() => analytics.setCurrentUser(any())).thenAnswer((_) async {});
-  when(
-    () => analytics.setUserProperty(
-      name: any(named: 'name'),
-      value: any(named: 'value'),
-    ),
-  ).thenAnswer((_) async {});
-}
 
 class MockListBookmarks extends Mock implements ListBookmarks {}
 
@@ -80,10 +48,6 @@ class MockBookmarksSyncController extends Mock
     implements BookmarksSyncController {}
 
 class FakeBookmarkInput extends Fake implements BookmarkInput {}
-
-class MockImagePickerService extends Mock implements ImagePickerService {}
-
-class MockPermissionService extends Mock implements PermissionService {}
 
 /// In-memory [Session] double for widget tests.
 class FakeSession extends ChangeNotifier implements Session {

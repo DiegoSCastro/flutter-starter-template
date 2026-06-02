@@ -8,7 +8,7 @@ import 'package:flutter_starter_template/features/bookmarks/domain/usecases/list
 import 'package:flutter_starter_template/features/bookmarks/domain/usecases/list_local_bookmarks.dart';
 import 'package:flutter_starter_template/features/bookmarks/domain/usecases/update_bookmark.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
+import 'package:test_utils/test_utils.dart';
 
 class _MockBookmarksRepository extends Mock implements BookmarksRepository {}
 

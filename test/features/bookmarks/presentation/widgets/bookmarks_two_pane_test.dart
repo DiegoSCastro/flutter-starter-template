@@ -8,8 +8,6 @@ import 'package:flutter_starter_template/features/bookmarks/presentation/bloc/bo
 import 'package:flutter_starter_template/features/bookmarks/presentation/widgets/bookmarks_list_widgets.dart';
 import 'package:flutter_starter_template/l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
-
 import '../../../../test_utils.dart';
 
 class MockBookmarksListBloc extends Mock implements BookmarksListBloc {}

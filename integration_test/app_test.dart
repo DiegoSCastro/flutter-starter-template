@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:core_domain/core_domain.dart';
+import 'package:core_storage/core_storage.dart';
 import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_starter_template/app/app.dart';
@@ -12,8 +13,6 @@ import 'package:flutter_starter_template/features/home/presentation/bloc/home_bl
 import 'package:flutter_starter_template/shared/domain/bookmark_stats.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
-import 'package:mocktail/mocktail.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 // Reuse the unit/widget test fakes so the integration test exercises the real
 // assembled App without a backend, Firebase, or native storage.

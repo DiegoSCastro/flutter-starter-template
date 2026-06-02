@@ -3,8 +3,6 @@ import 'package:flutter_starter_template/features/bookmarks/domain/entities/book
 import 'package:flutter_starter_template/features/bookmarks/domain/services/bookmark_stats_service.dart';
 import 'package:flutter_starter_template/shared/domain/bookmark_stats.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
-
 import '../../../../test_utils.dart';
 
 Bookmark _bookmark({

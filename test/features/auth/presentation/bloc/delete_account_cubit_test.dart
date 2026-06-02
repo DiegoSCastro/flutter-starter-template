@@ -3,8 +3,6 @@ import 'package:core_domain/core_domain.dart';
 import 'package:flutter_starter_template/features/auth/presentation/bloc/delete_account_cubit.dart';
 import 'package:flutter_starter_template/features/auth/presentation/bloc/delete_account_state.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
-
 import '../../../../test_utils.dart';
 
 void main() {

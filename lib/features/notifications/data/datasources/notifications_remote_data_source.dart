@@ -1,5 +1,4 @@
-import 'package:dio/dio.dart';
-import 'package:retrofit/retrofit.dart';
+import 'package:core_network/core_network.dart';
 
 import '../models/notification_dto.dart';
 import '../models/user_activity_dto.dart';

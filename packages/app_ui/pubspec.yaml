@@ -21,3 +21,9 @@ dependencies:
   cached_network_image: ^3.4.1
   carousel_slider: ^5.1.2
   google_fonts: ^8.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  test_utils: ^0.1.0
