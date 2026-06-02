@@ -9,9 +9,6 @@ environment:
 resolution: workspace
 
 dependencies:
-  flutter:
-    sdk: flutter
-
   core_config: ^0.1.0
   dio: ^5.9.2
   firebase_performance: ^0.11.4+1
