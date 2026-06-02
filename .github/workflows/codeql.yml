@@ -6,6 +6,9 @@ name: CodeQL
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - '**/*.md'
+      - 'LICENSE'
   pull_request:
     branches: [main]
     paths:
