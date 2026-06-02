@@ -89,10 +89,13 @@ platform :ios do
     )
 
     # Compile Dart + assets without signing; gym handles archive & signing using
-    # the match-provisioned profile selected below.
+    # the match-provisioned profile selected below. The dart-define file carries
+    # the flavor's runtime config (API URL, FLAVOR, etc.) read via
+    # String.fromEnvironment — without it the build ships default/empty config.
     flutter(
       "build", "ios", "--release", "--no-codesign",
-      "--flavor", flavor, "--build-number", build_number
+      "--flavor", flavor, "--build-number", build_number,
+      "--dart-define-from-file", "env/#{flavor}.json"
     )
 
     build_app(

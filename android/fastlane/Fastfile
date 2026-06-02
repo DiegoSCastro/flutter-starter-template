@@ -67,10 +67,13 @@ platform :android do
     build_number = resolve_build_number(options)
 
     # Requires release signing configured via android/key.properties; without
-    # it the bundle is debug-signed and Play will reject it.
+    # it the bundle is debug-signed and Play will reject it. The dart-define
+    # file carries the flavor's runtime config (API URL, FLAVOR, etc.) read via
+    # String.fromEnvironment — without it the build ships default/empty config.
     flutter(
       "build", "appbundle", "--release",
-      "--flavor", flavor, "--build-number", build_number
+      "--flavor", flavor, "--build-number", build_number,
+      "--dart-define-from-file", "env/#{flavor}.json"
     )
 
     # Output path is relative to android/ (fastlane's working directory).
