@@ -107,37 +107,49 @@ class _BookmarkAvatar extends StatelessWidget {
     final theme = Theme.of(context);
     final title = bookmark.title.trim();
     final initial = title.isNotEmpty ? title[0].toUpperCase() : '#';
-    final avatar = Container(
-      width: 48,
-      height: 48,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            theme.colorScheme.primary,
-            theme.colorScheme.secondary,
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+    final Widget avatar;
+    
+    if (bookmark.imageUrls.isNotEmpty) {
+      avatar = AppNetworkImage(
+        imageUrl: bookmark.imageUrls.first,
+        width: 48,
+        height: 48,
         borderRadius: BorderRadius.circular(AppRadius.sm),
-        boxShadow: [
-          BoxShadow(
-            color: theme.colorScheme.primary.withValues(alpha: 0.2),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
+        fit: BoxFit.cover,
+      );
+    } else {
+      avatar = Container(
+        width: 48,
+        height: 48,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              theme.colorScheme.primary,
+              theme.colorScheme.secondary,
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
-        ],
-      ),
-      child: Center(
-        child: Text(
-          initial,
-          style: theme.textTheme.titleMedium?.copyWith(
-            color: theme.colorScheme.onPrimary,
-            fontWeight: FontWeight.bold,
+          borderRadius: BorderRadius.circular(AppRadius.sm),
+          boxShadow: [
+            BoxShadow(
+              color: theme.colorScheme.primary.withValues(alpha: 0.2),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Center(
+          child: Text(
+            initial,
+            style: theme.textTheme.titleMedium?.copyWith(
+              color: theme.colorScheme.onPrimary,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
-      ),
-    );
+      );
+    }
     if (!bookmark.isPendingSync) return avatar;
     return Tooltip(
       message: context.l10n.bookmarksNotYetSynced,
