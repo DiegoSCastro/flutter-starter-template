@@ -94,11 +94,18 @@ class _BookmarksListViewState extends State<BookmarksListView> {
           builder: (context, state) => _SortMenuButton(sort: state.sort),
         ),
       ],
-      floatingActionButton: FloatingActionButton(
-        onPressed: _openNew,
-        tooltip: context.l10n.bookmarksAddTooltip,
-        child: const FaIcon(FontAwesomeIcons.plus),
-      ).animateScale(delay: 300.ms),
+      floatingActionButton: Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.sizeOf(context).width < AppBreakpoints.medium
+              ? 32 + MediaQuery.paddingOf(context).bottom
+              : 0,
+        ),
+        child: FloatingActionButton(
+          onPressed: _openNew,
+          tooltip: context.l10n.bookmarksAddTooltip,
+          child: const FaIcon(FontAwesomeIcons.plus),
+        ).animateScale(delay: 300.ms),
+      ),
       body: LayoutBuilder(
         builder: (context, constraints) {
           final twoPane = constraints.maxWidth >= _twoPaneMinWidth;

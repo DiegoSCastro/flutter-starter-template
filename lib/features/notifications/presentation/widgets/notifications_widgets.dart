@@ -34,61 +34,183 @@ class NotificationsView extends StatelessWidget {
           title: context.l10n.notificationsAppBarTitle,
           isLoading: state.isLoading && state.hasNoContent,
           padding: EdgeInsets.zero,
-          body: state.hasNoContent && !state.isLoading
-              ? AppEmptyView(
-                  icon: FontAwesomeIcons.bell,
-                  title: context.l10n.notificationsEmptyTitle,
-                  message: context.l10n.notificationsEmptyMessage,
-                )
-              : const _FeedList(),
+          body: const _NotificationsTabs(),
         );
       },
     );
   }
 }
 
-class _FeedList extends StatelessWidget {
-  const _FeedList();
+class _NotificationsTabs extends StatelessWidget {
+  const _NotificationsTabs();
 
   @override
   Widget build(BuildContext context) {
     final state = context.watch<NotificationsBloc>().state;
+    return DefaultTabController(
+      length: 2,
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(
+              AppSpacing.lg,
+              AppSpacing.sm,
+              AppSpacing.lg,
+              AppSpacing.md,
+            ),
+            child: _NotificationsTabBar(state: state),
+          ),
+          Expanded(
+            child: TabBarView(
+              children: [
+                _NotificationsList(
+                  notifications: state.notifications,
+                  unreadCount: state.unreadCount,
+                ),
+                _ActivitiesList(activities: state.activities),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _NotificationsTabBar extends StatelessWidget {
+  const _NotificationsTabBar({required this.state});
+
+  final NotificationsState state;
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      clipBehavior: Clip.antiAlias,
+      color: context.colorScheme.surfaceContainerHighest.withValues(
+        alpha: context.isDark ? 0.32 : 0.48,
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        side: BorderSide(
+          color: context.colorScheme.outlineVariant.withValues(alpha: 0.36),
+        ),
+      ),
+      child: TabBar(
+        indicatorSize: TabBarIndicatorSize.tab,
+        dividerHeight: 0,
+        labelColor: context.colorScheme.onSecondaryContainer,
+        unselectedLabelColor: context.colorScheme.onSurfaceVariant,
+        indicator: BoxDecoration(
+          color: context.colorScheme.secondaryContainer,
+          borderRadius: BorderRadius.circular(AppRadius.lg),
+        ),
+        tabs: [
+          Tab(
+            child: _TabLabel(
+              icon: FontAwesomeIcons.bell,
+              label: context.l10n.notificationsSection,
+              badgeCount: state.unreadCount,
+            ),
+          ),
+          Tab(
+            child: _TabLabel(
+              icon: FontAwesomeIcons.clockRotateLeft,
+              label: context.l10n.notificationsActivitySection,
+              badgeCount: state.activities.length,
+              showZero: true,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TabLabel extends StatelessWidget {
+  const _TabLabel({
+    required this.icon,
+    required this.label,
+    required this.badgeCount,
+    this.showZero = false,
+  });
+
+  final FaIconData icon;
+  final String label;
+  final int badgeCount;
+  final bool showZero;
+
+  @override
+  Widget build(BuildContext context) {
+    final showBadge = badgeCount > 0 || showZero;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        FaIcon(icon, size: AppIconSize.sm),
+        const SizedBox(width: AppSpacing.xs),
+        Flexible(
+          child: Text(
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        if (showBadge) ...[
+          const SizedBox(width: AppSpacing.xs),
+          Container(
+            constraints: const BoxConstraints(minWidth: 20),
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.xs,
+              vertical: AppSpacing.xxs,
+            ),
+            decoration: BoxDecoration(
+              color: context.colorScheme.surface.withValues(alpha: 0.8),
+              borderRadius: BorderRadius.circular(AppRadius.xl),
+            ),
+            child: Text(
+              badgeCount.toString(),
+              textAlign: TextAlign.center,
+              style: context.textTheme.labelSmall?.copyWith(
+                color: context.colorScheme.onSurface,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+}
+
+class _NotificationsList extends StatelessWidget {
+  const _NotificationsList({
+    required this.notifications,
+    required this.unreadCount,
+  });
+
+  final List<AppNotification> notifications;
+  final int unreadCount;
+
+  @override
+  Widget build(BuildContext context) {
     return RefreshIndicator(
-      onRefresh: () {
-        final bloc = context.read<NotificationsBloc>()
-          ..add(const NotificationsLoadRequested());
-        // Keep the spinner visible until the reload settles.
-        return bloc.stream.firstWhere((s) => !s.isLoading);
-      },
+      onRefresh: () => _refresh(context),
       child: ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.all(AppSpacing.lg),
         children: [
-          if (state.activities.isNotEmpty) ...[
-            _SectionHeader(title: context.l10n.notificationsActivitySection),
-            const SizedBox(height: AppSpacing.sm),
-            for (final (index, activity) in state.activities.indexed)
-              _ActivityTile(
-                activity: activity,
-              ).animateSlideUp(delay: (50 * index).ms),
-            const SizedBox(height: AppSpacing.xl),
-          ],
           _SectionHeader(
             title: context.l10n.notificationsSection,
-            badgeCount: state.unreadCount,
+            badgeCount: unreadCount,
           ),
           const SizedBox(height: AppSpacing.sm),
-          if (state.notifications.isEmpty)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: AppSpacing.lg),
-              child: Text(
-                context.l10n.notificationsNoNotifications,
-                style: context.textTheme.bodyMedium?.copyWith(
-                  color: context.colorScheme.onSurfaceVariant,
-                ),
-              ),
+          if (notifications.isEmpty)
+            _TabEmptyState(
+              icon: FontAwesomeIcons.bell,
+              title: context.l10n.notificationsNoNotifications,
+              message: context.l10n.notificationsEmptyMessage,
             )
           else
-            for (final (index, notification) in state.notifications.indexed)
+            for (final (index, notification) in notifications.indexed)
               _NotificationTile(
                 notification: notification,
                 onTap: () => context.read<NotificationsBloc>().add(
@@ -96,6 +218,69 @@ class _FeedList extends StatelessWidget {
                 ),
               ).animateSlideUp(delay: (50 * index).ms),
         ],
+      ),
+    );
+  }
+}
+
+class _ActivitiesList extends StatelessWidget {
+  const _ActivitiesList({required this.activities});
+
+  final List<UserActivity> activities;
+
+  @override
+  Widget build(BuildContext context) {
+    return RefreshIndicator(
+      onRefresh: () => _refresh(context),
+      child: ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.all(AppSpacing.lg),
+        children: [
+          _SectionHeader(title: context.l10n.notificationsActivitySection),
+          const SizedBox(height: AppSpacing.sm),
+          if (activities.isEmpty)
+            _TabEmptyState(
+              icon: FontAwesomeIcons.clockRotateLeft,
+              title: context.l10n.notificationsEmptyTitle,
+              message: context.l10n.notificationsEmptyMessage,
+            )
+          else
+            for (final (index, activity) in activities.indexed)
+              _ActivityTile(
+                activity: activity,
+              ).animateSlideUp(delay: (50 * index).ms),
+        ],
+      ),
+    );
+  }
+}
+
+Future<void> _refresh(BuildContext context) {
+  final bloc = context.read<NotificationsBloc>()
+    ..add(const NotificationsLoadRequested());
+  // Keep the spinner visible until the reload settles.
+  return bloc.stream.firstWhere((s) => !s.isLoading);
+}
+
+class _TabEmptyState extends StatelessWidget {
+  const _TabEmptyState({
+    required this.icon,
+    required this.title,
+    required this.message,
+  });
+
+  final FaIconData icon;
+  final String title;
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxxl),
+      child: AppEmptyView(
+        icon: icon,
+        title: title,
+        message: message,
       ),
     );
   }

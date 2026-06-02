@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../layout/app_breakpoints.dart';
+import '../theme/app_radius.dart';
+import '../theme/app_spacing.dart';
 
 /// A single destination in the [AppAdaptiveScaffold] navigation.
 @immutable
@@ -124,34 +126,50 @@ class _FloatingBottomBar extends StatelessWidget {
 
     return SafeArea(
       top: false,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-        child: DecoratedBox(
-          decoration: BoxDecoration(
-            color: colorScheme.surfaceContainer,
-            borderRadius: BorderRadius.circular(28),
-            boxShadow: [
-              BoxShadow(
-                color: colorScheme.shadow.withValues(alpha: 0.18),
-                blurRadius: 24,
-                offset: const Offset(0, 8),
-              ),
-            ],
+      minimum: const EdgeInsets.only(bottom: AppSpacing.xs),
+      child: Align(
+        alignment: Alignment.bottomCenter,
+        heightFactor: 1,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(
+            AppSpacing.lg,
+            0,
+            AppSpacing.lg,
+            AppSpacing.xs,
           ),
-          child: SizedBox(
-            height: 64,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 6),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  for (var index = 0; index < destinations.length; index++)
-                    _BottomBarItem(
-                      destination: destinations[index],
-                      selected: index == selectedIndex,
-                      onTap: () => onDestinationSelected(index),
-                    ),
-                ],
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 460),
+            child: Material(
+              color: colorScheme.surfaceContainer.withValues(alpha: 0.96),
+              clipBehavior: Clip.antiAlias,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(AppRadius.xl),
+                side: BorderSide(
+                  color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+                ),
+              ),
+              shadowColor: colorScheme.shadow.withValues(alpha: 0.25),
+              elevation: 8,
+              child: SizedBox(
+                height: 72,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.sm,
+                    vertical: AppSpacing.xs,
+                  ),
+                  child: Row(
+                    children: [
+                      for (var index = 0; index < destinations.length; index++)
+                        Expanded(
+                          child: _BottomBarItem(
+                            destination: destinations[index],
+                            selected: index == selectedIndex,
+                            onTap: () => onDestinationSelected(index),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
@@ -188,61 +206,71 @@ class _BottomBarItem extends StatelessWidget {
       button: true,
       selected: selected,
       label: destination.label,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
-        child: AnimatedContainer(
-          duration: _duration,
-          curve: _curve,
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-          decoration: BoxDecoration(
-            color: selected
-                ? colorScheme.secondaryContainer
-                : Colors.transparent,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              AnimatedSwitcher(
-                duration: _duration,
-                child: Badge(
-                  isLabelVisible: destination.hasBadge,
-                  child: FaIcon(
-                    selected ? destination.selectedIcon : destination.icon,
-                    key: ValueKey<bool>(selected),
-                    color: foreground,
-                    size: 24,
-                  ),
-                ),
-              ),
-              ClipRect(
-                child: AnimatedAlign(
+      child: Tooltip(
+        message: destination.label,
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(AppRadius.lg),
+          child: SizedBox(
+            height: 64,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                AnimatedContainer(
                   duration: _duration,
                   curve: _curve,
-                  alignment: Alignment.centerLeft,
-                  widthFactor: selected ? 1 : 0,
-                  child: AnimatedOpacity(
+                  width: selected ? 54 : 38,
+                  height: 32,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: selected
+                        ? colorScheme.secondaryContainer
+                        : Colors.transparent,
+                    borderRadius: BorderRadius.circular(AppRadius.xl),
+                  ),
+                  child: AnimatedSwitcher(
                     duration: _duration,
-                    curve: _curve,
-                    opacity: selected ? 1 : 0,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 8),
-                      child: Text(
-                        destination.label,
-                        maxLines: 1,
-                        overflow: TextOverflow.clip,
-                        softWrap: false,
-                        style: textTheme.labelLarge?.copyWith(
-                          color: foreground,
-                          fontWeight: FontWeight.w600,
-                        ),
+                    child: Badge(
+                      isLabelVisible: destination.hasBadge,
+                      child: FaIcon(
+                        selected ? destination.selectedIcon : destination.icon,
+                        key: ValueKey<bool>(selected),
+                        color: foreground,
+                        size: 21,
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+                const SizedBox(height: AppSpacing.xxs),
+                AnimatedDefaultTextStyle(
+                  duration: _duration,
+                  curve: _curve,
+                  style:
+                      textTheme.labelSmall?.copyWith(
+                        color: selected
+                            ? colorScheme.onSurface
+                            : colorScheme.onSurfaceVariant,
+                        fontWeight: selected
+                            ? FontWeight.w700
+                            : FontWeight.w500,
+                      ) ??
+                      TextStyle(
+                        color: selected
+                            ? colorScheme.onSurface
+                            : colorScheme.onSurfaceVariant,
+                        fontWeight: selected
+                            ? FontWeight.w700
+                            : FontWeight.w500,
+                      ),
+                  child: Text(
+                    destination.label,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    softWrap: false,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
