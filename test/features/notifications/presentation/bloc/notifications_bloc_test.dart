@@ -31,8 +31,9 @@ void main() {
     getFeed = MockGetNotificationsFeed();
     markRead = MockMarkNotificationRead();
     activityNotifier = MockActivityNotifier();
-    when(() => activityNotifier.onActivityOccurred)
-        .thenAnswer((_) => const Stream.empty());
+    when(
+      () => activityNotifier.onActivityOccurred,
+    ).thenAnswer((_) => const Stream.empty());
 
     unreadNotification = AppNotification(
       id: 'n-1',
@@ -62,7 +63,8 @@ void main() {
     );
   });
 
-  NotificationsBloc buildBloc() => NotificationsBloc(getFeed, markRead, activityNotifier);
+  NotificationsBloc buildBloc() =>
+      NotificationsBloc(getFeed, markRead, activityNotifier);
 
   group('NotificationsBloc', () {
     test('initial state is empty', () {
