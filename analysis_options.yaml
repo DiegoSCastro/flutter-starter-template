@@ -28,9 +28,12 @@ analyzer:
     strict-raw-types: true
   exclude:
     - build/**
-    - lib/**/*.freezed.dart
-    - lib/**/*.g.dart
-    - lib/objectbox.g.dart
+    # Match generated files anywhere in the workspace (app and packages/*),
+    # not just the root lib/. Globs are relative to this file, so lib/** would
+    # miss codegen that lands inside a package (e.g. retrofit/injectable).
+    - "**/*.freezed.dart"
+    - "**/*.g.dart"
+    - "**/*.config.dart"
     - lib/firebase_options.dart
 
 
