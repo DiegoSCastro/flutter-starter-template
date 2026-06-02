@@ -613,7 +613,7 @@ Two safeguards keep the trade-off (diff noise) in check:
   collapses them in diffs and excludes them from language stats.
 - **CI** runs `build_runner` and fails if the working tree changes (the
   _"Verify generated code is up to date"_ step in
-  [`.github/workflows/ci.yml`](file:///Users/trunglaptieu/development/projects/flutter-starter-template/.github/workflows/ci.yml)),
+  [`.github/workflows/ci.yml`](.github/workflows/ci.yml)),
   so stale generated code can never merge.
 
 If your team prefers ignoring generated files instead, you'd need to: add the
@@ -625,11 +625,11 @@ pre-build hook so contributors don't compile stale code.
 
 ## 🌐 Localization (i18n)
 
-Translations are managed using ARB (Application Resource Bundle) files located under [lib/l10n/](file:///Users/trunglaptieu/development/projects/flutter-starter-template/lib/l10n/).
+Translations are managed using ARB (Application Resource Bundle) files located under [lib/l10n/](lib/l10n/).
 
 ### 🛠 Generating Translations
 
-Since `generate: true` is enabled in [pubspec.yaml](file:///Users/trunglaptieu/development/projects/flutter-starter-template/pubspec.yaml), Flutter automatically updates the generated localization files whenever you run packages commands:
+Since `generate: true` is enabled in [pubspec.yaml](pubspec.yaml), Flutter automatically updates the generated localization files whenever you run packages commands:
 
 ```bash
 # Generate localization resources manually

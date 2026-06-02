@@ -8,11 +8,27 @@ on:
     paths-ignore:
       - '**/*.md'
       - 'LICENSE'
+      - '.mcp.json'
+      - '.agents/**'
+      - '.vscode/**'
+      - '.antigravity/**'
+      - '.antigravitycli/**'
+      - '.mcp/**'
+      - '.codegraph/**'
+      - 'skills-lock.json'
   pull_request:
     branches: [main]
     paths-ignore:
       - '**/*.md'
       - 'LICENSE'
+      - '.mcp.json'
+      - '.agents/**'
+      - '.vscode/**'
+      - '.antigravity/**'
+      - '.antigravitycli/**'
+      - '.mcp/**'
+      - '.codegraph/**'
+      - 'skills-lock.json'
 
 # Cancel superseded runs on the same ref to save CI minutes.
 concurrency:
