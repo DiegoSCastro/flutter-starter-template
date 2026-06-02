@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:dio/dio.dart';
+import 'package:core_network/core_network.dart';
 import 'package:flutter_starter_template/features/bookmarks/data/datasources/bookmarks_remote_data_source.dart';
 import 'package:flutter_starter_template/features/bookmarks/data/local/bookmark_entity.dart';
 import 'package:flutter_starter_template/features/bookmarks/data/local/bookmarks_local_data_source.dart';

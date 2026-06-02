@@ -394,7 +394,7 @@ packages:
     source: hosted
     version: "0.4.1"
   dio:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: dio
       sha256: aff32c08f92787a557dd5c0145ac91536481831a01b4648136373cddb0e64f8c
@@ -1541,7 +1541,7 @@ packages:
     source: hosted
     version: "0.6.0"
   retrofit:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: retrofit
       sha256: "0f629ed26b2c48c66fe54bd548313c6fdf7955be18bff37e08a46dd3f97f8eaf"

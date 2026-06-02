@@ -1,3 +1,6 @@
+export 'package:dio/dio.dart';
+export 'package:retrofit/retrofit.dart' hide Headers, HttpMethod;
+
 export 'src/di.module.dart' show CoreNetworkPackageModule;
 export 'src/network_module.dart';
 export 'src/performance_interceptor.dart';

@@ -79,14 +79,6 @@ dependencies:
   # Service-locator container that holds the DI graph injectable generates.
   get_it: ^9.2.1
 
-  # Type-safe HTTP client: annotate an abstract class, codegen produces a
-  # Dio-backed implementation (used by the auth remote data source).
-  retrofit: ^4.9.2
-
-  # Underlying HTTP transport for retrofit; interceptors, timeouts, and
-  # error mapping live here.
-  dio: ^5.9.2
-
   # Runtime annotations (@JsonSerializable, @JsonKey) consumed by
   # json_serializable to generate fromJson/toJson.
   json_annotation: ^4.12.0

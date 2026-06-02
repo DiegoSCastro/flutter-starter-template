@@ -1,5 +1,4 @@
-import 'package:dio/dio.dart';
-import 'package:retrofit/retrofit.dart';
+import 'package:core_network/core_network.dart';
 
 import '../models/change_password_request.dart';
 import '../models/refresh_token_request.dart';

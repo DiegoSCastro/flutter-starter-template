@@ -1,4 +1,4 @@
-import 'package:dio/dio.dart';
+import 'package:core_network/core_network.dart';
 import 'package:injectable/injectable.dart';
 
 import 'bookmarks_remote_data_source.dart';

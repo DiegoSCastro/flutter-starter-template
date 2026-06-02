@@ -1,6 +1,5 @@
 import 'package:core_config/core_config.dart';
 import 'package:core_network/core_network.dart';
-import 'package:dio/dio.dart';
 import 'package:firebase_performance/firebase_performance.dart';
 import 'package:injectable/injectable.dart';
 
