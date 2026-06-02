@@ -23,6 +23,7 @@ environment:
 
 workspace:
   - packages/app_ui
+  - packages/core_analytics
   - packages/core_domain
 
 # Dependencies specify other packages that your package needs in order to work.
@@ -33,6 +34,7 @@ workspace:
 # versions available, run `flutter pub outdated`.
 dependencies:
   app_ui: ^0.1.0
+  core_analytics: ^0.1.0
   core_domain: ^0.1.0
 
   flutter:
