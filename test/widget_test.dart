@@ -8,6 +8,8 @@ import 'package:flutter_starter_template/features/auth/presentation/bloc/auth_bl
 import 'package:flutter_starter_template/features/auth/presentation/bloc/auth_state.dart';
 import 'package:flutter_starter_template/features/bookmarks/domain/services/bookmarks_sync_controller.dart';
 import 'package:flutter_starter_template/features/home/presentation/bloc/home_bloc.dart';
+import 'package:flutter_starter_template/features/notifications/presentation/bloc/notifications_bloc.dart';
+import 'package:flutter_starter_template/features/notifications/presentation/bloc/notifications_state.dart';
 import 'package:flutter_starter_template/shared/domain/bookmark_stats.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:storage/storage.dart';
@@ -73,6 +75,10 @@ void main() {
       homeBloc = bloc;
       return bloc;
     });
+
+    final notificationsBloc = MockNotificationsBloc();
+    when(() => notificationsBloc.state).thenReturn(const NotificationsState());
+    getIt.registerFactory<NotificationsBloc>(() => notificationsBloc);
   });
 
   tearDown(() async {

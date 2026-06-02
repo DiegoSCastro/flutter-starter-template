@@ -5,6 +5,8 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../../../../shared/domain/activity_notifier.dart';
+
 import '../../../domain/usecases/create_bookmark.dart';
 import '../../../domain/usecases/get_bookmark.dart';
 import '../../../domain/usecases/update_bookmark.dart';
@@ -25,8 +27,10 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
     AnalyticsService analytics,
     ImagePickerService imagePickerService,
     PermissionService permissionService,
+    ActivityNotifier activityNotifier,
   ) : _loader = BookmarkFormLoader(get),
       _submitter = BookmarkFormSubmitter(create, update, analytics),
+      _activityNotifier = activityNotifier,
       _mediaHandler = BookmarkFormMediaHandler(
         imagePickerService,
         permissionService,
@@ -55,6 +59,7 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
   final BookmarkFormLoader _loader;
   final BookmarkFormSubmitter _submitter;
   final BookmarkFormMediaHandler _mediaHandler;
+  final ActivityNotifier _activityNotifier;
 
   Future<void> _onInitialized(
     BookmarkFormInitialized event,
@@ -166,6 +171,7 @@ class BookmarkFormBloc extends Bloc<BookmarkFormEvent, BookmarkFormState> {
     switch (result) {
       case Ok<void>():
         emit(state.copyWith(status: BookmarkFormStatus.submitted));
+        _activityNotifier.notifyActivityOccurred();
       case Err(:final failure):
         emit(state.copyWith(status: BookmarkFormStatus.idle, failure: failure));
     }

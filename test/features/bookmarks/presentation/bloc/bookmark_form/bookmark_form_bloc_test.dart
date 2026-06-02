@@ -25,6 +25,8 @@ void main() {
     registerFallbackValue(fallbackUpdateParams);
   });
 
+  late MockActivityNotifier mockActivityNotifier;
+
   setUp(() {
     mockGet = MockGetBookmark();
     mockCreate = MockCreateBookmark();
@@ -32,6 +34,7 @@ void main() {
     mockAnalytics = MockAnalyticsService();
     mockImagePicker = MockImagePickerService();
     mockPermission = MockPermissionService();
+    mockActivityNotifier = MockActivityNotifier();
     stubAnalyticsService(mockAnalytics);
   });
 
@@ -42,6 +45,7 @@ void main() {
     mockAnalytics,
     mockImagePicker,
     mockPermission,
+    mockActivityNotifier,
   );
 
   group('BookmarkFormBloc', () {

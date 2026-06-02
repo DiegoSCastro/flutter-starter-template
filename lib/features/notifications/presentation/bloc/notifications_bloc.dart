@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:architecture/architecture.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
+import '../../../../shared/domain/activity_notifier.dart';
 import '../../domain/entities/app_notification.dart';
 import '../../domain/usecases/get_notifications_feed.dart';
 import '../../domain/usecases/mark_notification_read.dart';
@@ -10,10 +13,13 @@ import 'notifications_state.dart';
 
 part 'notifications_event.dart';
 
-@injectable
+@lazySingleton
 class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
-  NotificationsBloc(this._getFeed, this._markRead)
-    : super(const NotificationsState()) {
+  NotificationsBloc(
+    this._getFeed,
+    this._markRead,
+    ActivityNotifier activityNotifier,
+  ) : super(const NotificationsState()) {
     on<NotificationsLoadRequested>(
       _onLoadRequested,
       transformer: droppable(),
@@ -22,7 +28,13 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
       _onMarkReadRequested,
       transformer: sequential(),
     );
+
+    _activitySubscription = activityNotifier.onActivityOccurred.listen((_) {
+      add(const NotificationsLoadRequested());
+    });
   }
+
+  late final StreamSubscription<void> _activitySubscription;
 
   final GetNotificationsFeed _getFeed;
   final MarkNotificationRead _markRead;
@@ -70,5 +82,11 @@ class NotificationsBloc extends Bloc<NotificationsEvent, NotificationsState> {
     return state.notifications
         .map((n) => n.id == id ? n.copyWith(isRead: isRead) : n)
         .toList(growable: false);
+  }
+
+  @override
+  Future<void> close() {
+    _activitySubscription.cancel();
+    return super.close();
   }
 }
