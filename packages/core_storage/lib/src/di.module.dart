@@ -12,7 +12,7 @@ import 'package:injectable/injectable.dart' as _i526;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 class CoreStoragePackageModule extends _i526.MicroPackageModule {
-// initializes the registration of main-scope dependencies inside of GetIt
+  // initializes the registration of main-scope dependencies inside of GetIt
   @override
   _i687.FutureOr<void> init(_i526.GetItHelper gh) async {
     final sharedPreferencesModule = _$SharedPreferencesModule();
@@ -21,10 +21,11 @@ class CoreStoragePackageModule extends _i526.MicroPackageModule {
       preResolve: true,
     );
     gh.lazySingleton<_i263.KeychainResetOnReinstall>(
-        () => _i263.KeychainResetOnReinstall(
-              gh<_i460.SharedPreferences>(),
-              gh<_i558.FlutterSecureStorage>(),
-            ));
+      () => _i263.KeychainResetOnReinstall(
+        gh<_i460.SharedPreferences>(),
+        gh<_i558.FlutterSecureStorage>(),
+      ),
+    );
   }
 }
 
