@@ -1,11 +1,9 @@
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:core_analytics/core_analytics.dart';
 import 'package:core_domain/core_domain.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/analytics/analytics_extensions.dart';
-import '../../../../core/analytics/analytics_service.dart';
-import '../../../../core/extensions/future_extensions.dart';
 import '../../domain/usecases/register.dart';
 import '../../domain/usecases/restore_session.dart';
 import '../../domain/usecases/sign_in.dart';

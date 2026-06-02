@@ -1,12 +1,12 @@
 import 'dart:async';
 
 import 'package:app_ui/app_ui.dart';
+import 'package:core_domain/core_domain.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../app/router.dart';
 import '../../../../core/extensions/build_context_extensions.dart';
-import '../../../../core/extensions/future_extensions.dart';
 import '../../domain/entities/bookmark.dart';
 import '../../domain/services/bookmarks_sync_controller.dart';
 import '../bloc/bookmarks_list/bookmarks_list_bloc.dart';

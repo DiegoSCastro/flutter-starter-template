@@ -1,15 +1,14 @@
 import 'package:app_ui/app_ui.dart';
+import 'package:core_analytics/core_analytics.dart';
+import 'package:core_domain/core_domain.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../app/router.dart';
-import '../../../../core/analytics/analytics_extensions.dart';
-import '../../../../core/analytics/analytics_service.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/extensions/build_context_extensions.dart';
-import '../../../../core/extensions/future_extensions.dart';
 import '../../../../core/theme/theme_bloc.dart';
 import '../../../../core/theme/theme_state.dart';
 import '../../../../shared/presentation/session_scope.dart';

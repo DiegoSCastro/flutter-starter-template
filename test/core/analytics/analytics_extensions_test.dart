@@ -1,5 +1,4 @@
-import 'package:flutter_starter_template/core/analytics/analytics_events.dart';
-import 'package:flutter_starter_template/core/analytics/analytics_extensions.dart';
+import 'package:core_analytics/core_analytics.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 

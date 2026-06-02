@@ -1,3 +1,4 @@
+import 'package:core_analytics/core_analytics.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 
@@ -7,7 +8,9 @@ final GetIt getIt = GetIt.instance;
 
 /// Async because core database modules use `@preResolve` to open native
 /// resources before any consumer is constructed. Must be awaited from `main`.
-@InjectableInit()
+@InjectableInit(
+  externalPackageModulesBefore: [ExternalModule(CoreAnalyticsPackageModule)],
+)
 Future<void> configureDependencies() async {
   await getIt.init();
 }

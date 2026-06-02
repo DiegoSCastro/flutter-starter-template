@@ -1,14 +1,13 @@
 import 'dart:async';
 import 'dart:io' show Platform;
 
+import 'package:core_analytics/core_analytics.dart';
+import 'package:core_domain/core_domain.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../analytics/analytics_extensions.dart';
-import '../../analytics/analytics_service.dart';
-import '../../extensions/future_extensions.dart';
 import 'notifications_service.dart';
 
 typedef OnNotificationTap = void Function(Map<String, dynamic>? data);
