@@ -3,12 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'semantic_colors.dart';
-import 'theme_state.dart';
 
 class AppTheme {
   const AppTheme._();
 
-  static ThemeData light({FlexScheme scheme = ThemeState.defaultScheme}) {
+  static ThemeData light({FlexScheme scheme = FlexScheme.blue}) {
     return FlexThemeData.light(
       scheme: scheme,
       textTheme: GoogleFonts.interTextTheme(),
@@ -18,7 +17,7 @@ class AppTheme {
     );
   }
 
-  static ThemeData dark({FlexScheme scheme = ThemeState.defaultScheme}) {
+  static ThemeData dark({FlexScheme scheme = FlexScheme.blue}) {
     return FlexThemeData.dark(
       scheme: scheme,
       textTheme: GoogleFonts.interTextTheme(),
@@ -27,4 +26,16 @@ class AppTheme {
       extensions: const [SemanticColors.dark],
     );
   }
+}
+
+extension BuildContextTheme on BuildContext {
+  ThemeData get theme => Theme.of(this);
+  ColorScheme get colorScheme => theme.colorScheme;
+  TextTheme get textTheme => theme.textTheme;
+
+  SemanticColors get semanticColors =>
+      theme.extension<SemanticColors>() ?? SemanticColors.light;
+  Brightness get brightness => theme.brightness;
+  bool get isDark => brightness == Brightness.dark;
+  bool get isLight => brightness == Brightness.light;
 }

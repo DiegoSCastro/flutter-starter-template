@@ -57,6 +57,7 @@ import 'package:flutter_starter_template/core/platform/share/share_module.dart'
     as _i653;
 import 'package:flutter_starter_template/core/platform/share/share_service.dart'
     as _i828;
+import 'package:flutter_starter_template/core/theme/theme_bloc.dart' as _i652;
 import 'package:flutter_starter_template/features/auth/data/datasources/auth_local_data_source.dart'
     as _i297;
 import 'package:flutter_starter_template/features/auth/data/datasources/auth_remote_data_source.dart'
@@ -144,7 +145,6 @@ import 'package:flutter_starter_template/features/profile/presentation/bloc/prof
 import 'package:flutter_starter_template/objectbox.g.dart' as _i831;
 import 'package:flutter_starter_template/shared/domain/bookmark_stats.dart'
     as _i189;
-import 'package:flutter_starter_template/ui/theme/theme_bloc.dart' as _i753;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:image_picker/image_picker.dart' as _i183;
 import 'package:injectable/injectable.dart' as _i526;
@@ -173,11 +173,11 @@ extension GetItInjectableX on _i174.GetIt {
     final authNetworkModule = _$AuthNetworkModule();
     final bookmarksRemoteModule = _$BookmarksRemoteModule();
     final notificationsRemoteModule = _$NotificationsRemoteModule();
-    gh.factory<_i1013.ProfileBloc>(() => _i1013.ProfileBloc());
     await gh.factoryAsync<_i460.SharedPreferences>(
       () => sharedPreferencesModule.provideSharedPreferences(),
       preResolve: true,
     );
+    gh.factory<_i1013.ProfileBloc>(() => _i1013.ProfileBloc());
     gh.singleton<_i689.EnvConfig>(() => const _i689.EnvConfig());
     await gh.singletonAsync<_i706.ObjectBox>(
       () => objectBoxModule.provideObjectBox(),
@@ -231,8 +231,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i838.AnalyticsService>(
       () => _i838.FirebaseAnalyticsService(gh<_i398.FirebaseAnalytics>()),
     );
-    gh.lazySingleton<_i753.ThemeBloc>(
-      () => _i753.ThemeBloc(
+    gh.lazySingleton<_i652.ThemeBloc>(
+      () => _i652.ThemeBloc(
         gh<_i460.SharedPreferences>(),
         gh<_i838.AnalyticsService>(),
       ),
@@ -411,7 +411,7 @@ extension GetItInjectableX on _i174.GetIt {
   }
 }
 
-class _$SharedPreferencesModule extends _i753.SharedPreferencesModule {}
+class _$SharedPreferencesModule extends _i652.SharedPreferencesModule {}
 
 class _$ObjectBoxModule extends _i706.ObjectBoxModule {}
 

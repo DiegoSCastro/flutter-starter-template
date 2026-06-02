@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -7,6 +8,8 @@ import 'package:go_router/go_router.dart';
 import '../core/analytics/analytics_route_observer.dart';
 import '../core/di/injection.dart';
 import '../core/extensions/build_context_extensions.dart';
+import '../core/theme/theme_bloc.dart';
+import '../core/theme/theme_state.dart';
 import '../features/auth/presentation/auth_session.dart';
 import '../features/auth/presentation/bloc/auth_bloc.dart';
 import '../features/auth/presentation/bloc/auth_state.dart';
@@ -14,9 +17,6 @@ import '../features/bookmarks/domain/services/bookmarks_sync_controller.dart';
 import '../l10n/app_localizations.dart';
 import '../shared/domain/session.dart';
 import '../shared/presentation/session_scope.dart';
-import '../ui/theme/app_theme.dart';
-import '../ui/theme/theme_bloc.dart';
-import '../ui/theme/theme_state.dart';
 import 'router.dart';
 
 class App extends StatefulWidget {

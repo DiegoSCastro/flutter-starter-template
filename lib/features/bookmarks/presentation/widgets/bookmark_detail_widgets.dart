@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -13,11 +14,7 @@ import '../../../../core/extensions/build_context_extensions.dart';
 import '../../../../core/extensions/future_extensions.dart';
 import '../../../../core/platform/media/video_player_service.dart';
 import '../../../../core/platform/share/share_service.dart';
-import '../../../../ui/animation/widget_animations.dart';
-import '../../../../ui/theme/app_radius.dart';
-import '../../../../ui/theme/app_spacing.dart';
-import '../../../../ui/widgets/app_video_player.dart';
-import '../../../../ui/widgets/widgets.dart';
+import '../../../../shared/presentation/widgets/app_video_player.dart';
 import '../../domain/entities/bookmark.dart';
 import '../bloc/bookmark_detail/bookmark_detail_bloc.dart';
 import '../bloc/bookmark_detail/bookmark_detail_state.dart';

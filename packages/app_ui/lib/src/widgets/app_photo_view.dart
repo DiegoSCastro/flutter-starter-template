@@ -2,10 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 
-import '../../core/extensions/build_context_extensions.dart';
-import '../theme/app_icon_size.dart';
-import '../theme/app_spacing.dart';
-import 'app_photo_view_fullscreen.dart';
+import '../../app_ui.dart';
 
 /// A wrapper widget for [PhotoView] that simplifies image zooming,
 /// supports different image sources (network, asset, file, custom provider),
@@ -268,7 +265,7 @@ class _AppPhotoViewState extends State<AppPhotoView> {
                 ),
                 const SizedBox(height: AppSpacing.sm),
                 Text(
-                  context.l10n.commonImageLoadFailed,
+                  'Image Load Failed',
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: Theme.of(context).colorScheme.error,
                   ),

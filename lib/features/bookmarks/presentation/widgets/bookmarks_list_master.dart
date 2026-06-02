@@ -1,10 +1,8 @@
+import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/extensions/build_context_extensions.dart';
-import '../../../../ui/animation/widget_animations.dart';
-import '../../../../ui/theme/app_spacing.dart';
-import '../../../../ui/widgets/widgets.dart';
 import '../../domain/entities/bookmark.dart';
 import '../bloc/bookmarks_list/bookmarks_list_bloc.dart';
 import '../bloc/bookmarks_list/bookmarks_list_state.dart';

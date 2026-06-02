@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../theme/app_spacing.dart';
+import '../../app_ui.dart';
 
 /// Animates a bright highlight sweeping across its [child] subtree.
 ///

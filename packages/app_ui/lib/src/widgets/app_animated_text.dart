@@ -1,7 +1,7 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 
-import '../animation/app_durations.dart';
+import '../../app_ui.dart';
 
 enum AppAnimatedTextType { typewriter, fade }
 

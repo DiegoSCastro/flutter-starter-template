@@ -1,8 +1,8 @@
+import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
-import '../../core/platform/media/video_player_service.dart';
-import '../theme/app_spacing.dart';
+import '../../../core/platform/media/video_player_service.dart';
 
 class AppVideoPlayerControlsBar extends StatelessWidget {
   const AppVideoPlayerControlsBar({

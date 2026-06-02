@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_starter_template/l10n/app_localizations.dart';
-import 'package:flutter_starter_template/ui/widgets/app_photo_view.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:photo_view/photo_view.dart';
 
@@ -63,7 +63,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
 
       // Verify the error text is displayed
-      expect(find.text('Failed to load image'), findsOneWidget);
+      expect(find.text('Image Load Failed'), findsOneWidget);
       expect(find.byIcon(Icons.broken_image_rounded), findsOneWidget);
     });
 

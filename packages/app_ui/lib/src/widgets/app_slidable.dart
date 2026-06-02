@@ -5,8 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart' as slidable;
 
-import '../../core/extensions/build_context_extensions.dart';
-import '../animation/app_durations.dart';
+import '../../app_ui.dart';
 
 enum AppSlidableActionTone { neutral, primary, destructive }
 
@@ -77,7 +76,7 @@ class AppSlidableAction {
       backgroundColor: backgroundColor ?? _backgroundColor(context),
       foregroundColor: foregroundColor ?? _foregroundColor(context),
       icon: icon,
-      label: label ?? context.l10n.commonDelete,
+      label: label ?? 'Delete',
       borderRadius: borderRadius,
       padding: padding,
     );

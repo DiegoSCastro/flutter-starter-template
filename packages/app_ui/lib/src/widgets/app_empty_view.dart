@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../core/extensions/build_context_extensions.dart';
-import '../theme/app_spacing.dart';
+import '../../app_ui.dart';
 
 /// Full-screen placeholder for empty lists or states with no data yet.
 class AppEmptyView extends StatelessWidget {

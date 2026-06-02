@@ -1,10 +1,8 @@
+import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../core/extensions/build_context_extensions.dart';
 import '../../../../gen/assets.gen.dart';
-import '../../../../ui/animation/app_durations.dart';
-import '../../../../ui/animation/widget_animations.dart';
-import '../../../../ui/theme/app_spacing.dart';
 
 class SplashContent extends StatelessWidget {
   const SplashContent({super.key});
