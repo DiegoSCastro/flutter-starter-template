@@ -16,8 +16,7 @@ import 'package:app_platform/src/notifications/notifications_module.dart'
     as _i866;
 import 'package:app_platform/src/notifications/notifications_service.dart'
     as _i686;
-import 'package:app_platform/src/permissions/permission_service.dart'
-    as _i1040;
+import 'package:app_platform/src/permissions/permission_service.dart' as _i1040;
 import 'package:app_platform/src/share/share_module.dart' as _i1030;
 import 'package:app_platform/src/share/share_service.dart' as _i964;
 import 'package:firebase_messaging/firebase_messaging.dart' as _i892;
