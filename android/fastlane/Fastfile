@@ -1,0 +1,97 @@
+# Fastfile — Android build + Google Play upload for the flavored Flutter app.
+#
+# This is a template/scaffold: every account-specific value is read from the
+# environment (see fastlane/.env.example), so the repo carries no secrets and
+# no project-specific identifiers. Fill in fastlane/.env, then run:
+#
+#   bundle exec fastlane beta flavor:prod
+#
+# Authentication uses a Google Play service-account JSON key. Release signing
+# is configured separately via android/key.properties (see ../app/build.gradle.kts).
+
+# Map a Flutter flavor to the applicationId suffix this template applies and
+# the default Play track to publish to (prod uses the base id, no suffix).
+FLAVORS = {
+  "dev"     => { suffix: ".dev",     track: "internal" },
+  "staging" => { suffix: ".staging", track: "internal" },
+  "prod"    => { suffix: "",         track: "internal" },
+}.freeze
+
+# Fail early with a clear message when a required value is missing, instead of
+# letting an action fail later with an opaque error.
+def require_env(name)
+  value = ENV[name]
+  if value.nil? || value.strip.empty?
+    UI.user_error!(
+      "Missing required environment variable: #{name}. " \
+      "Copy fastlane/.env.example to fastlane/.env and fill it in."
+    )
+  end
+  value
+end
+
+# Resolve the build number (Android versionCode). Play rejects a duplicate or
+# non-increasing value, so prefer an explicit, monotonic source: the lane arg,
+# then BUILD_NUMBER (CI sets this), then the git commit count as a fallback.
+# In CI use BUILD_NUMBER — a shallow checkout makes the commit count unreliable.
+def resolve_build_number(options)
+  explicit = options[:build_number] || ENV["BUILD_NUMBER"]
+  return explicit.to_s unless explicit.nil? || explicit.to_s.strip.empty?
+  sh("git", "rev-list", "--count", "HEAD").strip
+end
+
+# Run the Flutter SDK from the repo root. The command is overridable via
+# FLUTTER_CMD so CI (which puts `flutter` on PATH directly) can set
+# FLUTTER_CMD=flutter; locally it defaults to the FVM-pinned SDK.
+def flutter(*args)
+  cmd = ENV.fetch("FLUTTER_CMD", "fvm flutter").split
+  Dir.chdir("..") do # fastlane runs in android/; the Flutter project root is one up.
+    sh(*cmd, *args)
+  end
+end
+
+default_platform(:android)
+
+platform :android do
+  desc "Build a flavor's app bundle and upload it to Google Play."
+  desc "Usage: bundle exec fastlane beta flavor:prod (flavor: dev|staging|prod)"
+  lane :beta do |options|
+    flavor = (options[:flavor] || "prod").to_s
+    config = FLAVORS.fetch(flavor) do
+      UI.user_error!(
+        "Unknown flavor '#{flavor}'. Expected one of: #{FLAVORS.keys.join(', ')}."
+      )
+    end
+
+    package_name = "#{require_env('ANDROID_PACKAGE_NAME_BASE')}#{config[:suffix]}"
+    build_number = resolve_build_number(options)
+
+    # Requires release signing configured via android/key.properties; without
+    # it the bundle is debug-signed and Play will reject it. The dart-define
+    # file carries the flavor's runtime config (API URL, FLAVOR, etc.) read via
+    # String.fromEnvironment — without it the build ships default/empty config.
+    flutter(
+      "build", "appbundle", "--release",
+      "--flavor", flavor, "--build-number", build_number,
+      "--dart-define-from-file", "env/#{flavor}.json"
+    )
+
+    # Output path is relative to android/ (fastlane's working directory).
+    aab = "../build/app/outputs/bundle/" \
+          "#{flavor}Release/app-#{flavor}-release.aab"
+
+    upload_to_play_store(
+      package_name: package_name,
+      track: options[:track] || config[:track],
+      aab: aab,
+      json_key: require_env("PLAY_STORE_JSON_KEY_PATH"),
+      # Publish as a draft so it can be reviewed before going live; switch to
+      # "completed" to release straight to the track's testers.
+      release_status: "draft",
+      skip_upload_apk: true,
+      skip_upload_metadata: true,
+      skip_upload_images: true,
+      skip_upload_screenshots: true,
+    )
+  end
+end
