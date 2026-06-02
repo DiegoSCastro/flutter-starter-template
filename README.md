@@ -62,6 +62,10 @@ To enable seamless local development and testing, this template is paired with a
 
 ## 🧬 Architecture
 
+<p align="center">
+  <img src="doc/svg/repo_top_level_structure.svg" alt="Repository Top Level Structure">
+</p>
+
 ```
 .
 ├── lib/                              # Root Flutter app package
@@ -99,6 +103,10 @@ To enable seamless local development and testing, this template is paired with a
 └── integration_test/                 # Device/emulator integration tests
 ```
 
+<p align="center">
+  <img src="doc/svg/lib_internal_structure.svg" alt="Lib Internal Structure">
+</p>
+
 The repository uses Dart Pub Workspaces. The root package is the assembled
 Flutter app: routing, DI composition, app-only features, ObjectBox entities, and
 Firebase bootstrap stay there. Reusable infrastructure lives in `packages/` and
@@ -115,9 +123,19 @@ All shared UI lives in `packages/app_ui` and is consumed through
 live beside their package in `packages/<name>/test`, while root app tests stay
 under `test/`.
 
-<details>
-<summary><b>📁 Feature Slice (Clean Architecture)</b></summary>
-<br>
+<p align="center">
+  <img src="doc/svg/workspace_package_dependency_graph.svg" alt="Workspace Package Dependency Graph">
+</p>
+
+<p align="center">
+  <img src="doc/svg/package_external_dependencies.svg" alt="Package External Dependencies">
+</p>
+
+### 📁 Feature Slice (Clean Architecture)
+
+<p align="center">
+  <img src="doc/svg/feature_slice_clean_architecture.svg" alt="Feature Slice Clean Architecture">
+</p>
 
 ```
 feature/
@@ -133,8 +151,6 @@ feature/
     ├── bloc/               Bloc + freezed state
     └── screens/            Stateless/Stateful widgets
 ```
-
-</details>
 
 <br>
 
