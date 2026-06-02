@@ -125,7 +125,7 @@ class _FloatingBottomBar extends StatelessWidget {
     return SafeArea(
       top: false,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: colorScheme.surfaceContainer,
