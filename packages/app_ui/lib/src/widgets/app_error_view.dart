@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-
 import '../../app_ui.dart';
 
 /// Full-screen error placeholder with an icon, message, and optional retry.

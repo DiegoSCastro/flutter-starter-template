@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 
-
 import '../../app_ui.dart';
 
 /// A wrapper widget for [PhotoView] that simplifies image zooming,

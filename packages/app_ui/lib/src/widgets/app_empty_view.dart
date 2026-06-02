@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 import '../../app_ui.dart';
 
 /// Full-screen placeholder for empty lists or states with no data yet.

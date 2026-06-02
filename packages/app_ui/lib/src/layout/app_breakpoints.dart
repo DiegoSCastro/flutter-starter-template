@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 
-
 /// Material 3 window-size-class breakpoints used to drive adaptive layouts.
 ///
 /// Widths are in logical pixels. A width below [medium] is treated as
@@ -29,5 +28,6 @@ extension BuildContextBreakpoints on BuildContext {
       MediaQuery.of(this).size.width < AppBreakpoints.expanded;
 
   /// Whether the screen width is at or above [AppBreakpoints.expanded].
-  bool get isExpanded => MediaQuery.of(this).size.width >= AppBreakpoints.expanded;
+  bool get isExpanded =>
+      MediaQuery.of(this).size.width >= AppBreakpoints.expanded;
 }

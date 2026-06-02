@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 
 import '../../app_ui.dart';
 
-
 /// Wraps [Scaffold] with consistent app-bar styling and an optional full-screen
 /// loading overlay driven by [isLoading].
 class AppScaffold extends StatelessWidget {

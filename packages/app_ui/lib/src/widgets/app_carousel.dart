@@ -1,7 +1,6 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 
-
 import '../../app_ui.dart';
 
 final class AppCarousel extends StatefulWidget {

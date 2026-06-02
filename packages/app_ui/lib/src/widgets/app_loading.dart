@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 import '../../app_ui.dart';
 
 /// Centered circular progress indicator with consistent sizing.

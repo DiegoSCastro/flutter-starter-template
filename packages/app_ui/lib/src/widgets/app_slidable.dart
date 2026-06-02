@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart' as slidable;
 
-
 import '../../app_ui.dart';
 
 enum AppSlidableActionTone { neutral, primary, destructive }
