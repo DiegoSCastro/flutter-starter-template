@@ -1,7 +1,7 @@
+import 'package:core_domain/core_domain.dart';
 import 'package:flutter/widgets.dart';
 import 'package:injectable/injectable.dart';
 
-import '../extensions/future_extensions.dart';
 import 'analytics_service.dart';
 
 @lazySingleton

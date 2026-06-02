@@ -1,7 +1,7 @@
+import 'package:core_platform/core_platform.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import '../../../core/platform/media/video_player_service.dart';
 import 'app_video_player.dart';
 
 class AppVideoPlayerFullScreenPage extends StatefulWidget {

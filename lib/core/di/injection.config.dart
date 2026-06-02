@@ -10,53 +10,17 @@
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:connectivity_plus/connectivity_plus.dart' as _i895;
+import 'package:core_analytics/core_analytics.dart' as _i682;
+import 'package:core_config/core_config.dart' as _i277;
+import 'package:core_network/core_network.dart' as _i309;
+import 'package:core_platform/core_platform.dart' as _i490;
 import 'package:dio/dio.dart' as _i361;
-import 'package:firebase_analytics/firebase_analytics.dart' as _i398;
-import 'package:firebase_messaging/firebase_messaging.dart' as _i892;
 import 'package:firebase_performance/firebase_performance.dart' as _i346;
-import 'package:firebase_remote_config/firebase_remote_config.dart' as _i627;
-import 'package:flutter_local_notifications/flutter_local_notifications.dart'
-    as _i163;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
-import 'package:flutter_starter_template/core/analytics/analytics_module.dart'
-    as _i720;
-import 'package:flutter_starter_template/core/analytics/analytics_route_observer.dart'
-    as _i873;
-import 'package:flutter_starter_template/core/analytics/analytics_service.dart'
-    as _i838;
-import 'package:flutter_starter_template/core/config/env_config.dart' as _i689;
-import 'package:flutter_starter_template/core/config/remote_config_module.dart'
-    as _i929;
-import 'package:flutter_starter_template/core/config/remote_config_service.dart'
-    as _i159;
 import 'package:flutter_starter_template/core/data/database/object_box.dart'
     as _i706;
-import 'package:flutter_starter_template/core/data/network/network_module.dart'
-    as _i893;
-import 'package:flutter_starter_template/core/data/network/performance_module.dart'
-    as _i489;
 import 'package:flutter_starter_template/core/platform/firebase/firebase_service.dart'
     as _i473;
-import 'package:flutter_starter_template/core/platform/media/camera_service.dart'
-    as _i547;
-import 'package:flutter_starter_template/core/platform/media/image_picker_service.dart'
-    as _i474;
-import 'package:flutter_starter_template/core/platform/media/media_module.dart'
-    as _i773;
-import 'package:flutter_starter_template/core/platform/media/video_player_service.dart'
-    as _i1027;
-import 'package:flutter_starter_template/core/platform/notifications/firebase_messaging_service.dart'
-    as _i928;
-import 'package:flutter_starter_template/core/platform/notifications/notifications_module.dart'
-    as _i964;
-import 'package:flutter_starter_template/core/platform/notifications/notifications_service.dart'
-    as _i1001;
-import 'package:flutter_starter_template/core/platform/permissions/permission_service.dart'
-    as _i392;
-import 'package:flutter_starter_template/core/platform/share/share_module.dart'
-    as _i653;
-import 'package:flutter_starter_template/core/platform/share/share_service.dart'
-    as _i828;
 import 'package:flutter_starter_template/core/theme/theme_bloc.dart' as _i652;
 import 'package:flutter_starter_template/features/auth/data/datasources/auth_local_data_source.dart'
     as _i297;
@@ -146,9 +110,7 @@ import 'package:flutter_starter_template/objectbox.g.dart' as _i831;
 import 'package:flutter_starter_template/shared/domain/bookmark_stats.dart'
     as _i189;
 import 'package:get_it/get_it.dart' as _i174;
-import 'package:image_picker/image_picker.dart' as _i183;
 import 'package:injectable/injectable.dart' as _i526;
-import 'package:share_plus/share_plus.dart' as _i998;
 import 'package:shared_preferences/shared_preferences.dart' as _i460;
 import 'package:uuid/uuid.dart' as _i706;
 
@@ -159,17 +121,14 @@ extension GetItInjectableX on _i174.GetIt {
     _i526.EnvironmentFilter? environmentFilter,
   }) async {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
+    await _i682.CoreAnalyticsPackageModule().init(gh);
+    await _i277.CoreConfigPackageModule().init(gh);
+    await _i309.CoreNetworkPackageModule().init(gh);
+    await _i490.CorePlatformPackageModule().init(gh);
     final sharedPreferencesModule = _$SharedPreferencesModule();
     final objectBoxModule = _$ObjectBoxModule();
-    final analyticsModule = _$AnalyticsModule();
-    final remoteConfigModule = _$RemoteConfigModule();
-    final performanceModule = _$PerformanceModule();
-    final mediaModule = _$MediaModule();
-    final notificationsModule = _$NotificationsModule();
-    final shareModule = _$ShareModule();
     final secureStorageModule = _$SecureStorageModule();
     final bookmarksDataModule = _$BookmarksDataModule();
-    final networkModule = _$NetworkModule();
     final authNetworkModule = _$AuthNetworkModule();
     final bookmarksRemoteModule = _$BookmarksRemoteModule();
     final notificationsRemoteModule = _$NotificationsRemoteModule();
@@ -178,34 +137,11 @@ extension GetItInjectableX on _i174.GetIt {
       preResolve: true,
     );
     gh.factory<_i1013.ProfileBloc>(() => _i1013.ProfileBloc());
-    gh.singleton<_i689.EnvConfig>(() => const _i689.EnvConfig());
     await gh.singletonAsync<_i706.ObjectBox>(
       () => objectBoxModule.provideObjectBox(),
       preResolve: true,
     );
     gh.singleton<_i473.FirebaseService>(() => _i473.FirebaseService());
-    gh.lazySingleton<_i398.FirebaseAnalytics>(
-      () => analyticsModule.provideFirebaseAnalytics(),
-    );
-    gh.lazySingleton<_i627.FirebaseRemoteConfig>(
-      () => remoteConfigModule.provideRemoteConfig(),
-    );
-    gh.lazySingleton<_i346.FirebasePerformance>(
-      () => performanceModule.providePerformance(),
-    );
-    gh.lazySingleton<_i547.CameraService>(() => _i547.CameraService());
-    gh.lazySingleton<_i183.ImagePicker>(() => mediaModule.imagePicker);
-    gh.lazySingleton<_i1027.VideoPlayerService>(
-      () => _i1027.VideoPlayerService(),
-    );
-    gh.lazySingleton<_i163.FlutterLocalNotificationsPlugin>(
-      () => notificationsModule.providePlugin(),
-    );
-    gh.lazySingleton<_i892.FirebaseMessaging>(
-      () => notificationsModule.provideFirebaseMessaging(),
-    );
-    gh.lazySingleton<_i392.PermissionService>(() => _i392.PermissionService());
-    gh.lazySingleton<_i998.SharePlus>(() => shareModule.provideSharePlus());
     gh.lazySingleton<_i558.FlutterSecureStorage>(
       () => secureStorageModule.provideSecureStorage(),
     );
@@ -219,45 +155,10 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i831.Store>(
       () => objectBoxModule.provideStore(gh<_i706.ObjectBox>()),
     );
-    gh.lazySingleton<_i474.ImagePickerService>(
-      () => _i474.ImagePickerService(gh<_i183.ImagePicker>()),
-    );
-    gh.lazySingleton<_i159.RemoteConfigService>(
-      () => _i159.FirebaseRemoteConfigService(gh<_i627.FirebaseRemoteConfig>()),
-    );
-    gh.lazySingleton<_i828.ShareService>(
-      () => _i828.ShareService(gh<_i998.SharePlus>()),
-    );
-    gh.lazySingleton<_i838.AnalyticsService>(
-      () => _i838.FirebaseAnalyticsService(gh<_i398.FirebaseAnalytics>()),
-    );
     gh.lazySingleton<_i652.ThemeBloc>(
       () => _i652.ThemeBloc(
         gh<_i460.SharedPreferences>(),
-        gh<_i838.AnalyticsService>(),
-      ),
-    );
-    gh.lazySingleton<_i1001.NotificationsService>(
-      () => _i1001.NotificationsService(
-        gh<_i163.FlutterLocalNotificationsPlugin>(),
-        gh<_i392.PermissionService>(),
-      ),
-    );
-    gh.lazySingleton<_i361.Dio>(
-      () => networkModule.providePlainDio(gh<_i689.EnvConfig>()),
-      instanceName: 'plain',
-    );
-    gh.lazySingleton<_i724.BookmarksLocalDataSource>(
-      () => _i724.ObjectBoxBookmarksDataSource(gh<_i831.Store>()),
-    );
-    gh.lazySingleton<_i873.AnalyticsRouteObserver>(
-      () => _i873.AnalyticsRouteObserver(gh<_i838.AnalyticsService>()),
-    );
-    gh.lazySingleton<_i928.FirebaseMessagingService>(
-      () => _i928.FirebaseMessagingService(
-        gh<_i1001.NotificationsService>(),
-        gh<_i892.FirebaseMessaging>(),
-        gh<_i838.AnalyticsService>(),
+        gh<_i682.AnalyticsService>(),
       ),
     );
     gh.lazySingleton<_i533.TokenRefresher>(
@@ -266,11 +167,14 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i361.Dio>(instanceName: 'plain'),
       ),
     );
+    gh.lazySingleton<_i724.BookmarksLocalDataSource>(
+      () => _i724.ObjectBoxBookmarksDataSource(gh<_i831.Store>()),
+    );
     gh.lazySingleton<_i361.Dio>(
       () => authNetworkModule.provideDio(
         gh<_i297.AuthLocalDataSource>(),
         gh<_i533.TokenRefresher>(),
-        gh<_i689.EnvConfig>(),
+        gh<_i277.EnvConfig>(),
         gh<_i346.FirebasePerformance>(),
       ),
     );
@@ -332,20 +236,17 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i1001.SignIn>(() => _i1001.SignIn(gh<_i987.AuthRepository>()));
     gh.factory<_i926.SignOut>(() => _i926.SignOut(gh<_i987.AuthRepository>()));
+    gh.factory<_i329.DeleteAccountCubit>(
+      () => _i329.DeleteAccountCubit(
+        gh<_i625.DeleteAccount>(),
+        gh<_i682.AnalyticsService>(),
+      ),
+    );
     gh.lazySingleton<_i630.BookmarksRepository>(
       () => _i73.BookmarksRepositoryImpl(
         gh<_i724.BookmarksLocalDataSource>(),
         gh<_i627.BookmarksSyncController>(),
         gh<_i706.Uuid>(),
-      ),
-    );
-    gh.factory<_i11.ChangePasswordCubit>(
-      () => _i11.ChangePasswordCubit(gh<_i780.ChangePassword>()),
-    );
-    gh.factory<_i329.DeleteAccountCubit>(
-      () => _i329.DeleteAccountCubit(
-        gh<_i625.DeleteAccount>(),
-        gh<_i838.AnalyticsService>(),
       ),
     );
     gh.lazySingleton<_i269.AuthBloc>(
@@ -354,8 +255,11 @@ extension GetItInjectableX on _i174.GetIt {
         register: gh<_i699.Register>(),
         signOut: gh<_i926.SignOut>(),
         restoreSession: gh<_i271.RestoreSession>(),
-        analytics: gh<_i838.AnalyticsService>(),
+        analytics: gh<_i682.AnalyticsService>(),
       ),
+    );
+    gh.factory<_i11.ChangePasswordCubit>(
+      () => _i11.ChangePasswordCubit(gh<_i780.ChangePassword>()),
     );
     gh.factory<_i632.CreateBookmark>(
       () => _i632.CreateBookmark(gh<_i630.BookmarksRepository>()),
@@ -375,25 +279,22 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i412.UpdateBookmark>(
       () => _i412.UpdateBookmark(gh<_i630.BookmarksRepository>()),
     );
-    gh.factory<_i373.BookmarkDetailBloc>(
-      () => _i373.BookmarkDetailBloc(
-        gh<_i690.GetBookmark>(),
-        gh<_i244.DeleteBookmark>(),
-        gh<_i838.AnalyticsService>(),
-      ),
-    );
     gh.factory<_i540.BookmarkFormBloc>(
       () => _i540.BookmarkFormBloc(
         gh<_i690.GetBookmark>(),
         gh<_i632.CreateBookmark>(),
         gh<_i412.UpdateBookmark>(),
-        gh<_i838.AnalyticsService>(),
-        gh<_i474.ImagePickerService>(),
-        gh<_i392.PermissionService>(),
+        gh<_i682.AnalyticsService>(),
+        gh<_i490.ImagePickerService>(),
+        gh<_i490.PermissionService>(),
       ),
     );
-    gh.lazySingleton<_i189.BookmarkStatsReader>(
-      () => _i405.BookmarkStatsService(gh<_i568.ListBookmarks>()),
+    gh.factory<_i373.BookmarkDetailBloc>(
+      () => _i373.BookmarkDetailBloc(
+        gh<_i690.GetBookmark>(),
+        gh<_i244.DeleteBookmark>(),
+        gh<_i682.AnalyticsService>(),
+      ),
     );
     gh.factory<_i566.BookmarksListBloc>(
       () => _i566.BookmarksListBloc(
@@ -401,8 +302,11 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i428.ListLocalBookmarks>(),
         gh<_i244.DeleteBookmark>(),
         gh<_i627.BookmarksSyncController>(),
-        gh<_i838.AnalyticsService>(),
+        gh<_i682.AnalyticsService>(),
       ),
+    );
+    gh.lazySingleton<_i189.BookmarkStatsReader>(
+      () => _i405.BookmarkStatsService(gh<_i568.ListBookmarks>()),
     );
     gh.factory<_i423.HomeBloc>(
       () => _i423.HomeBloc(gh<_i189.BookmarkStatsReader>()),
@@ -415,23 +319,9 @@ class _$SharedPreferencesModule extends _i652.SharedPreferencesModule {}
 
 class _$ObjectBoxModule extends _i706.ObjectBoxModule {}
 
-class _$AnalyticsModule extends _i720.AnalyticsModule {}
-
-class _$RemoteConfigModule extends _i929.RemoteConfigModule {}
-
-class _$PerformanceModule extends _i489.PerformanceModule {}
-
-class _$MediaModule extends _i773.MediaModule {}
-
-class _$NotificationsModule extends _i964.NotificationsModule {}
-
-class _$ShareModule extends _i653.ShareModule {}
-
 class _$SecureStorageModule extends _i297.SecureStorageModule {}
 
 class _$BookmarksDataModule extends _i179.BookmarksDataModule {}
-
-class _$NetworkModule extends _i893.NetworkModule {}
 
 class _$AuthNetworkModule extends _i740.AuthNetworkModule {}
 

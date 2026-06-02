@@ -1,6 +1,6 @@
+import 'package:core_network/core_network.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_performance/firebase_performance.dart';
-import 'package:flutter_starter_template/core/data/network/performance_interceptor.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 

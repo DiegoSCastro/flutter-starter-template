@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:flutter_starter_template/core/platform/media/video_player_service.dart';
+import 'package:core_platform/core_platform.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:video_player/video_player.dart';

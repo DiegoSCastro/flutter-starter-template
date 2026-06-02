@@ -1,5 +1,6 @@
 export 'src/animation/app_durations.dart';
 export 'src/animation/widget_animations.dart';
+export 'src/extensions/build_context_extensions.dart';
 export 'src/layout/app_breakpoints.dart';
 export 'src/theme/app_icon_size.dart';
 export 'src/theme/app_radius.dart';

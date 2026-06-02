@@ -1,5 +1,5 @@
+import 'package:core_config/core_config.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
-import 'package:flutter_starter_template/core/config/remote_config_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 

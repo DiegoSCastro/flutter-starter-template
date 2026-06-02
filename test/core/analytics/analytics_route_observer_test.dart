@@ -1,5 +1,5 @@
+import 'package:core_analytics/core_analytics.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_starter_template/core/analytics/analytics_route_observer.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 

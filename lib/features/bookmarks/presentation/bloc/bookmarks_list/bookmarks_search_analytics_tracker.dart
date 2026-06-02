@@ -1,8 +1,6 @@
 import 'dart:async';
-
-import '../../../../../core/analytics/analytics_extensions.dart';
-import '../../../../../core/analytics/analytics_service.dart';
-import '../../../../../core/extensions/future_extensions.dart';
+import 'package:core_analytics/core_analytics.dart';
+import 'package:core_domain/core_domain.dart';
 
 class BookmarksSearchAnalyticsTracker {
   BookmarksSearchAnalyticsTracker(this._analytics);
