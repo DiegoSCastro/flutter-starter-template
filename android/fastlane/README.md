@@ -5,14 +5,16 @@ app bundle and uploading it to Google Play. All account-specific values live in
 `fastlane/.env` and `android/key.properties`, both git-ignored, so this template
 ships with **no secrets and nothing to scrub** before reuse on a new project.
 
+**Prerequisites:** a paid Google Play Developer account, and an app created in
+the Play Console for each flavor's applicationId you intend to ship.
+
 ## One-time setup
 
-1. **Ruby + bundler.** The lanes need Ruby ≥ 2.7 (macOS system Ruby 2.6 is too
-   old for current fastlane). Install a newer Ruby via `rbenv`/`asdf`, then:
+1. **Ruby + bundler.** The repo pins Ruby via `.ruby-version` (3.2.2); install
+   it with `rbenv`/`asdf`. `Gemfile.lock` is committed, so:
 
    ```bash
    cd android
-   gem install bundler
    bundle install
    ```
 
@@ -86,3 +88,19 @@ the lane. Expected repository secrets/vars:
 | `ANDROID_KEY_PASSWORD` | secret | Key password |
 | `ANDROID_KEY_ALIAS` | secret | Key alias |
 | `ANDROID_GOOGLE_SERVICES_JSON` | secret | base64 of `google-services.json` (git-ignored) |
+
+## Troubleshooting (first real run)
+
+The lane is wired but has not been run end-to-end against a real account. Watch
+for these on the first release:
+
+- **"APK/AAB not allowed" / package not found** — you skipped the manual first
+  upload (setup step 5). Upload one build by hand, then retry.
+- **Upload succeeds but nothing reaches testers** — releases go up as `draft`
+  by default. Change `release_status` to `"completed"` in the `Fastfile`, or
+  promote the draft in the Console.
+- **"Version code already used"** — a re-run of the same CI workflow reuses
+  `github.run_number`. Pass `build_number:` explicitly or bump the run.
+- **Bundle path not found** — the lane expects
+  `build/app/outputs/bundle/<flavor>Release/app-<flavor>-release.aab`; if your
+  Gradle variant naming differs, adjust the `aab` path in the `Fastfile`.

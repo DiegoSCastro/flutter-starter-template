@@ -10,6 +10,9 @@ distribution certificate and provisioning profiles are stored (encrypted) in a
 private git repo and fetched at build time, so every machine and CI runner
 signs identically.
 
+**Prerequisites:** a paid Apple Developer Program membership, and a macOS
+machine with Xcode (App Store builds can only be produced on macOS).
+
 ## One-time setup
 
 1. **Ruby + bundler.** The repo pins Ruby via `.ruby-version` (3.2.2); install
@@ -86,3 +89,23 @@ required) on tag push / manual dispatch, with `FLUTTER_CMD=flutter` and
 | `MATCH_PASSWORD` | secret | match encryption passphrase |
 | `MATCH_GIT_BASIC_AUTHORIZATION` | secret | base64 `user:token` for HTTPS clone (omit for SSH) |
 | `IOS_GOOGLE_SERVICE_INFO_PLIST` | secret | base64 of `GoogleService-Info.plist` (git-ignored) |
+
+## Troubleshooting (first real run)
+
+The lane is wired but has not been run end-to-end against a real account. Watch
+for these on the first release:
+
+- **"No profile for bundle id …" during export** — the lane expects match to
+  name profiles `match AppStore <bundle_id>`. If yours differ, fix the
+  `provisioningProfiles` map in `build_app`, or re-run
+  `bundle exec fastlane match appstore` to (re)create them.
+- **match can't access the certs repo on CI** — provide
+  `MATCH_GIT_BASIC_AUTHORIZATION` (base64 `user:token`) for HTTPS, or a deploy
+  key for SSH.
+- **dSYM upload fails / `upload-symbols` not found** — point
+  `CRASHLYTICS_UPLOAD_SYMBOLS_BIN` at the binary in your Pods. This step is
+  best-effort and won't fail the lane's upload.
+- **Xcode/Flutter mismatch on the runner** — the workflow uses `macos-15`; pin a
+  specific Xcode version there if the default is incompatible with Flutter 3.44.
+- **"Version already used"** — a re-run of the same CI workflow reuses
+  `github.run_number`. Pass `build_number:` explicitly or bump the run.
