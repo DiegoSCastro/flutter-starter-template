@@ -8,11 +8,13 @@ on:
     paths-ignore:
       - '**/*.md'
       - 'LICENSE'
+      - '.mcp.json'
   pull_request:
     branches: [main]
     paths-ignore:
       - '**/*.md'
       - 'LICENSE'
+      - '.mcp.json'
 
 # Cancel superseded runs on the same ref to save CI minutes.
 concurrency:
