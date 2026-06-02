@@ -1,9 +1,7 @@
-import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:injectable/injectable.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:uuid/uuid.dart';
 
-import '../../../../objectbox.g.dart';
+import '../../../objectbox.g.dart';
 
 /// Owns the lifecycle of the ObjectBox [Store]. There must be exactly one
 /// store per database path per process — opening twice throws — so this is
@@ -34,15 +32,4 @@ abstract class ObjectBoxModule {
 
   @singleton
   Store provideStore(ObjectBox objectBox) => objectBox.store;
-}
-
-/// Registers third-party services with no-arg constructors that the sync
-/// service and repository depend on.
-@module
-abstract class PluginsModule {
-  @lazySingleton
-  Connectivity provideConnectivity() => Connectivity();
-
-  @lazySingleton
-  Uuid provideUuid() => const Uuid();
 }

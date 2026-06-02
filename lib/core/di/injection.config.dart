@@ -29,6 +29,8 @@ import 'package:flutter_starter_template/core/config/remote_config_module.dart'
     as _i929;
 import 'package:flutter_starter_template/core/config/remote_config_service.dart'
     as _i159;
+import 'package:flutter_starter_template/core/data/database/object_box.dart'
+    as _i706;
 import 'package:flutter_starter_template/core/data/network/network_module.dart'
     as _i893;
 import 'package:flutter_starter_template/core/data/network/performance_module.dart'
@@ -85,14 +87,14 @@ import 'package:flutter_starter_template/features/auth/presentation/bloc/change_
     as _i11;
 import 'package:flutter_starter_template/features/auth/presentation/bloc/delete_account_cubit.dart'
     as _i329;
+import 'package:flutter_starter_template/features/bookmarks/data/bookmarks_data_module.dart'
+    as _i179;
 import 'package:flutter_starter_template/features/bookmarks/data/datasources/bookmarks_remote_data_source.dart'
     as _i729;
 import 'package:flutter_starter_template/features/bookmarks/data/datasources/bookmarks_remote_module.dart'
     as _i235;
 import 'package:flutter_starter_template/features/bookmarks/data/local/bookmarks_local_data_source.dart'
     as _i724;
-import 'package:flutter_starter_template/features/bookmarks/data/local/object_box.dart'
-    as _i319;
 import 'package:flutter_starter_template/features/bookmarks/data/repositories/bookmarks_repository_impl.dart'
     as _i73;
 import 'package:flutter_starter_template/features/bookmarks/data/sync/bookmarks_sync_service.dart'
@@ -166,7 +168,7 @@ extension GetItInjectableX on _i174.GetIt {
     final notificationsModule = _$NotificationsModule();
     final shareModule = _$ShareModule();
     final secureStorageModule = _$SecureStorageModule();
-    final pluginsModule = _$PluginsModule();
+    final bookmarksDataModule = _$BookmarksDataModule();
     final networkModule = _$NetworkModule();
     final authNetworkModule = _$AuthNetworkModule();
     final bookmarksRemoteModule = _$BookmarksRemoteModule();
@@ -177,11 +179,11 @@ extension GetItInjectableX on _i174.GetIt {
       preResolve: true,
     );
     gh.singleton<_i689.EnvConfig>(() => const _i689.EnvConfig());
-    gh.singleton<_i473.FirebaseService>(() => _i473.FirebaseService());
-    await gh.singletonAsync<_i319.ObjectBox>(
+    await gh.singletonAsync<_i706.ObjectBox>(
       () => objectBoxModule.provideObjectBox(),
       preResolve: true,
     );
+    gh.singleton<_i473.FirebaseService>(() => _i473.FirebaseService());
     gh.lazySingleton<_i398.FirebaseAnalytics>(
       () => analyticsModule.provideFirebaseAnalytics(),
     );
@@ -208,11 +210,14 @@ extension GetItInjectableX on _i174.GetIt {
       () => secureStorageModule.provideSecureStorage(),
     );
     gh.lazySingleton<_i895.Connectivity>(
-      () => pluginsModule.provideConnectivity(),
+      () => bookmarksDataModule.provideConnectivity(),
     );
-    gh.lazySingleton<_i706.Uuid>(() => pluginsModule.provideUuid());
+    gh.lazySingleton<_i706.Uuid>(() => bookmarksDataModule.provideUuid());
     gh.lazySingleton<_i297.AuthLocalDataSource>(
       () => _i297.SecureStorageAuthDataSource(gh<_i558.FlutterSecureStorage>()),
+    );
+    gh.singleton<_i831.Store>(
+      () => objectBoxModule.provideStore(gh<_i706.ObjectBox>()),
     );
     gh.lazySingleton<_i474.ImagePickerService>(
       () => _i474.ImagePickerService(gh<_i183.ImagePicker>()),
@@ -237,9 +242,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i163.FlutterLocalNotificationsPlugin>(),
         gh<_i392.PermissionService>(),
       ),
-    );
-    gh.singleton<_i831.Store>(
-      () => objectBoxModule.provideStore(gh<_i319.ObjectBox>()),
     );
     gh.lazySingleton<_i361.Dio>(
       () => networkModule.providePlainDio(gh<_i689.EnvConfig>()),
@@ -411,7 +413,7 @@ extension GetItInjectableX on _i174.GetIt {
 
 class _$SharedPreferencesModule extends _i753.SharedPreferencesModule {}
 
-class _$ObjectBoxModule extends _i319.ObjectBoxModule {}
+class _$ObjectBoxModule extends _i706.ObjectBoxModule {}
 
 class _$AnalyticsModule extends _i720.AnalyticsModule {}
 
@@ -427,7 +429,7 @@ class _$ShareModule extends _i653.ShareModule {}
 
 class _$SecureStorageModule extends _i297.SecureStorageModule {}
 
-class _$PluginsModule extends _i319.PluginsModule {}
+class _$BookmarksDataModule extends _i179.BookmarksDataModule {}
 
 class _$NetworkModule extends _i893.NetworkModule {}
 
