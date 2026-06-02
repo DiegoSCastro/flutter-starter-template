@@ -1,6 +1,6 @@
 import 'package:bloc_test/bloc_test.dart';
-import 'package:flutter_starter_template/core/error/failure.dart';
-import 'package:flutter_starter_template/core/utils/result.dart';
+import 'package:flutter_starter_template/core/domain/failure.dart';
+import 'package:flutter_starter_template/core/domain/result.dart';
 import 'package:flutter_starter_template/features/bookmarks/presentation/bloc/bookmark_detail/bookmark_detail_bloc.dart';
 import 'package:flutter_starter_template/features/bookmarks/presentation/bloc/bookmark_detail/bookmark_detail_state.dart';
 import 'package:flutter_test/flutter_test.dart';

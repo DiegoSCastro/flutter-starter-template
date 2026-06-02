@@ -4,9 +4,9 @@ import 'package:injectable/injectable.dart';
 
 import '../../../../core/analytics/analytics_extensions.dart';
 import '../../../../core/analytics/analytics_service.dart';
-import '../../../../core/error/failure.dart';
+import '../../../../core/domain/failure.dart';
+import '../../../../core/domain/result.dart';
 import '../../../../core/extensions/future_extensions.dart';
-import '../../../../core/utils/result.dart';
 import '../../domain/usecases/register.dart';
 import '../../domain/usecases/restore_session.dart';
 import '../../domain/usecases/sign_in.dart';

@@ -1,7 +1,7 @@
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/usecases/use_case.dart';
-import '../../../../core/utils/result.dart';
+import '../../../../core/domain/result.dart';
+import '../../../../core/domain/use_case.dart';
 import '../repositories/auth_repository.dart';
 
 @injectable

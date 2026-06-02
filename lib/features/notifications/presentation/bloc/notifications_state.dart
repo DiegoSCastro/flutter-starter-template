@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../../../../core/error/failure.dart';
+import '../../../../core/domain/failure.dart';
 import '../../domain/entities/app_notification.dart';
 import '../../domain/entities/user_activity.dart';
 

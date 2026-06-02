@@ -70,7 +70,7 @@ lib/
 │   ├── analytics/                    # Firebase Analytics wrapper + route observer
 │   ├── config/                       # EnvConfig — typed --dart-define values
 │   ├── di/                           # get_it + injectable
-│   ├── error/                        # Failure hierarchy
+│   ├── domain/                       # Failure, Result, UseCase primitives
 │   ├── extensions/                   # BuildContext and Future helpers
 │   ├── firebase/                     # Firebase initialization & global Crashlytics/Messaging setup
 │   ├── layout/                       # Responsive breakpoints (AppBreakpoints)
@@ -78,9 +78,7 @@ lib/
 │   ├── network/                      # Dio clients, auth interceptor, token refresh
 │   ├── notifications/                # flutter_local_notifications
 │   ├── permissions/                  # Runtime permission request handling
-│   ├── share/                        # share_plus wrapper
-│   ├── usecases/                     # Abstract UseCase base class
-│   └── utils/                        # Result<T> type
+│   └── share/                        # share_plus wrapper
 ├── features/
 │   ├── auth/                         # Sign-in, sign-out, session restore
 │   ├── bookmarks/                    # CRUD, offline sync, list/detail/form

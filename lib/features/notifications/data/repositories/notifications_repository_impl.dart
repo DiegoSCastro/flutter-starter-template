@@ -1,6 +1,6 @@
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/utils/result.dart';
+import '../../../../core/domain/result.dart';
 import '../../domain/entities/app_notification.dart';
 import '../../domain/entities/notifications_feed.dart';
 import '../../domain/entities/user_activity.dart';

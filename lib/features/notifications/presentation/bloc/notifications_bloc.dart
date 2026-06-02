@@ -2,7 +2,7 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/utils/result.dart';
+import '../../../../core/domain/result.dart';
 import '../../domain/entities/app_notification.dart';
 import '../../domain/usecases/get_notifications_feed.dart';
 import '../../domain/usecases/mark_notification_read.dart';

@@ -1,4 +1,4 @@
-import 'package:flutter_starter_template/core/error/failure.dart';
+import 'package:flutter_starter_template/core/domain/failure.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

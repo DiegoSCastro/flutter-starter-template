@@ -1,6 +1,6 @@
 import 'package:image_picker/image_picker.dart';
 
-import '../../../../../core/error/failure.dart';
+import '../../../../../core/domain/failure.dart';
 import '../../../../../core/media/image_picker_service.dart';
 import '../../../../../core/permissions/permission_service.dart';
 

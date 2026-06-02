@@ -1,4 +1,4 @@
-import '../../../../../core/utils/result.dart';
+import '../../../../../core/domain/result.dart';
 import '../../../domain/usecases/get_bookmark.dart';
 import 'bookmark_form_state.dart';
 

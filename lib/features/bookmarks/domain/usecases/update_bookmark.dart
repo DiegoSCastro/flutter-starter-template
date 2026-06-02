@@ -1,7 +1,7 @@
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/usecases/use_case.dart';
-import '../../../../core/utils/result.dart';
+import '../../../../core/domain/result.dart';
+import '../../../../core/domain/use_case.dart';
 import '../entities/bookmark.dart';
 import '../repositories/bookmarks_repository.dart';
 import '_bookmark_validation.dart';

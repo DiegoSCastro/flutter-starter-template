@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:flutter_starter_template/core/error/failure.dart';
-import 'package:flutter_starter_template/core/usecases/use_case.dart';
-import 'package:flutter_starter_template/core/utils/result.dart';
+import 'package:flutter_starter_template/core/domain/failure.dart';
+import 'package:flutter_starter_template/core/domain/result.dart';
+import 'package:flutter_starter_template/core/domain/use_case.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

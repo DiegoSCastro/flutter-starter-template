@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../../core/analytics/analytics_service.dart';
+import '../../../../../core/domain/result.dart';
 import '../../../../../core/media/image_picker_service.dart';
 import '../../../../../core/permissions/permission_service.dart';
-import '../../../../../core/utils/result.dart';
 import '../../../domain/usecases/create_bookmark.dart';
 import '../../../domain/usecases/get_bookmark.dart';
 import '../../../domain/usecases/update_bookmark.dart';
