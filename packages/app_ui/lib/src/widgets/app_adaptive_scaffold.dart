@@ -9,6 +9,7 @@ class AppDestination {
     required this.icon,
     required this.label,
     IconData? selectedIcon,
+    this.hasBadge = false,
   }) : selectedIcon = selectedIcon ?? icon;
 
   /// Icon shown when the destination is not selected.
@@ -19,6 +20,9 @@ class AppDestination {
 
   /// Label shown beside or under the icon.
   final String label;
+
+  /// Whether to show a badge on the icon.
+  final bool hasBadge;
 }
 
 /// Scaffolding that adapts its navigation affordance to the available width.
@@ -75,8 +79,14 @@ class AppAdaptiveScaffold extends StatelessWidget {
                 destinations: [
                   for (final d in destinations)
                     NavigationRailDestination(
-                      icon: Icon(d.icon),
-                      selectedIcon: Icon(d.selectedIcon),
+                      icon: Badge(
+                        isLabelVisible: d.hasBadge,
+                        child: Icon(d.icon),
+                      ),
+                      selectedIcon: Badge(
+                        isLabelVisible: d.hasBadge,
+                        child: Icon(d.selectedIcon),
+                      ),
                       label: Text(d.label),
                     ),
                 ],
@@ -195,11 +205,14 @@ class _BottomBarItem extends StatelessWidget {
             children: [
               AnimatedSwitcher(
                 duration: _duration,
-                child: Icon(
-                  selected ? destination.selectedIcon : destination.icon,
-                  key: ValueKey<bool>(selected),
-                  color: foreground,
-                  size: 24,
+                child: Badge(
+                  isLabelVisible: destination.hasBadge,
+                  child: Icon(
+                    selected ? destination.selectedIcon : destination.icon,
+                    key: ValueKey<bool>(selected),
+                    color: foreground,
+                    size: 24,
+                  ),
                 ),
               ),
               ClipRect(
