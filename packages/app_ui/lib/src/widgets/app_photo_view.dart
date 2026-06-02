@@ -1,5 +1,7 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:photo_view/photo_view.dart';
 
 import '../../app_ui.dart';
@@ -258,8 +260,8 @@ class _AppPhotoViewState extends State<AppPhotoView> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.broken_image_rounded,
+                FaIcon(
+                  FontAwesomeIcons.image,
                   color: Theme.of(context).colorScheme.error,
                   size: AppIconSize.xxl,
                 ),

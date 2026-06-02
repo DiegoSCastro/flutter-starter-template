@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../core/extensions/build_context_extensions.dart';
 import '../bloc/bookmark_form/bookmark_form_bloc.dart';
@@ -104,8 +105,8 @@ class _ImageAttachmentTile extends StatelessWidget {
                   color: Colors.black54,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
-                  Icons.close,
+                child: const FaIcon(
+                  FontAwesomeIcons.xmark,
                   size: AppIconSize.sm,
                   color: Colors.white,
                 ),
@@ -132,7 +133,7 @@ class _AttachmentActionButtons extends StatelessWidget {
                 onPressed: () => context.read<BookmarkFormBloc>().add(
                   const BookmarkFormImagesPicked(),
                 ),
-                icon: const Icon(Icons.add_photo_alternate),
+                icon: const FaIcon(FontAwesomeIcons.image),
                 label: const Text('Add Images'),
               ),
             ),
@@ -142,7 +143,7 @@ class _AttachmentActionButtons extends StatelessWidget {
                 onPressed: () => context.read<BookmarkFormBloc>().add(
                   const BookmarkFormCameraImageTaken(),
                 ),
-                icon: const Icon(Icons.camera_alt),
+                icon: const FaIcon(FontAwesomeIcons.camera),
                 label: const Text('Take Photo'),
               ),
             ),
@@ -156,7 +157,7 @@ class _AttachmentActionButtons extends StatelessWidget {
                 onPressed: () => context.read<BookmarkFormBloc>().add(
                   const BookmarkFormVideoPicked(),
                 ),
-                icon: const Icon(Icons.video_library),
+                icon: const FaIcon(FontAwesomeIcons.video),
                 label: const Text('Add Video'),
               ),
             ),
@@ -166,7 +167,7 @@ class _AttachmentActionButtons extends StatelessWidget {
                 onPressed: () => context.read<BookmarkFormBloc>().add(
                   const BookmarkFormCameraVideoTaken(),
                 ),
-                icon: const Icon(Icons.videocam),
+                icon: const FaIcon(FontAwesomeIcons.video),
                 label: const Text('Record Video'),
               ),
             ),

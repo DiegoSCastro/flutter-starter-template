@@ -1,7 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import '../theme/app_theme.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../theme/app_theme.dart';
 import 'app_loading.dart';
 
 /// A wrapper around [CachedNetworkImage] that provides consistent loading
@@ -106,8 +107,8 @@ class AppNetworkImage extends StatelessWidget {
       height: height,
       color: context.colorScheme.surfaceContainerHighest,
       alignment: Alignment.center,
-      child: Icon(
-        Icons.broken_image_rounded,
+      child: FaIcon(
+        FontAwesomeIcons.image,
         size: errorIconSize,
         color: context.colorScheme.onSurfaceVariant.withValues(alpha: 0.5),
       ),

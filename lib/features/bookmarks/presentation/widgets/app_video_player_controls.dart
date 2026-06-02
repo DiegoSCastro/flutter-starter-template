@@ -1,6 +1,7 @@
 import 'package:app_platform/app_platform.dart';
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'app_video_player_controls_bar.dart';
 
@@ -75,7 +76,7 @@ class _FullscreenBackButton extends StatelessWidget {
         child: CircleAvatar(
           backgroundColor: Colors.black45,
           child: IconButton(
-            icon: const Icon(Icons.arrow_back_rounded, color: Colors.white),
+            icon: const FaIcon(FontAwesomeIcons.arrowLeft, color: Colors.white),
             tooltip: MaterialLocalizations.of(context).backButtonTooltip,
             onPressed: () => Navigator.of(context).pop(),
           ),
@@ -110,10 +111,10 @@ class _CenterPlayButton extends StatelessWidget {
                         color: Colors.black.withValues(alpha: 0.5),
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(
+                      child: FaIcon(
                         controller.value.isPlaying
-                            ? Icons.pause_rounded
-                            : Icons.play_arrow_rounded,
+                            ? FontAwesomeIcons.pause
+                            : FontAwesomeIcons.play,
                         color: Colors.white,
                         size: 48,
                       ),

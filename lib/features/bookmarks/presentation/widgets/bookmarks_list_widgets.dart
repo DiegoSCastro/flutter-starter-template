@@ -4,6 +4,7 @@ import 'package:app_ui/app_ui.dart';
 import 'package:architecture/architecture.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../app/router.dart';
 import '../../../../core/extensions/build_context_extensions.dart';
@@ -96,7 +97,7 @@ class _BookmarksListViewState extends State<BookmarksListView> {
       floatingActionButton: FloatingActionButton(
         onPressed: _openNew,
         tooltip: context.l10n.bookmarksAddTooltip,
-        child: const Icon(Icons.add),
+        child: const FaIcon(FontAwesomeIcons.plus),
       ).animateScale(delay: 300.ms),
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -141,8 +142,8 @@ class _DetailPlaceholder extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.bookmark_outline,
+          FaIcon(
+            FontAwesomeIcons.bookmark,
             size: AppIconSize.xxxl,
             color: context.colorScheme.outline,
           ),
@@ -173,7 +174,7 @@ class _SortMenuButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<BookmarkSort>(
-      icon: const Icon(Icons.sort),
+      icon: const FaIcon(FontAwesomeIcons.sort),
       tooltip: context.l10n.bookmarksSortTooltip,
       initialValue: sort,
       onSelected: (value) => context.read<BookmarksListBloc>().add(
@@ -218,7 +219,7 @@ class _SyncStatusIcon extends StatelessWidget {
       ),
       BookmarksSyncStatus.error => IconButton(
         tooltip: context.l10n.bookmarksSyncFailedRetryTooltip,
-        icon: const Icon(Icons.cloud_off),
+        icon: const FaIcon(FontAwesomeIcons.cloudArrowUp),
         onPressed: () => context.read<BookmarksListBloc>().add(
           const BookmarksListSyncRetried(),
         ),

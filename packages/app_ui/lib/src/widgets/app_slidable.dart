@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart' as slidable;
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../app_ui.dart';
 
@@ -43,7 +44,7 @@ class AppSlidableAction {
   const AppSlidableAction.delete({
     required this.onPressed,
     this.label,
-    this.icon = Icons.delete_outline,
+    this.icon = FontAwesomeIcons.trashCan,
     this.backgroundColor,
     this.foregroundColor,
     this.flex = 1,
@@ -53,7 +54,7 @@ class AppSlidableAction {
   }) : tone = AppSlidableActionTone.destructive;
 
   final String? label;
-  final IconData icon;
+  final FaIconData icon;
   final AppSlidableActionPressed? onPressed;
   final AppSlidableActionTone tone;
   final Color? backgroundColor;
@@ -64,7 +65,7 @@ class AppSlidableAction {
   final EdgeInsets? padding;
 
   Widget _build(BuildContext context) {
-    return slidable.SlidableAction(
+    return slidable.CustomSlidableAction(
       flex: flex,
       autoClose: autoClose,
       onPressed: onPressed == null
@@ -75,10 +76,16 @@ class AppSlidableAction {
             },
       backgroundColor: backgroundColor ?? _backgroundColor(context),
       foregroundColor: foregroundColor ?? _foregroundColor(context),
-      icon: icon,
-      label: label ?? 'Delete',
       borderRadius: borderRadius,
       padding: padding,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          FaIcon(icon),
+          const SizedBox(height: 4),
+          Text(label ?? 'Delete'),
+        ],
+      ),
     );
   }
 

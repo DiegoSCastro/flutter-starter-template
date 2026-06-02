@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../app_ui.dart';
 
@@ -64,8 +65,8 @@ class AppScaffold extends StatelessWidget {
                       leading ??
                       (Navigator.of(context).canPop()
                           ? IconButton(
-                              icon: const Icon(
-                                Icons.arrow_back_ios_new_rounded,
+                              icon: const FaIcon(
+                                FontAwesomeIcons.chevronLeft,
                               ),
                               iconSize: AppIconSize.md,
                               onPressed: () => Navigator.of(context).maybePop(),

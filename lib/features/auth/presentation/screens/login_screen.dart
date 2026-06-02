@@ -2,6 +2,7 @@ import 'package:app_ui/app_ui.dart';
 import 'package:architecture/architecture.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../app/router.dart';
 import '../../../../core/extensions/build_context_extensions.dart';
@@ -72,7 +73,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       AppTextField(
                         controller: _usernameController,
                         label: context.l10n.loginUsernameLabel,
-                        prefixIcon: Icons.person_outline,
+                        prefixIcon: FontAwesomeIcons.user,
                         textInputAction: TextInputAction.next,
                         autofillHints: const [AutofillHints.username],
                         validator: (value) =>
@@ -84,7 +85,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       AppTextField(
                         controller: _passwordController,
                         label: context.l10n.loginPasswordLabel,
-                        prefixIcon: Icons.lock_outline,
+                        prefixIcon: FontAwesomeIcons.lock,
                         obscureText: true,
                         autofillHints: const [AutofillHints.password],
                         onSubmitted: (_) => _submit(),

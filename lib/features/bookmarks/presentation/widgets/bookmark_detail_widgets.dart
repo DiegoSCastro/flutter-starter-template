@@ -6,6 +6,7 @@ import 'package:app_ui/app_ui.dart';
 import 'package:architecture/architecture.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -107,17 +108,17 @@ class BookmarkDetailView extends StatelessWidget {
                 children: [
                   IconButton(
                     tooltip: context.l10n.commonShare,
-                    icon: const Icon(Icons.share),
+                    icon: const FaIcon(FontAwesomeIcons.shareNodes),
                     onPressed: () => _shareBookmark(state.bookmark),
                   ),
                   IconButton(
                     tooltip: context.l10n.commonEdit,
-                    icon: const Icon(Icons.edit),
+                    icon: const FaIcon(FontAwesomeIcons.pen),
                     onPressed: () => _openEditor(context),
                   ),
                   IconButton(
                     tooltip: context.l10n.commonDelete,
-                    icon: const Icon(Icons.delete_outline),
+                    icon: const FaIcon(FontAwesomeIcons.trashCan),
                     onPressed: () => _confirmAndDelete(context, state.bookmark),
                   ),
                 ],
@@ -206,8 +207,8 @@ class _DetailBody extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(
-                  Icons.link,
+                FaIcon(
+                  FontAwesomeIcons.link,
                   size: 16,
                   color: context.colorScheme.primary,
                 ),
@@ -292,7 +293,7 @@ class _DetailBody extends StatelessWidget {
           const SizedBox(height: AppSpacing.xxl),
           AppButton(
             label: context.l10n.bookmarkOpenUrl,
-            icon: Icons.open_in_new,
+            icon: FontAwesomeIcons.arrowUpRightFromSquare,
             expand: true,
             onPressed: () => _openUrl(context, bookmark),
           ).animateSlideUp(delay: 300.ms),

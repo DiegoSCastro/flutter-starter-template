@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
@@ -258,8 +259,8 @@ class _FullscreenTopBar extends StatelessWidget {
             child: Row(
               children: [
                 IconButton(
-                  icon: const Icon(
-                    Icons.close_rounded,
+                  icon: const FaIcon(
+                    FontAwesomeIcons.xmark,
                     color: Colors.white,
                     size: AppIconSize.xl,
                   ),

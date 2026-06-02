@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 /// Minimal, dependency-free app shown when bootstrap fails before the real
 /// `App` (and its theming/localization) can start.
@@ -24,7 +25,7 @@ class BootstrapErrorApp extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Icon(Icons.error_outline, size: 56),
+                  const FaIcon(FontAwesomeIcons.circleExclamation, size: 56),
                   const SizedBox(height: 16),
                   Text(
                     'Something went wrong',

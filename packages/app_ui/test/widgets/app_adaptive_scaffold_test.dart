@@ -1,11 +1,12 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 void main() {
   const destinations = [
-    AppDestination(icon: Icons.home, label: 'Home'),
-    AppDestination(icon: Icons.settings, label: 'Settings'),
+    AppDestination(icon: FontAwesomeIcons.house, label: 'Home'),
+    AppDestination(icon: FontAwesomeIcons.circle, label: 'Settings'),
   ];
 
   Future<void> pumpAt(
@@ -40,7 +41,13 @@ void main() {
       expect(find.text('Home'), findsOneWidget);
 
       // Tapping another destination reports its index.
-      await tester.tap(find.byIcon(Icons.settings));
+      await tester.tap(
+        find.byWidgetPredicate(
+          (w) =>
+              w is FaIcon &&
+              w.icon?.codePoint == FontAwesomeIcons.circle.codePoint,
+        ),
+      );
       expect(selected, 1);
     });
 

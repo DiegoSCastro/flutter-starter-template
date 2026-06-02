@@ -1,6 +1,7 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../core/extensions/build_context_extensions.dart';
 import '../../domain/entities/bookmark.dart';
@@ -108,14 +109,14 @@ class _BookmarksSearchField extends StatelessWidget {
       child: AppTextField(
         controller: controller,
         hint: context.l10n.bookmarksSearchHint,
-        prefixIcon: Icons.search,
+        prefixIcon: FontAwesomeIcons.magnifyingGlass,
         onChanged: onChanged,
         suffix: ValueListenableBuilder<TextEditingValue>(
           valueListenable: controller,
           builder: (context, value, _) {
             if (value.text.isEmpty) return const SizedBox.shrink();
             return IconButton(
-              icon: const Icon(Icons.clear),
+              icon: const FaIcon(FontAwesomeIcons.xmark),
               tooltip: context.l10n.bookmarksSearchClear,
               onPressed: onClear,
             );
@@ -135,7 +136,9 @@ class _BookmarksEmptyState extends StatelessWidget {
   Widget build(BuildContext context) {
     final isFiltered = query.trim().isNotEmpty;
     return AppEmptyView(
-      icon: isFiltered ? Icons.search_off : Icons.bookmark_outline,
+      icon: isFiltered
+          ? FontAwesomeIcons.magnifyingGlassMinus
+          : FontAwesomeIcons.bookmark,
       title: isFiltered
           ? context.l10n.bookmarksNoMatchesTitle
           : context.l10n.bookmarksEmptyTitle,

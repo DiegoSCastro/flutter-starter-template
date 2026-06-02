@@ -2,6 +2,7 @@ import 'package:app_platform/app_platform.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_starter_template/features/bookmarks/presentation/widgets/app_video_player.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:test_utils/test_utils.dart';
 
 class MockAppVideoPlayerController extends Mock
@@ -46,7 +47,14 @@ void main() {
       );
 
       expect(find.text('Mock Video Player View'), findsOneWidget);
-      expect(find.byIcon(Icons.video_library), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) =>
+              w is FaIcon &&
+              w.icon?.codePoint == FontAwesomeIcons.video.codePoint,
+        ),
+        findsOneWidget,
+      );
     });
 
     testWidgets('renders error view when video fails to load', (
@@ -63,7 +71,14 @@ void main() {
         wrapWithMaterial(AppVideoPlayer(controller: mockController)),
       );
 
-      expect(find.byIcon(Icons.error_outline_rounded), findsOneWidget);
+      expect(
+        find.byWidgetPredicate(
+          (w) =>
+              w is FaIcon &&
+              w.icon?.codePoint == FontAwesomeIcons.circleExclamation.codePoint,
+        ),
+        findsOneWidget,
+      );
       expect(find.text('Invalid video file format'), findsOneWidget);
     });
   });

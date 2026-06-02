@@ -4,6 +4,7 @@ import 'package:architecture/architecture.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:theme/theme.dart';
 
 import '../../../../app/router.dart';
@@ -146,8 +147,8 @@ class _CopyableId extends StatelessWidget {
               ),
             ),
             const SizedBox(width: AppSpacing.xs),
-            Icon(
-              Icons.copy,
+            FaIcon(
+              FontAwesomeIcons.copy,
               size: 14,
               color: theme.colorScheme.onSurfaceVariant,
             ),
@@ -190,9 +191,9 @@ class _ChangePasswordTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      leading: const Icon(Icons.password),
+      leading: const FaIcon(FontAwesomeIcons.key),
       title: Text(context.l10n.profileChangePassword),
-      trailing: const Icon(Icons.chevron_right),
+      trailing: const FaIcon(FontAwesomeIcons.chevronRight),
       onTap: () {
         const ChangePasswordRoute().push<void>(context);
       },
@@ -210,7 +211,7 @@ class _DeleteAccountTile extends StatelessWidget {
       builder: (context, state) {
         final isSubmitting = state is DeleteAccountSubmitting;
         return ListTile(
-          leading: Icon(Icons.delete_forever, color: error),
+          leading: FaIcon(FontAwesomeIcons.trash, color: error),
           title: Text(
             context.l10n.profileDeleteAccount,
             style: TextStyle(color: error),
@@ -316,7 +317,7 @@ class _ThemeModeSelector extends StatelessWidget {
               return RadioListTile<ThemeMode>(
                 value: option,
                 title: Text(_labelFor(context, option)),
-                secondary: Icon(_iconFor(option)),
+                secondary: FaIcon(_iconFor(option)),
               );
             }).toList(),
           ),
@@ -331,10 +332,10 @@ class _ThemeModeSelector extends StatelessWidget {
     ThemeMode.dark => context.l10n.profileThemeDark,
   };
 
-  IconData _iconFor(ThemeMode mode) => switch (mode) {
-    ThemeMode.system => Icons.brightness_auto,
-    ThemeMode.light => Icons.light_mode,
-    ThemeMode.dark => Icons.dark_mode,
+  FaIconData _iconFor(ThemeMode mode) => switch (mode) {
+    ThemeMode.system => FontAwesomeIcons.circleHalfStroke,
+    ThemeMode.light => FontAwesomeIcons.sun,
+    ThemeMode.dark => FontAwesomeIcons.moon,
   };
 }
 
@@ -435,7 +436,7 @@ class _AppInfoTile extends StatelessWidget {
       builder: (context, state) {
         final info = state.packageInfo;
         return ListTile(
-          leading: const Icon(Icons.info_outline),
+          leading: const FaIcon(FontAwesomeIcons.circleInfo),
           title: Text(info?.appName ?? '—'),
           subtitle: info == null
               ? Text(context.l10n.commonLoading)
@@ -465,7 +466,7 @@ class _SignOutButton extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: AppSpacing.xl),
           child: AppButton(
             label: context.l10n.commonSignOut,
-            icon: Icons.logout,
+            icon: FontAwesomeIcons.arrowRightFromBracket,
             variant: AppButtonVariant.tonal,
             expand: true,
             isLoading: isLoading,

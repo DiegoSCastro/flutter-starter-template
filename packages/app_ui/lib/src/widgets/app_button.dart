@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../app_ui.dart';
 
@@ -27,7 +28,7 @@ class AppButton extends StatelessWidget {
   final VoidCallback? onPressed;
   final AppButtonVariant variant;
   final AppButtonSize size;
-  final IconData? icon;
+  final FaIconData? icon;
   final bool isLoading;
   final bool expand;
 
@@ -63,7 +64,7 @@ class AppButton extends StatelessWidget {
             : FilledButton.icon(
                 onPressed: effectiveOnPressed,
                 style: _style(),
-                icon: Icon(icon),
+                icon: FaIcon(icon),
                 label: Text(label),
               ),
       AppButtonVariant.tonal =>
@@ -76,7 +77,7 @@ class AppButton extends StatelessWidget {
             : FilledButton.tonalIcon(
                 onPressed: effectiveOnPressed,
                 style: _style(),
-                icon: Icon(icon),
+                icon: FaIcon(icon),
                 label: Text(label),
               ),
       AppButtonVariant.outlined =>
@@ -89,7 +90,7 @@ class AppButton extends StatelessWidget {
             : OutlinedButton.icon(
                 onPressed: effectiveOnPressed,
                 style: _style(),
-                icon: Icon(icon),
+                icon: FaIcon(icon),
                 label: Text(label),
               ),
       AppButtonVariant.text =>
@@ -102,7 +103,7 @@ class AppButton extends StatelessWidget {
             : TextButton.icon(
                 onPressed: effectiveOnPressed,
                 style: _style(),
-                icon: Icon(icon),
+                icon: FaIcon(icon),
                 label: Text(label),
               ),
     };

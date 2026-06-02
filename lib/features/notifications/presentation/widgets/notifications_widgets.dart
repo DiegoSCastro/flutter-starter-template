@@ -1,6 +1,7 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../core/extensions/build_context_extensions.dart';
 import '../../domain/entities/app_notification.dart';
@@ -35,7 +36,7 @@ class NotificationsView extends StatelessWidget {
           padding: EdgeInsets.zero,
           body: state.hasNoContent && !state.isLoading
               ? AppEmptyView(
-                  icon: Icons.notifications_none_outlined,
+                  icon: FontAwesomeIcons.bell,
                   title: context.l10n.notificationsEmptyTitle,
                   message: context.l10n.notificationsEmptyMessage,
                 )
@@ -159,7 +160,7 @@ class _ActivityTile extends StatelessWidget {
       child: ListTile(
         leading: CircleAvatar(
           backgroundColor: context.colorScheme.secondaryContainer,
-          child: Icon(
+          child: FaIcon(
             _activityIcon(activity.type),
             color: context.colorScheme.onSecondaryContainer,
           ),
@@ -192,7 +193,7 @@ class _NotificationTile extends StatelessWidget {
         onTap: notification.isRead ? null : onTap,
         leading: CircleAvatar(
           backgroundColor: accent.withValues(alpha: 0.15),
-          child: Icon(_notificationIcon(notification.type), color: accent),
+          child: FaIcon(_notificationIcon(notification.type), color: accent),
         ),
         title: Text(
           notification.title,
@@ -228,19 +229,19 @@ class _NotificationTile extends StatelessWidget {
   }
 }
 
-IconData _activityIcon(UserActivityType type) => switch (type) {
-  UserActivityType.created => Icons.add_circle_outline,
-  UserActivityType.updated => Icons.edit_outlined,
-  UserActivityType.deleted => Icons.delete_outline,
-  UserActivityType.signedIn => Icons.login_outlined,
-  UserActivityType.other => Icons.history,
+FaIconData _activityIcon(UserActivityType type) => switch (type) {
+  UserActivityType.created => FontAwesomeIcons.circlePlus,
+  UserActivityType.updated => FontAwesomeIcons.penToSquare,
+  UserActivityType.deleted => FontAwesomeIcons.trashCan,
+  UserActivityType.signedIn => FontAwesomeIcons.arrowRightToBracket,
+  UserActivityType.other => FontAwesomeIcons.clockRotateLeft,
 };
 
-IconData _notificationIcon(NotificationType type) => switch (type) {
-  NotificationType.system => Icons.info_outline,
-  NotificationType.social => Icons.people_outline,
-  NotificationType.reminder => Icons.alarm_outlined,
-  NotificationType.promotion => Icons.local_offer_outlined,
+FaIconData _notificationIcon(NotificationType type) => switch (type) {
+  NotificationType.system => FontAwesomeIcons.circleInfo,
+  NotificationType.social => FontAwesomeIcons.users,
+  NotificationType.reminder => FontAwesomeIcons.clock,
+  NotificationType.promotion => FontAwesomeIcons.tag,
 };
 
 Color _notificationColor(BuildContext context, NotificationType type) =>

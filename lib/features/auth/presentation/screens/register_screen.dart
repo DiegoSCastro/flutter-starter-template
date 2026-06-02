@@ -2,6 +2,7 @@ import 'package:app_ui/app_ui.dart';
 import 'package:architecture/architecture.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../core/extensions/build_context_extensions.dart';
 import '../bloc/auth_bloc.dart';
@@ -78,7 +79,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       AppTextField(
                         controller: _usernameController,
                         label: context.l10n.registerUsernameLabel,
-                        prefixIcon: Icons.person_outline,
+                        prefixIcon: FontAwesomeIcons.user,
                         textInputAction: TextInputAction.next,
                         autofillHints: const [AutofillHints.newUsername],
                         validator: (value) =>
@@ -90,7 +91,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       AppTextField(
                         controller: _passwordController,
                         label: context.l10n.registerPasswordLabel,
-                        prefixIcon: Icons.lock_outline,
+                        prefixIcon: FontAwesomeIcons.lock,
                         obscureText: true,
                         textInputAction: TextInputAction.next,
                         autofillHints: const [AutofillHints.newPassword],
@@ -102,7 +103,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       AppTextField(
                         controller: _confirmPasswordController,
                         label: context.l10n.registerConfirmPasswordLabel,
-                        prefixIcon: Icons.lock_outline,
+                        prefixIcon: FontAwesomeIcons.lock,
                         obscureText: true,
                         textInputAction: TextInputAction.done,
                         onSubmitted: (_) => _submit(),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../layout/app_breakpoints.dart';
 
@@ -8,15 +9,15 @@ class AppDestination {
   const AppDestination({
     required this.icon,
     required this.label,
-    IconData? selectedIcon,
+    FaIconData? selectedIcon,
     this.hasBadge = false,
   }) : selectedIcon = selectedIcon ?? icon;
 
   /// Icon shown when the destination is not selected.
-  final IconData icon;
+  final FaIconData icon;
 
   /// Icon shown when the destination is selected.
-  final IconData selectedIcon;
+  final FaIconData selectedIcon;
 
   /// Label shown beside or under the icon.
   final String label;
@@ -81,11 +82,11 @@ class AppAdaptiveScaffold extends StatelessWidget {
                     NavigationRailDestination(
                       icon: Badge(
                         isLabelVisible: d.hasBadge,
-                        child: Icon(d.icon),
+                        child: FaIcon(d.icon),
                       ),
                       selectedIcon: Badge(
                         isLabelVisible: d.hasBadge,
-                        child: Icon(d.selectedIcon),
+                        child: FaIcon(d.selectedIcon),
                       ),
                       label: Text(d.label),
                     ),
@@ -207,7 +208,7 @@ class _BottomBarItem extends StatelessWidget {
                 duration: _duration,
                 child: Badge(
                   isLabelVisible: destination.hasBadge,
-                  child: Icon(
+                  child: FaIcon(
                     selected ? destination.selectedIcon : destination.icon,
                     key: ValueKey<bool>(selected),
                     color: foreground,
