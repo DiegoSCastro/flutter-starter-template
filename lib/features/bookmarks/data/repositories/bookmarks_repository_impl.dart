@@ -1,9 +1,9 @@
 import 'package:injectable/injectable.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../../../core/error/failure.dart';
+import '../../../../core/domain/failure.dart';
+import '../../../../core/domain/result.dart';
 import '../../../../core/extensions/future_extensions.dart';
-import '../../../../core/utils/result.dart';
 import '../../domain/entities/bookmark.dart';
 import '../../domain/repositories/bookmarks_repository.dart';
 import '../../domain/services/bookmarks_sync_controller.dart';

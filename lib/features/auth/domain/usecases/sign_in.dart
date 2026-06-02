@@ -1,8 +1,8 @@
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/error/failure.dart';
-import '../../../../core/usecases/use_case.dart';
-import '../../../../core/utils/result.dart';
+import '../../../../core/domain/failure.dart';
+import '../../../../core/domain/result.dart';
+import '../../../../core/domain/use_case.dart';
 import '../../../../shared/domain/entities/auth_user.dart';
 import '../repositories/auth_repository.dart';
 

@@ -1,5 +1,5 @@
-import 'package:flutter_starter_template/core/error/failure.dart';
-import 'package:flutter_starter_template/core/utils/result.dart';
+import 'package:flutter_starter_template/core/domain/failure.dart';
+import 'package:flutter_starter_template/core/domain/result.dart';
 import 'package:flutter_starter_template/features/home/presentation/bloc/home_bloc.dart';
 import 'package:flutter_starter_template/shared/domain/bookmark_stats.dart';
 import 'package:flutter_test/flutter_test.dart';

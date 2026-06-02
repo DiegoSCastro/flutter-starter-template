@@ -1,4 +1,4 @@
-import 'package:flutter_starter_template/core/permissions/permission_service.dart';
+import 'package:flutter_starter_template/core/platform/permissions/permission_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:permission_handler/permission_handler.dart';
 

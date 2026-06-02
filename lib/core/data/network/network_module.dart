@@ -3,7 +3,7 @@ import 'dart:developer' as developer;
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
 
-import '../config/env_config.dart';
+import '../../config/env_config.dart';
 
 BaseOptions apiBaseOptions(
   String baseUrl, {

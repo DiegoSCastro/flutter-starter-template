@@ -1,4 +1,4 @@
-import 'package:flutter_starter_template/core/utils/result.dart';
+import 'package:flutter_starter_template/core/domain/result.dart';
 import 'package:flutter_starter_template/features/notifications/data/datasources/notifications_remote_data_source.dart';
 import 'package:flutter_starter_template/features/notifications/data/models/notification_dto.dart';
 import 'package:flutter_starter_template/features/notifications/data/models/user_activity_dto.dart';

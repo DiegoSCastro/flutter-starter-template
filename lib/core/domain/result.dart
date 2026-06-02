@@ -1,4 +1,4 @@
-import '../error/failure.dart';
+import 'failure.dart';
 
 /// Discriminated union representing either a success value or a [Failure].
 /// Use exhaustive pattern matching at call sites — no `null` sentinels.

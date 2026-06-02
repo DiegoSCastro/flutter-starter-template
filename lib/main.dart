@@ -8,9 +8,9 @@ import 'app/app.dart';
 import 'app/bootstrap_error_app.dart';
 import 'core/config/remote_config_service.dart';
 import 'core/di/injection.dart';
-import 'core/firebase/firebase_service.dart';
-import 'core/notifications/firebase_messaging_service.dart';
-import 'core/notifications/notifications_service.dart';
+import 'core/platform/firebase/firebase_service.dart';
+import 'core/platform/notifications/firebase_messaging_service.dart';
+import 'core/platform/notifications/notifications_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

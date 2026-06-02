@@ -1,6 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_starter_template/core/media/camera_service.dart';
+import 'package:flutter_starter_template/core/platform/media/camera_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 

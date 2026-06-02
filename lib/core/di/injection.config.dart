@@ -29,30 +29,32 @@ import 'package:flutter_starter_template/core/config/remote_config_module.dart'
     as _i929;
 import 'package:flutter_starter_template/core/config/remote_config_service.dart'
     as _i159;
-import 'package:flutter_starter_template/core/firebase/firebase_service.dart'
-    as _i999;
-import 'package:flutter_starter_template/core/media/camera_service.dart'
-    as _i756;
-import 'package:flutter_starter_template/core/media/image_picker_service.dart'
-    as _i735;
-import 'package:flutter_starter_template/core/media/media_module.dart' as _i773;
-import 'package:flutter_starter_template/core/media/video_player_service.dart'
-    as _i863;
-import 'package:flutter_starter_template/core/network/network_module.dart'
-    as _i173;
-import 'package:flutter_starter_template/core/network/performance_module.dart'
-    as _i498;
-import 'package:flutter_starter_template/core/notifications/firebase_messaging_service.dart'
-    as _i529;
-import 'package:flutter_starter_template/core/notifications/notifications_module.dart'
-    as _i146;
-import 'package:flutter_starter_template/core/notifications/notifications_service.dart'
-    as _i332;
-import 'package:flutter_starter_template/core/permissions/permission_service.dart'
-    as _i213;
-import 'package:flutter_starter_template/core/share/share_module.dart' as _i390;
-import 'package:flutter_starter_template/core/share/share_service.dart'
-    as _i580;
+import 'package:flutter_starter_template/core/data/network/network_module.dart'
+    as _i893;
+import 'package:flutter_starter_template/core/data/network/performance_module.dart'
+    as _i489;
+import 'package:flutter_starter_template/core/platform/firebase/firebase_service.dart'
+    as _i473;
+import 'package:flutter_starter_template/core/platform/media/camera_service.dart'
+    as _i547;
+import 'package:flutter_starter_template/core/platform/media/image_picker_service.dart'
+    as _i474;
+import 'package:flutter_starter_template/core/platform/media/media_module.dart'
+    as _i773;
+import 'package:flutter_starter_template/core/platform/media/video_player_service.dart'
+    as _i1027;
+import 'package:flutter_starter_template/core/platform/notifications/firebase_messaging_service.dart'
+    as _i928;
+import 'package:flutter_starter_template/core/platform/notifications/notifications_module.dart'
+    as _i964;
+import 'package:flutter_starter_template/core/platform/notifications/notifications_service.dart'
+    as _i1001;
+import 'package:flutter_starter_template/core/platform/permissions/permission_service.dart'
+    as _i392;
+import 'package:flutter_starter_template/core/platform/share/share_module.dart'
+    as _i653;
+import 'package:flutter_starter_template/core/platform/share/share_service.dart'
+    as _i828;
 import 'package:flutter_starter_template/features/auth/data/datasources/auth_local_data_source.dart'
     as _i297;
 import 'package:flutter_starter_template/features/auth/data/datasources/auth_remote_data_source.dart'
@@ -159,8 +161,8 @@ extension GetItInjectableX on _i174.GetIt {
     final objectBoxModule = _$ObjectBoxModule();
     final analyticsModule = _$AnalyticsModule();
     final remoteConfigModule = _$RemoteConfigModule();
-    final mediaModule = _$MediaModule();
     final performanceModule = _$PerformanceModule();
+    final mediaModule = _$MediaModule();
     final notificationsModule = _$NotificationsModule();
     final shareModule = _$ShareModule();
     final secureStorageModule = _$SecureStorageModule();
@@ -175,7 +177,7 @@ extension GetItInjectableX on _i174.GetIt {
       preResolve: true,
     );
     gh.singleton<_i689.EnvConfig>(() => const _i689.EnvConfig());
-    gh.singleton<_i999.FirebaseService>(() => _i999.FirebaseService());
+    gh.singleton<_i473.FirebaseService>(() => _i473.FirebaseService());
     await gh.singletonAsync<_i319.ObjectBox>(
       () => objectBoxModule.provideObjectBox(),
       preResolve: true,
@@ -186,13 +188,13 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i627.FirebaseRemoteConfig>(
       () => remoteConfigModule.provideRemoteConfig(),
     );
-    gh.lazySingleton<_i756.CameraService>(() => _i756.CameraService());
-    gh.lazySingleton<_i183.ImagePicker>(() => mediaModule.imagePicker);
-    gh.lazySingleton<_i863.VideoPlayerService>(
-      () => _i863.VideoPlayerService(),
-    );
     gh.lazySingleton<_i346.FirebasePerformance>(
       () => performanceModule.providePerformance(),
+    );
+    gh.lazySingleton<_i547.CameraService>(() => _i547.CameraService());
+    gh.lazySingleton<_i183.ImagePicker>(() => mediaModule.imagePicker);
+    gh.lazySingleton<_i1027.VideoPlayerService>(
+      () => _i1027.VideoPlayerService(),
     );
     gh.lazySingleton<_i163.FlutterLocalNotificationsPlugin>(
       () => notificationsModule.providePlugin(),
@@ -200,7 +202,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i892.FirebaseMessaging>(
       () => notificationsModule.provideFirebaseMessaging(),
     );
-    gh.lazySingleton<_i213.PermissionService>(() => _i213.PermissionService());
+    gh.lazySingleton<_i392.PermissionService>(() => _i392.PermissionService());
     gh.lazySingleton<_i998.SharePlus>(() => shareModule.provideSharePlus());
     gh.lazySingleton<_i558.FlutterSecureStorage>(
       () => secureStorageModule.provideSecureStorage(),
@@ -212,20 +214,14 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i297.AuthLocalDataSource>(
       () => _i297.SecureStorageAuthDataSource(gh<_i558.FlutterSecureStorage>()),
     );
-    gh.lazySingleton<_i332.NotificationsService>(
-      () => _i332.NotificationsService(
-        gh<_i163.FlutterLocalNotificationsPlugin>(),
-        gh<_i213.PermissionService>(),
-      ),
-    );
-    gh.lazySingleton<_i735.ImagePickerService>(
-      () => _i735.ImagePickerService(gh<_i183.ImagePicker>()),
+    gh.lazySingleton<_i474.ImagePickerService>(
+      () => _i474.ImagePickerService(gh<_i183.ImagePicker>()),
     );
     gh.lazySingleton<_i159.RemoteConfigService>(
       () => _i159.FirebaseRemoteConfigService(gh<_i627.FirebaseRemoteConfig>()),
     );
-    gh.lazySingleton<_i580.ShareService>(
-      () => _i580.ShareService(gh<_i998.SharePlus>()),
+    gh.lazySingleton<_i828.ShareService>(
+      () => _i828.ShareService(gh<_i998.SharePlus>()),
     );
     gh.lazySingleton<_i838.AnalyticsService>(
       () => _i838.FirebaseAnalyticsService(gh<_i398.FirebaseAnalytics>()),
@@ -234,6 +230,12 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i753.ThemeBloc(
         gh<_i460.SharedPreferences>(),
         gh<_i838.AnalyticsService>(),
+      ),
+    );
+    gh.lazySingleton<_i1001.NotificationsService>(
+      () => _i1001.NotificationsService(
+        gh<_i163.FlutterLocalNotificationsPlugin>(),
+        gh<_i392.PermissionService>(),
       ),
     );
     gh.singleton<_i831.Store>(
@@ -246,15 +248,15 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i724.BookmarksLocalDataSource>(
       () => _i724.ObjectBoxBookmarksDataSource(gh<_i831.Store>()),
     );
-    gh.lazySingleton<_i529.FirebaseMessagingService>(
-      () => _i529.FirebaseMessagingService(
-        gh<_i332.NotificationsService>(),
+    gh.lazySingleton<_i873.AnalyticsRouteObserver>(
+      () => _i873.AnalyticsRouteObserver(gh<_i838.AnalyticsService>()),
+    );
+    gh.lazySingleton<_i928.FirebaseMessagingService>(
+      () => _i928.FirebaseMessagingService(
+        gh<_i1001.NotificationsService>(),
         gh<_i892.FirebaseMessaging>(),
         gh<_i838.AnalyticsService>(),
       ),
-    );
-    gh.lazySingleton<_i873.AnalyticsRouteObserver>(
-      () => _i873.AnalyticsRouteObserver(gh<_i838.AnalyticsService>()),
     );
     gh.lazySingleton<_i533.TokenRefresher>(
       () => _i533.TokenRefresher(
@@ -384,8 +386,8 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i632.CreateBookmark>(),
         gh<_i412.UpdateBookmark>(),
         gh<_i838.AnalyticsService>(),
-        gh<_i735.ImagePickerService>(),
-        gh<_i213.PermissionService>(),
+        gh<_i474.ImagePickerService>(),
+        gh<_i392.PermissionService>(),
       ),
     );
     gh.lazySingleton<_i189.BookmarkStatsReader>(
@@ -415,19 +417,19 @@ class _$AnalyticsModule extends _i720.AnalyticsModule {}
 
 class _$RemoteConfigModule extends _i929.RemoteConfigModule {}
 
+class _$PerformanceModule extends _i489.PerformanceModule {}
+
 class _$MediaModule extends _i773.MediaModule {}
 
-class _$PerformanceModule extends _i498.PerformanceModule {}
+class _$NotificationsModule extends _i964.NotificationsModule {}
 
-class _$NotificationsModule extends _i146.NotificationsModule {}
-
-class _$ShareModule extends _i390.ShareModule {}
+class _$ShareModule extends _i653.ShareModule {}
 
 class _$SecureStorageModule extends _i297.SecureStorageModule {}
 
 class _$PluginsModule extends _i319.PluginsModule {}
 
-class _$NetworkModule extends _i173.NetworkModule {}
+class _$NetworkModule extends _i893.NetworkModule {}
 
 class _$AuthNetworkModule extends _i740.AuthNetworkModule {}
 

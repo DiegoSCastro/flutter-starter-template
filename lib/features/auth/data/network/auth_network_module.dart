@@ -3,9 +3,9 @@ import 'package:firebase_performance/firebase_performance.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../core/config/env_config.dart';
-import '../../../../core/network/network_module.dart';
-import '../../../../core/network/performance_interceptor.dart';
-import '../../../../core/network/retry_interceptor.dart';
+import '../../../../core/data/network/network_module.dart';
+import '../../../../core/data/network/performance_interceptor.dart';
+import '../../../../core/data/network/retry_interceptor.dart';
 import '../datasources/auth_local_data_source.dart';
 import '../datasources/auth_remote_data_source.dart';
 import 'auth_interceptor.dart';

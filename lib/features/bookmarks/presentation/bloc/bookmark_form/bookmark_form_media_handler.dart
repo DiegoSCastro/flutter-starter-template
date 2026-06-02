@@ -1,8 +1,8 @@
 import 'package:image_picker/image_picker.dart';
 
-import '../../../../../core/error/failure.dart';
-import '../../../../../core/media/image_picker_service.dart';
-import '../../../../../core/permissions/permission_service.dart';
+import '../../../../../core/domain/failure.dart';
+import '../../../../../core/platform/media/image_picker_service.dart';
+import '../../../../../core/platform/permissions/permission_service.dart';
 
 sealed class BookmarkMediaResult<T> {
   const BookmarkMediaResult();

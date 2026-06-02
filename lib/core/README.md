@@ -11,16 +11,11 @@ Here is a breakdown of the typical subdirectories found in `core/`:
 - **`analytics/`**: Centralized services for logging events, screen views, and user properties (e.g., Firebase Analytics wrapper).
 - **`config/`**: App-wide configurations, environment variables, feature flags, and constants.
 - **`di/`**: Dependency Injection setup (e.g., `get_it` or `injectable` configurations) for registering all core services, repositories, and BLoCs.
-- **`error/`**: Global error handling, custom exception definitions (`Failure`, `Exception`), and error mappers.
+- **`domain/`**: Architecture-level domain primitives shared by feature domains, such as `Failure`, `Result<T>`, and `UseCase`.
+- **`data/`**: Reusable data-layer infrastructure, such as networking clients, interceptors, API configuration, and data-source helpers.
 - **`extensions/`**: Generic extensions used across the app (e.g., `build_context_extensions.dart`, `future_extensions.dart`).
 - **`layout/`**: Responsive layout primitives such as breakpoints.
-- **`media/`**: Camera, image-picker, and video-player services.
-- **`network/`**: Base networking clients (e.g., `Dio` or `http`), interceptors, API configuration, and network connectivity checkers.
-- **`notifications/`**: Push notifications logic, local notifications configuration, and handling notification taps.
-- **`permissions/`**: Centralized handling for requesting and checking OS permissions (camera, location, notifications).
-- **`share/`**: Cross-platform sharing utilities (e.g., sharing text, images, or deep links via `share_plus`).
-- **`usecases/`**: Base classes for Clean Architecture Use Cases (e.g., `UseCase<Type, Params>`).
-- **`utils/`**: Generic helper functions, formatters, and small utilities that don't fit into a specific domain.
+- **`platform/`**: App-wide platform and plugin integrations, such as Firebase initialization, media picking/playback, push/local notifications, OS permissions, and sharing.
 
 > [!NOTE]
 > The design system — global theming (`theme/`), reusable generic widgets

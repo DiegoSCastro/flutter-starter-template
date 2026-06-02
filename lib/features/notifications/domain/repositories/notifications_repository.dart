@@ -1,4 +1,4 @@
-import '../../../../core/utils/result.dart';
+import '../../../../core/domain/result.dart';
 import '../entities/notifications_feed.dart';
 
 abstract interface class NotificationsRepository {

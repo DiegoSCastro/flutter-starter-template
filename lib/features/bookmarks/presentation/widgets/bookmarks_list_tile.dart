@@ -6,7 +6,7 @@ import '../../../../core/analytics/analytics_service.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/extensions/build_context_extensions.dart';
 import '../../../../core/extensions/future_extensions.dart';
-import '../../../../core/share/share_service.dart';
+import '../../../../core/platform/share/share_service.dart';
 import '../../../../ui/animation/widget_animations.dart';
 import '../../../../ui/widgets/widgets.dart';
 import '../../domain/entities/bookmark.dart';

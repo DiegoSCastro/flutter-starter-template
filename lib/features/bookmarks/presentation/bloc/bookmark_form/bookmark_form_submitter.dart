@@ -1,7 +1,7 @@
 import '../../../../../core/analytics/analytics_extensions.dart';
 import '../../../../../core/analytics/analytics_service.dart';
+import '../../../../../core/domain/result.dart';
 import '../../../../../core/extensions/future_extensions.dart';
-import '../../../../../core/utils/result.dart';
 import '../../../domain/entities/bookmark.dart';
 import '../../../domain/usecases/create_bookmark.dart';
 import '../../../domain/usecases/update_bookmark.dart';

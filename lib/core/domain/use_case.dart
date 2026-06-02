@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import '../error/failure.dart';
-import '../utils/result.dart';
+import 'failure.dart';
+import 'result.dart';
 
 typedef FailureMapper = Failure Function(Object error, StackTrace stackTrace);
 
