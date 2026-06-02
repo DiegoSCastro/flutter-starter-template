@@ -1,13 +1,10 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:flutter_starter_template/l10n/app_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Widget materialApp(Widget child) {
   return MaterialApp(
-    localizationsDelegates: AppLocalizations.localizationsDelegates,
-    supportedLocales: AppLocalizations.supportedLocales,
     home: Scaffold(body: child),
   );
 }
