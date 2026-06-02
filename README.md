@@ -50,6 +50,7 @@ To enable seamless local development and testing, this template is paired with a
 | 📡 **REST**               | `Retrofit` + `Dio` typed clients with auth interceptor |
 | ⚙️ **Go Backend**         | Companion server — `chi/v5`, JWT issuer, bookmark CRUD |
 | 🤖 **AI-Native**          | Rules, MCP servers, and agent skills for Claude, Cursor, Codex, Command Code, and Antigravity |
+| 🚀 **Release CI**         | Fastlane lanes — iOS → TestFlight, Android → Play — flavor‑aware, wired to GitHub Actions |
 
 <br>
 
@@ -341,6 +342,39 @@ fvm flutter run --flavor prod    --dart-define-from-file=env/prod.json
 
 `EnvConfig` (`packages/core_config/lib/core_config.dart`) surfaces API base URL,
 Firebase project IDs, and flavor name from `String.fromEnvironment` at startup.
+
+<br>
+
+---
+
+<br>
+
+## 🚀 Release (Fastlane)
+
+iOS → TestFlight and Android → Google Play are automated with [Fastlane](https://fastlane.tools),
+one flavor‑aware `beta` lane per platform. Every credential is read from a
+git‑ignored `.env` (plus `key.properties` on Android), so nothing secret is
+committed — fill those in and go.
+
+```bash
+cd ios     && bundle exec fastlane beta flavor:prod   # → TestFlight
+cd android && bundle exec fastlane beta flavor:prod   # → Google Play
+```
+
+- **Signing** — iOS uses [`match`](https://docs.fastlane.tools/actions/match/)
+  (cert + profiles in a private repo); Android uses an upload keystore wired via
+  `android/key.properties` (falls back to debug signing when absent, so the
+  template still builds out of the box).
+- **Build numbers** auto‑increment (lane arg → `BUILD_NUMBER` → git commit
+  count) so repeated uploads are never rejected.
+- **CI** — [`.github/workflows/release.yml`](.github/workflows/release.yml) runs
+  both lanes on a `v*` tag push or manual dispatch (macOS for iOS, Linux for
+  Android), restoring the git‑ignored Firebase configs and signing assets from
+  repository secrets.
+
+Setup steps and the full list of required secrets live in
+[`ios/fastlane/README.md`](ios/fastlane/README.md) and
+[`android/fastlane/README.md`](android/fastlane/README.md).
 
 <br>
 
