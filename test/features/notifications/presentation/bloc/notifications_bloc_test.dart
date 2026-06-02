@@ -10,6 +10,8 @@ import 'package:flutter_starter_template/features/notifications/presentation/blo
 import 'package:flutter_test/flutter_test.dart';
 import 'package:test_utils/test_utils.dart';
 
+import '../../../../test_utils.dart';
+
 class MockGetNotificationsFeed extends Mock implements GetNotificationsFeed {}
 
 class MockMarkNotificationRead extends Mock implements MarkNotificationRead {}
@@ -24,9 +26,15 @@ void main() {
   late UserActivity activity;
   late NotificationsFeed feed;
 
+  late MockActivityNotifier activityNotifier;
+
   setUp(() {
     getFeed = MockGetNotificationsFeed();
     markRead = MockMarkNotificationRead();
+    activityNotifier = MockActivityNotifier();
+    when(() => activityNotifier.onActivityOccurred)
+        .thenAnswer((_) => const Stream.empty());
+
     unreadNotification = AppNotification(
       id: 'n-1',
       title: 'Mention',
@@ -55,7 +63,7 @@ void main() {
     );
   });
 
-  NotificationsBloc buildBloc() => NotificationsBloc(getFeed, markRead);
+  NotificationsBloc buildBloc() => NotificationsBloc(getFeed, markRead, activityNotifier);
 
   group('NotificationsBloc', () {
     test('initial state is empty', () {

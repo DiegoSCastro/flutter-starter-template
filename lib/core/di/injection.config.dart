@@ -102,6 +102,8 @@ import 'package:flutter_starter_template/features/notifications/presentation/blo
 import 'package:flutter_starter_template/features/profile/presentation/bloc/profile_bloc.dart'
     as _i1013;
 import 'package:flutter_starter_template/objectbox.g.dart' as _i831;
+import 'package:flutter_starter_template/shared/domain/activity_notifier.dart'
+    as _i855;
 import 'package:flutter_starter_template/shared/domain/bookmark_stats.dart'
     as _i189;
 import 'package:get_it/get_it.dart' as _i174;
@@ -143,6 +145,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => bookmarksDataModule.provideConnectivity(),
     );
     gh.lazySingleton<_i706.Uuid>(() => bookmarksDataModule.provideUuid());
+    gh.lazySingleton<_i855.ActivityNotifier>(() => _i855.ActivityNotifier());
     gh.singleton<_i831.Store>(
       () => objectBoxModule.provideStore(gh<_i706.ObjectBox>()),
     );
@@ -204,12 +207,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i533.TokenRefresher>(),
       ),
     );
-    gh.lazySingleton<_i642.NotificationsBloc>(
-      () => _i642.NotificationsBloc(
-        gh<_i41.GetNotificationsFeed>(),
-        gh<_i854.MarkNotificationRead>(),
-      ),
-    );
     gh.factory<_i780.ChangePassword>(
       () => _i780.ChangePassword(gh<_i987.AuthRepository>()),
     );
@@ -229,6 +226,13 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i724.BookmarksLocalDataSource>(),
         gh<_i627.BookmarksSyncController>(),
         gh<_i706.Uuid>(),
+      ),
+    );
+    gh.lazySingleton<_i642.NotificationsBloc>(
+      () => _i642.NotificationsBloc(
+        gh<_i41.GetNotificationsFeed>(),
+        gh<_i854.MarkNotificationRead>(),
+        gh<_i855.ActivityNotifier>(),
       ),
     );
     gh.factory<_i329.DeleteAccountCubit>(
@@ -267,13 +271,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i412.UpdateBookmark>(
       () => _i412.UpdateBookmark(gh<_i630.BookmarksRepository>()),
     );
-    gh.factory<_i373.BookmarkDetailBloc>(
-      () => _i373.BookmarkDetailBloc(
-        gh<_i690.GetBookmark>(),
-        gh<_i244.DeleteBookmark>(),
-        gh<_i548.AnalyticsService>(),
-      ),
-    );
     gh.factory<_i540.BookmarkFormBloc>(
       () => _i540.BookmarkFormBloc(
         gh<_i690.GetBookmark>(),
@@ -282,6 +279,14 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i548.AnalyticsService>(),
         gh<_i199.ImagePickerService>(),
         gh<_i199.PermissionService>(),
+        gh<_i855.ActivityNotifier>(),
+      ),
+    );
+    gh.factory<_i373.BookmarkDetailBloc>(
+      () => _i373.BookmarkDetailBloc(
+        gh<_i690.GetBookmark>(),
+        gh<_i244.DeleteBookmark>(),
+        gh<_i548.AnalyticsService>(),
       ),
     );
     gh.factory<_i566.BookmarksListBloc>(

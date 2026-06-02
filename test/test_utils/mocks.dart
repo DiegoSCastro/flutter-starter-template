@@ -1,3 +1,4 @@
+import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_starter_template/features/auth/domain/repositories/auth_repository.dart';
 import 'package:flutter_starter_template/features/auth/domain/usecases/delete_account.dart';
@@ -13,10 +14,19 @@ import 'package:flutter_starter_template/features/bookmarks/domain/usecases/get_
 import 'package:flutter_starter_template/features/bookmarks/domain/usecases/list_bookmarks.dart';
 import 'package:flutter_starter_template/features/bookmarks/domain/usecases/list_local_bookmarks.dart';
 import 'package:flutter_starter_template/features/bookmarks/domain/usecases/update_bookmark.dart';
+import 'package:flutter_starter_template/features/notifications/presentation/bloc/notifications_bloc.dart';
+import 'package:flutter_starter_template/features/notifications/presentation/bloc/notifications_state.dart';
+import 'package:flutter_starter_template/shared/domain/activity_notifier.dart';
 import 'package:flutter_starter_template/shared/domain/bookmark_stats.dart';
 import 'package:flutter_starter_template/shared/domain/entities/auth_user.dart';
 import 'package:flutter_starter_template/shared/domain/session.dart';
 import 'package:test_utils/test_utils.dart';
+
+class MockNotificationsBloc
+    extends MockBloc<NotificationsEvent, NotificationsState>
+    implements NotificationsBloc {}
+
+class MockActivityNotifier extends Mock implements ActivityNotifier {}
 
 class MockSignIn extends Mock implements SignIn {}
 
