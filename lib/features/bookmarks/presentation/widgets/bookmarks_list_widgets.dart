@@ -96,8 +96,8 @@ class _BookmarksListViewState extends State<BookmarksListView> {
       ],
       floatingActionButton: Padding(
         padding: EdgeInsets.only(
-          bottom: MediaQuery.sizeOf(context).width < AppBreakpoints.medium 
-              ? 84 + MediaQuery.paddingOf(context).bottom 
+          bottom: MediaQuery.sizeOf(context).width < AppBreakpoints.medium
+              ? 32 + MediaQuery.paddingOf(context).bottom
               : 0,
         ),
         child: FloatingActionButton(
