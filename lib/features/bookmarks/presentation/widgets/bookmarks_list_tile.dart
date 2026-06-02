@@ -10,6 +10,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/extensions/build_context_extensions.dart';
+import '../../../../gen/assets.gen.dart';
 import '../../domain/entities/bookmark.dart';
 import '../bloc/bookmarks_list/bookmarks_list_bloc.dart';
 
@@ -172,8 +173,6 @@ class _BookmarkIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = context.colorScheme;
     return Container(
-      width: 40,
-      height: 40,
       alignment: Alignment.center,
       decoration: BoxDecoration(
         color: selected
@@ -181,12 +180,16 @@ class _BookmarkIcon extends StatelessWidget {
             : colorScheme.primaryContainer.withValues(alpha: 0.7),
         borderRadius: BorderRadius.circular(AppRadius.sm),
       ),
-      child: FaIcon(
-        FontAwesomeIcons.bookmark,
-        size: 17,
-        color: selected
-            ? colorScheme.onPrimary
-            : colorScheme.onPrimaryContainer,
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.xs),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(AppRadius.xs),
+          child: Assets.icons.logo.image(
+            width: 28,
+            height: 28,
+            fit: BoxFit.cover,
+          ),
+        ),
       ),
     );
   }
