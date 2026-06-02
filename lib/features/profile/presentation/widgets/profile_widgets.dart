@@ -1,6 +1,7 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:core_analytics/core_analytics.dart';
 import 'package:core_domain/core_domain.dart';
+import 'package:core_theme/core_theme.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,8 +10,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../app/router.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/extensions/build_context_extensions.dart';
-import '../../../../core/theme/theme_bloc.dart';
-import '../../../../core/theme/theme_state.dart';
 import '../../../../shared/presentation/session_scope.dart';
 import '../../../auth/presentation/bloc/delete_account_cubit.dart';
 import '../../../auth/presentation/bloc/delete_account_state.dart';

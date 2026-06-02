@@ -1,6 +1,7 @@
 import 'package:core_analytics/core_analytics.dart';
 import 'package:core_platform/core_platform.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_starter_template/features/auth/domain/repositories/auth_repository.dart';
 import 'package:flutter_starter_template/features/auth/domain/usecases/delete_account.dart';
 import 'package:flutter_starter_template/features/auth/domain/usecases/register.dart';
@@ -34,6 +35,8 @@ class MockRestoreSession extends Mock implements RestoreSession {}
 class MockAuthRepository extends Mock implements AuthRepository {}
 
 class MockSharedPreferences extends Mock implements SharedPreferences {}
+
+class MockFlutterSecureStorage extends Mock implements FlutterSecureStorage {}
 
 class MockAnalyticsService extends Mock implements AnalyticsService {}
 

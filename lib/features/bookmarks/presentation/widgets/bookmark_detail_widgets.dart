@@ -12,10 +12,10 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../../app/router.dart';
 import '../../../../core/di/injection.dart';
 import '../../../../core/extensions/build_context_extensions.dart';
-import '../../../../shared/presentation/widgets/app_video_player.dart';
 import '../../domain/entities/bookmark.dart';
 import '../bloc/bookmark_detail/bookmark_detail_bloc.dart';
 import '../bloc/bookmark_detail/bookmark_detail_state.dart';
+import 'app_video_player.dart';
 import 'bookmark_failure_messages.dart';
 
 Future<void> _shareBookmark(Bookmark bookmark) async {

@@ -28,6 +28,8 @@ workspace:
   - packages/core_domain
   - packages/core_network
   - packages/core_platform
+  - packages/core_storage
+  - packages/core_theme
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -42,6 +44,8 @@ dependencies:
   core_domain: ^0.1.0
   core_network: ^0.1.0
   core_platform: ^0.1.0
+  core_storage: ^0.1.0
+  core_theme: ^0.1.0
 
   flutter:
     sdk: flutter
@@ -124,7 +128,6 @@ dependencies:
   # drains pending mutations when connectivity is restored.
   connectivity_plus: ^7.1.1
   google_fonts: ^8.1.0
-  shared_preferences: ^2.5.5
   package_info_plus: ^10.1.0
 
   # SVG rendering. Pairs with flutter_gen_runner: SVGs placed in assets/icons/
@@ -192,6 +195,10 @@ dev_dependencies:
 
   # Mocking library for tests — uses real callable objects without codegen.
   mocktail: ^1.0.5
+
+  # Only used by tests now (ThemeBloc's prefs provider lives in core_theme):
+  # SharedPreferences.setMockInitialValues + MockSharedPreferences.
+  shared_preferences: ^2.5.5
 
   # High-level testing utilities for Bloc: blocTest helper, wait
   # for states, and verify exact emission sequences.
