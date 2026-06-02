@@ -29,7 +29,7 @@ class SplashContent extends StatelessWidget {
                   ),
                 ],
               ),
-              child: Assets.icons.logo.svg(width: 72, height: 72),
+              child: Assets.icons.logo.image(width: 72, height: 72),
             ).animateScale(),
             const SizedBox(height: AppSpacing.xxl),
             Text(
