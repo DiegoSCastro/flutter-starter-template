@@ -13,10 +13,23 @@ import '../../features/notifications/presentation/bloc/notifications_state.dart'
 /// Renders an [AppAdaptiveScaffold] whose body is the [navigationShell] (the
 /// indexed stack of branch navigators), so each destination keeps its own
 /// navigation stack.
-class AppShell extends StatelessWidget {
+class AppShell extends StatefulWidget {
   const AppShell({super.key, required this.navigationShell});
 
   final StatefulNavigationShell navigationShell;
+
+  @override
+  State<AppShell> createState() => _AppShellState();
+}
+
+class _AppShellState extends State<AppShell> {
+  @override
+  void initState() {
+    super.initState();
+    // Fetch notifications on app start so the badge can be shown immediately
+    // if there are unread notifications.
+    getIt<NotificationsBloc>().add(const NotificationsLoadRequested());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,12 +64,20 @@ class AppShell extends StatelessWidget {
 
           return AppAdaptiveScaffold(
             destinations: destinations,
-            selectedIndex: navigationShell.currentIndex,
-            onDestinationSelected: (index) => navigationShell.goBranch(
-              index,
-              initialLocation: index == navigationShell.currentIndex,
-            ),
-            body: navigationShell,
+            selectedIndex: widget.navigationShell.currentIndex,
+            onDestinationSelected: (index) {
+              if (index == 2) {
+                // Refresh when tapping the tab to ensure it's up to date
+                getIt<NotificationsBloc>().add(
+                  const NotificationsLoadRequested(),
+                );
+              }
+              widget.navigationShell.goBranch(
+                index,
+                initialLocation: index == widget.navigationShell.currentIndex,
+              );
+            },
+            body: widget.navigationShell,
           );
         },
       ),
