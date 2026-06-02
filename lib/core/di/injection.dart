@@ -1,4 +1,6 @@
 import 'package:core_analytics/core_analytics.dart';
+import 'package:core_config/core_config.dart';
+import 'package:core_network/core_network.dart';
 import 'package:core_platform/core_platform.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
@@ -15,6 +17,8 @@ final GetIt getIt = GetIt.instance;
 @InjectableInit(
   externalPackageModulesBefore: [
     ExternalModule(CoreAnalyticsPackageModule),
+    ExternalModule(CoreConfigPackageModule),
+    ExternalModule(CoreNetworkPackageModule),
     ExternalModule(CorePlatformPackageModule),
   ],
 )

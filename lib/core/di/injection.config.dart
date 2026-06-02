@@ -11,22 +11,14 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'package:connectivity_plus/connectivity_plus.dart' as _i895;
 import 'package:core_analytics/core_analytics.dart' as _i682;
+import 'package:core_config/core_config.dart' as _i277;
+import 'package:core_network/core_network.dart' as _i309;
 import 'package:core_platform/core_platform.dart' as _i490;
 import 'package:dio/dio.dart' as _i361;
 import 'package:firebase_performance/firebase_performance.dart' as _i346;
-import 'package:firebase_remote_config/firebase_remote_config.dart' as _i627;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
-import 'package:flutter_starter_template/core/config/env_config.dart' as _i689;
-import 'package:flutter_starter_template/core/config/remote_config_module.dart'
-    as _i929;
-import 'package:flutter_starter_template/core/config/remote_config_service.dart'
-    as _i159;
 import 'package:flutter_starter_template/core/data/database/object_box.dart'
     as _i706;
-import 'package:flutter_starter_template/core/data/network/network_module.dart'
-    as _i893;
-import 'package:flutter_starter_template/core/data/network/performance_module.dart'
-    as _i489;
 import 'package:flutter_starter_template/core/platform/firebase/firebase_service.dart'
     as _i473;
 import 'package:flutter_starter_template/core/theme/theme_bloc.dart' as _i652;
@@ -130,14 +122,13 @@ extension GetItInjectableX on _i174.GetIt {
   }) async {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
     await _i682.CoreAnalyticsPackageModule().init(gh);
+    await _i277.CoreConfigPackageModule().init(gh);
+    await _i309.CoreNetworkPackageModule().init(gh);
     await _i490.CorePlatformPackageModule().init(gh);
     final sharedPreferencesModule = _$SharedPreferencesModule();
     final objectBoxModule = _$ObjectBoxModule();
-    final remoteConfigModule = _$RemoteConfigModule();
-    final performanceModule = _$PerformanceModule();
     final secureStorageModule = _$SecureStorageModule();
     final bookmarksDataModule = _$BookmarksDataModule();
-    final networkModule = _$NetworkModule();
     final authNetworkModule = _$AuthNetworkModule();
     final bookmarksRemoteModule = _$BookmarksRemoteModule();
     final notificationsRemoteModule = _$NotificationsRemoteModule();
@@ -146,18 +137,11 @@ extension GetItInjectableX on _i174.GetIt {
       preResolve: true,
     );
     gh.factory<_i1013.ProfileBloc>(() => _i1013.ProfileBloc());
-    gh.singleton<_i689.EnvConfig>(() => const _i689.EnvConfig());
     await gh.singletonAsync<_i706.ObjectBox>(
       () => objectBoxModule.provideObjectBox(),
       preResolve: true,
     );
     gh.singleton<_i473.FirebaseService>(() => _i473.FirebaseService());
-    gh.lazySingleton<_i627.FirebaseRemoteConfig>(
-      () => remoteConfigModule.provideRemoteConfig(),
-    );
-    gh.lazySingleton<_i346.FirebasePerformance>(
-      () => performanceModule.providePerformance(),
-    );
     gh.lazySingleton<_i558.FlutterSecureStorage>(
       () => secureStorageModule.provideSecureStorage(),
     );
@@ -177,27 +161,20 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i682.AnalyticsService>(),
       ),
     );
-    gh.lazySingleton<_i159.RemoteConfigService>(
-      () => _i159.FirebaseRemoteConfigService(gh<_i627.FirebaseRemoteConfig>()),
-    );
-    gh.lazySingleton<_i361.Dio>(
-      () => networkModule.providePlainDio(gh<_i689.EnvConfig>()),
-      instanceName: 'plain',
-    );
-    gh.lazySingleton<_i724.BookmarksLocalDataSource>(
-      () => _i724.ObjectBoxBookmarksDataSource(gh<_i831.Store>()),
-    );
     gh.lazySingleton<_i533.TokenRefresher>(
       () => _i533.TokenRefresher(
         gh<_i297.AuthLocalDataSource>(),
         gh<_i361.Dio>(instanceName: 'plain'),
       ),
     );
+    gh.lazySingleton<_i724.BookmarksLocalDataSource>(
+      () => _i724.ObjectBoxBookmarksDataSource(gh<_i831.Store>()),
+    );
     gh.lazySingleton<_i361.Dio>(
       () => authNetworkModule.provideDio(
         gh<_i297.AuthLocalDataSource>(),
         gh<_i533.TokenRefresher>(),
-        gh<_i689.EnvConfig>(),
+        gh<_i277.EnvConfig>(),
         gh<_i346.FirebasePerformance>(),
       ),
     );
@@ -342,15 +319,9 @@ class _$SharedPreferencesModule extends _i652.SharedPreferencesModule {}
 
 class _$ObjectBoxModule extends _i706.ObjectBoxModule {}
 
-class _$RemoteConfigModule extends _i929.RemoteConfigModule {}
-
-class _$PerformanceModule extends _i489.PerformanceModule {}
-
 class _$SecureStorageModule extends _i297.SecureStorageModule {}
 
 class _$BookmarksDataModule extends _i179.BookmarksDataModule {}
-
-class _$NetworkModule extends _i893.NetworkModule {}
 
 class _$AuthNetworkModule extends _i740.AuthNetworkModule {}
 

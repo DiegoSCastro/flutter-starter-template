@@ -1,5 +1,6 @@
 import 'dart:developer' as developer;
 
+import 'package:core_config/core_config.dart';
 import 'package:core_platform/core_platform.dart';
 import 'package:firebase_core/firebase_core.dart' show Firebase;
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
@@ -7,7 +8,6 @@ import 'package:flutter/material.dart';
 
 import 'app/app.dart';
 import 'app/bootstrap_error_app.dart';
-import 'core/config/remote_config_service.dart';
 import 'core/di/injection.dart';
 import 'core/platform/firebase/firebase_service.dart';
 
