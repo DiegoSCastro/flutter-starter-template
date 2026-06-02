@@ -46,18 +46,50 @@ class BookmarksListTile extends StatelessWidget {
       ],
       child: ListTile(
         selected: selected,
+        selectedTileColor: context.colorScheme.secondaryContainer.withValues(alpha: 0.3),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.lg,
+          vertical: AppSpacing.sm,
+        ),
         leading: _BookmarkAvatar(bookmark: bookmark),
-        title: Text(
-          bookmark.title,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
+        title: Padding(
+          padding: const EdgeInsets.only(bottom: 2),
+          child: Text(
+            bookmark.title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: context.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: selected ? context.colorScheme.onSecondaryContainer : context.colorScheme.onSurface,
+            ),
+          ),
         ),
         subtitle: Text(
           bookmark.url,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
+          style: context.textTheme.bodyMedium?.copyWith(
+            color: selected 
+                ? context.colorScheme.onSecondaryContainer.withValues(alpha: 0.8) 
+                : context.colorScheme.onSurfaceVariant,
+          ),
         ),
-        trailing: const FaIcon(FontAwesomeIcons.chevronRight),
+        trailing: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: selected 
+                ? context.colorScheme.onSecondaryContainer.withValues(alpha: 0.1) 
+                : context.colorScheme.surfaceContainerHighest,
+            shape: BoxShape.circle,
+          ),
+          child: FaIcon(
+            FontAwesomeIcons.chevronRight,
+            size: 12,
+            color: selected 
+                ? context.colorScheme.onSecondaryContainer 
+                : context.colorScheme.onSurfaceVariant,
+          ),
+        ),
         onTap: onTap,
         onLongPress: () => _showItemMenu(context, bookmark),
       ),
@@ -75,10 +107,36 @@ class _BookmarkAvatar extends StatelessWidget {
     final theme = Theme.of(context);
     final title = bookmark.title.trim();
     final initial = title.isNotEmpty ? title[0].toUpperCase() : '#';
-    final avatar = CircleAvatar(
-      backgroundColor: theme.colorScheme.secondaryContainer,
-      foregroundColor: theme.colorScheme.onSecondaryContainer,
-      child: Text(initial),
+    final avatar = Container(
+      width: 48,
+      height: 48,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            theme.colorScheme.primary,
+            theme.colorScheme.secondary,
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(AppRadius.sm),
+        boxShadow: [
+          BoxShadow(
+            color: theme.colorScheme.primary.withValues(alpha: 0.2),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Center(
+        child: Text(
+          initial,
+          style: theme.textTheme.titleMedium?.copyWith(
+            color: theme.colorScheme.onPrimary,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ),
     );
     if (!bookmark.isPendingSync) return avatar;
     return Tooltip(
