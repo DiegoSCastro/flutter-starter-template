@@ -1,4 +1,4 @@
-import '../../core/domain/use_case.dart';
+import 'package:core_domain/core_domain.dart';
 
 /// Lightweight projection of a bookmark for cross-feature display (e.g. the
 /// home dashboard), so consumers don't depend on the bookmarks feature's

@@ -1,8 +1,7 @@
+import 'package:core_domain/core_domain.dart';
 import 'package:injectable/injectable.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../../../core/domain/failure.dart';
-import '../../../../core/domain/result.dart';
 import '../../../../core/extensions/future_extensions.dart';
 import '../../domain/entities/bookmark.dart';
 import '../../domain/repositories/bookmarks_repository.dart';

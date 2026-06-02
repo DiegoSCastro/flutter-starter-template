@@ -1,7 +1,6 @@
+import 'package:core_domain/core_domain.dart';
 import 'package:injectable/injectable.dart';
 
-import '../../../../core/domain/result.dart';
-import '../../../../core/domain/use_case.dart';
 import '../repositories/bookmarks_repository.dart';
 
 @injectable

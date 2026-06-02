@@ -1,6 +1,5 @@
+import 'package:core_domain/core_domain.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-
-import '../../../../../core/domain/failure.dart';
 
 part 'bookmark_form_state.freezed.dart';
 

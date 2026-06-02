@@ -1,6 +1,7 @@
+import 'package:core_domain/core_domain.dart';
+
 import '../../../../../core/analytics/analytics_extensions.dart';
 import '../../../../../core/analytics/analytics_service.dart';
-import '../../../../../core/domain/result.dart';
 import '../../../../../core/extensions/future_extensions.dart';
 import '../../../domain/entities/bookmark.dart';
 import '../../../domain/usecases/create_bookmark.dart';
