@@ -48,7 +48,8 @@ void main() {
     expect(
       featuresDir.existsSync(),
       isTrue,
-      reason: 'Expected to find lib/features relative to the current '
+      reason:
+          'Expected to find lib/features relative to the current '
           'directory. Run this test from the package root.',
     );
   });
@@ -64,31 +65,33 @@ void main() {
     featureNames,
   );
 
-  test('no feature imports another feature outside the documented allowlist',
-      () {
-    final violations = crossFeatureImports
-        .where(
-          (i) =>
-              !(_allowedCrossFeatureImports[i.sourceFeature]?.contains(
-                    i.targetPath,
-                  ) ??
-                  false),
-        )
-        .toList();
+  test(
+    'no feature imports another feature outside the documented allowlist',
+    () {
+      final violations = crossFeatureImports
+          .where(
+            (i) =>
+                !(_allowedCrossFeatureImports[i.sourceFeature]?.contains(
+                      i.targetPath,
+                    ) ??
+                    false),
+          )
+          .toList();
 
-    expect(
-      violations,
-      isEmpty,
-      reason: 'Cross-feature imports break the feature boundary documented in '
-          'CLAUDE.md. Read shared state through a shared/ contract, or — if '
-          'this is a deliberate single-consumer capability — add it to '
-          '_allowedCrossFeatureImports in this test.\n\n'
-          '${violations.map((v) => '  $v').join('\n')}',
-    );
-  });
+      expect(
+        violations,
+        isEmpty,
+        reason:
+            'Cross-feature imports break the feature boundary documented in '
+            'CLAUDE.md. Read shared state through a shared/ contract, or — if '
+            'this is a deliberate single-consumer capability — add it to '
+            '_allowedCrossFeatureImports in this test.\n\n'
+            '${violations.map((v) => '  $v').join('\n')}',
+      );
+    },
+  );
 
-  test('every allowlisted capability import still exists (no stale entries)',
-      () {
+  test('every allowlisted capability import still exists (no stale entries)', () {
     final actual = crossFeatureImports
         .map((i) => '${i.sourceFeature} -> ${i.targetPath}')
         .toSet();
@@ -105,7 +108,8 @@ void main() {
     expect(
       stale,
       isEmpty,
-      reason: 'These whitelisted capability imports no longer exist. Remove '
+      reason:
+          'These whitelisted capability imports no longer exist. Remove '
           'them from _allowedCrossFeatureImports — a stale allowlist hides '
           'real boundary violations:\n\n${stale.map((s) => '  $s').join('\n')}',
     );
@@ -143,13 +147,15 @@ class _CrossFeatureImport {
   final String uri;
 
   @override
-  String toString() => '$file:$line imports $sourceFeature -> $uri '
+  String toString() =>
+      '$file:$line imports $sourceFeature -> $uri '
       '(resolves to features/$targetPath)';
 }
 
 /// Matches `import '...'` / `export '...'` and captures the URI.
-final _importDirective =
-    RegExp(r'''^\s*(?:import|export)\s+['"]([^'"]+)['"]''');
+final _importDirective = RegExp(
+  r'''^\s*(?:import|export)\s+['"]([^'"]+)['"]''',
+);
 
 List<_CrossFeatureImport> _collectCrossFeatureImports(
   Directory featuresDir,

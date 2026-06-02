@@ -36,12 +36,10 @@ const _layers = <String, int>{
   'core_storage': 1, // shared_preferences / secure storage
   'core_analytics': 1, // -> core_domain
   'app_ui': 1, // design tokens; no core_* deps
-
   // 2 — composed infra built on the primitives.
   'core_network': 2, // -> core_config
   'core_platform': 2, // -> core_analytics, core_domain
   'core_theme': 2, // -> core_analytics, core_domain
-
   // 3 — shared test harness, sits on top of what it provides fakes for.
   'test_utils': 3, // -> core_analytics, core_platform, core_storage
 };
@@ -53,7 +51,8 @@ void main() {
     expect(
       packagesDir.existsSync(),
       isTrue,
-      reason: 'Expected to find packages/ relative to the current directory. '
+      reason:
+          'Expected to find packages/ relative to the current directory. '
           'Run this test from the repository root.',
     );
   });
@@ -67,7 +66,8 @@ void main() {
     expect(
       unranked,
       isEmpty,
-      reason: 'These workspace packages have no entry in _layers. Assign each '
+      reason:
+          'These workspace packages have no entry in _layers. Assign each '
           'a layer rank so its dependency direction is enforced:\n\n'
           '${unranked.map((p) => '  $p').join('\n')}',
     );
@@ -98,7 +98,8 @@ void main() {
     expect(
       violations,
       isEmpty,
-      reason: 'These runtime dependencies violate the package layering '
+      reason:
+          'These runtime dependencies violate the package layering '
           '(a package may only depend on strictly lower layers). Fix the '
           'dependency, or rethink the ranks in _layers if the intended '
           'architecture changed:\n\n${violations.map((v) => '  $v').join('\n')}',
