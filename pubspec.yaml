@@ -120,14 +120,9 @@ dependencies:
   # stable id locally and the server accepts it on POST /api/bookmarks.
   uuid: ^4.5.3
 
-  # Interactive carousel / image slider widget with auto-play and
-  # customisable transitions.
-  carousel_slider: ^5.1.2
-
   # Reactive online/offline detection. The sync service subscribes and
   # drains pending mutations when connectivity is restored.
   connectivity_plus: ^7.1.1
-  google_fonts: ^8.1.0
   package_info_plus: ^10.1.0
 
   # SVG rendering. Pairs with flutter_gen_runner: SVGs placed in assets/icons/
@@ -145,45 +140,19 @@ dependencies:
   # Firebase Crashlytics — real-time crash reporting for both Dart and
   # native (Android/iOS) stack traces.
   firebase_crashlytics: ^5.2.2
-  firebase_analytics: ^12.4.1
   firebase_messaging: ^16.2.2
 
   # Automatic network + screen-rendering traces. The PerformanceInterceptor
   # records an HttpMetric per request; collection is disabled in dev builds.
   firebase_performance: ^0.11.4+1
 
-  # Server-controlled feature flags and config values. Wrapped by
-  # RemoteConfigService with compile-time defaults so reads never block on a
-  # network fetch.
-  firebase_remote_config: ^6.5.1
-
   # Dynamic M3 colour schemes built on top of Material Color Utilities. 
   # Provides FlexColorScheme, FlexSubThemes, and opinionated defaults.
   flex_color_scheme: ^8.4.0
 
-  # Declarative animation helpers (fade, slide, scale, shake, etc.)
-  # exposed as extensions on Widget.
-  flutter_animate: ^4.5.2
-
-  # Pre-built animated text widgets (typewriter, fade, scale, colorize, etc.)
-  animated_text_kit: ^4.3.0
-  share_plus: ^13.1.0
-  flutter_link_previewer: ^4.2.0
-
-  # Swipe actions for list rows, wrapped by AppSlidable.
-  flutter_slidable: ^4.0.3
-
-  # Cross-platform runtime permission API. Wrapped by PermissionService.
-  permission_handler: ^12.0.1
-
-  # Interactive zoomable image viewer widget. Wrapped by AppPhotoView.
-  photo_view: ^0.15.0
-
   vector_graphics: ^1.2.2
   image_picker: ^1.2.2
-  camera: ^0.12.0+1
   video_player: ^2.11.1
-  cached_network_image: ^3.4.1
 dev_dependencies:
   flutter_test:
     sdk: flutter
