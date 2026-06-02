@@ -1,5 +1,5 @@
-import 'package:core_analytics/core_analytics.dart';
-import 'package:core_domain/core_domain.dart';
+import 'package:analytics/analytics.dart';
+import 'package:architecture/architecture.dart';
 
 import '../../../domain/entities/bookmark.dart';
 import '../../../domain/usecases/create_bookmark.dart';

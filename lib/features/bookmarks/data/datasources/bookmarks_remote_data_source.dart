@@ -1,4 +1,4 @@
-import 'package:core_network/core_network.dart';
+import 'package:network/network.dart';
 
 import '../models/bookmark_dto.dart';
 import '../models/bookmark_request.dart';

@@ -1,7 +1,7 @@
+import 'package:analytics/analytics.dart';
+import 'package:app_platform/app_platform.dart';
 import 'package:app_ui/app_ui.dart';
-import 'package:core_analytics/core_analytics.dart';
-import 'package:core_domain/core_domain.dart';
-import 'package:core_platform/core_platform.dart';
+import 'package:architecture/architecture.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

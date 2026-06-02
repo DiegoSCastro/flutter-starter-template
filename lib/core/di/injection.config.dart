@@ -9,13 +9,10 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:analytics/analytics.dart' as _i548;
+import 'package:app_platform/app_platform.dart' as _i199;
+import 'package:config/config.dart' as _i259;
 import 'package:connectivity_plus/connectivity_plus.dart' as _i895;
-import 'package:core_analytics/core_analytics.dart' as _i682;
-import 'package:core_config/core_config.dart' as _i277;
-import 'package:core_network/core_network.dart' as _i309;
-import 'package:core_platform/core_platform.dart' as _i490;
-import 'package:core_storage/core_storage.dart' as _i78;
-import 'package:core_theme/core_theme.dart' as _i741;
 import 'package:flutter_starter_template/core/data/database/object_box.dart'
     as _i706;
 import 'package:flutter_starter_template/core/platform/firebase/firebase_service.dart'
@@ -109,6 +106,9 @@ import 'package:flutter_starter_template/shared/domain/bookmark_stats.dart'
     as _i189;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
+import 'package:network/network.dart' as _i372;
+import 'package:storage/storage.dart' as _i431;
+import 'package:theme/theme.dart' as _i873;
 import 'package:uuid/uuid.dart' as _i706;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -118,12 +118,12 @@ extension GetItInjectableX on _i174.GetIt {
     _i526.EnvironmentFilter? environmentFilter,
   }) async {
     final gh = _i526.GetItHelper(this, environment, environmentFilter);
-    await _i682.CoreAnalyticsPackageModule().init(gh);
-    await _i277.CoreConfigPackageModule().init(gh);
-    await _i309.CoreNetworkPackageModule().init(gh);
-    await _i490.CorePlatformPackageModule().init(gh);
-    await _i78.CoreStoragePackageModule().init(gh);
-    await _i741.CoreThemePackageModule().init(gh);
+    await _i548.CoreAnalyticsPackageModule().init(gh);
+    await _i259.CoreConfigPackageModule().init(gh);
+    await _i372.CoreNetworkPackageModule().init(gh);
+    await _i199.CorePlatformPackageModule().init(gh);
+    await _i431.CoreStoragePackageModule().init(gh);
+    await _i873.CoreThemePackageModule().init(gh);
     final objectBoxModule = _$ObjectBoxModule();
     final secureStorageModule = _$SecureStorageModule();
     final bookmarksDataModule = _$BookmarksDataModule();
@@ -136,7 +136,7 @@ extension GetItInjectableX on _i174.GetIt {
       preResolve: true,
     );
     gh.singleton<_i473.FirebaseService>(() => _i473.FirebaseService());
-    gh.lazySingleton<_i78.FlutterSecureStorage>(
+    gh.lazySingleton<_i431.FlutterSecureStorage>(
       () => secureStorageModule.provideSecureStorage(),
     );
     gh.lazySingleton<_i895.Connectivity>(
@@ -147,7 +147,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => objectBoxModule.provideStore(gh<_i706.ObjectBox>()),
     );
     gh.lazySingleton<_i297.AuthLocalDataSource>(
-      () => _i297.SecureStorageAuthDataSource(gh<_i78.FlutterSecureStorage>()),
+      () => _i297.SecureStorageAuthDataSource(gh<_i431.FlutterSecureStorage>()),
     );
     gh.lazySingleton<_i724.BookmarksLocalDataSource>(
       () => _i724.ObjectBoxBookmarksDataSource(gh<_i831.Store>()),
@@ -155,28 +155,28 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i533.TokenRefresher>(
       () => _i533.TokenRefresher(
         gh<_i297.AuthLocalDataSource>(),
-        gh<_i309.Dio>(instanceName: 'plain'),
+        gh<_i372.Dio>(instanceName: 'plain'),
       ),
     );
-    gh.lazySingleton<_i309.Dio>(
+    gh.lazySingleton<_i372.Dio>(
       () => authNetworkModule.provideDio(
         gh<_i297.AuthLocalDataSource>(),
         gh<_i533.TokenRefresher>(),
-        gh<_i277.EnvConfig>(),
-        gh<_i309.FirebasePerformance>(),
+        gh<_i259.EnvConfig>(),
+        gh<_i372.FirebasePerformance>(),
       ),
     );
     gh.lazySingleton<_i87.AuthRemoteDataSource>(
-      () => authNetworkModule.provideAuthRemoteDataSource(gh<_i309.Dio>()),
+      () => authNetworkModule.provideAuthRemoteDataSource(gh<_i372.Dio>()),
     );
     gh.lazySingleton<_i729.BookmarksRemoteDataSource>(
       () => bookmarksRemoteModule.provideBookmarksRemoteDataSource(
-        gh<_i309.Dio>(),
+        gh<_i372.Dio>(),
       ),
     );
     gh.lazySingleton<_i937.NotificationsRemoteDataSource>(
       () => notificationsRemoteModule.provideNotificationsRemoteDataSource(
-        gh<_i309.Dio>(),
+        gh<_i372.Dio>(),
       ),
     );
     gh.lazySingleton<_i578.NotificationsRepository>(
@@ -224,12 +224,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i1001.SignIn>(() => _i1001.SignIn(gh<_i987.AuthRepository>()));
     gh.factory<_i926.SignOut>(() => _i926.SignOut(gh<_i987.AuthRepository>()));
-    gh.factory<_i329.DeleteAccountCubit>(
-      () => _i329.DeleteAccountCubit(
-        gh<_i625.DeleteAccount>(),
-        gh<_i682.AnalyticsService>(),
-      ),
-    );
     gh.lazySingleton<_i630.BookmarksRepository>(
       () => _i73.BookmarksRepositoryImpl(
         gh<_i724.BookmarksLocalDataSource>(),
@@ -237,17 +231,23 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i706.Uuid>(),
       ),
     );
+    gh.factory<_i329.DeleteAccountCubit>(
+      () => _i329.DeleteAccountCubit(
+        gh<_i625.DeleteAccount>(),
+        gh<_i548.AnalyticsService>(),
+      ),
+    );
+    gh.factory<_i11.ChangePasswordCubit>(
+      () => _i11.ChangePasswordCubit(gh<_i780.ChangePassword>()),
+    );
     gh.lazySingleton<_i269.AuthBloc>(
       () => _i269.AuthBloc(
         signIn: gh<_i1001.SignIn>(),
         register: gh<_i699.Register>(),
         signOut: gh<_i926.SignOut>(),
         restoreSession: gh<_i271.RestoreSession>(),
-        analytics: gh<_i682.AnalyticsService>(),
+        analytics: gh<_i548.AnalyticsService>(),
       ),
-    );
-    gh.factory<_i11.ChangePasswordCubit>(
-      () => _i11.ChangePasswordCubit(gh<_i780.ChangePassword>()),
     );
     gh.factory<_i632.CreateBookmark>(
       () => _i632.CreateBookmark(gh<_i630.BookmarksRepository>()),
@@ -267,21 +267,21 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i412.UpdateBookmark>(
       () => _i412.UpdateBookmark(gh<_i630.BookmarksRepository>()),
     );
+    gh.factory<_i373.BookmarkDetailBloc>(
+      () => _i373.BookmarkDetailBloc(
+        gh<_i690.GetBookmark>(),
+        gh<_i244.DeleteBookmark>(),
+        gh<_i548.AnalyticsService>(),
+      ),
+    );
     gh.factory<_i540.BookmarkFormBloc>(
       () => _i540.BookmarkFormBloc(
         gh<_i690.GetBookmark>(),
         gh<_i632.CreateBookmark>(),
         gh<_i412.UpdateBookmark>(),
-        gh<_i682.AnalyticsService>(),
-        gh<_i490.ImagePickerService>(),
-        gh<_i490.PermissionService>(),
-      ),
-    );
-    gh.factory<_i373.BookmarkDetailBloc>(
-      () => _i373.BookmarkDetailBloc(
-        gh<_i690.GetBookmark>(),
-        gh<_i244.DeleteBookmark>(),
-        gh<_i682.AnalyticsService>(),
+        gh<_i548.AnalyticsService>(),
+        gh<_i199.ImagePickerService>(),
+        gh<_i199.PermissionService>(),
       ),
     );
     gh.factory<_i566.BookmarksListBloc>(
@@ -290,7 +290,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i428.ListLocalBookmarks>(),
         gh<_i244.DeleteBookmark>(),
         gh<_i627.BookmarksSyncController>(),
-        gh<_i682.AnalyticsService>(),
+        gh<_i548.AnalyticsService>(),
       ),
     );
     gh.lazySingleton<_i189.BookmarkStatsReader>(

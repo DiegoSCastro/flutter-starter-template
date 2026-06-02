@@ -1,4 +1,4 @@
-import 'package:core_platform/core_platform.dart';
+import 'package:app_platform/app_platform.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_starter_template/features/bookmarks/presentation/widgets/app_video_player.dart';
 import 'package:flutter_test/flutter_test.dart';

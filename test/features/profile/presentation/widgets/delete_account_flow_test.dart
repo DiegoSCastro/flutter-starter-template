@@ -1,4 +1,3 @@
-import 'package:core_theme/core_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_starter_template/features/auth/presentation/bloc/delete_account_cubit.dart';
@@ -9,6 +8,8 @@ import 'package:flutter_starter_template/features/profile/presentation/widgets/p
 import 'package:flutter_starter_template/l10n/app_localizations.dart';
 import 'package:flutter_starter_template/shared/presentation/session_scope.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:theme/theme.dart';
+
 import '../../../../test_utils.dart';
 
 class MockThemeBloc extends Mock implements ThemeBloc {}

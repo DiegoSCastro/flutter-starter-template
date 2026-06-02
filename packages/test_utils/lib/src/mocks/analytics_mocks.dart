@@ -1,4 +1,4 @@
-import 'package:core_analytics/core_analytics.dart';
+import 'package:analytics/analytics.dart';
 import 'package:mocktail/mocktail.dart';
 
 class MockAnalyticsService extends Mock implements AnalyticsService {}

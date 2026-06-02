@@ -1,6 +1,6 @@
-import 'package:core_domain/core_domain.dart';
-import 'package:core_network/core_network.dart';
+import 'package:architecture/architecture.dart';
 import 'package:injectable/injectable.dart';
+import 'package:network/network.dart';
 
 import '../../../../shared/domain/entities/auth_user.dart';
 import '../../domain/repositories/auth_repository.dart';

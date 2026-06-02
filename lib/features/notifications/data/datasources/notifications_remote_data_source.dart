@@ -1,4 +1,4 @@
-import 'package:core_network/core_network.dart';
+import 'package:network/network.dart';
 
 import '../models/notification_dto.dart';
 import '../models/user_activity_dto.dart';

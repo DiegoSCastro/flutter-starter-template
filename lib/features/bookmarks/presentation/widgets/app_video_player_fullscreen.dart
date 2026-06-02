@@ -1,4 +1,4 @@
-import 'package:core_platform/core_platform.dart';
+import 'package:app_platform/app_platform.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

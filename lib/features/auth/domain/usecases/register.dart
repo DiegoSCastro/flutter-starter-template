@@ -1,4 +1,4 @@
-import 'package:core_domain/core_domain.dart';
+import 'package:architecture/architecture.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../shared/domain/entities/auth_user.dart';

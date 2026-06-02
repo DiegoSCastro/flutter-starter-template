@@ -1,10 +1,10 @@
 import 'dart:developer' as developer;
 
-import 'package:core_config/core_config.dart';
-import 'package:core_platform/core_platform.dart';
-import 'package:core_storage/core_storage.dart';
+import 'package:app_platform/app_platform.dart';
+import 'package:config/config.dart';
 import 'package:firebase_core/firebase_core.dart' show Firebase;
 import 'package:flutter/material.dart';
+import 'package:storage/storage.dart';
 
 import 'app/app.dart';
 import 'app/bootstrap_error_app.dart';

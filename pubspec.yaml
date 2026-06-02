@@ -23,13 +23,13 @@ environment:
 
 workspace:
   - packages/app_ui
-  - packages/core_analytics
-  - packages/core_config
-  - packages/core_domain
-  - packages/core_network
-  - packages/core_platform
-  - packages/core_storage
-  - packages/core_theme
+  - packages/analytics
+  - packages/config
+  - packages/architecture
+  - packages/network
+  - packages/app_platform
+  - packages/storage
+  - packages/theme
   - packages/test_utils
 
 # Dependencies specify other packages that your package needs in order to work.
@@ -40,13 +40,13 @@ workspace:
 # versions available, run `flutter pub outdated`.
 dependencies:
   app_ui: ^0.1.0
-  core_analytics: ^0.1.0
-  core_config: ^0.1.0
-  core_domain: ^0.1.0
-  core_network: ^0.1.0
-  core_platform: ^0.1.0
-  core_storage: ^0.1.0
-  core_theme: ^0.1.0
+  analytics: ^0.1.0
+  config: ^0.1.0
+  architecture: ^0.1.0
+  network: ^0.1.0
+  app_platform: ^0.1.0
+  storage: ^0.1.0
+  theme: ^0.1.0
 
   flutter:
     sdk: flutter

@@ -1,4 +1,4 @@
-import 'package:core_domain/core_domain.dart';
+import 'package:architecture/architecture.dart';
 import 'package:flutter_starter_template/features/bookmarks/domain/entities/bookmark.dart';
 import 'package:flutter_starter_template/features/bookmarks/domain/repositories/bookmarks_repository.dart';
 import 'package:flutter_starter_template/features/bookmarks/domain/usecases/create_bookmark.dart';

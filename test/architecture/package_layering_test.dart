@@ -29,19 +29,19 @@ import 'package:flutter_test/flutter_test.dart';
 /// with a strictly smaller rank.
 const _layers = <String, int>{
   // 0 — pure-Dart foundation; depends on nothing in the workspace.
-  'core_domain': 0,
+  'architecture': 0,
 
-  // 1 — primitives: no workspace deps, or only on core_domain.
-  'core_config': 1, // firebase_remote_config wrapper
-  'core_storage': 1, // shared_preferences / secure storage
-  'core_analytics': 1, // -> core_domain
+  // 1 — primitives: no workspace deps, or only on architecture.
+  'config': 1, // firebase_remote_config wrapper
+  'storage': 1, // shared_preferences / secure storage
+  'analytics': 1, // -> architecture
   'app_ui': 1, // design tokens; no core_* deps
   // 2 — composed infra built on the primitives.
-  'core_network': 2, // -> core_config
-  'core_platform': 2, // -> core_analytics, core_domain
-  'core_theme': 2, // -> core_analytics, core_domain
+  'network': 2, // -> config
+  'app_platform': 2, // -> analytics, architecture
+  'theme': 2, // -> analytics, architecture
   // 3 — shared test harness, sits on top of what it provides fakes for.
-  'test_utils': 3, // -> core_analytics, core_platform, core_storage
+  'test_utils': 3, // -> analytics, app_platform, storage
 };
 
 void main() {

@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:core_network/core_network.dart';
 import 'package:flutter_starter_template/features/auth/data/datasources/auth_local_data_source.dart';
 import 'package:flutter_starter_template/features/auth/data/network/token_refresher.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:network/network.dart';
 import 'package:test_utils/test_utils.dart';
 
 class MockAuthLocalDataSource extends Mock implements AuthLocalDataSource {}

@@ -1,5 +1,4 @@
-import 'package:core_domain/core_domain.dart';
-import 'package:core_network/core_network.dart';
+import 'package:architecture/architecture.dart';
 import 'package:flutter_starter_template/features/auth/data/datasources/auth_local_data_source.dart';
 import 'package:flutter_starter_template/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:flutter_starter_template/features/auth/data/models/auth_user_dto.dart';
@@ -10,6 +9,7 @@ import 'package:flutter_starter_template/features/auth/data/network/token_refres
 import 'package:flutter_starter_template/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:flutter_starter_template/shared/domain/entities/auth_user.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:network/network.dart';
 import 'package:test_utils/test_utils.dart';
 
 class MockAuthRemoteDataSource extends Mock implements AuthRemoteDataSource {}

@@ -1,11 +1,11 @@
-import 'package:core_analytics/core_analytics.dart';
-import 'package:core_config/core_config.dart';
-import 'package:core_network/core_network.dart';
-import 'package:core_platform/core_platform.dart';
-import 'package:core_storage/core_storage.dart';
-import 'package:core_theme/core_theme.dart';
+import 'package:analytics/analytics.dart';
+import 'package:app_platform/app_platform.dart';
+import 'package:config/config.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
+import 'package:network/network.dart';
+import 'package:storage/storage.dart';
+import 'package:theme/theme.dart';
 
 import 'injection.config.dart';
 

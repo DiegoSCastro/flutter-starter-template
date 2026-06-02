@@ -1,4 +1,4 @@
-import 'package:core_domain/core_domain.dart';
+import 'package:architecture/architecture.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../shared/domain/bookmark_stats.dart';

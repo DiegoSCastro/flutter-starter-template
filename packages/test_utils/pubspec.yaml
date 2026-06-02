@@ -9,7 +9,7 @@ environment:
 resolution: workspace
 
 dependencies:
-  core_analytics: ^0.1.0
-  core_platform: ^0.1.0
-  core_storage: ^0.1.0
+  analytics: ^0.1.0
+  app_platform: ^0.1.0
+  storage: ^0.1.0
   mocktail: ^1.0.5

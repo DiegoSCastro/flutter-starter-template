@@ -1,4 +1,4 @@
-import 'package:core_domain/core_domain.dart';
+import 'package:architecture/architecture.dart';
 import 'package:flutter_starter_template/features/notifications/domain/entities/notifications_feed.dart';
 import 'package:flutter_starter_template/features/notifications/domain/repositories/notifications_repository.dart';
 import 'package:flutter_starter_template/features/notifications/domain/usecases/get_notifications_feed.dart';
