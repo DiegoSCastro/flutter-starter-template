@@ -9,7 +9,9 @@
 
 <h1 align="center">
   <br>
-  <img src="https://img.shields.io/badge/🚀-Flutter_Starter_Template-02569B?style=flat-square&labelColor=121212" alt="Logo">
+  <img src="assets/icons/logo.png" alt="App Logo" width="150">
+  <br>
+  <img src="https://img.shields.io/badge/🚀-Flutter_Starter_Template-02569B?style=flat-square&labelColor=121212" alt="Badge">
   <br>
 </h1>
 
