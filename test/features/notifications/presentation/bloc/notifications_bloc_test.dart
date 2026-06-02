@@ -8,7 +8,6 @@ import 'package:flutter_starter_template/features/notifications/domain/usecases/
 import 'package:flutter_starter_template/features/notifications/presentation/bloc/notifications_bloc.dart';
 import 'package:flutter_starter_template/features/notifications/presentation/bloc/notifications_state.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:test_utils/test_utils.dart';
 
 import '../../../../test_utils.dart';
 

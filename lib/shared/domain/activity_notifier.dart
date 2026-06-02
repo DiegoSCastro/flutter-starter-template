@@ -5,7 +5,7 @@ import 'package:injectable/injectable.dart';
 /// A simple shared event bus to notify interested listeners (like the NotificationsBloc)
 /// that some user activity occurred (like creating a bookmark) so they can refresh.
 ///
-/// This lives in [shared] so that features can communicate without violating
+/// This lives in the shared layer so that features can communicate without violating
 /// cross-feature dependency boundaries.
 @lazySingleton
 class ActivityNotifier {
