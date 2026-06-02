@@ -13,4 +13,4 @@ Contents (`lib/src/`):
 
 These widgets carry **no business meaning**. Keep app services, DI, analytics,
 session state, platform integrations, and feature-specific widgets out of this
-package — those belong in the root app or the relevant `core_*` package.
+package — those belong in the root app or the relevant workspace package.

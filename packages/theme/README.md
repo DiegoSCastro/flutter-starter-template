@@ -1,7 +1,7 @@
-# core_theme
+# theme
 
 Theme state management (mode + color scheme) for the Flutter starter template.
-Exported through `package:core_theme/core_theme.dart`.
+Exported through `package:theme/theme.dart`.
 
 The barrel re-exports `flex_color_scheme`, so the app builds its themes from
 this package's types.
@@ -22,5 +22,5 @@ pure design-system package. The theme *data* (`app_theme.dart`) still lives in
 `app_ui`.
 
 `ThemeBloc` depends on `AnalyticsService` and reads the `SharedPreferences`
-provided by `core_storage`, so in the app's DI composition `core_theme` is
-registered **after** both `core_analytics` and `core_storage`.
+provided by `storage`, so in the app's DI composition `theme` is
+registered **after** both `analytics` and `storage`.

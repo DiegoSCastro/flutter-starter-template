@@ -21,17 +21,17 @@ Here is a breakdown of the subdirectories found in `core/`:
 ## Where the rest of `core` went
 
 Reusable, non-visual infrastructure now lives in versioned workspace packages,
-consumed through their entry points (e.g. `package:core_network/core_network.dart`):
+consumed through their entry points (e.g. `package:network/network.dart`):
 
 | Concern | Package |
 |---|---|
-| Architecture primitives (`Failure`, `Result`, `UseCase`) | `core_domain` |
-| Networking (`Dio`, `Retrofit`, interceptors) | `core_network` |
-| Analytics + route observer | `core_analytics` |
-| Env + Remote Config | `core_config` |
-| Secure storage + preferences | `core_storage` |
-| Media, picker, permissions, notifications, share | `core_platform` |
-| Theme state (`ThemeBloc`) | `core_theme` |
+| Architecture primitives (`Failure`, `Result`, `UseCase`) | `architecture` |
+| Networking (`Dio`, `Retrofit`, interceptors) | `network` |
+| Analytics + route observer | `analytics` |
+| Env + Remote Config | `config` |
+| Secure storage + preferences | `storage` |
+| Media, picker, permissions, notifications, share | `app_platform` |
+| Theme state (`ThemeBloc`) | `theme` |
 | Design system — theming, widgets, layout, animation | `app_ui` |
 
 > [!NOTE]

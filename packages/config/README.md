@@ -1,8 +1,8 @@
-# core_config
+# config
 
 App configuration — environment values + Firebase Remote Config — for the
 Flutter starter template. Exported through
-`package:core_config/core_config.dart`.
+`package:config/config.dart`.
 
 ## Public API
 
@@ -17,6 +17,6 @@ Flutter starter template. Exported through
 
 ## Notes
 
-`EnvConfig` is a dependency of `core_network` (`NetworkModule` reads the API
+`EnvConfig` is a dependency of `network` (`NetworkModule` reads the API
 base URL and timeout), so this module must be registered **before**
-`core_network` in the app's DI composition.
+`network` in the app's DI composition.

@@ -14,11 +14,11 @@ final GetIt getIt = GetIt.instance;
 /// Async because core database modules use `@preResolve` to open native
 /// resources before any consumer is constructed. Must be awaited from `main`.
 ///
-/// `core_analytics` is registered before `core_platform` and `core_theme`
+/// `analytics` is registered before `app_platform` and `theme`
 /// because both depend on `AnalyticsService` (the former via
-/// `FirebaseMessagingService`, the latter via `ThemeBloc`). `core_storage` is
-/// listed before `core_theme` because `ThemeBloc` reads the `SharedPreferences`
-/// that `core_storage` provides.
+/// `FirebaseMessagingService`, the latter via `ThemeBloc`). `storage` is
+/// listed before `theme` because `ThemeBloc` reads the `SharedPreferences`
+/// that `storage` provides.
 @InjectableInit(
   externalPackageModulesBefore: [
     ExternalModule(CoreAnalyticsPackageModule),

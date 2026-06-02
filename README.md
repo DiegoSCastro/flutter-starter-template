@@ -87,13 +87,13 @@ To enable seamless local development and testing, this template is paired with a
 │   └── shared/                       # App-level shared domain/presentation contracts
 ├── packages/                         # Dart Pub Workspace members
 │   ├── app_ui/                       # Design system, theme, layout, reusable widgets
-│   ├── core_analytics/               # Analytics service + route observer
-│   ├── core_config/                  # EnvConfig + Remote Config wrapper
-│   ├── core_domain/                  # Failure, Result, UseCase primitives
-│   ├── core_network/                 # Dio, Retrofit, retry/performance interceptors
-│   ├── core_platform/                # Camera, picker, permissions, notifications, share
-│   ├── core_storage/                 # SharedPreferences and secure storage helpers
-│   ├── core_theme/                   # ThemeBloc and persisted theme state
+│   ├── analytics/               # Analytics service + route observer
+│   ├── config/                  # EnvConfig + Remote Config wrapper
+│   ├── architecture/                  # Failure, Result, UseCase primitives
+│   ├── network/                 # Dio, Retrofit, retry/performance interceptors
+│   ├── app_platform/                # Camera, picker, permissions, notifications, share
+│   ├── storage/                 # SharedPreferences and secure storage helpers
+│   ├── theme/                   # ThemeBloc and persisted theme state
 │   └── test_utils/                   # Shared mocks, images, and mocktail export
 ├── test/                             # Root app tests only
 └── integration_test/                 # Device/emulator integration tests
@@ -102,11 +102,11 @@ To enable seamless local development and testing, this template is paired with a
 The repository uses Dart Pub Workspaces. The root package is the assembled
 Flutter app: routing, DI composition, app-only features, ObjectBox entities, and
 Firebase bootstrap stay there. Reusable infrastructure lives in `packages/` and
-is consumed through package entry points such as `package:core_network/core_network.dart`.
+is consumed through package entry points such as `package:network/network.dart`.
 
 Workspace packages own their third-party implementation details. For example,
-the root app depends on `core_network`, not directly on `dio` or `retrofit`;
-`core_network` exports those APIs when the app needs the types. The same pattern
+the root app depends on `network`, not directly on `dio` or `retrofit`;
+`network` exports those APIs when the app needs the types. The same pattern
 keeps platform, storage, analytics, theme, and UI dependencies versioned in one
 place and avoids root-package dependency conflicts.
 
@@ -232,7 +232,7 @@ fvm flutter test test/widget_test.dart
 fvm flutter test --name "signs in"
 
 # Run a package's own tests
-(cd packages/core_network && fvm flutter test)
+(cd packages/network && fvm flutter test)
 ```
 
 Shared mocks and test fixtures live in `packages/test_utils` and are exported
@@ -342,7 +342,7 @@ fvm flutter run --flavor staging --dart-define-from-file=env/staging.json
 fvm flutter run --flavor prod    --dart-define-from-file=env/prod.json
 ```
 
-`EnvConfig` (`packages/core_config/lib/core_config.dart`) surfaces API base URL,
+`EnvConfig` (`packages/config/lib/config.dart`) surfaces API base URL,
 Firebase project IDs, and flavor name from `String.fromEnvironment` at startup.
 
 <br>
@@ -473,28 +473,28 @@ because they are tied to bookmark attachment behavior.
 | **State**          | `flutter_bloc` (Bloc) · `bloc_concurrency`                                                         |
 | **Routing**        | `go_router` · `go_router_builder`                                                                  |
 | **DI**             | `get_it` · `injectable`                                                                            |
-| **Networking**     | `core_network` (`Dio` · `Retrofit`)                                                                |
+| **Networking**     | `network` (`Dio` · `Retrofit`)                                                                |
 | **Code Gen**       | `build_runner` · `freezed` · `json_serializable` · `retrofit_generator` · `injectable_generator` · `go_router_builder` · `flutter_gen_runner` · `objectbox_generator` |
 | **Local DB**       | `ObjectBox` (`objectbox` · `objectbox_flutter_libs`)                                               |
-| **Secure Storage** | `core_storage` (`flutter_secure_storage` · `shared_preferences`)                                    |
+| **Secure Storage** | `storage` (`flutter_secure_storage` · `shared_preferences`)                                    |
 | **Auth**           | JWT — access + refresh tokens                                                                      |
-| **Theming**        | `core_theme` · Material 3 · `flex_color_scheme` · `google_fonts` (Inter)                           |
+| **Theming**        | `theme` · Material 3 · `flex_color_scheme` · `google_fonts` (Inter)                           |
 | **i18n**           | `flutter_localizations` · `intl`                                                                   |
 | **Icons**          | `cupertino_icons`                                                                                  |
 | **Assets**         | `flutter_svg` · `flutter_gen_runner`                                                               |
-| **Image / Media**  | `app_ui` · `core_platform` (`photo_view` · `image_picker` · `camera` · `video_player` · `cached_network_image` · `vector_graphics`) |
+| **Image / Media**  | `app_ui` · `app_platform` (`photo_view` · `image_picker` · `camera` · `video_player` · `cached_network_image` · `vector_graphics`) |
 | **Carousel**       | `carousel_slider`                                                                                  |
 | **List Slidables** | `flutter_slidable`                                                                                 |
-| **Permissions**    | `core_platform` (`permission_handler`)                                                             |
-| **Notifications**  | `core_platform` (`flutter_local_notifications` · `firebase_messaging`)                             |
-| **Firebase**       | `firebase_core` · `core_analytics` · `core_platform`                                                |
+| **Permissions**    | `app_platform` (`permission_handler`)                                                             |
+| **Notifications**  | `app_platform` (`flutter_local_notifications` · `firebase_messaging`)                             |
+| **Firebase**       | `firebase_core` · `analytics` · `app_platform`                                                |
 | **Animations**     | `flutter_animate` · `animated_text_kit`                                                            |
 | **Haptics**        | `HapticFeedback` (Flutter Services)                                                                |
 | **Connectivity**   | `connectivity_plus`                                                                                |
 | **Storage**        | `path_provider` · `shared_preferences`                                                             |
 | **Device Info**    | `package_info_plus`                                                                                |
 | **URL**            | `url_launcher`                                                                                     |
-| **Share**          | `core_platform` (`share_plus`)                                                                     |
+| **Share**          | `app_platform` (`share_plus`)                                                                     |
 | **Link Preview**   | `flutter_link_previewer`                                                                           |
 | **UUID**           | `uuid`                                                                                             |
 | **Splash**         | Custom session-restore bootstrapper (no package)                                                   |

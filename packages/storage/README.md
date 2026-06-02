@@ -1,7 +1,7 @@
-# core_storage
+# storage
 
 App storage primitives for the Flutter starter template. Exported through
-`package:core_storage/core_storage.dart`.
+`package:storage/storage.dart`.
 
 The barrel re-exports `shared_preferences` and `flutter_secure_storage`, so the
 app gets those types through this package.
@@ -27,5 +27,5 @@ via a flag in `SharedPreferences` (NSUserDefaults *is* cleared on uninstall).
 ## Notes
 
 `SharedPreferences` provisioning lives here because two consumers need it
-(`core_theme`'s `ThemeBloc` and the reinstall reset), so `core_storage` must be
-registered **before** `core_theme` in the app's DI composition.
+(`theme`'s `ThemeBloc` and the reinstall reset), so `storage` must be
+registered **before** `theme` in the app's DI composition.

@@ -39,6 +39,6 @@ catch-all dumping ground. A feature-specific *capability* (a presentation object
 one feature surfaces inside another) stays in its owning feature while a single
 consumer exists, and graduates here only when a second consumer appears.
 
-Reusable *non-visual infrastructure* belongs in `lib/core/` or a `core_*`
+Reusable *non-visual infrastructure* belongs in `lib/core/` or a workspace package
 package; generic *visual* building blocks belong in `app_ui`. `shared` is only
 for shared **business** state and contracts.

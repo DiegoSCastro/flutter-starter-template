@@ -1,12 +1,12 @@
 // Architecture guardrail: enforces the layering between the workspace
-// packages under `packages/` (the `core_*` / `app_ui` / `test_utils` set).
+// packages under `packages/` (the workspace packages / `app_ui` / `test_utils` set).
 //
 // Pub already forbids true dependency *cycles*, but it does not enforce a
 // *direction*. This test does: every package is assigned a layer rank, and a
 // package may only depend (at runtime) on packages in a strictly lower layer.
-// That keeps the dependency graph a DAG flowing one way — e.g. core_domain
-// stays a pure leaf nothing reaches up into, and core_network can't quietly
-// start depending on core_theme.
+// That keeps the dependency graph a DAG flowing one way — e.g. architecture
+// stays a pure leaf nothing reaches up into, and network can't quietly
+// start depending on theme.
 //
 // Only runtime `dependencies:` are checked. `dev_dependencies:` are excluded
 // on purpose: `test_utils` (the shared test harness, the top layer) is a dev
@@ -35,7 +35,7 @@ const _layers = <String, int>{
   'config': 1, // firebase_remote_config wrapper
   'storage': 1, // shared_preferences / secure storage
   'analytics': 1, // -> architecture
-  'app_ui': 1, // design tokens; no core_* deps
+  'app_ui': 1, // design tokens; no workspace package deps
   // 2 — composed infra built on the primitives.
   'network': 2, // -> config
   'app_platform': 2, // -> analytics, architecture

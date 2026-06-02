@@ -1,8 +1,8 @@
-# core_platform
+# app_platform
 
 Device and platform integrations for the Flutter starter template, grouped
 behind app-facing services. Exported through
-`package:core_platform/core_platform.dart`.
+`package:app_platform/app_platform.dart`.
 
 The barrel re-exports the underlying plugins (`camera`, `image_picker`,
 `video_player`, `permission_handler`, `share_plus`, `flutter_local_notifications`,
@@ -24,8 +24,8 @@ Organized by capability under `lib/src/`:
 
 ## Notes
 
-`FirebaseMessagingService` depends on `AnalyticsService`, so `core_analytics`
-must be registered **before** `core_platform` in the app's DI composition. The
+`FirebaseMessagingService` depends on `AnalyticsService`, so `analytics`
+must be registered **before** `app_platform` in the app's DI composition. The
 Firebase *bootstrap* (`Firebase.initializeApp`, the `@pragma('vm:entry-point')`
 background handler) stays in the app under `lib/core/platform/firebase/` because
 it is coupled to the app-generated `firebase_options.dart`.

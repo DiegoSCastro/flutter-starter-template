@@ -1,10 +1,10 @@
-# core_analytics
+# analytics
 
 Firebase-backed analytics for the Flutter starter template.
 
 Wraps Firebase Analytics behind an app-facing service so feature code logs
 events without depending on the SDK directly. Exported through
-`package:core_analytics/core_analytics.dart`.
+`package:analytics/analytics.dart`.
 
 ## Public API
 
@@ -18,7 +18,7 @@ events without depending on the SDK directly. Exported through
 
 ## Notes
 
-`AnalyticsService` is consumed by other packages (e.g. `core_theme`'s
-`ThemeBloc` and `core_platform`'s messaging service), so this module must be
+`AnalyticsService` is consumed by other packages (e.g. `theme`'s
+`ThemeBloc` and `app_platform`'s messaging service), so this module must be
 registered **before** them in the app's DI composition. See
 [`packages/README.md`](../README.md) for the micro-package DI pattern.

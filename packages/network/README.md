@@ -1,10 +1,10 @@
-# core_network
+# network
 
 `Dio` HTTP client building blocks for the Flutter starter template. Exported
-through `package:core_network/core_network.dart`.
+through `package:network/network.dart`.
 
 Because the barrel re-exports `dio`, `retrofit`, and `firebase_performance`,
-the app and features get their HTTP types from `core_network` and never depend
+the app and features get their HTTP types from `network` and never depend
 on those packages directly.
 
 ## Public API
@@ -20,7 +20,7 @@ on those packages directly.
 
 ## Notes
 
-`NetworkModule` reads `EnvConfig`, so `core_config` must be registered
-**before** `core_network` in the app's DI composition. Auth concerns (token
+`NetworkModule` reads `EnvConfig`, so `config` must be registered
+**before** `network` in the app's DI composition. Auth concerns (token
 attach/refresh interceptors) stay in the auth feature, which adds them to the
 `Dio` instance this package provides.

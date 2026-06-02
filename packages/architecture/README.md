@@ -1,4 +1,4 @@
-# core_domain
+# architecture
 
 Shared pure-Dart domain primitives for the Flutter starter template.
 
