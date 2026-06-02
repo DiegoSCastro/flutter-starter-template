@@ -14,7 +14,7 @@
 </h1>
 
 <p align="center">
-  <i>A production‑ready Flutter foundation with Clean Architecture,<br>offline‑first sync, JWT auth, Firebase, and a companion Go backend.</i>
+  <i>A production‑ready Flutter foundation: modular Clean Architecture,<br>offline‑first sync, JWT auth, Firebase, and a companion Go reference backend.</i>
 </p>
 
 <p align="center">
@@ -25,7 +25,7 @@
 
 **Flutter Starter Template**, built by [Luci Studio](https://luci-studio.com), is an enterprise-grade mobile boilerplate engineered for building scalable, high-performance cross-platform applications. It solves the complex challenges of bootstrapping new projects by providing a production-ready structure out of the box. This template features strict Clean Architecture layers, robust offline-first synchronization, secure JWT credential lifecycle management, and pre-configured Firebase integrations.
 
-To enable seamless local development and testing, this template is paired with a companion in-memory backend server written in Go, allowing you to test authentication flows, CRUD operations, and sync conflict resolution under real network conditions.
+To enable seamless local development and testing, this template is paired with a companion SQLite-backed backend server written in Go, allowing you to test authentication flows, CRUD operations, and sync conflict resolution under real network conditions.
 
 <br>
 
