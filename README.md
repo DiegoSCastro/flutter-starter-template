@@ -60,44 +60,58 @@ To enable seamless local development and testing, this template is paired with a
 ## 🧬 Architecture
 
 ```
-lib/
-├── main.dart                         # Entry: DI → Firebase → runApp
-├── app/
-│   ├── app.dart                      # MaterialApp.router + providers
-│   ├── router.dart                   # TypedGoRoute + auth redirect
-│   └── widgets/                      # App-level shell widgets
-├── core/
-│   ├── analytics/                    # Firebase Analytics wrapper + route observer
-│   ├── config/                       # EnvConfig — typed --dart-define values
-│   ├── di/                           # get_it + injectable
-│   ├── domain/                       # Failure, Result, UseCase primitives
-│   ├── extensions/                   # BuildContext and Future helpers
-│   ├── firebase/                     # Firebase initialization & global Crashlytics/Messaging setup
-│   ├── layout/                       # Responsive breakpoints (AppBreakpoints)
-│   ├── media/                        # Camera, Image Picker, and Video Player wrapper services
-│   ├── network/                      # Dio clients, auth interceptor, token refresh
-│   ├── notifications/                # flutter_local_notifications
-│   ├── permissions/                  # Runtime permission request handling
-│   └── share/                        # share_plus wrapper
-├── features/
-│   ├── auth/                         # Sign-in, sign-out, session restore
-│   ├── bookmarks/                    # CRUD, offline sync, list/detail/form
-│   ├── home/                         # Welcome screen
-│   ├── notifications/                # Notification and activity feed
-│   ├── profile/                      # User info + notification controls
-│   └── splash/                       # Session restoration gate
-├── gen/                              # flutter_gen asset references
-├── l10n/                             # ARB translation files
-├── shared/                           # Cross-feature domain contracts
-└── ui/                               # Theme, animation, reusable widgets
+.
+├── lib/                              # Root Flutter app package
+│   ├── main.dart                     # Entry: DI → Firebase → runApp
+│   ├── app/
+│   │   ├── app.dart                  # MaterialApp.router + providers
+│   │   ├── router.dart               # TypedGoRoute + auth redirect
+│   │   └── widgets/                  # App-level shell widgets
+│   ├── core/
+│   │   ├── data/database/            # ObjectBox wrapper and generated store binding
+│   │   ├── di/                       # get_it + injectable app graph
+│   │   ├── extensions/               # App-specific convenience extensions
+│   │   └── platform/firebase/        # App bootstrap for Firebase services
+│   ├── features/
+│   │   ├── auth/                     # Sign-in, sign-out, session restore
+│   │   ├── bookmarks/                # CRUD, offline sync, list/detail/form
+│   │   ├── home/                     # Home dashboard
+│   │   ├── notifications/            # Notification and activity feed
+│   │   ├── profile/                  # User info + account actions
+│   │   └── splash/                   # Session restoration gate
+│   ├── gen/                          # flutter_gen asset references
+│   ├── l10n/                         # ARB files + generated localizations
+│   ├── shared/                       # App-level shared domain/presentation contracts
+│   └── ui/                           # Compatibility exports for app_ui
+├── packages/                         # Dart Pub Workspace members
+│   ├── app_ui/                       # Design system, theme, layout, reusable widgets
+│   ├── core_analytics/               # Analytics service + route observer
+│   ├── core_config/                  # EnvConfig + Remote Config wrapper
+│   ├── core_domain/                  # Failure, Result, UseCase primitives
+│   ├── core_network/                 # Dio, Retrofit, retry/performance interceptors
+│   ├── core_platform/                # Camera, picker, permissions, notifications, share
+│   ├── core_storage/                 # SharedPreferences and secure storage helpers
+│   ├── core_theme/                   # ThemeBloc and persisted theme state
+│   └── test_utils/                   # Shared mocks, images, and mocktail export
+├── test/                             # Root app tests only
+└── integration_test/                 # Device/emulator integration tests
 ```
 
-The repository uses Dart Pub Workspaces. The root package remains the Flutter
-app, and `packages/app_ui` contains shared, pure UI design tokens such as
-spacing, radii, icon sizes, and motion durations. `packages/core_domain`
-contains pure-Dart domain primitives such as `Failure`, `Result`, and `UseCase`.
-Existing `lib/ui/...` token files and `lib/core/domain/...` files re-export the
-workspace packages for compatibility with current app imports.
+The repository uses Dart Pub Workspaces. The root package is the assembled
+Flutter app: routing, DI composition, app-only features, ObjectBox entities, and
+Firebase bootstrap stay there. Reusable infrastructure lives in `packages/` and
+is consumed through package entry points such as `package:core_network/core_network.dart`.
+
+Workspace packages own their third-party implementation details. For example,
+the root app depends on `core_network`, not directly on `dio` or `retrofit`;
+`core_network` exports those APIs when the app needs the types. The same pattern
+keeps platform, storage, analytics, theme, and UI dependencies versioned in one
+place and avoids root-package dependency conflicts.
+
+Compatibility exports remain under `lib/ui/...` for existing app imports, but
+new shared UI should be added to `packages/app_ui`. Package-owned tests live
+beside their package in `packages/<name>/test`, while root app tests stay under
+`test/`.
 
 <details>
 <summary><b>📁 Feature Slice (Clean Architecture)</b></summary>
@@ -202,20 +216,34 @@ This template includes a robust set of automated tests and static analysis confi
 
 ### 🏃 Running Tests
 
-Unit and widget tests mirror the `lib/` directory structure. Run them using:
+Root app tests mirror the `lib/` feature structure. Package-owned tests live
+beside the package they cover under `packages/<name>/test`.
 
 ```bash
-# Run all unit and widget tests
-fvm flutter test
+# Run root app unit and widget tests
+fvm flutter test --exclude-tags golden
 
 # Run a specific test file
 fvm flutter test test/widget_test.dart
 
 # Run tests by name match
 fvm flutter test --name "signs in"
+
+# Run a package's own tests
+(cd packages/core_network && fvm flutter test)
 ```
 
-Refer to the [test/README.md](test/README.md) file for detailed testing guidelines and patterns.
+Shared mocks and test fixtures live in `packages/test_utils` and are exported
+through `package:test_utils/test_utils.dart`; root-only fixtures remain in
+`test/test_utils/`.
+
+CI runs root tests with coverage, then runs each package test suite with
+coverage and merges the LCOV reports before enforcing the workspace coverage
+threshold. Golden tests are excluded in CI because baselines are generated on
+macOS while CI runs on Ubuntu.
+
+Refer to the [test/README.md](test/README.md) file for detailed testing
+guidelines and patterns.
 
 ### 🔍 Static Analysis & Linting
 
@@ -249,7 +277,13 @@ Before pushing your branch, run local checks to ensure the CI will pass:
 ```bash
 fvm dart format .
 fvm flutter analyze
-fvm flutter test
+fvm flutter test --exclude-tags golden
+
+for package in packages/*; do
+  if [ -d "$package/test" ]; then
+    (cd "$package" && fvm flutter test --exclude-tags golden)
+  fi
+done
 ```
 
 ### 3. Open a Pull Request
@@ -306,7 +340,8 @@ fvm flutter run --flavor staging --dart-define-from-file=env/staging.json
 fvm flutter run --flavor prod    --dart-define-from-file=env/prod.json
 ```
 
-`EnvConfig` (`lib/core/config/env_config.dart`) surfaces API base URL, Firebase project IDs, and flavor name from `String.fromEnvironment` at startup.
+`EnvConfig` (`packages/core_config/lib/core_config.dart`) surfaces API base URL,
+Firebase project IDs, and flavor name from `String.fromEnvironment` at startup.
 
 <br>
 
@@ -365,23 +400,31 @@ Replace `yourdomain.com` with your actual domain, then host these on your server
 
 ## 🧩 UI Widgets
 
-All shared components in `lib/ui/widgets/`:
+Shared app components live in `packages/app_ui` and are exported through
+`package:app_ui/app_ui.dart`. The root `lib/ui/...` files remain compatibility
+exports for existing app imports.
 
 | Widget              | Purpose                                                          |
 |---------------------|------------------------------------------------------------------|
+| `AppAdaptiveScaffold` | Responsive navigation shell with bottom bar / rail behavior    |
 | `AppAnimatedText`   | Typewriter + fade text animations                                |
 | `AppButton`         | Loading state, expand‑to‑fill, leading icon                      |
 | `AppCarousel`       | Auto‑play slider with dot indicators                             |
 | `AppEmptyView`      | Empty‑state placeholder — icon + message                         |
 | `AppErrorView`      | Error state — icon + message + retry                             |
 | `AppLinkPreview`    | Rich card — image, title, description                            |
+| `AppListDetailPane` | Responsive master/detail layout primitive                        |
 | `AppLoading`        | Centered spinner                                                 |
 | `AppNetworkImage`   | Cached network image with loading placeholder and error widgets  |
 | `AppPhotoView`      | Interactive image viewer with zoom, rotation, and fullscreen gallery |
 | `AppScaffold`       | Themed shell — app bar, connectivity banner                      |
+| `AppSkeleton`       | Lightweight loading skeleton                                     |
 | `AppSlidable`       | Swipe‑to‑reveal actions wrapper for list items                    |
 | `AppTextField`      | Label, prefix icon, validation, autofill hints                   |
-| `AppVideoPlayer`    | Customizable video player with progress controls and audio controls |
+
+Feature-specific widgets stay inside their feature slice. For example, bookmark
+video playback widgets live under `lib/features/bookmarks/presentation/widgets/`
+because they are tied to bookmark attachment behavior.
 
 <br>
 
@@ -396,32 +439,32 @@ All shared components in `lib/ui/widgets/`:
 | **State**          | `flutter_bloc` (Bloc) · `bloc_concurrency`                                                         |
 | **Routing**        | `go_router` · `go_router_builder`                                                                  |
 | **DI**             | `get_it` · `injectable`                                                                            |
-| **Networking**     | `Dio` · `Retrofit`                                                                                 |
+| **Networking**     | `core_network` (`Dio` · `Retrofit`)                                                                |
 | **Code Gen**       | `build_runner` · `freezed` · `json_serializable` · `retrofit_generator` · `injectable_generator` · `go_router_builder` · `flutter_gen_runner` · `objectbox_generator` |
 | **Local DB**       | `ObjectBox` (`objectbox` · `objectbox_flutter_libs`)                                               |
-| **Secure Storage** | `flutter_secure_storage`                                                                           |
+| **Secure Storage** | `core_storage` (`flutter_secure_storage` · `shared_preferences`)                                    |
 | **Auth**           | JWT — access + refresh tokens                                                                      |
-| **Theming**        | Material 3 · `flex_color_scheme` · `google_fonts` (Inter)                                          |
+| **Theming**        | `core_theme` · Material 3 · `flex_color_scheme` · `google_fonts` (Inter)                           |
 | **i18n**           | `flutter_localizations` · `intl`                                                                   |
 | **Icons**          | `cupertino_icons`                                                                                  |
 | **Assets**         | `flutter_svg` · `flutter_gen_runner`                                                               |
-| **Image / Media**  | `photo_view` · `image_picker` · `camera` · `video_player` · `cached_network_image` · `vector_graphics` |
+| **Image / Media**  | `app_ui` · `core_platform` (`photo_view` · `image_picker` · `camera` · `video_player` · `cached_network_image` · `vector_graphics`) |
 | **Carousel**       | `carousel_slider`                                                                                  |
 | **List Slidables** | `flutter_slidable`                                                                                 |
-| **Permissions**    | `permission_handler`                                                                               |
-| **Notifications**  | `flutter_local_notifications`                                                                      |
-| **Firebase**       | `firebase_core` · `firebase_crashlytics` · `firebase_analytics` · `firebase_messaging`             |
+| **Permissions**    | `core_platform` (`permission_handler`)                                                             |
+| **Notifications**  | `core_platform` (`flutter_local_notifications` · `firebase_messaging`)                             |
+| **Firebase**       | `firebase_core` · `core_analytics` · `core_platform`                                                |
 | **Animations**     | `flutter_animate` · `animated_text_kit`                                                            |
 | **Haptics**        | `HapticFeedback` (Flutter Services)                                                                |
 | **Connectivity**   | `connectivity_plus`                                                                                |
 | **Storage**        | `path_provider` · `shared_preferences`                                                             |
 | **Device Info**    | `package_info_plus`                                                                                |
 | **URL**            | `url_launcher`                                                                                     |
-| **Share**          | `share_plus`                                                                                       |
+| **Share**          | `core_platform` (`share_plus`)                                                                     |
 | **Link Preview**   | `flutter_link_previewer`                                                                           |
 | **UUID**           | `uuid`                                                                                             |
 | **Splash**         | Custom session-restore bootstrapper (no package)                                                   |
-| **Testing & Lints**| `mocktail` · `bloc_test` · `very_good_analysis` · `build_verify`                                        |
+| **Testing & Lints**| `test_utils` (`mocktail`) · `bloc_test` · `very_good_analysis` · `build_verify`                    |
 | **Backend**        | Go — `chi/v5` · `golang-jwt/v5` · `cors`                                                          |
 
 <br>
