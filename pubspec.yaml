@@ -126,7 +126,6 @@ dependencies:
   # drains pending mutations when connectivity is restored.
   connectivity_plus: ^7.1.1
   google_fonts: ^8.1.0
-  shared_preferences: ^2.5.5
   package_info_plus: ^10.1.0
 
   # SVG rendering. Pairs with flutter_gen_runner: SVGs placed in assets/icons/
@@ -194,6 +193,10 @@ dev_dependencies:
 
   # Mocking library for tests — uses real callable objects without codegen.
   mocktail: ^1.0.5
+
+  # Only used by tests now (ThemeBloc's prefs provider lives in core_theme):
+  # SharedPreferences.setMockInitialValues + MockSharedPreferences.
+  shared_preferences: ^2.5.5
 
   # High-level testing utilities for Bloc: blocTest helper, wait
   # for states, and verify exact emission sequences.
