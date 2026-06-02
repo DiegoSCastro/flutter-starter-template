@@ -1,4 +1,5 @@
 import 'package:core_analytics/core_analytics.dart';
+import 'package:core_platform/core_platform.dart';
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 
@@ -8,8 +9,14 @@ final GetIt getIt = GetIt.instance;
 
 /// Async because core database modules use `@preResolve` to open native
 /// resources before any consumer is constructed. Must be awaited from `main`.
+///
+/// `core_analytics` is registered before `core_platform` because the latter's
+/// `FirebaseMessagingService` depends on `AnalyticsService`.
 @InjectableInit(
-  externalPackageModulesBefore: [ExternalModule(CoreAnalyticsPackageModule)],
+  externalPackageModulesBefore: [
+    ExternalModule(CoreAnalyticsPackageModule),
+    ExternalModule(CorePlatformPackageModule),
+  ],
 )
 Future<void> configureDependencies() async {
   await getIt.init();

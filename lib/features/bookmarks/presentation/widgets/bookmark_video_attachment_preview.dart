@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:app_ui/app_ui.dart';
+import 'package:core_platform/core_platform.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/di/injection.dart';
-import '../../../../core/platform/media/video_player_service.dart';
 import '../../../../shared/presentation/widgets/app_video_player.dart';
 import '../bloc/bookmark_form/bookmark_form_bloc.dart';
 

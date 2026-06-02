@@ -1,5 +1,6 @@
 import 'dart:developer' as developer;
 
+import 'package:core_platform/core_platform.dart';
 import 'package:firebase_core/firebase_core.dart' show Firebase;
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/material.dart';
@@ -9,8 +10,6 @@ import 'app/bootstrap_error_app.dart';
 import 'core/config/remote_config_service.dart';
 import 'core/di/injection.dart';
 import 'core/platform/firebase/firebase_service.dart';
-import 'core/platform/notifications/firebase_messaging_service.dart';
-import 'core/platform/notifications/notifications_service.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

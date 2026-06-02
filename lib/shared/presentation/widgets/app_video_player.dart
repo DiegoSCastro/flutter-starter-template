@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:app_ui/app_ui.dart';
+import 'package:core_platform/core_platform.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
-import '../../../core/platform/media/video_player_service.dart';
 import 'app_video_player_controls.dart';
 import 'app_video_player_fullscreen.dart';
 
