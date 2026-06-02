@@ -1,7 +1,7 @@
 import 'package:core_platform/core_platform.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
+import 'package:test_utils/test_utils.dart';
 
 class MockCameraController extends Mock implements CameraController {}
 

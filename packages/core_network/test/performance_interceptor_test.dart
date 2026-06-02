@@ -1,6 +1,6 @@
 import 'package:core_network/core_network.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
+import 'package:test_utils/test_utils.dart';
 
 class _MockPerformance extends Mock implements FirebasePerformance {}
 

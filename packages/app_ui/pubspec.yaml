@@ -25,3 +25,5 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+  test_utils: ^0.1.0

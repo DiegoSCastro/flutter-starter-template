@@ -7,7 +7,7 @@ import 'package:flutter_starter_template/features/notifications/domain/entities/
 import 'package:flutter_starter_template/features/notifications/domain/entities/notifications_feed.dart';
 import 'package:flutter_starter_template/features/notifications/domain/entities/user_activity.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
+import 'package:test_utils/test_utils.dart';
 
 class MockNotificationsRemoteDataSource extends Mock
     implements NotificationsRemoteDataSource {}

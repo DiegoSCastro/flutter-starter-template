@@ -30,6 +30,7 @@ workspace:
   - packages/core_platform
   - packages/core_storage
   - packages/core_theme
+  - packages/test_utils
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -130,8 +131,7 @@ dev_dependencies:
   integration_test:
     sdk: flutter
 
-  # Mocking library for tests — uses real callable objects without codegen.
-  mocktail: ^1.0.5
+  test_utils: ^0.1.0
 
   # High-level testing utilities for Bloc: blocTest helper, wait
   # for states, and verify exact emission sequences.

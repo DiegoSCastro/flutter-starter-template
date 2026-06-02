@@ -5,8 +5,6 @@ import 'package:flutter_starter_template/features/bookmarks/domain/usecases/upda
 import 'package:flutter_starter_template/features/bookmarks/presentation/bloc/bookmark_form/bookmark_form_bloc.dart';
 import 'package:flutter_starter_template/features/bookmarks/presentation/bloc/bookmark_form/bookmark_form_state.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
-
 import '../../../../../test_utils.dart';
 
 void main() {

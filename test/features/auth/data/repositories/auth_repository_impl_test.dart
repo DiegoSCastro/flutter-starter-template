@@ -10,7 +10,7 @@ import 'package:flutter_starter_template/features/auth/data/network/token_refres
 import 'package:flutter_starter_template/features/auth/data/repositories/auth_repository_impl.dart';
 import 'package:flutter_starter_template/shared/domain/entities/auth_user.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
+import 'package:test_utils/test_utils.dart';
 
 class MockAuthRemoteDataSource extends Mock implements AuthRemoteDataSource {}
 

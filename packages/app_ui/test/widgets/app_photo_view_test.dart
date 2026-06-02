@@ -5,8 +5,7 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:photo_view/photo_view.dart';
-
-import 'test_images.dart';
+import 'package:test_utils/test_utils.dart';
 
 void main() {
   Widget wrapWithMaterial(Widget child) {

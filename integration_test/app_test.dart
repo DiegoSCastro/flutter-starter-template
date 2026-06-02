@@ -13,7 +13,6 @@ import 'package:flutter_starter_template/features/home/presentation/bloc/home_bl
 import 'package:flutter_starter_template/shared/domain/bookmark_stats.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
-import 'package:mocktail/mocktail.dart';
 
 // Reuse the unit/widget test fakes so the integration test exercises the real
 // assembled App without a backend, Firebase, or native storage.

@@ -4,7 +4,7 @@ import 'package:flutter_starter_template/features/notifications/domain/repositor
 import 'package:flutter_starter_template/features/notifications/domain/usecases/get_notifications_feed.dart';
 import 'package:flutter_starter_template/features/notifications/domain/usecases/mark_notification_read.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
+import 'package:test_utils/test_utils.dart';
 
 class MockNotificationsRepository extends Mock
     implements NotificationsRepository {}

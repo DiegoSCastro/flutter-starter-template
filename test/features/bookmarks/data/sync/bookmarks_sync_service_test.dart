@@ -11,7 +11,7 @@ import 'package:flutter_starter_template/features/bookmarks/data/models/bookmark
 import 'package:flutter_starter_template/features/bookmarks/data/sync/bookmarks_sync_service.dart';
 import 'package:flutter_starter_template/features/bookmarks/domain/services/bookmarks_sync_controller.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
+import 'package:test_utils/test_utils.dart';
 
 class MockBookmarksLocalDataSource extends Mock
     implements BookmarksLocalDataSource {}
