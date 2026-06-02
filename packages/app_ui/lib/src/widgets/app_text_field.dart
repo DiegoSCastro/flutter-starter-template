@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../app_ui.dart';
 
@@ -45,7 +46,7 @@ class AppTextField extends StatelessWidget {
   final String? hint;
   final String? helperText;
   final String? errorText;
-  final IconData? prefixIcon;
+  final FaIconData? prefixIcon;
   final Widget? suffix;
   final bool obscureText;
   final bool enabled;
@@ -97,7 +98,7 @@ class AppTextField extends StatelessWidget {
         hintText: hint,
         helperText: helperText,
         errorText: errorText,
-        prefixIcon: prefixIcon != null ? Icon(prefixIcon) : null,
+        prefixIcon: prefixIcon != null ? FaIcon(prefixIcon) : null,
         suffixIcon: suffix,
         filled: true,
         fillColor: Theme.of(

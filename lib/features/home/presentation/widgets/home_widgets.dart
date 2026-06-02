@@ -1,6 +1,7 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../app/router.dart';
 import '../../../../core/extensions/build_context_extensions.dart';
@@ -30,7 +31,7 @@ class HomeBody extends StatelessWidget {
                 const SizedBox(height: AppSpacing.xxxl),
                 AppButton(
                   label: context.l10n.homeMyBookmarks,
-                  icon: Icons.bookmark_outline,
+                  icon: FontAwesomeIcons.bookmark,
                   onPressed: () =>
                       const BookmarksListRoute().push<void>(context),
                 ).animateSlideUp(delay: 400.ms),
@@ -65,8 +66,7 @@ class _WelcomeSection extends StatelessWidget {
             CircleAvatar(
               radius: AppIconSize.xxl,
               backgroundColor: context.colorScheme.primaryContainer,
-              child: Icon(
-                Icons.person,
+              child: FaIcon(FontAwesomeIcons.solidUser,
                 size: AppIconSize.xxl,
                 color: context.colorScheme.onPrimaryContainer,
               ),
@@ -103,7 +103,7 @@ class _StatsDashboard extends StatelessWidget {
       children: [
         Expanded(
           child: _StatCard(
-            icon: Icons.bookmark,
+            icon: FontAwesomeIcons.solidBookmark,
             value: state.totalBookmarks.toString(),
             label: context.l10n.homeStatsTotal,
           ).animateSlideLeft(delay: 200.ms),
@@ -111,7 +111,7 @@ class _StatsDashboard extends StatelessWidget {
         const SizedBox(width: AppSpacing.md),
         Expanded(
           child: _StatCard(
-            icon: Icons.schedule,
+            icon: FontAwesomeIcons.clock,
             value: state.recentBookmarks.toString(),
             label: context.l10n.homeStatsRecent,
           ).animateSlideUp(delay: 300.ms),
@@ -119,7 +119,7 @@ class _StatsDashboard extends StatelessWidget {
         const SizedBox(width: AppSpacing.md),
         Expanded(
           child: _StatCard(
-            icon: Icons.label_outline,
+            icon: FontAwesomeIcons.tag,
             value: state.uniqueTags.toString(),
             label: context.l10n.homeStatsTags,
           ).animateSlideRight(delay: 400.ms),
@@ -136,7 +136,7 @@ class _StatCard extends StatelessWidget {
     required this.label,
   });
 
-  final IconData icon;
+  final FaIconData icon;
   final String value;
   final String label;
 
@@ -155,7 +155,7 @@ class _StatCard extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
+            FaIcon(
               icon,
               size: AppIconSize.xl,
               color: context.colorScheme.primary,

@@ -4,6 +4,7 @@ library;
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 /// Pumps [child] inside a deterministic MaterialApp (a plain
 /// `ColorScheme.fromSeed` theme, no `google_fonts` network fetch) and captures
@@ -58,7 +59,7 @@ void main() {
         AppButton(
           label: 'Primary',
           onPressed: _noop,
-          icon: Icons.check,
+          icon: FontAwesomeIcons.check,
         ),
         AppButton(
           label: 'Tonal',

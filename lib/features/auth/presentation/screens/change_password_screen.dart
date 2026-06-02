@@ -2,6 +2,7 @@ import 'package:app_ui/app_ui.dart';
 import 'package:architecture/architecture.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/extensions/build_context_extensions.dart';
@@ -95,7 +96,7 @@ class _ChangePasswordViewState extends State<_ChangePasswordView> {
                         AppTextField(
                           controller: _currentPasswordController,
                           label: context.l10n.changePasswordCurrentLabel,
-                          prefixIcon: Icons.lock_outline,
+                          prefixIcon: FontAwesomeIcons.lock,
                           obscureText: true,
                           textInputAction: TextInputAction.next,
                           validator: (value) => (value == null || value.isEmpty)
@@ -106,7 +107,7 @@ class _ChangePasswordViewState extends State<_ChangePasswordView> {
                         AppTextField(
                           controller: _newPasswordController,
                           label: context.l10n.changePasswordNewLabel,
-                          prefixIcon: Icons.lock_reset,
+                          prefixIcon: FontAwesomeIcons.arrowRotateRight,
                           obscureText: true,
                           textInputAction: TextInputAction.next,
                           validator: (value) => (value == null || value.isEmpty)
@@ -117,7 +118,7 @@ class _ChangePasswordViewState extends State<_ChangePasswordView> {
                         AppTextField(
                           controller: _confirmPasswordController,
                           label: context.l10n.changePasswordConfirmLabel,
-                          prefixIcon: Icons.lock_reset,
+                          prefixIcon: FontAwesomeIcons.arrowRotateRight,
                           obscureText: true,
                           textInputAction: TextInputAction.done,
                           onSubmitted: _submitText,

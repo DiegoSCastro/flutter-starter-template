@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../app_ui.dart';
 
@@ -8,13 +9,13 @@ class AppEmptyView extends StatelessWidget {
     super.key,
     required this.message,
     this.title,
-    this.icon = Icons.inbox_outlined,
+    this.icon = FontAwesomeIcons.inbox,
     this.action,
   });
 
   final String message;
   final String? title;
-  final IconData icon;
+  final FaIconData icon;
   final Widget? action;
 
   @override
@@ -25,7 +26,7 @@ class AppEmptyView extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 56, color: context.colorScheme.onSurfaceVariant),
+            FaIcon(icon, size: 56, color: context.colorScheme.onSurfaceVariant),
             const SizedBox(height: AppSpacing.lg),
             if (title != null) ...[
               Text(

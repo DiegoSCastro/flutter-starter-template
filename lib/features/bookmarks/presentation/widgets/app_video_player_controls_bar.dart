@@ -1,6 +1,7 @@
 import 'package:app_platform/app_platform.dart';
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class AppVideoPlayerControlsBar extends StatelessWidget {
   const AppVideoPlayerControlsBar({
@@ -113,22 +114,22 @@ class _ControlsRow extends StatelessWidget {
     return Row(
       children: [
         IconButton(
-          icon: Icon(
+          icon: FaIcon(
             controller.value.isPlaying
-                ? Icons.pause_rounded
-                : Icons.play_arrow_rounded,
+                ? FontAwesomeIcons.pause
+                : FontAwesomeIcons.play,
             color: Colors.white,
           ),
           tooltip: controller.value.isPlaying ? 'Pause' : 'Play',
           onPressed: onTogglePlay,
         ),
         IconButton(
-          icon: Icon(
+          icon: FaIcon(
             isMuted
-                ? Icons.volume_off_rounded
+                ? FontAwesomeIcons.volumeXmark
                 : controller.value.volume < 0.5
-                ? Icons.volume_down_rounded
-                : Icons.volume_up_rounded,
+                ? FontAwesomeIcons.volumeLow
+                : FontAwesomeIcons.volumeHigh,
             color: Colors.white,
           ),
           tooltip: isMuted ? 'Unmute' : 'Mute',
@@ -146,10 +147,10 @@ class _ControlsRow extends StatelessWidget {
         ),
         const SizedBox(width: AppSpacing.sm),
         IconButton(
-          icon: Icon(
+          icon: FaIcon(
             isFullscreen
-                ? Icons.fullscreen_exit_rounded
-                : Icons.fullscreen_rounded,
+                ? FontAwesomeIcons.compress
+                : FontAwesomeIcons.expand,
             color: Colors.white,
             size: 28,
           ),

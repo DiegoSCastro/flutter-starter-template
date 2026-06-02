@@ -4,6 +4,7 @@ import 'package:app_ui/app_ui.dart';
 import 'package:architecture/architecture.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../../core/di/injection.dart';
 import '../../../../core/extensions/build_context_extensions.dart';
@@ -56,7 +57,7 @@ class BookmarksListTile extends StatelessWidget {
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
-        trailing: const Icon(Icons.chevron_right),
+        trailing: const FaIcon(FontAwesomeIcons.chevronRight),
         onTap: onTap,
         onLongPress: () => _showItemMenu(context, bookmark),
       ),
@@ -95,8 +96,7 @@ class _BookmarkAvatar extends StatelessWidget {
                 color: theme.colorScheme.surface,
                 shape: BoxShape.circle,
               ),
-              child: Icon(
-                Icons.cloud_off,
+              child: FaIcon(FontAwesomeIcons.cloudArrowUp,
                 size: 14,
                 color: theme.colorScheme.outline,
               ),
@@ -141,7 +141,7 @@ Future<void> _showItemMenu(BuildContext context, Bookmark bookmark) async {
         mainAxisSize: MainAxisSize.min,
         children: [
           ListTile(
-            leading: const Icon(Icons.share),
+            leading: const FaIcon(FontAwesomeIcons.shareNodes),
             title: Text(l10n.commonShare),
             onTap: () => Navigator.pop(sheetContext, 'share'),
           ),

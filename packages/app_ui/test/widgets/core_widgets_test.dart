@@ -2,6 +2,7 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 Widget materialApp(Widget child) {
   return MaterialApp(
@@ -43,7 +44,7 @@ void main() {
       );
 
       expect(find.text('Nothing here'), findsOneWidget);
-      expect(find.byIcon(Icons.inbox_outlined), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is FaIcon && w.icon?.codePoint == FontAwesomeIcons.inbox.codePoint), findsOneWidget);
     });
 
     testWidgets('renders title when provided', (tester) async {
@@ -58,11 +59,11 @@ void main() {
     testWidgets('renders custom icon', (tester) async {
       await tester.pumpWidget(
         materialApp(
-          const AppEmptyView(message: 'Empty', icon: Icons.search_off),
+          const AppEmptyView(message: 'Empty', icon: FontAwesomeIcons.magnifyingGlassMinus),
         ),
       );
 
-      expect(find.byIcon(Icons.search_off), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is FaIcon && w.icon?.codePoint == FontAwesomeIcons.magnifyingGlassMinus.codePoint), findsOneWidget);
     });
 
     testWidgets('renders action widget when provided', (tester) async {
@@ -84,7 +85,7 @@ void main() {
       await tester.pumpWidget(materialApp(const AppErrorView(message: 'Oops')));
 
       expect(find.text('Oops'), findsOneWidget);
-      expect(find.byIcon(Icons.error_outline), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is FaIcon && w.icon?.codePoint == FontAwesomeIcons.circleExclamation.codePoint), findsOneWidget);
     });
 
     testWidgets('renders title when provided', (tester) async {
@@ -104,7 +105,7 @@ void main() {
       );
 
       expect(find.text('Retry'), findsOneWidget);
-      expect(find.byIcon(Icons.refresh), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is FaIcon && w.icon?.codePoint == FontAwesomeIcons.rotateRight.codePoint), findsOneWidget);
     });
 
     testWidgets('retry callback fires on tap', (tester) async {
@@ -184,7 +185,7 @@ void main() {
             body: const Text('Content'),
             floatingActionButton: FloatingActionButton(
               onPressed: () {},
-              child: const Icon(Icons.add),
+              child: const FaIcon(FontAwesomeIcons.plus),
             ),
           ),
         ),
@@ -211,9 +212,9 @@ void main() {
       await tester.drag(find.text('Bookmark'), const Offset(-300, 0));
       await tester.pumpAndSettle();
 
-      final action = tester.widget<SlidableAction>(find.byType(SlidableAction));
-      expect(action.label, 'Delete');
-      expect(action.icon, Icons.delete_outline);
+      expect(find.byType(CustomSlidableAction), findsOneWidget);
+      expect(find.text('Delete'), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is FaIcon && w.icon?.codePoint == FontAwesomeIcons.trashCan.codePoint), findsOneWidget);
     });
 
     testWidgets('fires action callback', (tester) async {
@@ -231,7 +232,7 @@ void main() {
 
       await tester.drag(find.text('Bookmark'), const Offset(-300, 0));
       await tester.pumpAndSettle();
-      await tester.tap(find.byType(SlidableAction));
+      await tester.tap(find.byType(CustomSlidableAction));
 
       expect(tapped, isTrue);
     });
@@ -258,11 +259,11 @@ void main() {
     testWidgets('renders prefix icon', (tester) async {
       await tester.pumpWidget(
         materialApp(
-          const AppTextField(label: 'Email', prefixIcon: Icons.email_outlined),
+          const AppTextField(label: 'Email', prefixIcon: FontAwesomeIcons.circle),
         ),
       );
 
-      expect(find.byIcon(Icons.email_outlined), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is FaIcon && w.icon?.codePoint == FontAwesomeIcons.circle.codePoint), findsOneWidget);
     });
 
     testWidgets('accepts text input', (tester) async {
@@ -334,11 +335,11 @@ void main() {
       testWidgets('renders icon button when icon provided', (tester) async {
         await tester.pumpWidget(
           materialApp(
-            AppButton(label: 'Save', onPressed: () {}, icon: Icons.save),
+            AppButton(label: 'Save', onPressed: () {}, icon: FontAwesomeIcons.circle),
           ),
         );
 
-        expect(find.byIcon(Icons.save), findsOneWidget);
+        expect(find.byWidgetPredicate((w) => w is FaIcon && w.icon?.codePoint == FontAwesomeIcons.circle.codePoint), findsOneWidget);
         expect(find.text('Save'), findsOneWidget);
       });
 
@@ -377,12 +378,12 @@ void main() {
               label: 'Close',
               onPressed: () {},
               variant: AppButtonVariant.tonal,
-              icon: Icons.close,
+              icon: FontAwesomeIcons.xmark,
             ),
           ),
         );
 
-        expect(find.byIcon(Icons.close), findsOneWidget);
+        expect(find.byWidgetPredicate((w) => w is FaIcon && w.icon?.codePoint == FontAwesomeIcons.xmark.codePoint), findsOneWidget);
       });
     });
 

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:app_platform/app_platform.dart';
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'app_video_player_controls.dart';
 import 'app_video_player_fullscreen.dart';
@@ -135,7 +136,7 @@ class _AppVideoPlayerState extends State<AppVideoPlayer> {
           child: const Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.video_library, color: Colors.white70, size: 48),
+              FaIcon(FontAwesomeIcons.video, color: Colors.white70, size: 48),
               SizedBox(height: AppSpacing.sm),
               Text(
                 'Mock Video Player View',
@@ -209,8 +210,7 @@ class _AppVideoPlayerState extends State<AppVideoPlayer> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Icon(
-          Icons.error_outline_rounded,
+        const FaIcon(FontAwesomeIcons.circleExclamation,
           color: Colors.redAccent,
           size: AppIconSize.xxxl,
         ),

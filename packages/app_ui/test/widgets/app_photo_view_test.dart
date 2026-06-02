@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:test_utils/test_utils.dart';
 
@@ -60,7 +61,7 @@ void main() {
 
       // Verify the error text is displayed
       expect(find.text('Image Load Failed'), findsOneWidget);
-      expect(find.byIcon(Icons.broken_image_rounded), findsOneWidget);
+      expect(find.byWidgetPredicate((w) => w is FaIcon && w.icon?.codePoint == FontAwesomeIcons.image.codePoint), findsOneWidget);
     });
 
     testWidgets('shows fullscreen viewer and close button dismisses it', (
@@ -95,7 +96,7 @@ void main() {
       expect(find.byType(PhotoView), findsOneWidget);
 
       // Close button should be present
-      final closeButton = find.byIcon(Icons.close_rounded);
+      final closeButton = find.byWidgetPredicate((w) => w is FaIcon && w.icon?.codePoint == FontAwesomeIcons.xmark.codePoint);
       expect(closeButton, findsOneWidget);
 
       // Tap close to dismiss

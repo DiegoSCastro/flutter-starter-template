@@ -1,6 +1,7 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../core/di/injection.dart';
@@ -40,24 +41,24 @@ class _AppShellState extends State<AppShell> {
           final l10n = context.l10n;
           final destinations = [
             AppDestination(
-              icon: Icons.home_outlined,
-              selectedIcon: Icons.home,
+              icon: FontAwesomeIcons.house,
+              selectedIcon: FontAwesomeIcons.house,
               label: l10n.navHome,
             ),
             AppDestination(
-              icon: Icons.bookmark_outline,
-              selectedIcon: Icons.bookmark,
+              icon: FontAwesomeIcons.bookmark,
+              selectedIcon: FontAwesomeIcons.solidBookmark,
               label: l10n.navBookmarks,
             ),
             AppDestination(
-              icon: Icons.notifications_outlined,
-              selectedIcon: Icons.notifications,
+              icon: FontAwesomeIcons.bell,
+              selectedIcon: FontAwesomeIcons.solidBell,
               label: l10n.navNotifications,
               hasBadge: state.unreadCount > 0,
             ),
             AppDestination(
-              icon: Icons.person_outline,
-              selectedIcon: Icons.person,
+              icon: FontAwesomeIcons.user,
+              selectedIcon: FontAwesomeIcons.solidUser,
               label: l10n.navProfile,
             ),
           ];

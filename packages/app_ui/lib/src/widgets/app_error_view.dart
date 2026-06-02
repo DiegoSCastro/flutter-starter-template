@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../app_ui.dart';
 
@@ -11,14 +12,14 @@ class AppErrorView extends StatelessWidget {
     this.title,
     this.onRetry,
     this.retryLabel,
-    this.icon = Icons.error_outline,
+    this.icon = FontAwesomeIcons.circleExclamation,
   });
 
   final String message;
   final String? title;
   final VoidCallback? onRetry;
   final String? retryLabel;
-  final IconData icon;
+  final FaIconData icon;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +35,7 @@ class AppErrorView extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: 56, color: context.colorScheme.error),
+            FaIcon(icon, size: 56, color: context.colorScheme.error),
             const SizedBox(height: AppSpacing.lg),
             if (title != null) ...[
               Text(
@@ -53,7 +54,7 @@ class AppErrorView extends StatelessWidget {
               const SizedBox(height: AppSpacing.xxl),
               FilledButton.tonalIcon(
                 onPressed: effectiveOnRetry,
-                icon: const Icon(Icons.refresh),
+                icon: const FaIcon(FontAwesomeIcons.rotateRight),
                 label: Text(retryLabel ?? 'Retry'),
               ),
             ],
