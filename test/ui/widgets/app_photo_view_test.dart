@@ -63,7 +63,7 @@ void main() {
       await tester.pump(const Duration(milliseconds: 100));
 
       // Verify the error text is displayed
-      expect(find.text('Failed to load image'), findsOneWidget);
+      expect(find.text('Image Load Failed'), findsOneWidget);
       expect(find.byIcon(Icons.broken_image_rounded), findsOneWidget);
     });
 
