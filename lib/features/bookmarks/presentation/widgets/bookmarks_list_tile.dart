@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:analytics/analytics.dart';
 import 'package:app_platform/app_platform.dart';
 import 'package:app_ui/app_ui.dart';
@@ -44,136 +46,136 @@ class BookmarksListTile extends StatelessWidget {
           },
         ),
       ],
-      child: ListTile(
-        selected: selected,
-        selectedTileColor: context.colorScheme.secondaryContainer.withValues(alpha: 0.3),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.lg,
-          vertical: AppSpacing.sm,
-        ),
-        leading: _BookmarkAvatar(bookmark: bookmark),
-        title: Padding(
-          padding: const EdgeInsets.only(bottom: 2),
-          child: Text(
-            bookmark.title,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: context.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: selected ? context.colorScheme.onSecondaryContainer : context.colorScheme.onSurface,
-            ),
-          ),
-        ),
-        subtitle: Text(
-          bookmark.url,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: context.textTheme.bodyMedium?.copyWith(
-            color: selected 
-                ? context.colorScheme.onSecondaryContainer.withValues(alpha: 0.8) 
-                : context.colorScheme.onSurfaceVariant,
-          ),
-        ),
-        trailing: Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: selected 
-                ? context.colorScheme.onSecondaryContainer.withValues(alpha: 0.1) 
-                : context.colorScheme.surfaceContainerHighest,
-            shape: BoxShape.circle,
-          ),
-          child: FaIcon(
-            FontAwesomeIcons.chevronRight,
-            size: 12,
-            color: selected 
-                ? context.colorScheme.onSecondaryContainer 
-                : context.colorScheme.onSurfaceVariant,
-          ),
-        ),
+      child: InkWell(
         onTap: onTap,
         onLongPress: () => _showItemMenu(context, bookmark),
+        child: Container(
+          color: selected ? context.colorScheme.secondaryContainer.withValues(alpha: 0.3) : Colors.transparent,
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppSpacing.lg,
+            vertical: AppSpacing.md,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      bookmark.title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: context.textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: selected ? context.colorScheme.onSecondaryContainer : context.colorScheme.onSurface,
+                      ),
+                    ),
+                  ),
+                  if (bookmark.isPendingSync)
+                    Padding(
+                      padding: const EdgeInsets.only(left: AppSpacing.sm),
+                      child: Tooltip(
+                        message: context.l10n.bookmarksNotYetSynced,
+                        child: FaIcon(
+                          FontAwesomeIcons.cloudArrowUp,
+                          size: 16,
+                          color: context.colorScheme.outline,
+                        ),
+                      ),
+                    ),
+                  if (selected)
+                    Padding(
+                      padding: const EdgeInsets.only(left: AppSpacing.sm),
+                      child: FaIcon(
+                        FontAwesomeIcons.check,
+                        size: 16,
+                        color: context.colorScheme.onSecondaryContainer,
+                      ),
+                    ),
+                ],
+              ),
+              if (bookmark.description.isNotEmpty) ...[
+                const SizedBox(height: AppSpacing.sm),
+                Text(
+                  bookmark.description,
+                  maxLines: 3,
+                  overflow: TextOverflow.ellipsis,
+                  style: context.textTheme.bodyMedium?.copyWith(
+                    color: context.colorScheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+              if (bookmark.tags.isNotEmpty) ...[
+                const SizedBox(height: AppSpacing.sm),
+                Wrap(
+                  spacing: AppSpacing.xs,
+                  runSpacing: AppSpacing.xs,
+                  children: bookmark.tags.map((tag) => Container(
+                    padding: const EdgeInsets.symmetric(horizontal: AppSpacing.sm, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: context.colorScheme.primaryContainer.withValues(alpha: 0.5),
+                      borderRadius: BorderRadius.circular(AppRadius.sm),
+                    ),
+                    child: Text(
+                      '#$tag',
+                      style: context.textTheme.labelSmall?.copyWith(
+                        color: context.colorScheme.onPrimaryContainer,
+                      ),
+                    ),
+                  )).toList(),
+                ),
+              ],
+              if (bookmark.imageUrls.isNotEmpty) ...[
+                const SizedBox(height: AppSpacing.sm),
+                _ReadOnlyMedia(imageUrls: bookmark.imageUrls),
+              ],
+              const SizedBox(height: AppSpacing.sm),
+              AppLinkPreview(
+                url: bookmark.url,
+                onTap: (_) => onTap(),
+                minWidth: double.infinity,
+                maxWidth: double.infinity,
+              ),
+            ],
+          ),
+        ),
       ),
     ).animateStaggerItem(index);
   }
 }
 
-class _BookmarkAvatar extends StatelessWidget {
-  const _BookmarkAvatar({required this.bookmark});
+class _ReadOnlyMedia extends StatelessWidget {
+  const _ReadOnlyMedia({required this.imageUrls});
 
-  final Bookmark bookmark;
+  final List<String> imageUrls;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final title = bookmark.title.trim();
-    final initial = title.isNotEmpty ? title[0].toUpperCase() : '#';
-    final Widget avatar;
-    
-    if (bookmark.imageUrls.isNotEmpty) {
-      avatar = AppNetworkImage(
-        imageUrl: bookmark.imageUrls.first,
-        width: 48,
-        height: 48,
-        borderRadius: BorderRadius.circular(AppRadius.sm),
-        fit: BoxFit.cover,
-      );
-    } else {
-      avatar = Container(
-        width: 48,
-        height: 48,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              theme.colorScheme.primary,
-              theme.colorScheme.secondary,
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(AppRadius.sm),
-          boxShadow: [
-            BoxShadow(
-              color: theme.colorScheme.primary.withValues(alpha: 0.2),
-              blurRadius: 8,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Center(
-          child: Text(
-            initial,
-            style: theme.textTheme.titleMedium?.copyWith(
-              color: theme.colorScheme.onPrimary,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      );
-    }
-    if (!bookmark.isPendingSync) return avatar;
-    return Tooltip(
-      message: context.l10n.bookmarksNotYetSynced,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          avatar,
-          Positioned(
-            right: -2,
-            bottom: -2,
-            child: Container(
-              padding: const EdgeInsets.all(2),
-              decoration: BoxDecoration(
-                color: theme.colorScheme.surface,
-                shape: BoxShape.circle,
-              ),
-              child: FaIcon(
-                FontAwesomeIcons.cloudArrowUp,
-                size: 14,
-                color: theme.colorScheme.outline,
-              ),
-            ),
-          ),
-        ],
+    return SizedBox(
+      height: 200,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: imageUrls.length,
+        separatorBuilder: (_, _) => const SizedBox(width: AppSpacing.sm),
+        itemBuilder: (context, index) {
+          final path = imageUrls[index];
+          return ClipRRect(
+            borderRadius: BorderRadius.circular(AppRadius.sm),
+            child: path.startsWith('http')
+                ? AppNetworkImage(
+                    imageUrl: path,
+                    fit: BoxFit.cover,
+                    width: 200,
+                    height: 200,
+                  )
+                : Image.file(
+                    File(path),
+                    fit: BoxFit.cover,
+                    width: 200,
+                    height: 200,
+                  ),
+          );
+        },
       ),
     );
   }
