@@ -39,6 +39,7 @@ class _AppShellState extends State<AppShell> {
       child: BlocBuilder<NotificationsBloc, NotificationsState>(
         builder: (context, state) {
           final l10n = context.l10n;
+
           final destinations = [
             AppDestination(
               icon: FontAwesomeIcons.house,

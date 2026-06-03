@@ -19,6 +19,20 @@ import 'widgets/app_shell.dart';
 
 part 'router.g.dart';
 
+/// Route data for showing [BookmarkFormScreen] outside the app shell.
+///
+/// The absolute path keeps the create flow free of persistent shell navigation.
+@TypedGoRoute<BookmarkNewRoute>(path: '/bookmarks/new', name: 'bookmark_new')
+class BookmarkNewRoute extends GoRouteData with $BookmarkNewRoute {
+  /// Creates a [BookmarkNewRoute].
+  const BookmarkNewRoute();
+
+  /// Builds the bookmark creation screen.
+  @override
+  Widget build(BuildContext context, GoRouterState state) =>
+      const BookmarkFormScreen();
+}
+
 @TypedStatefulShellRoute<AppShellRouteData>(
   branches: <TypedStatefulShellBranch<StatefulShellBranchData>>[
     TypedStatefulShellBranch<HomeBranchData>(
@@ -32,7 +46,6 @@ part 'router.g.dart';
           path: '/bookmarks',
           name: 'bookmarks',
           routes: <TypedRoute<RouteData>>[
-            TypedGoRoute<BookmarkNewRoute>(path: 'new', name: 'bookmark_new'),
             TypedGoRoute<BookmarkDetailRoute>(
               path: ':id',
               name: 'bookmark_detail',
@@ -160,14 +173,6 @@ class BookmarksListRoute extends GoRouteData with $BookmarksListRoute {
   @override
   Widget build(BuildContext context, GoRouterState state) =>
       const BookmarksListScreen();
-}
-
-class BookmarkNewRoute extends GoRouteData with $BookmarkNewRoute {
-  const BookmarkNewRoute();
-
-  @override
-  Widget build(BuildContext context, GoRouterState state) =>
-      const BookmarkFormScreen();
 }
 
 class BookmarkDetailRoute extends GoRouteData with $BookmarkDetailRoute {

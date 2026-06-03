@@ -10,29 +10,60 @@ import '../bloc/bookmark_form/bookmark_form_bloc.dart';
 import '../bloc/bookmark_form/bookmark_form_state.dart';
 import 'bookmark_video_attachment_preview.dart';
 
+/// Shows media previews and attachment actions for the bookmark form.
 class BookmarkAttachmentsSection extends StatelessWidget {
+  /// Creates a stateless attachments section backed by [state].
   const BookmarkAttachmentsSection({super.key, required this.state});
 
+  /// Current bookmark form state that supplies image and video attachments.
   final BookmarkFormState state;
 
   @override
   Widget build(BuildContext context) {
     final videoUrl = state.videoUrl;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text('Attachments', style: context.textTheme.titleMedium),
-        const SizedBox(height: AppSpacing.sm),
-        if (state.imageUrls.isNotEmpty) ...[
-          _ImageAttachmentList(paths: state.imageUrls),
-          const SizedBox(height: AppSpacing.sm),
-        ],
-        if (videoUrl != null && videoUrl.isNotEmpty) ...[
-          BookmarkVideoAttachmentPreview(videoUrl: videoUrl),
-          const SizedBox(height: AppSpacing.sm),
-        ],
-        const _AttachmentActionButtons(),
-      ],
+    final colorScheme = context.colorScheme;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: colorScheme.surface,
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        border: Border.all(color: colorScheme.outline),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(AppSpacing.xl),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                FaIcon(
+                  FontAwesomeIcons.images,
+                  size: 16,
+                  color: colorScheme.onSurfaceVariant,
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                Text(
+                  'MEDIA',
+                  style: context.textTheme.labelLarge?.copyWith(
+                    color: colorScheme.onSurfaceVariant,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            if (state.imageUrls.isNotEmpty) ...[
+              _ImageAttachmentList(paths: state.imageUrls),
+              const SizedBox(height: AppSpacing.lg),
+            ],
+            if (videoUrl != null && videoUrl.isNotEmpty) ...[
+              BookmarkVideoAttachmentPreview(videoUrl: videoUrl),
+              const SizedBox(height: AppSpacing.lg),
+            ],
+            const _AttachmentActionButtons(),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -129,51 +160,96 @@ class _AttachmentActionButtons extends StatelessWidget {
         Row(
           children: [
             Expanded(
-              child: OutlinedButton.icon(
+              child: _AttachmentActionButton(
+                icon: FontAwesomeIcons.image,
+                label: 'Gallery',
                 onPressed: () => context.read<BookmarkFormBloc>().add(
                   const BookmarkFormImagesPicked(),
                 ),
-                icon: const FaIcon(FontAwesomeIcons.image),
-                label: const Text('Add Images'),
               ),
             ),
             const SizedBox(width: AppSpacing.md),
             Expanded(
-              child: OutlinedButton.icon(
+              child: _AttachmentActionButton(
+                icon: FontAwesomeIcons.camera,
+                label: 'Camera',
                 onPressed: () => context.read<BookmarkFormBloc>().add(
                   const BookmarkFormCameraImageTaken(),
                 ),
-                icon: const FaIcon(FontAwesomeIcons.camera),
-                label: const Text('Take Photo'),
               ),
             ),
           ],
         ),
-        const SizedBox(height: AppSpacing.sm),
+        const SizedBox(height: AppSpacing.md),
         Row(
           children: [
             Expanded(
-              child: OutlinedButton.icon(
+              child: _AttachmentActionButton(
+                icon: FontAwesomeIcons.video,
+                label: 'Video',
                 onPressed: () => context.read<BookmarkFormBloc>().add(
                   const BookmarkFormVideoPicked(),
                 ),
-                icon: const FaIcon(FontAwesomeIcons.video),
-                label: const Text('Add Video'),
               ),
             ),
             const SizedBox(width: AppSpacing.md),
             Expanded(
-              child: OutlinedButton.icon(
+              child: _AttachmentActionButton(
+                icon: FontAwesomeIcons.video,
+                label: 'Record',
                 onPressed: () => context.read<BookmarkFormBloc>().add(
                   const BookmarkFormCameraVideoTaken(),
                 ),
-                icon: const FaIcon(FontAwesomeIcons.video),
-                label: const Text('Record Video'),
               ),
             ),
           ],
         ),
       ],
+    );
+  }
+}
+
+class _AttachmentActionButton extends StatelessWidget {
+  const _AttachmentActionButton({
+    required this.icon,
+    required this.label,
+    required this.onPressed,
+  });
+
+  final FaIconData icon;
+  final String label;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = context.colorScheme;
+    return OutlinedButton(
+      onPressed: onPressed,
+      style: OutlinedButton.styleFrom(
+        foregroundColor: colorScheme.primary,
+        backgroundColor: colorScheme.surfaceContainerLow,
+        side: BorderSide(color: colorScheme.outline),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppSpacing.md,
+          vertical: AppSpacing.lg,
+        ),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(AppRadius.lg),
+        ),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          FaIcon(icon, size: 24),
+          const SizedBox(height: AppSpacing.sm),
+          Text(
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: const TextStyle(fontWeight: FontWeight.w700),
+          ),
+        ],
+      ),
     );
   }
 }
