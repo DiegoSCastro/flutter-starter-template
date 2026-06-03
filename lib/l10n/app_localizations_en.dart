@@ -197,6 +197,76 @@ class AppLocalizationsEn extends AppLocalizations {
   String get homeNoBookmarks => 'No bookmarks yet. Tap + to add one.';
 
   @override
+  String get homeSearchTitle => 'Search';
+
+  @override
+  String get homeSearchSubtitle =>
+      'Find your saved articles, tools, and inspirations instantly.';
+
+  @override
+  String get homeSearchHint => 'Search bookmarks...';
+
+  @override
+  String get homeQuickAdd => 'Add Link';
+
+  @override
+  String get homeQuickLibrary => 'Library';
+
+  @override
+  String get homeQuickTags => 'Tags';
+
+  @override
+  String get homeFilterAll => 'All';
+
+  @override
+  String get homeFilterDesign => 'Design';
+
+  @override
+  String get homeFilterArticles => 'Articles';
+
+  @override
+  String get homeFilterInspiration => 'Inspiration';
+
+  @override
+  String get homeFilterTools => 'Tools';
+
+  @override
+  String get homeSuggestedTitle => 'Suggested for You';
+
+  @override
+  String get homeFeaturedCollections => 'Featured Collections';
+
+  @override
+  String get homeWeeklyDigestTitle => 'Weekly Digest';
+
+  @override
+  String get homeWeeklyDigestEyebrow => 'Most Read';
+
+  @override
+  String get homeWeeklyDigestHeadline => 'Your saved knowledge catch-up';
+
+  @override
+  String homeWeeklyDigestBody(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other:
+          'You saved $count bookmarks recently. Review the highlights and keep your reading flow moving.',
+      one:
+          'You saved 1 bookmark recently. Review the highlight and keep your reading flow moving.',
+      zero:
+          'You have no recent bookmarks. Review saved highlights when you add one.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get homeReadDigest => 'Read Digest';
+
+  @override
+  String get homeNoMatches => 'No bookmarks match this view.';
+
+  @override
   String get homeStatsTotal => 'Total';
 
   @override
