@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:analytics/analytics.dart';
+import 'package:app_platform/app_platform.dart';
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:theme/theme.dart';
 
-import '../core/di/injection.dart';
 import '../core/extensions/build_context_extensions.dart';
 import '../features/auth/presentation/auth_session.dart';
 import '../features/auth/presentation/bloc/auth_bloc.dart';
@@ -16,6 +16,7 @@ import '../features/bookmarks/domain/services/bookmarks_sync_controller.dart';
 import '../l10n/app_localizations.dart';
 import '../shared/domain/session.dart';
 import '../shared/presentation/session_scope.dart';
+import 'di/injection.dart';
 import 'router.dart';
 
 class App extends StatefulWidget {
@@ -26,6 +27,7 @@ class App extends StatefulWidget {
     this.bookmarksSync,
     this.navigatorObservers,
     this.session,
+    this.videoPlayerService,
   });
 
   final AuthBloc? authBloc;
@@ -33,6 +35,7 @@ class App extends StatefulWidget {
   final BookmarksSyncController? bookmarksSync;
   final List<NavigatorObserver>? navigatorObservers;
   final Session? session;
+  final VideoPlayerService? videoPlayerService;
 
   @override
   State<App> createState() => _AppState();
@@ -45,6 +48,7 @@ class _AppState extends State<App> {
   late final GoRouter _router;
   late final DeepLinkState _deepLink;
   late final BookmarksSyncController _sync;
+  late final VideoPlayerService _videoPlayerService;
   StreamSubscription<AuthState>? _authSub;
 
   @override
@@ -60,6 +64,8 @@ class _AppState extends State<App> {
     _router = result.router;
     _deepLink = result.deepLink;
     _sync = widget.bookmarksSync ?? getIt<BookmarksSyncController>();
+    _videoPlayerService =
+        widget.videoPlayerService ?? getIt<VideoPlayerService>();
     _authSub = _authBloc.stream.listen(_onAuthChanged);
     // Session restoration is driven by SplashScreen so it can gate routing
     // on completion instead of racing the redirect.
@@ -88,21 +94,24 @@ class _AppState extends State<App> {
       deepLink: _deepLink,
       child: SessionScope(
         session: _session,
-        child: MultiBlocProvider(
-          providers: [
-            BlocProvider.value(value: _authBloc),
-            BlocProvider.value(value: _themeBloc),
-          ],
-          child: BlocBuilder<ThemeBloc, ThemeState>(
-            builder: (context, themeState) => MaterialApp.router(
-              debugShowCheckedModeBanner: false,
-              onGenerateTitle: (context) => context.l10n.appTitle,
-              theme: AppTheme.light(scheme: themeState.scheme),
-              darkTheme: AppTheme.dark(scheme: themeState.scheme),
-              themeMode: themeState.mode,
-              localizationsDelegates: AppLocalizations.localizationsDelegates,
-              supportedLocales: AppLocalizations.supportedLocales,
-              routerConfig: _router,
+        child: RepositoryProvider<VideoPlayerService>.value(
+          value: _videoPlayerService,
+          child: MultiBlocProvider(
+            providers: [
+              BlocProvider.value(value: _authBloc),
+              BlocProvider.value(value: _themeBloc),
+            ],
+            child: BlocBuilder<ThemeBloc, ThemeState>(
+              builder: (context, themeState) => MaterialApp.router(
+                debugShowCheckedModeBanner: false,
+                onGenerateTitle: (context) => context.l10n.appTitle,
+                theme: AppTheme.light(scheme: themeState.scheme),
+                darkTheme: AppTheme.dark(scheme: themeState.scheme),
+                themeMode: themeState.mode,
+                localizationsDelegates: AppLocalizations.localizationsDelegates,
+                supportedLocales: AppLocalizations.supportedLocales,
+                routerConfig: _router,
+              ),
             ),
           ),
         ),
