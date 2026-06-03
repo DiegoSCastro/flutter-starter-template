@@ -117,7 +117,7 @@ class _BookmarkFeedCard extends StatelessWidget {
     final hiddenCount = bookmark.tags.length - visibleTags.length;
     final tagLabel = visibleTags.isNotEmpty
         ? visibleTags.first
-        : context.l10n.homeStatsRecent;
+        : context.l10n.homeBookmarkVisualFallback;
 
     return _ElevatedSurface(
       child: InkWell(
@@ -131,6 +131,8 @@ class _BookmarkFeedCard extends StatelessWidget {
                   : FontAwesomeIcons.link,
               label: tagLabel,
               height: featured ? 192 : 144,
+              linkUrl: bookmark.url,
+              fallbackImageUrl: bookmark.fallbackThumbnailUrl,
               colors: featured
                   ? [
                       context.colorScheme.primaryContainer,

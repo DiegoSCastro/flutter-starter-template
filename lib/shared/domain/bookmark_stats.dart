@@ -10,6 +10,7 @@ class BookmarkSummary {
     required this.url,
     required this.description,
     required this.tags,
+    this.imageUrls = const [],
   });
 
   final String id;
@@ -17,6 +18,18 @@ class BookmarkSummary {
   final String url;
   final String description;
   final List<String> tags;
+  final List<String> imageUrls;
+
+  /// The first `http`/`https` image URL from [imageUrls], or null if none.
+  String? get fallbackThumbnailUrl {
+    for (final imageUrl in imageUrls) {
+      final uri = Uri.tryParse(imageUrl);
+      if (uri != null && (uri.scheme == 'http' || uri.scheme == 'https')) {
+        return imageUrl;
+      }
+    }
+    return null;
+  }
 }
 
 /// Aggregate bookmark figures plus the most recent entries, shared by features

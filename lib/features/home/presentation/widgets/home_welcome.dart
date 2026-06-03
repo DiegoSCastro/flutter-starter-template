@@ -277,7 +277,7 @@ class _SuggestedBookmarkCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final label = bookmark.tags.isNotEmpty
         ? bookmark.tags.first
-        : context.l10n.homeStatsRecent;
+        : context.l10n.homeBookmarkVisualFallback;
 
     return _ElevatedSurface(
       child: InkWell(
@@ -289,6 +289,8 @@ class _SuggestedBookmarkCard extends StatelessWidget {
               icon: FontAwesomeIcons.clockRotateLeft,
               label: label,
               height: 96,
+              linkUrl: bookmark.url,
+              fallbackImageUrl: bookmark.fallbackThumbnailUrl,
               colors: [
                 context.colorScheme.tertiaryContainer,
                 context.colorScheme.secondaryContainer,
@@ -624,12 +626,16 @@ class _BookmarkVisual extends StatelessWidget {
     required this.label,
     required this.height,
     required this.colors,
+    required this.linkUrl,
+    this.fallbackImageUrl,
   });
 
   final FaIconData icon;
   final String label;
   final double height;
   final List<Color> colors;
+  final String linkUrl;
+  final String? fallbackImageUrl;
 
   @override
   Widget build(BuildContext context) {
@@ -645,11 +651,34 @@ class _BookmarkVisual extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          Center(
-            child: FaIcon(
-              icon,
-              size: AppIconSize.xl,
-              color: context.colorScheme.primary.withValues(alpha: 0.7),
+          Positioned.fill(
+            child: AppLinkPreviewThumbnail(
+              url: linkUrl,
+              fallbackImageUrl: fallbackImageUrl,
+              semanticLabel: label,
+              fallbackBuilder: (context) => Center(
+                child: FaIcon(
+                  icon,
+                  size: AppIconSize.xl,
+                  color: context.colorScheme.primary.withValues(alpha: 0.7),
+                ),
+              ),
+            ),
+          ),
+          Positioned.fill(
+            child: IgnorePointer(
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Colors.black.withValues(alpha: 0),
+                      Colors.black.withValues(alpha: 0.24),
+                    ],
+                  ),
+                ),
+              ),
             ),
           ),
           PositionedDirectional(
