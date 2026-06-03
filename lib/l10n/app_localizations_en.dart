@@ -70,7 +70,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get registerAppBarTitle => 'Register';
 
   @override
-  String get registerHeadline => 'Create an account';
+  String get registerHeadline => 'Join Flutter Starter';
+
+  @override
+  String get registerSubtitle =>
+      'Create an account to start organizing your digital life with clarity and ease.';
+
+  @override
+  String get registerEmailLabel => 'Email Address';
+
+  @override
+  String get registerEmailHint => 'jane@example.com';
+
+  @override
+  String get registerInvalidEmail => 'Enter a valid email address.';
 
   @override
   String get registerUsernameLabel => 'Username';
@@ -79,10 +92,32 @@ class AppLocalizationsEn extends AppLocalizations {
   String get registerPasswordLabel => 'Password';
 
   @override
+  String get registerPasswordHint => '••••••••';
+
+  @override
+  String get registerPasswordHelp => 'Must be at least 8 characters.';
+
+  @override
+  String get registerPasswordMinLengthError =>
+      'Password must be at least 8 characters.';
+
+  @override
+  String get registerShowPassword => 'Show password';
+
+  @override
+  String get registerHidePassword => 'Hide password';
+
+  @override
   String get registerConfirmPasswordLabel => 'Confirm Password';
 
   @override
-  String get registerSubmit => 'Register';
+  String get registerSubmit => 'Join Flutter Starter';
+
+  @override
+  String get registerLoginPrompt => 'Already have an account? ';
+
+  @override
+  String get registerNavigateToLogin => 'Log in';
 
   @override
   String get errorPasswordsDoNotMatch => 'Passwords do not match.';
