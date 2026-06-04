@@ -23,6 +23,7 @@ void main() {
 
   late StreamController<BookmarksSyncStatus> syncStatusController;
   late MockBookmarksSyncController sync;
+  late MockNotificationsSyncController notificationsSync;
   late MockAnalyticsService analytics;
   late AuthBloc authBloc;
   late ThemeBloc themeBloc;
@@ -56,6 +57,14 @@ void main() {
     when(() => sync.start()).thenAnswer((_) async {});
     when(() => sync.stop()).thenAnswer((_) async {});
     when(() => sync.sync()).thenAnswer((_) async {});
+
+    notificationsSync = MockNotificationsSyncController();
+    when(
+      () => notificationsSync.onSynced,
+    ).thenAnswer((_) => const Stream.empty());
+    when(() => notificationsSync.start()).thenAnswer((_) async {});
+    when(() => notificationsSync.stop()).thenAnswer((_) async {});
+    when(() => notificationsSync.sync()).thenAnswer((_) async {});
 
     final bookmarkStats = MockBookmarkStatsReader();
     when(
@@ -104,6 +113,7 @@ void main() {
         authBloc: authBloc,
         themeBloc: themeBloc,
         bookmarksSync: sync,
+        notificationsSync: notificationsSync,
         navigatorObservers: const [],
         videoPlayerService: MockVideoPlayerService(),
       ),
@@ -137,7 +147,8 @@ void main() {
     expect(authBloc.state, isA<AuthAuthenticated>());
     expect((authBloc.state as AuthAuthenticated).user.username, 'alice');
 
-    // Sync started for the now-authenticated session.
+    // Both sync controllers started for the now-authenticated session.
     verify(() => sync.start()).called(greaterThanOrEqualTo(1));
+    verify(() => notificationsSync.start()).called(greaterThanOrEqualTo(1));
   });
 }
