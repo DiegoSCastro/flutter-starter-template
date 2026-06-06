@@ -50,7 +50,7 @@ To enable seamless local development and testing, this template is paired with a
 | 🔔 **Notifications**      | On‑device scheduling + tap‑to‑navigate |
 | 💉 **DI**                 | `get_it` + `injectable` code‑gen — zero manual wiring |
 | 📡 **REST**               | `Retrofit` + `Dio` typed clients with auth interceptor |
-| ⚙️ **Go Backend**         | Companion server — `chi/v5`, JWT issuer, bookmark CRUD |
+| ⚙️ **Go Backend**         | Companion server — `chi/v5`, JWT issuer, bookmark & collection CRUD, uploads |
 | 🤖 **AI-Native**          | Rules, MCP servers, and agent skills for Claude, Cursor, Codex, Command Code, and Antigravity |
 | 🚀 **Release CI**         | Fastlane lanes — iOS → TestFlight, Android → Play — flavor‑aware, wired to GitHub Actions |
 
@@ -82,6 +82,7 @@ To enable seamless local development and testing, this template is paired with a
 │   ├── features/
 │   │   ├── auth/                     # Sign-in, sign-out, session restore
 │   │   ├── bookmarks/                # CRUD, offline sync, list/detail/form
+│   │   ├── collections/              # Group bookmarks into folders, offline sync
 │   │   ├── home/                     # Home dashboard
 │   │   ├── notifications/            # Notification and activity feed
 │   │   ├── profile/                  # User info + account actions
@@ -205,18 +206,28 @@ cd simple_backend_server
 go run .                    # → http://localhost:8080
 ```
 
-| Method   | Endpoint                   | Description               |
-|----------|----------------------------|---------------------------|
-| `GET`    | `/health`                  | Health check              |
-| `POST`   | `/api/auth/sign-in`        | Sign in                   |
-| `POST`   | `/api/auth/refresh`        | Refresh access token      |
-| `POST`   | `/api/auth/sign-out`       | Revoke refresh token      |
-| `GET`    | `/api/auth/me`             | Current user              |
-| `GET`    | `/api/bookmarks`           | List bookmarks            |
-| `POST`   | `/api/bookmarks`           | Create bookmark           |
-| `GET`    | `/api/bookmarks/:id`       | Get bookmark              |
-| `PUT`    | `/api/bookmarks/:id`       | Update bookmark           |
-| `DELETE` | `/api/bookmarks/:id`       | Delete bookmark           |
+| Method   | Endpoint                      | Description               |
+|----------|-------------------------------|---------------------------|
+| `GET`    | `/health`                     | Health check              |
+| `POST`   | `/api/auth/register`          | Register a new account    |
+| `POST`   | `/api/auth/sign-in`           | Sign in                   |
+| `POST`   | `/api/auth/refresh`           | Refresh access token      |
+| `POST`   | `/api/auth/sign-out`          | Revoke refresh token      |
+| `GET`    | `/api/auth/me`                | Current user              |
+| `POST`   | `/api/auth/change-password`   | Change password           |
+| `POST`   | `/api/upload`                 | Upload an attachment      |
+| `GET`    | `/api/bookmarks`              | List bookmarks            |
+| `POST`   | `/api/bookmarks`              | Create bookmark           |
+| `GET`    | `/api/bookmarks/:id`          | Get bookmark              |
+| `PUT`    | `/api/bookmarks/:id`          | Update bookmark           |
+| `DELETE` | `/api/bookmarks/:id`          | Delete bookmark           |
+| `GET`    | `/api/collections`            | List collections          |
+| `POST`   | `/api/collections`            | Create collection         |
+| `GET`    | `/api/collections/:id`        | Get collection            |
+| `PUT`    | `/api/collections/:id`        | Update collection         |
+| `DELETE` | `/api/collections/:id`        | Delete collection         |
+| `GET`    | `/api/notifications`          | List notifications        |
+| `GET`    | `/api/activity`               | List activity feed        |
 
 > 💡 **Tip** — Any username + password works during development.
 
@@ -426,6 +437,72 @@ cd android && bundle exec fastlane beta flavor:prod   # → Google Play
 Setup steps and the full list of required secrets live in
 [`ios/fastlane/README.md`](ios/fastlane/README.md) and
 [`android/fastlane/README.md`](android/fastlane/README.md).
+
+<br>
+
+---
+
+<br>
+
+## 📶 Offline‑First Sync
+
+Writes commit to the local **ObjectBox** store first and the UI updates
+immediately — the network is reconciled in the background, so the app stays
+fully usable offline. `bookmarks` is the canonical implementation; `collections`
+reuses the same push‑queue + pull‑reconciler shape, and `notifications` uses a
+read‑state‑only variant.
+
+### ✍️ Local‑first writes
+
+`BookmarksRepositoryImpl` persists to ObjectBox, stamps a sync state, then fires
+a fire‑and‑forget `sync()`. The caller never waits on the server.
+
+| Operation | Local effect | Sync state |
+|-----------|--------------|------------|
+| **Create** | Insert row | `pendingCreate` |
+| **Update** | Apply edit; bump `updatedAt` | `synced → pendingUpdate` (a still‑unsynced `pendingCreate` stays `pendingCreate`) |
+| **Delete** | Unsynced create → hard‑delete outright; otherwise tombstone | `pendingDelete` |
+| **Read** | Return local rows instantly via `listLocal()` | — (triggers a background refresh) |
+
+Each row carries its lifecycle as an int code so ObjectBox needs no converter:
+
+```
+synced(0) · pendingCreate(1) · pendingUpdate(2) · pendingDelete(3)
+```
+
+`listVisible()` hides `pendingDelete` tombstones from the UI; `listPending()`
+(everything ≠ `synced`) feeds the push queue.
+
+### 🔄 The sync loop
+
+`BookmarksSyncService` listens to `connectivity_plus` and runs **push → pull**,
+emitting a `syncing → idle/error` status stream that drives the AppBar
+indicator.
+
+- Re‑syncs on an **offline→online transition** (the "sync on reconnect").
+- Concurrent `sync()` callers share one in‑flight future.
+- A failed row keeps its pending state and is retried on the next trigger.
+
+**Push** (`BookmarksPushQueue`) drains pending rows, each isolated so one
+rejected row can't block the queue. The client‑generated `uuid` is the stable
+identity across both sides, which makes lost‑response retries idempotent:
+
+| State | Action | Idempotent edge case |
+|-------|--------|----------------------|
+| `pendingCreate` | Checkpoint media uploads, `POST` | **409** → already created server‑side; mark `synced` |
+| `pendingUpdate` | `PUT` | — |
+| `pendingDelete` | `DELETE`, then hard‑delete locally | **404** → already gone; treat as success |
+
+**Pull** (`BookmarksPullReconciler`) fetches the server list and reconciles by
+`uuid` — **timestamp last‑write‑wins, with local‑pending priority**:
+
+- Server row not present locally → insert as `synced`.
+- Local row is **pending** → skipped (unsynced local edits always win until pushed).
+- Server `updatedAt` newer → overwrite local fields.
+- `synced` local row absent from server → another device deleted it → hard‑delete locally.
+
+There is no field‑level merge: conflicts resolve by `updatedAt`, and any local
+change you haven't pushed yet is never clobbered by a pull.
 
 <br>
 
