@@ -85,8 +85,10 @@ jobs:
       # across operating systems, and baselines are generated on macOS while
       # this runner is Ubuntu. They run locally as a regression check (see
       # dart_test.yaml). Integration tests under integration_test/ also do not
-      # run here — `flutter test` only picks up the test/ directory, and they
-      # require a connected device/emulator.
+      # run here — they boot the real assembled App against an actual platform
+      # target (no headless flutter_tester support), which this runner doesn't
+      # have set up. Run them locally before release: see
+      # integration_test/README.md.
       - name: Run tests
         run: |
           flutter test --coverage --exclude-tags golden
