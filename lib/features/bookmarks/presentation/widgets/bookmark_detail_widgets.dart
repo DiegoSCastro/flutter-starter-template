@@ -179,26 +179,14 @@ class BookmarkDetailView extends StatelessWidget {
 
   Future<void> _confirmAndDelete(BuildContext context, Bookmark b) async {
     final l10n = context.l10n;
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(l10n.bookmarkDeleteDialogTitle),
-        content: Text(l10n.bookmarkDeleteDialogMessage(b.title)),
-        actions: [
-          AppButton(
-            label: l10n.commonCancel,
-            variant: AppButtonVariant.text,
-            onPressed: () => Navigator.of(ctx).pop(false),
-          ),
-          AppButton(
-            label: l10n.commonDelete,
-            variant: AppButtonVariant.tonal,
-            onPressed: () => Navigator.of(ctx).pop(true),
-          ),
-        ],
-      ),
+    final confirmed = await AppConfirmDialog.show(
+      context,
+      title: l10n.bookmarkDeleteDialogTitle,
+      message: l10n.bookmarkDeleteDialogBody,
+      confirmLabel: l10n.commonDelete,
+      cancelLabel: l10n.commonCancel,
     );
-    if (confirmed != true) return;
+    if (!confirmed) return;
     if (!context.mounted) return;
     context.read<BookmarkDetailBloc>().add(BookmarkDetailDeleteRequested(b.id));
   }

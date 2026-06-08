@@ -40,32 +40,19 @@ Future<void> _showCardMenu(BuildContext context, Bookmark bookmark) async {
     case _CardAction.share:
       bloc.add(BookmarksListShareRequested(bookmark));
     case _CardAction.delete:
-      final shouldDelete = await _confirmDelete(context, bookmark.title);
+      final shouldDelete = await _confirmDelete(context);
       if (!shouldDelete) return;
       bloc.add(BookmarksListDeleteRequested(bookmark.id));
   }
 }
 
-Future<bool> _confirmDelete(BuildContext context, String title) async {
+Future<bool> _confirmDelete(BuildContext context) async {
   final l10n = context.l10n;
-  return await showDialog<bool>(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: Text(l10n.bookmarkDeleteDialogTitle),
-          content: Text(l10n.bookmarkDeleteDialogMessage(title)),
-          actions: [
-            AppButton(
-              label: l10n.commonCancel,
-              variant: AppButtonVariant.text,
-              onPressed: () => Navigator.of(ctx).pop(false),
-            ),
-            AppButton(
-              label: l10n.commonDelete,
-              variant: AppButtonVariant.tonal,
-              onPressed: () => Navigator.of(ctx).pop(true),
-            ),
-          ],
-        ),
-      ) ??
-      false;
+  return AppConfirmDialog.show(
+    context,
+    title: l10n.bookmarkDeleteDialogTitle,
+    message: l10n.bookmarkDeleteDialogBody,
+    confirmLabel: l10n.commonDelete,
+    cancelLabel: l10n.commonCancel,
+  );
 }
