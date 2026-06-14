@@ -184,10 +184,11 @@ cat <<EOF
 
 Next steps:
   cd $target_dir
+  ./bin/install-hooks.sh           # enable the pre-push hook (build_runner + format + analyze)
   git add -A
   git commit -m "feat: initial scaffold from flutter-starter-template"
   git remote add origin git@github.com:<your-org>/$app_name.git
-  git push -u origin main
+  git push -u origin main          # the hook will run before the push
 
   # then run the app:
   flutter run

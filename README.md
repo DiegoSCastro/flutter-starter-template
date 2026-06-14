@@ -328,6 +328,7 @@ before handing off — the destination must be analyzer-clean.
 # from a clone of this template
 bin/create_from_template.sh my-cool-app
 cd my-cool-app
+./bin/install-hooks.sh              # enable the pre-push hook (format + analyze)
 flutter run
 ```
 
@@ -335,6 +336,12 @@ The script accepts an optional second argument for the destination
 directory (default: current working directory). It also doubles as
 documentation of the "minimum viable template" — every file it strips is
 one a new project can author from scratch.
+
+> **Why `install-hooks.sh`?** `core.hooksPath` is a *local* git setting, so
+> it is not inherited by fresh clones (and not by `git worktree add`
+> either). The script does the `git config core.hooksPath .githooks` call
+> for you and reminds you to re-run it inside each new worktree.
+> Bypass the hook in an emergency with `git push --no-verify`.
 
 ## 🧪 Testing & Code Quality
 
