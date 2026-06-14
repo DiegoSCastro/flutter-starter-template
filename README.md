@@ -337,11 +337,23 @@ directory (default: current working directory). It also doubles as
 documentation of the "minimum viable template" — every file it strips is
 one a new project can author from scratch.
 
+> **What you get out of the box:** the scaffolded project **builds and runs
+> on Android and iOS without any external configuration**. Firebase,
+> AdMob, RevenueCat and `flutter_dotenv` are commented out by default. See
+> [Optional Services](#-optional-services-firebase--admob--revenuecat--dotenv)
+> below for how to re-enable them.
+>
 > **Why `install-hooks.sh`?** `core.hooksPath` is a *local* git setting, so
 > it is not inherited by fresh clones (and not by `git worktree add`
 > either). The script does the `git config core.hooksPath .githooks` call
 > for you and reminds you to re-run it inside each new worktree.
 > Bypass the hook in an emergency with `git push --no-verify`.
+
+<br>
+
+---
+
+<br>
 
 ## 🧪 Testing & Code Quality
 
@@ -438,20 +450,46 @@ fvm flutter test --exclude-tags golden
 
 <br>
 
-## 🔥 Firebase
+## 🔥 Optional Services (Firebase / AdMob / RevenueCat / dotenv)
 
-Crashlytics + Analytics + Messaging — pre‑configured and ready to connect.
+This template ships with **optional service integrations commented out by
+default** so a freshly scaffolded project builds and runs without any
+external configuration.
+
+What that means for you:
+
+- `android/settings.gradle.kts` and `android/app/build.gradle.kts` have the
+  Firebase Gradle plugins (google-services, firebase-perf, crashlytics)
+  **commented out**.
+- `pubspec.yaml` has Firebase / AdMob / RevenueCat / `flutter_dotenv` lines
+  **commented out**.
+- `lib/main.dart` is a minimal `ScaffoldApp` — no Firebase, no DI, no
+  `runZonedGuarded` around `runApp`. Just enough for `flutter run` to
+  launch a "Hello, project!" screen.
+
+If you want Firebase in your project:
 
 ```bash
-fvm dart pub global activate flutterfire_cli
-flutterfire configure                          # → lib/firebase_options.dart
+flutterfire configure     # generates lib/firebase_options.dart + native config
 ```
 
-Drop these into your project:
-- `android/app/google-services.json`
-- `ios/Runner/GoogleService-Info.plist`
+Then **uncomment** the matching lines in:
 
-Firebase initializes in `lib/main.dart` with Crashlytics fatal‑error reporting on both Flutter and platform threads.
+1. `android/settings.gradle.kts` (3 plugin declarations)
+2. `android/app/build.gradle.kts` (3 `id(...)` apply lines)
+3. `pubspec.yaml` (firebase_core, firebase_analytics, etc.)
+4. `lib/main.dart` (replace the `ScaffoldApp` with the Firebase-wired
+   `runApp(const App())` from git history or a new bootstrap path)
+
+If you accidentally commit `google-services.json` or
+`GoogleService-Info.plist`, the `.gitignore` already excludes them. The
+template also ignores `android/key.properties` and `*.p8` App Store
+Connect keys.
+
+> **`bin/strip_optional.sh`** is a destructive re-run: if a fresh
+> project pulls in a Firebase/AdMob/RevenueCat dep later, run it to
+> strip the service integrations and the Dart code that calls them.
+> The script is idempotent and re-runnable.
 
 <br>
 

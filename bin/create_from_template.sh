@@ -76,7 +76,8 @@ if [[ -e "$target_dir" ]]; then
 fi
 
 # --- 1. clone the template -------------------------------------------------
-template_url="$(git -C "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)" config --get remote.origin.url)"
+REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+template_url="$(git -C "$REPO_ROOT" config --get remote.origin.url)"
 if [[ -z "$template_url" ]]; then
   echo "✖ Could not determine the template's remote URL. Run this from a" >&2
   echo "  clone of flutter-starter-template." >&2
@@ -121,14 +122,51 @@ sed -i '' "s|<string>flutter_starter_template</string>|<string>$app_name</string
 # Tests reference template-specific blocs (auth, bookmarks, …); strip them
 # too — the new project can author its own tests from scratch.
 #
+# Strip Firebase / AdMob / RevenueCat / dotenv integrations from the cloned
+# template. A fresh project should not need any external service config to
+# build a debug APK / iOS app. The user can re-enable later by uncommenting
+# lines in pubspec.yaml and the Gradle plugins blocks.
+#
+# The sed patterns intentionally match only ACTIVE (uncommented) lines so the
+# script stays idempotent — running it twice does not double-strip.
+echo "▶ create: stripping Firebase / AdMob / RevenueCat / dotenv defaults…"
+
+# 1. Android Gradle plugins in settings.gradle.kts and app/build.gradle.kts
+for gradle in "$target_dir/android/settings.gradle.kts" "$target_dir/android/app/build.gradle.kts"; do
+  if [ -f "$gradle" ]; then
+    sed -i '' \
+      -e 's|^    id("com.google.gms.google-services")|    // id("com.google.gms.google-services")  // stripped by create_from_template.sh|' \
+      -e 's|^    id("com.google.firebase.firebase-perf")|    // id("com.google.firebase.firebase-perf")  // stripped by create_from_template.sh|' \
+      -e 's|^    id("com.google.firebase.crashlytics")|    // id("com.google.firebase.crashlytics")  // stripped by create_from_template.sh|' \
+      "$gradle"
+  fi
+done
+
+# 2. Dart packages in pubspec.yaml
+sed -i '' \
+  -e 's|^  firebase_core:.*|  # firebase_core: "x.y.z"  # stripped by create_from_template.sh|' \
+  -e 's|^  firebase_analytics:.*|  # firebase_analytics: "x.y.z"  # stripped by create_from_template.sh|' \
+  -e 's|^  firebase_crashlytics:.*|  # firebase_crashlytics: "x.y.z"  # stripped by create_from_template.sh|' \
+  -e 's|^  firebase_performance:.*|  # firebase_performance: "x.y.z"  # stripped by create_from_template.sh|' \
+  -e 's|^  firebase_messaging:.*|  # firebase_messaging: "x.y.z"  # stripped by create_from_template.sh|' \
+  -e 's|^  firebase_remote_config:.*|  # firebase_remote_config: "x.y.z"  # stripped by create_from_template.sh|' \
+  -e 's|^  google_mobile_ads:.*|  # google_mobile_ads: "x.y.z"  # stripped by create_from_template.sh|' \
+  -e 's|^  purchases_flutter:.*|  # purchases_flutter: "x.y.z"  # stripped by create_from_template.sh|' \
+  -e 's|^  flutter_dotenv:.*|  # flutter_dotenv: "x.y.z"  # stripped by create_from_template.sh|' \
+  "$target_dir/pubspec.yaml"
+
 # `integration_test/` and `simple_backend_server/` (if cloned via submodule
 # during setup) are template-only scaffolding for end-to-end tests and the
 # Go companion backend; neither belongs in a fresh project.
 echo "▶ create: removing template-only artifacts…"
-rm -f "$target_dir/lib/firebase_options.dart" \
-      "$target_dir/lib/objectbox.g.dart" \
+# `lib/main.dart` from the template's remote main is Firebase-coupled. The
+# template ships a minimal Firebase-free main.dart at `assets/main.dart` —
+# the script copies it into place after the clone so the scaffolded project
+# can build and run without any optional-service configuration.
+cp "$REPO_ROOT/assets/main.dart" "$target_dir/lib/main.dart"
+
+rm -f "$target_dir/lib/objectbox.g.dart" \
       "$target_dir/lib/objectbox-model.json" \
-      "$target_dir/lib/main.dart" \
       "$target_dir/lib/app/app.dart" \
       "$target_dir/lib/app/router.dart" \
       "$target_dir/lib/app/bootstrap_error_app.dart" \
@@ -192,4 +230,7 @@ Next steps:
 
   # then run the app:
   flutter run
+
+  # (optional) Strip optional integrations completely (Firebase services, etc).
+  #   ./bin/strip_optional.sh       # see script for what it removes
 EOF

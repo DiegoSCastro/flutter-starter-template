@@ -55,6 +55,12 @@ ios/Flutter/Flutter.framework
 ios/Flutter/Flutter.podspec
 ios/Pods/
 ios/.symlinks/
+# Xcode 26+ downloads Swift packages into SourcePackages/ (per project).
+# These are machine-local and rebuilt on demand by `flutter build ios` /
+# `pod install`. Without this line, the pre-push `dart format` check
+# touches 440+ files inside these packages and fails.
+build/ios/SourcePackages/
+ios/SourcePackages/
 macos/Flutter/GeneratedXCConfig.xcconfig
 macos/Flutter/flutter_export_environment.sh
 macos/Flutter/ephemeral/

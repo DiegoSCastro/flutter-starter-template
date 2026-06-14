@@ -16,9 +16,9 @@ set -euo pipefail
 if command -v fvm >/dev/null 2>&1; then
   dart() { fvm dart "$@"; }
   flutter() { fvm flutter "$@"; }
-  format_fix_cmd="fvm dart format ."
+  format_fix_cmd="fvm dart format"
 else
-  format_fix_cmd="dart format ."
+  format_fix_cmd="dart format"
 fi
 
 if ! command -v dart >/dev/null 2>&1 || ! command -v flutter >/dev/null 2>&1; then
@@ -36,9 +36,20 @@ if ! dart run build_runner build --delete-conflicting-outputs; then
   exit 1
 fi
 
+# `dart format .` recursively walks the entire cwd including build artifacts
+# (e.g. `build/ios/SourcePackages/` from Xcode 26+ SPM downloads) that are
+# not under our control. Scoping to the project source dirs keeps the check
+# fast and avoids false positives from third-party generated code.
+#
+# Each entry is checked individually so a missing dir (e.g. `bin/` in a
+# minimal project) does not break the hook.
 echo "▶ pre-push: verifying formatting (dart format)…"
-if ! dart format --output=none --set-exit-if-changed .; then
-  echo "✖ Formatting issues found. Fix with: ${format_fix_cmd}" >&2
+format_paths=()
+for d in lib test bin packages integration_test; do
+  [ -d "$d" ] && format_paths+=("$d")
+done
+if ! dart format --output=none --set-exit-if-changed "${format_paths[@]}"; then
+  echo "✖ Formatting issues found. Fix with: ${format_fix_cmd} ${format_paths[*]}" >&2
   exit 1
 fi
 
