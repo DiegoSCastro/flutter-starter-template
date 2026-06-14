@@ -29,7 +29,7 @@ To add a new localized string or update an existing one:
 3. **Regenerate the Dart Files:** 
    Run the following command to regenerate the Dart localization classes.
    ```bash
-   fvm flutter gen-l10n
+   flutter gen-l10n
    ```
 
 ## Usage in Code

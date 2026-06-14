@@ -42,6 +42,6 @@ When you add, rename, or delete assets in the `assets/` folder, you must regener
 Run the following command to update the generated code:
 
 ```bash
-fvm dart run build_runner build --delete-conflicting-outputs
+flutter dart run build_runner build --delete-conflicting-outputs
 ```
-*(Depending on how `flutter_gen` is configured in the project, it might also regenerate automatically via a `pubspec.yaml` hook or a standalone `fvm fluttergen` command.)*
+*(Depending on how `flutter_gen` is configured in the project, it might also regenerate automatically via a `pubspec.yaml` hook or a standalone `fluttergen` command.)*

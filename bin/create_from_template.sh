@@ -28,10 +28,33 @@
 #
 set -euo pipefail
 
-if [[ $# -lt 1 || $# -gt 2 ]]; then
+if [[ $# -lt 1 || $# -gt 3 ]]; then
   sed -n '3,21p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+  echo ""
+  echo "Flags:"
+  echo "  --local    Copy the template from the current working tree instead"
+  echo "             of cloning from origin (useful when iterating on the"
+  echo "             template itself)."
   exit 1
 fi
+
+# Parse flags. `--local` skips the `git clone` step and copies the current
+# working tree straight into the destination — useful when iterating on the
+# template itself (so the fix you just wrote is the version you test).
+local_mode=0
+args=()
+for a in "$@"; do
+  if [[ "$a" == "--local" ]]; then
+    local_mode=1
+  else
+    args+=("$a")
+  fi
+done
+if [[ ${#args[@]} -lt 1 || ${#args[@]} -gt 2 ]]; then
+  echo "✖ expected: <app_name> [destination_dir] [--local]" >&2
+  exit 1
+fi
+set -- "${args[@]}"
 
 app_name="$1"
 destination="${2:-$PWD}"
@@ -76,16 +99,20 @@ if [[ -e "$target_dir" ]]; then
 fi
 
 # --- 1. clone the template -------------------------------------------------
-REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-template_url="$(git -C "$REPO_ROOT" config --get remote.origin.url)"
+template_url="$(git -C "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)" config --get remote.origin.url)"
+template_root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 if [[ -z "$template_url" ]]; then
   echo "✖ Could not determine the template's remote URL. Run this from a" >&2
   echo "  clone of flutter-starter-template." >&2
   exit 1
 fi
 
-echo "▶ create: cloning template into $target_dir..."
-git clone --depth 1 "$template_url" "$target_dir"
+echo "▶ create: $([[ $local_mode -eq 1 ]] && echo 'copying template locally into' || echo 'cloning template into') $target_dir..."
+if [[ $local_mode -eq 1 ]]; then
+  cp -R "$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/." "$target_dir"
+else
+  git clone --depth 1 "$template_url" "$target_dir"
+fi
 
 # Drop the template's git history and start fresh.
 rm -rf "$target_dir/.git"
@@ -109,6 +136,29 @@ sed -i '' \
   -e "s|Flutter Starter|$app_name|g" \
   "$target_dir/android/app/build.gradle.kts"
 
+# Android: rewrite the Kotlin package directory + MainActivity.kt
+# The template ships MainActivity.kt under the legacy package
+# com.lucistudio.flutter_starter_template. If we only rewrite build.gradle.kts
+# the Kotlin source still lives in the old package, so the Android build
+# fails with "package R does not exist" or "MainActivity is not registered".
+rm -rf "$target_dir/android/app/src/main/kotlin/com"
+mkdir -p "$target_dir/android/app/src/main/kotlin/com/$org_id"
+# Render the MainActivity.kt template at the new package path. We do this with
+# sed instead of an extra file copy because the template only needs a single
+# line replaced (the package declaration).
+sed -e "s|__PACKAGE__|com.$org_id|" \
+  "$template_root/assets/android/MainActivity.kt" \
+  > "$target_dir/android/app/src/main/kotlin/com/$org_id/MainActivity.kt"
+
+# Replace the Firebase-wired main.dart (or any pre-existing main.dart in the
+# clone) with a minimal `Counter` app that compiles and runs on Android + iOS
+# out of the box. We do this AFTER the `rm -f lib/main.dart` step below so the
+# remove doesn't wipe our copy. The new project can replace it with their
+# own main.dart.
+_scaffold_minimal_main() {
+  cp "$template_root/assets/main.dart" "$target_dir/lib/main.dart"
+}
+
 # iOS: PRODUCT_BUNDLE_IDENTIFIER + CFBundleName
 sed -i '' "s|com\.luci-studio\.flutterStarterTemplate|com.$org_id|g" \
   "$target_dir/ios/Runner.xcodeproj/project.pbxproj"
@@ -122,51 +172,14 @@ sed -i '' "s|<string>flutter_starter_template</string>|<string>$app_name</string
 # Tests reference template-specific blocs (auth, bookmarks, …); strip them
 # too — the new project can author its own tests from scratch.
 #
-# Strip Firebase / AdMob / RevenueCat / dotenv integrations from the cloned
-# template. A fresh project should not need any external service config to
-# build a debug APK / iOS app. The user can re-enable later by uncommenting
-# lines in pubspec.yaml and the Gradle plugins blocks.
-#
-# The sed patterns intentionally match only ACTIVE (uncommented) lines so the
-# script stays idempotent — running it twice does not double-strip.
-echo "▶ create: stripping Firebase / AdMob / RevenueCat / dotenv defaults…"
-
-# 1. Android Gradle plugins in settings.gradle.kts and app/build.gradle.kts
-for gradle in "$target_dir/android/settings.gradle.kts" "$target_dir/android/app/build.gradle.kts"; do
-  if [ -f "$gradle" ]; then
-    sed -i '' \
-      -e 's|^    id("com.google.gms.google-services")|    // id("com.google.gms.google-services")  // stripped by create_from_template.sh|' \
-      -e 's|^    id("com.google.firebase.firebase-perf")|    // id("com.google.firebase.firebase-perf")  // stripped by create_from_template.sh|' \
-      -e 's|^    id("com.google.firebase.crashlytics")|    // id("com.google.firebase.crashlytics")  // stripped by create_from_template.sh|' \
-      "$gradle"
-  fi
-done
-
-# 2. Dart packages in pubspec.yaml
-sed -i '' \
-  -e 's|^  firebase_core:.*|  # firebase_core: "x.y.z"  # stripped by create_from_template.sh|' \
-  -e 's|^  firebase_analytics:.*|  # firebase_analytics: "x.y.z"  # stripped by create_from_template.sh|' \
-  -e 's|^  firebase_crashlytics:.*|  # firebase_crashlytics: "x.y.z"  # stripped by create_from_template.sh|' \
-  -e 's|^  firebase_performance:.*|  # firebase_performance: "x.y.z"  # stripped by create_from_template.sh|' \
-  -e 's|^  firebase_messaging:.*|  # firebase_messaging: "x.y.z"  # stripped by create_from_template.sh|' \
-  -e 's|^  firebase_remote_config:.*|  # firebase_remote_config: "x.y.z"  # stripped by create_from_template.sh|' \
-  -e 's|^  google_mobile_ads:.*|  # google_mobile_ads: "x.y.z"  # stripped by create_from_template.sh|' \
-  -e 's|^  purchases_flutter:.*|  # purchases_flutter: "x.y.z"  # stripped by create_from_template.sh|' \
-  -e 's|^  flutter_dotenv:.*|  # flutter_dotenv: "x.y.z"  # stripped by create_from_template.sh|' \
-  "$target_dir/pubspec.yaml"
-
 # `integration_test/` and `simple_backend_server/` (if cloned via submodule
 # during setup) are template-only scaffolding for end-to-end tests and the
 # Go companion backend; neither belongs in a fresh project.
 echo "▶ create: removing template-only artifacts…"
-# `lib/main.dart` from the template's remote main is Firebase-coupled. The
-# template ships a minimal Firebase-free main.dart at `assets/main.dart` —
-# the script copies it into place after the clone so the scaffolded project
-# can build and run without any optional-service configuration.
-cp "$REPO_ROOT/assets/main.dart" "$target_dir/lib/main.dart"
-
-rm -f "$target_dir/lib/objectbox.g.dart" \
+rm -f "$target_dir/lib/firebase_options.dart" \
+      "$target_dir/lib/objectbox.g.dart" \
       "$target_dir/lib/objectbox-model.json" \
+      "$target_dir/lib/main.dart" \
       "$target_dir/lib/app/app.dart" \
       "$target_dir/lib/app/router.dart" \
       "$target_dir/lib/app/bootstrap_error_app.dart" \
@@ -201,6 +214,10 @@ sed -i '' \
   "$target_dir/pubspec.yaml" 2>/dev/null || true
 sed -i '' '/^  generate: true$/d' "$target_dir/pubspec.yaml" 2>/dev/null || true
 
+# Now that the template's firebase-wired main.dart has been removed above,
+# write a minimal Scaffold-based main that compiles and runs out of the box.
+_scaffold_minimal_main
+
 # --- 4. run codegen + analyze ---------------------------------------------
 echo "▶ create: running pub get…"
 (cd "$target_dir" && flutter pub get)
@@ -230,7 +247,4 @@ Next steps:
 
   # then run the app:
   flutter run
-
-  # (optional) Strip optional integrations completely (Firebase services, etc).
-  #   ./bin/strip_optional.sh       # see script for what it removes
 EOF

@@ -3,28 +3,16 @@
 This file provides guidance to Codex when working with code in this
 repository.
 
-## Flutter version is pinned via FVM
-
-This project pins Flutter to the version in `.fvmrc` using FVM. Always invoke
-Flutter and Dart through FVM so the pinned SDK is used.
-
-```bash
-fvm flutter <command>
-fvm dart <command>
-```
-
-If `.fvm/flutter_sdk` is missing, run `fvm install` once.
-
 ## Common commands
 
 ```bash
-fvm flutter pub get
-fvm flutter run
-fvm flutter analyze
-fvm flutter test
-fvm flutter test test/widget_test.dart
-fvm flutter test --name "<substring>"
-fvm dart run build_runner build --delete-conflicting-outputs
+flutter pub get
+flutter run
+flutter analyze
+flutter test
+flutter test test/widget_test.dart
+flutter test --name "<substring>"
+dart run build_runner build --delete-conflicting-outputs
 ```
 
 VS Code launch configs in `.vscode/launch.json` cover Debug / Profile /
@@ -46,7 +34,7 @@ Release modes against `lib/main.dart`.
 
 The project-scoped MCP config lives in `.mcp.json`.
 
-- `dart` runs via `fvm dart mcp-server` and should be preferred for static
+- `dart` runs via `dart mcp-server` and should be preferred for static
   analysis, formatting, package management, tests, runtime diagnostics, hot
   reload/restart, and Flutter inspector workflows when available.
 - `codegraph` runs via `codegraph serve --mcp --path <project>` and should be

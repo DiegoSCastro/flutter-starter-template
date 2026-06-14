@@ -27,8 +27,8 @@ on:
         default: both
 
 env:
-  # Keep in sync with .fvmrc (3.44.0). CI installs the SDK directly, so the
-  # lanes run with FLUTTER_CMD=flutter rather than via FVM.
+  # Keep in sync with .Flutter SDK constraint (3.44.0). CI installs the SDK directly, so the
+  # lanes run with FLUTTER_CMD=flutter rather than via Flutter SDK.
   FLUTTER_VERSION: '3.44.0'
 
 # A release for a given ref should not run twice concurrently.

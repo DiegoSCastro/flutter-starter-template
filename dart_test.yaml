@@ -5,6 +5,6 @@
 # Ubuntu while developers are on macOS — so these are excluded from CI via
 # `--exclude-tags golden` and instead serve as a local regression check.
 # Regenerate baselines with:
-#   fvm flutter test --update-goldens --tags golden
+#   flutter test --update-goldens --tags golden
 tags:
   golden:

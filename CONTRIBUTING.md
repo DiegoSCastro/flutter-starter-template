@@ -22,13 +22,13 @@ Branch names should follow conventions:
 Before pushing your branch, run local checks to ensure the CI will pass:
 
 ```bash
-fvm dart format .
-fvm flutter analyze
-fvm flutter test --exclude-tags golden
+dart format .
+flutter analyze
+flutter test --exclude-tags golden
 
 for package in packages/*; do
   if [ -d "$package/test" ]; then
-    (cd "$package" && fvm flutter test --exclude-tags golden)
+    (cd "$package" && flutter test --exclude-tags golden)
   fi
 done
 ```

@@ -2,40 +2,46 @@
 
 This file provides guidance to Antigravity when working with code in this repository.
 
-## Flutter version is pinned via FVM
+## Toolchain
 
-This project pins Flutter to the version in `.fvmrc` (currently 3.44.0) using [FVM](https://fvm.app/). Always invoke Flutter through FVM so the pinned SDK is used; running a globally-installed `flutter` may silently use the wrong version.
+This project uses whichever `flutter` / `dart` binaries are on `PATH`. The
+template does not pin a specific Flutter version; `pubspec.yaml`'s
+`sdk: ^3.12.0` constraint is the only requirement. Install the Flutter SDK
+from https://docs.flutter.dev/get-started/install and ensure both `flutter`
+and `dart` resolve in your shell.
+
+To run Flutter commands, use the bare binaries:
 
 ```bash
-fvm flutter <command>          # e.g. fvm flutter run, fvm flutter pub get
-fvm dart <command>             # for Dart-only tooling
+flutter <command>          # e.g. flutter run, flutter pub get
+dart <command>             # for Dart-only tooling
 ```
 
-If `.fvm/flutter_sdk` is missing, run `fvm install` once to materialize it.
+If you have a custom Flutter installation (a non-default path), either
+prepend its `bin/` to `PATH` or export `FLUTTER_ROOT=/path/to/flutter` so
+the project's pre-push hook (`.githooks/pre-push`) picks it up.
 
 ## Common commands
 
-Where the rules reference bare `flutter` or `dart` commands, prefix them with `fvm` so the pinned SDK is used.
-
 ```bash
-fvm flutter pub get                          # install dependencies
-fvm flutter run                              # run on the default device (debug)
-fvm flutter run --profile                    # profile mode
-fvm flutter run --release                    # release mode
-fvm flutter analyze                          # static analysis (uses analysis_options.yaml)
-fvm flutter test                             # run all tests
-fvm flutter test test/widget_test.dart       # run a single test file
-fvm flutter test --name "<substring>"        # run tests whose name matches
-fvm flutter build apk | ipa | web            # platform builds
+flutter pub get                          # install dependencies
+flutter run                              # run on the default device (debug)
+flutter run --profile                    # profile mode
+flutter run --release                    # release mode
+flutter analyze                          # static analysis
+flutter test                             # run all tests
+flutter test test/widget_test.dart       # run a single test file
+flutter test --name "<substring>"        # run tests whose name matches
+flutter build apk | ipa | web            # platform builds
 ```
 
-## Lints
+Where the rules reference bare `flutter` or `dart` commands, prefix them with the `flutter` / `dart` binaries on your `PATH`.
 
 `analysis_options.yaml` extends `package:flutter_lints/flutter.yaml`. Project-specific rule overrides go under `linter.rules` in that file.
 
 ## Dart MCP server
 
-The Dart/Flutter MCP server is wired up in `.mcp.json` at project scope, launched via `fvm dart mcp-server` so it uses the pinned SDK. Prefer using the MCP tools (like `mcp__dart__analyze_files`, `mcp__dart__run_tests`, `mcp__dart__pub`, `mcp__dart__pub_dev_search`, etc.) over running raw shell commands when an MCP tool covers the task.
+The Dart/Flutter MCP server is wired up in `.mcp.json` at project scope, launched via `flutter dart mcp-server` so it uses the pinned SDK. Prefer using the MCP tools (like `mcp__dart__analyze_files`, `mcp__dart__run_tests`, `mcp__dart__pub`, `mcp__dart__pub_dev_search`, etc.) over running raw shell commands when an MCP tool covers the task.
 
 ## Agent skills
 
@@ -77,10 +83,10 @@ You are an expert in Flutter and Dart development. Your goal is to build beautif
 ## Package Management
 * **Pub Tool:** To manage packages, use the `pub` tool, if available.
 * **External Packages:** If a new feature requires an external package, use the `pub_dev_search` tool, if it is available. Otherwise, identify the most suitable and stable package from pub.dev.
-* **Adding Dependencies:** To add a regular dependency, use the `pub` tool, if it is available. Otherwise, run `fvm flutter pub add <package_name>`.
-* **Adding Dev Dependencies:** To add a development dependency, use the `pub` tool, if it is available, with `dev:<package name>`. Otherwise, run `fvm flutter pub add dev:<package_name>`.
-* **Dependency Overrides:** To add a dependency override, use the `pub` tool, if it is available, with `override:<package name>:1.0.0`. Otherwise, run `fvm flutter pub add override:<package_name>:1.0.0`.
-* **Removing Dependencies:** To remove a dependency, use the `pub` tool, if it is available. Otherwise, run `fvm dart pub remove <package_name>`.
+* **Adding Dependencies:** To add a regular dependency, use the `pub` tool, if it is available. Otherwise, run `flutter pub add <package_name>`.
+* **Adding Dev Dependencies:** To add a development dependency, use the `pub` tool, if it is available, with `dev:<package name>`. Otherwise, run `flutter pub add dev:<package_name>`.
+* **Dependency Overrides:** To add a dependency override, use the `pub` tool, if it is available, with `override:<package name>:1.0.0`. Otherwise, run `flutter pub add override:<package_name>:1.0.0`.
+* **Removing Dependencies:** To remove a dependency, use the `pub` tool, if it is available. Otherwise, run `flutter dart pub remove <package_name>`.
 
 ## Code Quality
 * **Code structure:** Adhere to maintainable code structure and separation of concerns (e.g., UI logic separate from business logic).
@@ -185,7 +191,7 @@ linter:
 
   ```dart
   // 1. Add the dependency
-  // fvm flutter pub add go_router
+  // flutter pub add go_router
 
   // 2. Configure the router
   final GoRouter _router = GoRouter(
@@ -277,11 +283,11 @@ linter:
 * **Running Build Runner:** After modifying files that require code generation, run the build command:
 
   ```shell
-  fvm dart run build_runner build --delete-conflicting-outputs
+  flutter dart run build_runner build --delete-conflicting-outputs
   ```
 
 ## Testing
-* **Running Tests:** To run tests, use the `run_tests` tool if it is available, otherwise use `fvm flutter test`.
+* **Running Tests:** To run tests, use the `run_tests` tool if it is available, otherwise use `flutter test`.
 * **Unit Tests:** Use `package:test` for unit tests.
 * **Widget Tests:** Use `package:flutter_test` for widget tests.
 * **Integration Tests:** Use `package:integration_test` for integration tests.
@@ -327,7 +333,7 @@ linter:
 
   ```dart
   // 1. Add the dependency
-  // fvm flutter pub add google_fonts
+  // flutter pub add google_fonts
 
   // 2. Define a TextTheme with a custom font
   final TextTheme appTextTheme = TextTheme(

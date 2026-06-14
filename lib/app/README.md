@@ -29,5 +29,5 @@ This is a generated file created by the `go_router_builder` package. It contains
 If you make changes to your `router.dart` file that involve `@TypedGoRoute` annotations, you need to regenerate the `router.g.dart` file. Run the following command from the root of your project:
 
 ```bash
-fvm dart run build_runner build --delete-conflicting-outputs
+flutter dart run build_runner build --delete-conflicting-outputs
 ```

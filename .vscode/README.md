@@ -18,7 +18,7 @@ Contains debug and run configurations for the project.
 
 ### 2. `settings.json`
 Workspace-specific settings to enforce consistency:
-- Pins the local Flutter SDK to the version managed by FVM (`.fvm/versions/...`).
+- The repo's `pubspec.yaml` declares the Flutter SDK constraint directly (no separate version pin).
 - Configures Code Spell Checker (`cSpell`) to include both English and Vietnamese (`vi`) languages.
 - Provides a whitelist of project-specific words to avoid false positive spelling errors.
 

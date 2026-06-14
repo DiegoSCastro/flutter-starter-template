@@ -1,7 +1,7 @@
 {
   "mcpServers": {
     "dart": {
-      "command": "fvm",
+      "command": "flutter",
       "args": [
         "dart",
         "mcp-server"

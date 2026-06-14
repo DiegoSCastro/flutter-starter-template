@@ -47,7 +47,7 @@ README for the end-to-end picture.
 
 ## Tests
 
-`fvm flutter test` (inside this package) covers the scheduler (single-flight,
+`flutter test` (inside this package) covers the scheduler (single-flight,
 offline→online, backoff, generation guard) and `OfflineCrudSync` (push outcomes,
 the lost-update guard, delta/tombstone/conflict reconciliation) with in-memory
 fakes — no network or database needed.

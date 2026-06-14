@@ -19,7 +19,7 @@
 // the ranks need rethinking — don't just bump a number to silence it.
 //
 // Pure file-scan, no third-party dependency, runs in the normal
-// `fvm flutter test` / CI flow.
+// `flutter test` / CI flow.
 
 import 'dart:io';
 

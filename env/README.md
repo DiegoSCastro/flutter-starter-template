@@ -24,8 +24,8 @@ When running or building the app, specify the target environment file.
 
 **Using Flutter CLI:**
 ```bash
-fvm flutter run --dart-define-from-file=env/dev.json
-fvm flutter build apk --dart-define-from-file=env/prod.json
+flutter run --dart-define-from-file=env/dev.json
+flutter build apk --dart-define-from-file=env/prod.json
 ```
 
 **Using VS Code:**

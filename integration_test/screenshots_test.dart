@@ -21,7 +21,7 @@
 //
 // Run with:
 // ```sh
-// fvm flutter drive \
+// flutter drive \
 //   --driver=test_driver/integration_test.dart \
 //   --target=integration_test/screenshots_test.dart \
 //   --dart-define=API_BASE_URL=http://localhost:8080 \

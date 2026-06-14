@@ -47,7 +47,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
-      # Pin to the same Flutter SDK as .fvmrc (3.44.0). Bump both together.
+      # Pin to the same Flutter SDK as .Flutter SDK constraint (3.44.0). Bump both together.
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:

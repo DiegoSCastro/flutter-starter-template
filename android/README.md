@@ -38,4 +38,4 @@ To build a release APK or AAB, you need to configure app signing. This typically
 ## Important Note
 
 > [!WARNING]
-> While you can open this `android` folder in **Android Studio** to utilize native IDE features (like the visual layout editor or Gradle sync), **always build the Flutter app using `fvm flutter run` or `fvm flutter build`**. Building directly from Android Studio might bypass Flutter's compilation steps.
+> While you can open this `android` folder in **Android Studio** to utilize native IDE features (like the visual layout editor or Gradle sync), **always build the Flutter app using `flutter run` or `flutter build`**. Building directly from Android Studio might bypass Flutter's compilation steps.
