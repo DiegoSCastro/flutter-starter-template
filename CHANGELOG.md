@@ -5,6 +5,35 @@ All notable changes to this template are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **Clean-start by default**: `pubspec.yaml`, `android/settings.gradle.kts`
+  and `android/app/build.gradle.kts` now ship with the Firebase Gradle
+  plugins and the optional Dart packages (`firebase_core`, `firebase_*`,
+  `google_mobile_ads`, `purchases_flutter`, `flutter_dotenv`) **commented
+  out by default**. A freshly scaffolded project builds and runs on
+  Android and iOS without any external service configuration.
+- **`bin/strip_optional.sh`**: new opt-in script to retroactively strip
+  Firebase / AdMob / RevenueCat / `flutter_dotenv` from an existing
+  project. Idempotent.
+- **`assets/main.dart`**: minimal `ScaffoldApp` entry point used by
+  `bin/create_from_template.sh` to overwrite the template's
+  Firebase-coupled `lib/main.dart`.
+
+### Changed
+
+- `bin/create_from_template.sh` now also comments the Firebase Gradle
+  plugins and the optional Dart packages in the cloned project (in
+  addition to deleting `lib/firebase_options.dart` and
+  `lib/core/platform/firebase/`).
+- `lib/main.dart` was renamed/moved to `assets/main.dart`. The scaffolded
+  project receives the minimal `ScaffoldApp`, not the Firebase-wired
+  `App()`.
+- README "Firebase" section replaced with "Optional Services (Firebase /
+  AdMob / RevenueCat / dotenv)" explaining the new opt-in flow.
+
 ## [1.0.0] - 2026-06-08
 
 First stable release of the Flutter starter template.
