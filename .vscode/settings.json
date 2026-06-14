@@ -1,5 +1,4 @@
 {
-  "dart.flutterSdkPath": ".fvm/versions/3.44.0",
   "cSpell.language": "en,vi",
   "cSpell.words": [
     "antigravityrules",
@@ -20,7 +19,6 @@
     "fluttercommunity",
     "flutterfire",
     "fluttergen",
-    "fvmrc",
     "gradlew",
     "lerp",
     "lucistudio",

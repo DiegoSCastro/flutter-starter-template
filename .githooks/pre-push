@@ -22,7 +22,6 @@ set -euo pipefail
 #      normal shell, e.g. via a manual `git push`)
 #   3. `~/development/flutter` (the dev-machine default; harmless no-op if it
 #      doesn't exist on CI)
-#   4. `fvm` if installed (the FVM-pinned SDK from .fvmrc)
 if [ -n "${FLUTTER_ROOT:-}" ] && [ -x "$FLUTTER_ROOT/bin/flutter" ]; then
   export PATH="$FLUTTER_ROOT/bin:$PATH"
 elif ! command -v flutter >/dev/null 2>&1; then
@@ -34,25 +33,16 @@ elif ! command -v flutter >/dev/null 2>&1; then
   done
 fi
 
-# Prefer the FVM-pinned SDK (this repo pins Flutter via .fvmrc); fall back to a
-# plain toolchain if FVM is not installed.
-#
 # Note: we use `flutter pub run` instead of `dart run build_runner` because
 # the standalone `dart` binary cannot resolve packages that declare
 # `sdk: flutter` in their environment (e.g. `go_router_builder` 4.x). The
 # `flutter` wrapper knows where the Flutter SDK lives and sets the right
 # constraints.
-if command -v fvm >/dev/null 2>&1; then
-  flutter() { fvm flutter "$@"; }
-  dart() { fvm dart "$@"; }
-  format_fix_cmd="fvm flutter pub run dart format"
-else
-  format_fix_cmd="flutter pub run dart format"
-fi
+format_fix_cmd="flutter pub run dart format"
 
 if ! command -v flutter >/dev/null 2>&1; then
   echo "✖ Missing required tooling: flutter not found in PATH." >&2
-  echo "  Tried: \$FLUTTER_ROOT, \$PATH, ~/development/flutter, ~/flutter, fvm." >&2
+  echo "  Tried: \$FLUTTER_ROOT, \$PATH, ~/development/flutter, ~/flutter." >&2
   echo "  Install the Flutter SDK and retry (or skip with --no-verify)." >&2
   exit 1
 fi

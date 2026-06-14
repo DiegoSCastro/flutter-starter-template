@@ -2,16 +2,24 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Flutter version is pinned via FVM
+## Toolchain
 
-This project pins Flutter to the version in `.fvmrc` (currently 3.44.0) using [FVM](https://fvm.app/). Always invoke Flutter through FVM so the pinned SDK is used; running a globally-installed `flutter` may silently use the wrong version.
+This project uses whichever `flutter` / `dart` binaries are on `PATH`. The
+template does not pin a specific Flutter version; `pubspec.yaml`'s
+`sdk: ^3.12.0` constraint is the only requirement. Install the Flutter SDK
+from https://docs.flutter.dev/get-started/install and ensure both `flutter`
+and `dart` resolve in your shell.
+
+To run Flutter commands, use the bare binaries:
 
 ```bash
-fvm flutter <command>          # e.g. fvm flutter run, fvm flutter pub get
-fvm dart <command>             # for Dart-only tooling
+flutter <command>          # e.g. flutter run, flutter pub get
+dart <command>             # for Dart-only tooling
 ```
 
-If `.fvm/flutter_sdk` is missing, run `fvm install` once to materialize it.
+If you have a custom Flutter installation (a non-default path), either
+prepend its `bin/` to `PATH` or export `FLUTTER_ROOT=/path/to/flutter` so
+the project's pre-push hook (`.githooks/pre-push`) picks it up.
 
 ## iOS: Swift Package Manager must be disabled
 
@@ -29,11 +37,11 @@ in this repo** — so every new machine and CI runner must run this once before
 the first iOS build:
 
 ```bash
-fvm flutter config --no-enable-swift-package-manager
+flutter config --no-enable-swift-package-manager
 ```
 
-After that, the normal CocoaPods flow works (`fvm flutter clean`,
-`fvm flutter pub get`, then `cd ios && pod install`). The "plugins do not
+After that, the normal CocoaPods flow works (`flutter clean`,
+`flutter pub get`, then `cd ios && pod install`). The "plugins do not
 support Swift Package Manager" warning printed during `pub get`/build is then
 harmless.
 
@@ -41,15 +49,15 @@ harmless.
 
 ```bash
 ./tool/setup.sh                              # one-shot bootstrap of a fresh clone (idempotent)
-fvm flutter pub get                          # install dependencies
-fvm flutter run                              # run on the default device (debug)
-fvm flutter run --profile                    # profile mode
-fvm flutter run --release                    # release mode
-fvm flutter analyze                          # static analysis (uses analysis_options.yaml)
-fvm flutter test                             # run all tests
-fvm flutter test test/widget_test.dart       # run a single test file
-fvm flutter test --name "<substring>"        # run tests whose name matches
-fvm flutter build apk | ipa | web            # platform builds
+flutter pub get                          # install dependencies
+flutter run                              # run on the default device (debug)
+flutter run --profile                    # profile mode
+flutter run --release                    # release mode
+flutter analyze                          # static analysis (uses analysis_options.yaml)
+flutter test                             # run all tests
+flutter test test/widget_test.dart       # run a single test file
+flutter test --name "<substring>"        # run tests whose name matches
+flutter build apk | ipa | web            # platform builds
 ```
 
 VS Code launch configs in `.vscode/launch.json` cover Debug / Profile / Release modes against `lib/main.dart`.
@@ -60,7 +68,7 @@ VS Code launch configs in `.vscode/launch.json` cover Debug / Profile / Release 
 
 ## Dart MCP server
 
-The Dart/Flutter MCP server is wired up in `.mcp.json` at project scope, launched via `fvm dart mcp-server` so it uses the pinned SDK. Claude Code prompts to approve project-scoped MCP servers on first open of the repo. Exposes tools for `analyze_files`, `dart_fix`, `dart_format`, `pub` / `pub_dev_search`, `run_tests`, `hot_reload` / `hot_restart`, `launch_app`, `widget_inspector`, runtime-error introspection, and more — prefer these over shelling out to `fvm flutter <subcommand>` when an MCP tool covers the task. Full feature list: `fvm dart mcp-server --help`.
+The Dart/Flutter MCP server is wired up in `.mcp.json` at project scope, launched via `dart mcp-server` so it uses the active SDK. Claude Code prompts to approve project-scoped MCP servers on first open of the repo. Exposes tools for `analyze_files`, `dart_fix`, `dart_format`, `pub` / `pub_dev_search`, `run_tests`, `hot_reload` / `hot_restart`, `launch_app`, `widget_inspector`, runtime-error introspection, and more — prefer these over shelling out to `flutter <subcommand>` when an MCP tool covers the task. Full feature list: `dart mcp-server --help`.
 
 ## Agent skills
 
@@ -128,7 +136,7 @@ and a capability graduates there once a second feature needs it.
 
 # Flutter coding rules
 
-The rest of this file is Flutter's official AI rules (`docs/rules/rules.md` from `flutter/flutter`). Where the rules reference bare `flutter` or `dart` commands, prefix them with `fvm` (e.g. `fvm flutter pub add <pkg>`) so the pinned SDK is used.
+The rest of this file is Flutter's official AI rules (`docs/rules/rules.md` from `flutter/flutter`). Where the rules reference bare `flutter` or `dart` commands, prefix them with the `flutter` / `dart` binaries on your `PATH` (e.g. `flutter pub add <pkg>`).
 
 You are an expert in Flutter and Dart development. Your goal is to build
 beautiful, performant, and maintainable applications following modern best

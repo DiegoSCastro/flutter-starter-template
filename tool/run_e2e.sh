@@ -19,7 +19,7 @@ device_id="${1:-}"
 if [[ -z "$device_id" ]]; then
   device_id="$(
     cd "$repo_root" &&
-      fvm flutter devices --machine 2>/dev/null |
+      flutter devices --machine 2>/dev/null |
       python3 -c '
 import json, sys
 devices = json.load(sys.stdin)
@@ -78,7 +78,7 @@ fi
 
 echo "Running integration_test/e2e_test.dart…"
 cd "$repo_root"
-fvm flutter test integration_test/e2e_test.dart \
+flutter test integration_test/e2e_test.dart \
   -d "$device_id" \
   --dart-define=API_BASE_URL="$backend_url" \
   --dart-define=FLAVOR=dev

@@ -47,4 +47,4 @@ To deploy the app to a physical device or the App Store, you must configure code
 ## Important Note
 
 > [!WARNING]
-> While you use Xcode to configure signing and permissions, **always build and run the Flutter app using `fvm flutter run` or `fvm flutter build ipa`**. Building the project directly from Xcode without running Flutter's build steps first may result in an outdated Dart payload being packaged.
+> While you use Xcode to configure signing and permissions, **always build and run the Flutter app using `flutter run` or `flutter build ipa`**. Building the project directly from Xcode without running Flutter's build steps first may result in an outdated Dart payload being packaged.

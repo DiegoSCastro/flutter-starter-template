@@ -15,7 +15,7 @@
 // will remind you if a whitelisted import disappears).
 //
 // This is a pure file-scan test on purpose: it has no third-party dependency,
-// runs inside the normal `fvm flutter test` / CI flow, and can't break when
+// runs inside the normal `flutter test` / CI flow, and can't break when
 // the analyzer or pinned SDK is upgraded.
 
 import 'dart:io';

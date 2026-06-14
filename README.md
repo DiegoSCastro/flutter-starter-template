@@ -212,7 +212,7 @@ feature/
 
 | Tool    | Version | Notes |
 |---------|---------|-------|
-| Flutter | ≥ 3.44  | Managed via [FVM](https://fvm.app/) — see `.fvmrc` |
+| Flutter | ≥ 3.44  | See [Flutter install guide](https://docs.flutter.dev/get-started/install) |
 | Go      | ≥ 1.25  | Backend server |
 | Node.js | ≥ 18    | Optional — only for the `firebase` MCP server (`npx`) |
 
@@ -227,7 +227,7 @@ feature/
 git clone --recurse-submodules https://github.com/kido-luci/flutter-starter-template.git
 cd flutter-starter-template
 
-# One-shot bootstrap: submodules, FVM SDK, disable SPM (macOS), pub get,
+# One-shot bootstrap: submodules, disable SPM (macOS), pub get,
 # code generation, backend deps, and the pre-push hook. Idempotent.
 ./tool/setup.sh
 ```
@@ -244,9 +244,9 @@ cd flutter-starter-template
 `tool/setup.sh` simply chains these:
 
 ```bash
-fvm flutter pub get
-fvm dart run build_runner build --delete-conflicting-outputs
-fvm flutter config --no-enable-swift-package-manager   # macOS only — see below
+flutter pub get
+dart run build_runner build --delete-conflicting-outputs
+flutter config --no-enable-swift-package-manager   # macOS only — see below
 git config core.hooksPath .githooks                    # enable the pre-push gate
 ```
 
@@ -263,7 +263,7 @@ machine and CI runner must run it once** before the first iOS build.
 `tool/setup.sh` already does this on macOS; to run it by hand:
 
 ```bash
-fvm flutter config --no-enable-swift-package-manager
+flutter config --no-enable-swift-package-manager
 ```
 
 ### 🖥 Start Backend
@@ -309,7 +309,7 @@ go run .                    # → http://localhost:8080
 ### 📱 Launch App
 
 ```bash
-fvm flutter run
+flutter run
 ```
 
 <br>
@@ -366,16 +366,16 @@ beside the package they cover under `packages/<name>/test`.
 
 ```bash
 # Run root app unit and widget tests
-fvm flutter test --exclude-tags golden
+flutter test --exclude-tags golden
 
 # Run a specific test file
-fvm flutter test test/widget_test.dart
+flutter test test/widget_test.dart
 
 # Run tests by name match
-fvm flutter test --name "signs in"
+flutter test --name "signs in"
 
 # Run a package's own tests
-(cd packages/network && fvm flutter test)
+(cd packages/network && flutter test)
 ```
 
 Shared mocks and test fixtures live in `packages/test_utils` and are exported
@@ -417,13 +417,13 @@ Verify lint rules, formatting, and type safety before committing:
 
 ```bash
 # Analyze code for warnings and errors
-fvm flutter analyze
+flutter analyze
 
 # Automatically apply quick fixes
-fvm dart fix --apply
+dart fix --apply
 
 # Format all Dart files
-fvm dart format .
+dart format .
 ```
 
 <br>
@@ -439,9 +439,9 @@ pre-push hook, opening a PR, and the AI review / security tooling — lives in
 
 ```bash
 # The local gate CI enforces — run before pushing
-fvm dart format .
-fvm flutter analyze
-fvm flutter test --exclude-tags golden
+dart format .
+flutter analyze
+flutter test --exclude-tags golden
 ```
 
 <br>
@@ -508,9 +508,9 @@ Three build flavors driven by `--dart-define` with typed runtime config:
 | `prod`    | `com.lucistudio.flutter_starter_template`         | `com.luci-studio.flutterStarterTemplate`     |
 
 ```bash
-fvm flutter run --flavor dev     --dart-define-from-file=env/dev.json
-fvm flutter run --flavor staging --dart-define-from-file=env/staging.json
-fvm flutter run --flavor prod    --dart-define-from-file=env/prod.json
+flutter run --flavor dev     --dart-define-from-file=env/dev.json
+flutter run --flavor staging --dart-define-from-file=env/staging.json
+flutter run --flavor prod    --dart-define-from-file=env/prod.json
 ```
 
 `EnvConfig` (`packages/config/lib/config.dart`) surfaces API base URL,
@@ -746,7 +746,7 @@ Project‑scoped MCP servers in `.mcp.json` give agents direct access to:
 
 | Server      | Command                                        | Purpose                                      |
 |-------------|------------------------------------------------|----------------------------------------------|
-| `dart`      | `fvm dart mcp-server`                          | Static analysis, formatting, packages, tests |
+| `dart`      | `dart mcp-server`                               | Static analysis, formatting, packages, tests |
 | `codegraph` | `codegraph serve --mcp --path <project-root>` | Symbol search, callers/callees, code context |
 | `firebase`  | `npx -y firebase-tools@latest mcp`             | Crashlytics, project config, deploy, security rules |
 
@@ -836,8 +836,8 @@ Official playbooks from `flutter/skills`, `dart-lang/skills`, and `firebase/agen
 ## 🔄 Code Generation
 
 ```bash
-fvm dart run build_runner build --delete-conflicting-outputs   # one-shot
-fvm dart run build_runner watch --delete-conflicting-outputs   # incremental
+dart run build_runner build --delete-conflicting-outputs   # one-shot
+dart run build_runner watch --delete-conflicting-outputs   # incremental
 ```
 
 Runs Freezed, Retrofit, Injectable, ObjectBox, `go_router_builder`, `flutter_gen`, and `json_serializable`.
@@ -850,7 +850,7 @@ regenerated on demand. So **after cloning (or after any `pub get`), run
 `build_runner` once** before the project will compile:
 
 ```bash
-fvm dart run build_runner build --delete-conflicting-outputs
+dart run build_runner build --delete-conflicting-outputs
 ```
 
 Until you do, your IDE/analyzer will show errors for the missing generated
@@ -893,7 +893,7 @@ Since `generate: true` is enabled in [pubspec.yaml](pubspec.yaml), Flutter autom
 
 ```bash
 # Generate localization resources manually
-fvm flutter gen-l10n
+flutter gen-l10n
 ```
 
 Generated localizations are emitted into `lib/l10n/`. Import

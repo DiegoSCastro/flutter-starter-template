@@ -34,19 +34,19 @@ re-exported through the `test_utils.dart` barrel.
 
 ## Running Tests
 
-Since this project pins Flutter to a specific version via FVM, always run tests using `fvm flutter`.
+
 
 Run all tests:
 ```bash
-fvm flutter test
+flutter test
 ```
 
 Run tests in a specific file:
 ```bash
-fvm flutter test test/widget_test.dart
+flutter test test/widget_test.dart
 ```
 
 Run a specific test by name (substring match):
 ```bash
-fvm flutter test --name "signs in and lands on home screen"
+flutter test --name "signs in and lands on home screen"
 ```

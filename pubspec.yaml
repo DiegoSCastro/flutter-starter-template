@@ -222,6 +222,16 @@ flutter_launcher_icons:
 # The following section is specific to Flutter packages.
 flutter:
 
+  # Disable Swift Package Manager (SPM) for iOS plugin resolution.
+  # Several plugins in the Flutter ecosystem (notably home_widget, share_plus,
+  # and url_launcher_android's iOS counterpart) still rely on CocoaPods. With
+  # SPM enabled on a fresh scaffold, `flutter build ios` emits deprecation
+  # warnings that will become errors once the Flutter team flips the default
+  # in a future release. We force CocoaPods so new projects build cleanly out
+  # of the box.
+  config:
+    enable-swift-package-manager: false
+
   # Enables generation of localized strings from ARB files via `gen-l10n`.
   generate: true
 

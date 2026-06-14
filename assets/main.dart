@@ -19,7 +19,7 @@ class ScaffoldApp extends StatelessWidget {
     return MaterialApp(
       title: 'Scaffold',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
         useMaterial3: true,
       ),
       home: const _ScaffoldHome(),
@@ -38,9 +38,8 @@ class _ScaffoldHome extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Project scaffolded from flutter-starter-template.'),
-            SizedBox(height: 8),
-            Text('Replace lib/main.dart with your real entry point.'),
+            Text('It builds.'),
+            Text('Replace lib/main.dart with your real app.'),
           ],
         ),
       ),

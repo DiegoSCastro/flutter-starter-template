@@ -2,7 +2,7 @@
 // `takeScreenshot` call's bytes to `doc/screenshots/<name>.png` so the README
 // gallery can reference real, up-to-date captures of the assembled app.
 //
-// Run via `fvm flutter drive` (see the doc comment at the top of
+// Run via `flutter drive` (see the doc comment at the top of
 // `integration_test/screenshots_test.dart` for the exact command).
 
 import 'dart:io';

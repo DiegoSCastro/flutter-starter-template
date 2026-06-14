@@ -45,9 +45,9 @@ end
 
 # Run the Flutter SDK from the repo root. The command is overridable via
 # FLUTTER_CMD so CI (which puts `flutter` on PATH directly) can set
-# FLUTTER_CMD=flutter; locally it defaults to the FVM-pinned SDK.
+# FLUTTER_CMD=flutter.
 def flutter(*args)
-  cmd = ENV.fetch("FLUTTER_CMD", "fvm flutter").split
+  cmd = ENV.fetch("FLUTTER_CMD", "flutter").split
   Dir.chdir("..") do # fastlane runs in ios/; the Flutter project root is one up.
     sh(*cmd, *args)
   end

@@ -28,7 +28,7 @@ To run manually (e.g. against a backend you're already running):
 ```bash
 cd simple_backend_server && go run .   # in one terminal
 
-fvm flutter test integration_test/e2e_test.dart \
+flutter test integration_test/e2e_test.dart \
   -d <device-id> \
   --dart-define=API_BASE_URL=http://localhost:8080 \
   --dart-define=FLAVOR=dev

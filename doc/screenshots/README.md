@@ -47,12 +47,12 @@ signed in as a `demo` account, so the shots stay in sync with the real UI.
 3. **Capture** — writes the PNGs into this folder:
 
    ```bash
-   fvm flutter drive \
+   flutter drive \
      --driver=test_driver/integration_test.dart \
      --target=integration_test/screenshots_test.dart \
      --dart-define=API_BASE_URL=http://localhost:8080 \
      --dart-define=FLAVOR=dev \
-     -d <ios-simulator-id>      # from `fvm flutter devices`
+     -d <ios-simulator-id>      # from `flutter devices`
    ```
 
 The app stores its bookmarks (and the offline-first sync cursor) locally, so if

@@ -90,11 +90,6 @@ macos/.symlinks/
 Thumbs.db
 
 # -------------------------------------------------------------------------
-# FVM (Flutter Version Manager)
-# -------------------------------------------------------------------------
-.fvm/
-
-# -------------------------------------------------------------------------
 # AI / editor tooling (machine-local; kept here rather than relying on a
 # user-global ~/.config/git/ignore so the rules travel with the repo)
 # -------------------------------------------------------------------------
@@ -109,7 +104,6 @@ Thumbs.db
 
 # Local helper binaries / UI inspection artifacts
 .bin/
-.fvm_bin/
 screen.png
 window_dump.xml
 

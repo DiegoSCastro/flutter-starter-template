@@ -4,7 +4,7 @@
 # runnable state. Idempotent — safe to re-run anytime your tree needs a refresh.
 #
 # It chains the steps documented in the README Quick Start and the iOS one-time
-# setup note: submodules, FVM SDK, disabling Swift Package Manager (macOS),
+# setup note: submodules, disabling Swift Package Manager (macOS),
 # dependencies, code generation, backend deps, and the pre-push hook.
 #
 # Usage: tool/setup.sh [options]
@@ -48,16 +48,6 @@ done
 
 cd "$repo_root"
 
-# Prefer the FVM-pinned SDK (this repo pins Flutter via .fvmrc); fall back to a
-# plain toolchain if FVM is not installed. Mirrors .githooks/pre-push.
-if command -v fvm >/dev/null 2>&1; then
-  has_fvm=1
-  dart() { fvm dart "$@"; }
-  flutter() { fvm flutter "$@"; }
-else
-  has_fvm=0
-fi
-
 # --- 1. preflight / doctor --------------------------------------------------
 echo "▶ setup: checking required tooling…"
 
@@ -68,14 +58,9 @@ fi
 
 if ! command -v dart >/dev/null 2>&1 || ! command -v flutter >/dev/null 2>&1; then
   echo "✖ Missing required tooling: dart/flutter not found in PATH." >&2
-  echo "  Install FVM (recommended — https://fvm.app) or the Flutter SDK," >&2
-  echo "  then retry. This template pins Flutter $(cat .fvmrc | grep -o '[0-9.]*') via .fvmrc." >&2
+  echo "  Install the Flutter SDK (https://docs.flutter.dev/get-started/install)" >&2
+  echo "  and ensure both `flutter` and `dart` are on PATH, then retry." >&2
   exit 1
-fi
-
-if [[ "$has_fvm" -eq 0 ]]; then
-  echo "  ⚠ fvm not found — using the Flutter SDK on PATH. Versions may differ" >&2
-  echo "    from the pinned .fvmrc ($(cat .fvmrc | grep -o '[0-9.]*'))." >&2
 fi
 
 if ! command -v go >/dev/null 2>&1; then
@@ -91,34 +76,23 @@ echo "▶ setup: syncing git submodules (backend)…"
 git submodule update --init --recursive
 echo "✓ submodules ready"
 
-# --- 3. FVM SDK -------------------------------------------------------------
-if [[ "$has_fvm" -eq 1 ]]; then
-  if [[ ! -d "$repo_root/.fvm/flutter_sdk" ]]; then
-    echo "▶ setup: installing the pinned Flutter SDK (fvm install)…"
-    fvm install
-    echo "✓ Flutter SDK installed"
-  else
-    echo "✓ Flutter SDK already installed (.fvm/flutter_sdk)"
-  fi
-fi
-
-# --- 4. iOS one-time: disable Swift Package Manager (macOS only) ------------
-# Firebase needs an iOS 15 deployment target, but Flutter 3.44 hardcodes the
-# SPM-generated package to 13.0 and two plugins lack SPM support — so this
-# project must build via CocoaPods. The setting is machine-global, so every
-# machine runs it once. See CLAUDE.md.
+# --- 3. iOS one-time: disable Swift Package Manager (macOS only) ------------
+# The template's `flutter: config: enable-swift-package-manager: false` in
+# pubspec.yaml already disables SPM for this project; this command also turns
+# the setting off globally so other projects on the same machine stop
+# emitting SPM deprecation warnings. See CLAUDE.md.
 if [[ "$(uname)" == "Darwin" ]]; then
-  echo "▶ setup: disabling Swift Package Manager (CocoaPods required on iOS)…"
+  echo "▶ setup: disabling Swift Package Manager globally (CocoaPods required on iOS)…"
   flutter config --no-enable-swift-package-manager >/dev/null
   echo "✓ SPM disabled"
 fi
 
-# --- 5. dependencies --------------------------------------------------------
+# --- 4. dependencies --------------------------------------------------------
 echo "▶ setup: installing Dart/Flutter dependencies (pub get)…"
 flutter pub get
 echo "✓ dependencies installed"
 
-# --- 6. code generation -----------------------------------------------------
+# --- 5. code generation -----------------------------------------------------
 # Generated files (*.g.dart, *.freezed.dart, etc.) are git-ignored, so a fresh
 # clone won't compile until they're produced.
 if [[ "$run_codegen" -eq 1 ]]; then
@@ -130,7 +104,7 @@ else
     "until you run build_runner."
 fi
 
-# --- 7. backend dependencies ------------------------------------------------
+# --- 6. backend dependencies ------------------------------------------------
 if [[ "$setup_backend" -eq 1 ]]; then
   if command -v go >/dev/null 2>&1 && [[ -f "$backend_dir/go.mod" ]]; then
     echo "▶ setup: fetching backend Go dependencies…"
@@ -141,7 +115,7 @@ if [[ "$setup_backend" -eq 1 ]]; then
   fi
 fi
 
-# --- 8. git hooks (opt-in, default on) --------------------------------------
+# --- 7. git hooks (opt-in, default on) --------------------------------------
 if [[ "$enable_hooks" -eq 1 ]]; then
   current_hooks_path="$(git config --get core.hooksPath || true)"
   if [[ "$current_hooks_path" != ".githooks" ]]; then
@@ -153,7 +127,7 @@ if [[ "$enable_hooks" -eq 1 ]]; then
   fi
 fi
 
-# --- 9. Firebase reminder ---------------------------------------------------
+# --- 8. Firebase reminder ---------------------------------------------------
 if [[ ! -f "$repo_root/android/app/google-services.json" ]] ||
   [[ ! -f "$repo_root/ios/Runner/GoogleService-Info.plist" ]]; then
   echo "• Firebase config is git-ignored and missing. The app builds with"
@@ -161,9 +135,7 @@ if [[ ! -f "$repo_root/android/app/google-services.json" ]] ||
   echo "  drop google-services.json / GoogleService-Info.plist into place."
 fi
 
-# --- 10. summary ------------------------------------------------------------
-fvm_prefix=""
-[[ "$has_fvm" -eq 1 ]] && fvm_prefix="fvm "
+# --- 9. summary ------------------------------------------------------------
 cat <<EOF
 
 ✓ Setup complete. Next steps:
@@ -172,6 +144,6 @@ cat <<EOF
   cd simple_backend_server && go run .        # → http://localhost:8080
 
   # run the app
-  ${fvm_prefix}flutter run
+  flutter run
 
 EOF
