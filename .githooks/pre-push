@@ -35,9 +35,17 @@ fi
 
 # `flutter pub get` is implicit before any `flutter pub run` — but call it
 # explicitly so the error message is clear when lock-file drift is the cause.
+# Note: a fresh `pub get` against a stale `pubspec.lock` (e.g. after a Flutter
+# SDK bump) reports "The current Flutter SDK version is 0.0.0-unknown" and
+# fails. If that happens, escalate to `pub upgrade` to refresh the lock.
 echo "▶ pre-push: resolving dependencies (flutter pub get)…"
-if ! flutter pub get; then
-  echo "✖ Dependency resolution failed. See https://dart.dev/tools/pub/troubleshoot." >&2
+if ! flutter pub get 2>/dev/null; then
+  echo "✖ Dependency resolution failed via 'pub get'." >&2
+  echo "  If the lock is stale (Flutter SDK bumped, transitive constraint changed)," >&2
+  echo "  run:  flutter pub upgrade" >&2
+  echo "  and commit the updated pubspec.lock." >&2
+  echo "  Otherwise see https://dart.dev/tools/pub/troubleshoot for the original error:" >&2
+  flutter pub get
   exit 1
 fi
 
