@@ -314,6 +314,28 @@ fvm flutter run
 
 <br>
 
+## 🧬 Generating a new project from this template
+
+The template ships a `bin/create_from_template.sh` helper that scaffolds a
+new Flutter app from a fresh clone of this repo. It clones, rewrites the
+project metadata (package name, Android applicationId, iOS bundle id),
+strips template-only artifacts (Firebase config, ObjectBox bindings, the
+auth/bookmarks/collections features, integration tests, the Go companion
+backend), and runs `flutter pub get` + `build_runner` + `flutter analyze`
+before handing off — the destination must be analyzer-clean.
+
+```bash
+# from a clone of this template
+bin/create_from_template.sh my-cool-app
+cd my-cool-app
+flutter run
+```
+
+The script accepts an optional second argument for the destination
+directory (default: current working directory). It also doubles as
+documentation of the "minimum viable template" — every file it strips is
+one a new project can author from scratch.
+
 ## 🧪 Testing & Code Quality
 
 This template includes a robust set of automated tests and static analysis configuration to ensure code quality.
